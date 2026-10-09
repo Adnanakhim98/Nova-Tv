@@ -14,7 +14,7 @@
 .topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(16,21,34,.98);border:1px solid #253047;border-radius:17px;padding:10px;z-index:10}
 .brand{display:flex;align-items:center;gap:9px;min-width:0}.brandicon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1cdbf6,#087eae);color:#03121b;font-size:21px;font-weight:900}.brandname{font-size:clamp(15px,3.6vw,22px);font-weight:800;letter-spacing:.4px;white-space:nowrap}.nova{color:#ff3d55}.version{font-size:10px;color:#9aa7bd;vertical-align:top;margin-left:4px}.tagline{font-size:9px;letter-spacing:1.1px;color:#8491a8;margin-top:2px}.search{width:min(220px,42vw);min-width:95px;border:1px solid #2b354a;background:#0b101b;border-radius:22px;padding:10px 12px;color:#fff;outline:none;font-size:12px}
 .playersticky{flex:0 0 auto;position:relative;z-index:2;background:var(--bg);padding-bottom:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 2px 9px}.sectionhead h2{font-size:15px;margin:0;font-weight:700}.livepill{font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--red);padding:6px 9px;border-radius:7px;white-space:nowrap}.playercard{background:#0d111c;border:1px solid #242d40;border-radius:16px;overflow:hidden}.screen{position:relative;background:#03050a;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020307}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,#182237 0,#080a12 72%);z-index:1}.tvicon{font-size:34px}.empty strong{font-size:14px;margin-top:9px}.empty span{font-size:11px;color:#8793aa;margin-top:5px}.screenbadge{position:absolute;left:12px;top:12px;z-index:2;background:#ff3157;color:#fff;border-radius:5px;font-size:9px;font-weight:800;padding:5px 7px;letter-spacing:.7px;pointer-events:none}.screenbadge:before{content:"";display:inline-block;width:5px;height:5px;background:white;border-radius:50%;margin-right:5px;vertical-align:1px}
-.playerfoot{padding:8px 11px;border-top:1px solid #1c2536;display:flex;align-items:center;justify-content:space-between;gap:8px}.nowtitle{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nowmeta{font-size:10px;color:var(--muted);margin-top:3px}.playeractions{display:flex;gap:6px;flex:0 0 auto}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
+.playerfoot{padding:8px 11px;border-top:1px solid #1c2536;display:flex;align-items:center;justify-content:space-between;gap:8px}.noticebar{height:34px;margin-top:7px;display:flex;align-items:center;gap:9px;overflow:hidden;border:1px solid #26364b;border-radius:9px;background:linear-gradient(90deg,#111b2a,#0b1220);white-space:nowrap}.notice-label{height:100%;display:flex;align-items:center;flex:0 0 auto;padding:0 10px;background:linear-gradient(120deg,#13c9e9,#0879b5);color:#04131b;font-size:10px;font-weight:900;letter-spacing:.5px}.notice-window{position:relative;flex:1;min-width:0;overflow:hidden;height:100%;display:flex;align-items:center}.notice-text{display:inline-block;flex:0 0 auto;padding-left:0;font-size:11px;font-weight:600;color:#eaf7ff;white-space:nowrap;animation:noticeMove 18s linear infinite}@keyframes noticeMove{from{transform:translateX(100%)}to{transform:translateX(-100%)}}.noticebar:hover .notice-text{animation-play-state:paused}.nowtitle{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nowmeta{font-size:10px;color:var(--muted);margin-top:3px}.playeractions{display:flex;gap:6px;flex:0 0 auto}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
 .channelarea{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 0 20px;scrollbar-width:thin;scrollbar-color:#344057 transparent}.channelarea .sectionhead{margin:8px 2px 9px;padding:11px 12px;background:linear-gradient(100deg,#111b2a,#0d111c);border:1px solid #243149;border-radius:12px}.section-count{font-size:10px;color:#8190a7;white-space:nowrap}.channelrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.channel{cursor:pointer;min-width:0;border:1px solid #252e42;background:linear-gradient(150deg,#171d2b,#0e121c);border-radius:15px;padding:10px 4px;text-align:center;color:#fff;min-height:105px}.channel.active{border-color:var(--cyan);box-shadow:0 0 0 1px #18d6f344,0 0 18px #18d6f31b;background:#10212c}.chlogo{height:34px;display:grid;place-items:center;margin-bottom:7px;font-size:18px;font-weight:900}.chlogo.red{color:#ff334d}.chlogo.blue{color:#39bdf7}.chlogo.gold{color:#f9ca52}.chlogo.purple{color:#d6a3ff}.chlogo.green{color:#40e0a0}.chname{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chcat{font-size:9px;color:#7f8ba1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.footer{text-align:center;color:#657187;font-size:10px;padding:18px 0 10px}
 .modal{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modalbox{width:min(480px,100%);background:#111725;border:1px solid #34405a;border-radius:16px;padding:17px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalhead h3{font-size:15px;margin:0}.xbtn{background:#252e40;border:0;color:#fff;border-radius:8px;padding:7px 10px}.fieldlabel{display:block;font-size:11px;color:#9eabc0;margin:11px 0 6px}.field{width:100%;border:1px solid #303b50;background:#090e18;color:white;border-radius:9px;padding:11px;font-size:12px;outline:none}.hint{font-size:10px;color:#7d8ba1;line-height:1.6;margin-top:10px}.modalbuttons{display:flex;gap:8px;margin-top:13px}.modalbuttons .btn{flex:1}.primary{background:linear-gradient(120deg,#12bfe3,#0878b6);border:0;color:#03121b}
 @media(max-width:420px){.wrap{padding:9px 9px 0}.topbar{padding:9px}.brandicon{width:33px;height:33px;flex-basis:33px}.tagline{font-size:8px;letter-spacing:.8px}.screen{aspect-ratio:16/9}.playerfoot{padding:7px 9px}.playeractions .btn{padding:7px 8px}.channelrow{gap:6px}.channel{padding:9px 3px;min-height:102px}.chlogo{height:30px;font-size:16px}.chname{font-size:9px}.chcat{font-size:8px}}
@@ -36,6 +36,7 @@
   </div>
   <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS এবং MPEG-DASH সমর্থিত</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
  </div>
+ <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA 1.0 — স্বাগতম! ভালো অভিজ্ঞতার জন্য স্থিতিশীল ইন্টারনেট ব্যবহার করুন। স্ট্রিম কাজ না করলে অন্য চ্যানেল চেষ্টা করুন।</span></div></div>
 </section>
 <main class="channelarea" id="channelArea">
  <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="sportsCount">0 CHANNELS</span></div>
@@ -45,13 +46,14 @@
  <div class="footer">© 2026 SPORTYNOVA 1.0 · GitHub Pages Ready</div>
 </main>
 </div>
-<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), URL|drmScheme=clearkey&drmLicense=KID:KEY ফরম্যাট এবং JSON-এর drm অবজেক্ট সমর্থিত। DRM লাইসেন্স/স্ট্রিম ব্যবহারের অনুমতি থাকা প্রয়োজন।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd) এবং ClearKey configuration সাপোর্ট করে। DRM লাইসেন্স/স্ট্রিম ব্যবহারের অনুমতি থাকা প্রয়োজন।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],activeHls=null,activeDash=null,activeShaka=null,activeKey=null;
+let channels=[],activeHls=null,activeDash=null,activeShaka=null,activeKey=null,playRequestId=0;
+video.preload="auto";
 const defaults={liveSports:[
 {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
 {name:"Cricket Live",category:"CRICKET",logo:"🏏",tone:"gold",url:""},
@@ -64,83 +66,70 @@ function render(list=channels){
  function cards(items,root){items.forEach(ch=>{const b=document.createElement("button");b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");b.innerHTML=`<div class="chlogo ${safeText(ch.tone||"blue")}">${safeText(ch.logo||"▶")}</div><div class="chname">${safeText(ch.name)}</div><div class="chcat">${safeText(ch.category||"LIVE TV")}</div>`;b.addEventListener("click",()=>ch.url?playStream(ch.url,ch.name,ch.category,ch.drm):openModal(ch.name));root.appendChild(b);});}
  cards(sports,s);cards(tv,t);$("sportsCount").textContent=sports.length+" CHANNELS";$("tvCount").textContent=tv.length+" CHANNELS";
 }
-function stopEngines(){if(activeHls){activeHls.destroy();activeHls=null}if(activeDash){activeDash.reset();activeDash=null}if(activeShaka){activeShaka.destroy();activeShaka=null}video.pause();video.removeAttribute("src");video.load();activeKey=null;}
+async function stopEngines(){if(activeHls){activeHls.destroy();activeHls=null}if(activeDash){activeDash.reset();activeDash=null}if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}video.pause();video.removeAttribute("src");video.load();activeKey=null;}
 function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;}
 function parseStreamInput(raw, drmFromJson=null){
- // Accept both ordinary URLs and IPTV style URL|drmScheme=...&drmLicense=...
  const parts=String(raw||"").split("|");
- const manifestUrl=parts.shift().trim();
- const metaText=parts.join("|");
- const params=new URLSearchParams(metaText.replace(/^\?/,""));
- // Also accept query parameters attached directly after ? on the manifest URL.
- const embedded=manifestUrl.includes("?") ? new URLSearchParams(manifestUrl.split("?").slice(1).join("?")) : new URLSearchParams();
- const cleanUrl=manifestUrl.split("?")[0];
- const scheme=(params.get("drmScheme")||embedded.get("drmScheme")||drmFromJson?.scheme||"").toLowerCase();
- const license=params.get("drmLicense")||embedded.get("drmLicense")||drmFromJson?.license||"";
- return {url:cleanUrl,scheme,license};
+ const manifest=parts.shift().trim();
+ const params=new URLSearchParams(parts.join("|").replace(/^\?/,""));
+ const embedded=new URLSearchParams(manifest.includes("?")?manifest.split("?").slice(1).join("?"):"");
+ return {
+  url:manifest.split("?")[0],
+  scheme:(params.get("drmScheme")||embedded.get("drmScheme")||drmFromJson?.scheme||"").toLowerCase(),
+  license:params.get("drmLicense")||embedded.get("drmLicense")||drmFromJson?.license||""
+ };
 }
-function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
- const parsed=parseStreamInput(rawUrl,drm), url=parsed.url;
+async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
+ const requestId=++playRequestId;
+ const parsed=parseStreamInput(rawUrl,drm),url=parsed.url;
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
- stopEngines();$("empty").style.display="none";video.dataset.currentUrl=rawUrl;showStatus(name,category+" · Connecting…");
- const base=url.toLowerCase();
- const isMpd=/\.mpd(?:$|[?#])/i.test(url);
- const isHls=/\.m3u8(?:$|[?#])/i.test(url);
+ await stopEngines();if(requestId!==playRequestId)return;$("empty").style.display="none";video.dataset.currentUrl=rawUrl;showStatus(name,category+" · Connecting…");
+ const isMpd=/\.mpd$/i.test(url),isHls=/\.m3u8$/i.test(url);
  if(isMpd&&window.shaka){
   shaka.polyfill.installAll();
-  if(shaka.Player.isBrowserSupported()){
-   activeShaka=new shaka.Player();
-   activeShaka.attach(video).then(async()=>{
-    const keys={};
-    if(parsed.scheme==="clearkey"&&parsed.license){
-     const p=parsed.license.split(":");
-     if(p.length===2){
-      // Shaka ClearKey expects hexadecimal KID and key values.
-      keys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase();
-     }
-    }
-    if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
-    activeShaka.addEventListener("error",evt=>{
-     const detail=evt.detail||{};
-     showStatus(name,"DASH error · DRM/CORS/URL পরীক্ষা করুন (code "+(detail.code||"unknown")+")");
-    });
-    try{
-     await activeShaka.load(url);
-     showStatus(name,category+" · MPEG-DASH");
-     await video.play().catch(()=>{});
-    }catch(err){
-     showStatus(name,"DASH error · stream/DRM/CORS পরীক্ষা করুন");
-     console.warn("Shaka DASH error",err);
-    }
-   }).catch(err=>{
-    showStatus(name,"Player initialization failed");
-    console.warn("Shaka attach error",err);
-   });
-  }else if(window.dashjs){
-   activeDash=dashjs.MediaPlayer().create();
+  if(!shaka.Player.isBrowserSupported()){showStatus(name,"এই ব্রাউজারে DASH DRM সাপোর্ট নেই");return}
+  activeShaka=new shaka.Player();
+  activeShaka.configure({
+   streaming:{bufferingGoal:8,rebufferingGoal:1,bufferBehind:20,lowLatencyMode:true,segmentPrefetchLimit:2, retryParameters:{timeout:15000,stallTimeout:5000,connectionTimeout:8000,maxAttempts:2,baseDelay:500,backoffFactor:1.5,fuzzFactor:0.25}},
+   manifest:{retryParameters:{timeout:12000,stallTimeout:4000,connectionTimeout:7000,maxAttempts:2,baseDelay:400,backoffFactor:1.5,fuzzFactor:0.25}},
+   drm:{retryParameters:{timeout:12000,stallTimeout:4000,connectionTimeout:7000,maxAttempts:2,baseDelay:400,backoffFactor:1.5,fuzzFactor:0.25}},
+   abr:{enabled:true,defaultBandwidthEstimate:1500000}
+  });
+  activeShaka.attach(video).then(async()=>{
+   if(requestId!==playRequestId)return;
+   const clearKeys={};
    if(parsed.scheme==="clearkey"&&parsed.license){
     const p=parsed.license.split(":");
-    if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}});
+    if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase();
    }
-   activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>showStatus(name,"DASH error · URL/CORS/DRM পরীক্ষা করুন"));
-   activeDash.initialize(video,url,true);
-  }else{
-   showStatus(name,"এই ব্রাউজারে DASH player লোড হয়নি");
+   if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
+   activeShaka.addEventListener("error",evt=>{
+    const d=evt.detail||{};if(requestId===playRequestId)showStatus(name,"DASH error · URL/CORS/DRM/codec পরীক্ষা করুন ("+(d.code||"unknown")+")");
+   });
+   try{showStatus(name,category+" · Manifest লোড হচ্ছে…");await activeShaka.load(url);if(requestId!==playRequestId)return;showStatus(name,category+" · MPEG-DASH");await video.play().catch(()=>{});}
+   catch(err){showStatus(name,"DASH চালানো যায়নি · stream/DRM/CORS পরীক্ষা করুন");console.warn("Shaka DASH error",err);}
+  }).catch(err=>{showStatus(name,"Player initialization failed");console.warn(err);});
+ }else if(isMpd&&window.dashjs){
+  activeDash=dashjs.MediaPlayer().create();
+  activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:8,bufferTimeAtTopQuality:8,bufferTimeAtTopQualityLongForm:8},lowLatencyEnabled:true,abr:{initialBitrate:{video:1500}}}});
+  if(parsed.scheme==="clearkey"&&parsed.license){
+   const p=parsed.license.split(":");
+   if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}});
   }
+  activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>showStatus(name,"DASH error · URL/CORS/DRM পরীক্ষা করুন"));
+  activeDash.initialize(video,url,true);
  }else if(isHls&&window.Hls&&Hls.isSupported()){
   activeHls=new Hls({enableWorker:true,lowLatencyMode:true});activeHls.loadSource(url);activeHls.attachMedia(video);
   activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{showStatus(name,category+" · HLS Live");video.play().catch(()=>{});});
   activeHls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal)showStatus(name,"HLS error · URL/CORS/codec পরীক্ষা করুন");});
  }else{
-  // Native playback fallback for browsers that support the supplied format.
   video.src=url;video.load();
-  video.addEventListener("loadedmetadata",()=>showStatus(name,category+" · Native playback"),{once:true});
-  video.addEventListener("error",()=>showStatus(name,"Playback failed · এই ফরম্যাট/সার্ভার ব্রাউজারে সাপোর্ট নাও করতে পারে"),{once:true});
+  video.addEventListener("error",()=>showStatus(name,"Playback failed · browser/server format support পরীক্ষা করুন"),{once:true});
  }
- video.play().catch(()=>{});render();
+ if(!isMpd&&!isHls)video.play().catch(()=>{});render();
 }
 function openModal(name=""){ $("urlModal").classList.add("open");$("streamName").value=name;$("streamUrl").value=""; }
-$("customBtn").onclick=()=>openModal();$("stopBtn").onclick=()=>{stopEngines();$("empty").style.display="flex";delete video.dataset.currentUrl;showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
+$("customBtn").onclick=()=>openModal();$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";delete video.dataset.currentUrl;showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
 $("search").addEventListener("input",e=>{const q=e.target.value.toLowerCase();render(channels.filter(c=>(c.name+" "+c.category).toLowerCase().includes(q)));});

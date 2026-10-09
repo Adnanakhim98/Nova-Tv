@@ -1,1 +1,38 @@
 
+[
+  {
+    "name": "Sports 1",
+    "category": "SPORTS",
+    "logo": "⚽",
+    "tone": "blue",
+    "url": ""
+  },
+  {
+    "name": "Sports 2",
+    "category": "SPORTS",
+    "logo": "🏏",
+    "tone": "gold",
+    "url": ""
+  },
+  {
+    "name": "News Live",
+    "category": "NEWS",
+    "logo": "NEWS",
+    "tone": "red",
+    "url": ""
+  },
+  {
+    "name": "Entertainment",
+    "category": "ENTERTAINMENT",
+    "logo": "▶",
+    "tone": "purple",
+    "url": ""
+  },
+  {
+    "name": "My Channel",
+    "category": "LIVE TV",
+    "logo": "TV",
+    "tone": "blue",
+    "url": ""
+  }
+]

@@ -9,15 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080a12;--panel:#111521;--panel2:#171d2b;--line:#242c3e;--cyan:#18d6f3;--red:#ff3157;--muted:#8d98ad;--text:#f4f7ff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#101a2a 0,#080a12 42%);color:var(--text);font-family:Inter,"Hind Siliguri",sans-serif;min-height:100vh}
-.wrap{max-width:1100px;margin:auto;padding:14px 14px 34px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(16,21,34,.94);border:1px solid #253047;border-radius:17px;padding:12px 14px;box-shadow:0 8px 30px #0005;position:sticky;top:8px;z-index:10;backdrop-filter:blur(12px)}
-.brand{display:flex;align-items:center;gap:9px;min-width:0}.brandicon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1cdbf6,#087eae);color:#03121b;font-size:21px;font-weight:900}.brandname{font-size:clamp(16px,3.6vw,22px);font-weight:800;letter-spacing:.4px;white-space:nowrap}.brandname .nova{color:#ff3d55}.version{font-size:10px;color:#9aa7bd;vertical-align:top;margin-left:4px}.tagline{font-size:9px;letter-spacing:1.3px;color:#8491a8;margin-top:2px}.search{width:min(220px,42vw);border:1px solid #2b354a;background:#0b101b;border-radius:22px;padding:10px 13px;color:#fff;outline:none;font-size:12px}.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 10px}.sectionhead h2{font-size:15px;margin:0;font-weight:700}.livepill{font-size:10px;font-weight:800;letter-spacing:.8px;color:#fff;background:var(--red);padding:5px 9px;border-radius:6px;box-shadow:0 0 15px #ff315744}.playercard{background:#0d111c;border:1px solid #242d40;border-radius:18px;overflow:hidden;box-shadow:0 16px 40px #0007}
-/* Mobile behavior: the marked live-player area stays pinned while the channel list scrolls. */
-.playersticky{position:relative;z-index:1;background:transparent;padding-top:0;padding-bottom:0;margin-top:0}
-html{touch-action:pan-y;overscroll-behavior-y:contain}
-body{overflow-x:hidden;touch-action:pan-y;-webkit-text-size-adjust:100%;overscroll-behavior-x:none}
-button,input,textarea{touch-action:manipulation}
-.sports-head,.tv-head{margin-top:17px!important;padding:11px 12px;background:linear-gradient(100deg,#111b2a,#0d111c);border:1px solid #243149;border-radius:12px}.sports-head h2,.tv-head h2{color:#f4f7ff}.section-count{font-size:10px;color:#8190a7}.playercard{margin-bottom:0}.screen{position:relative;background:#03050a;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}.screen video{width:100%;height:100%;object-fit:contain;background:#020307}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,#182237 0,#080a12 72%)}.tvicon{font-size:34px;filter:drop-shadow(0 0 12px #1adcf766)}.empty strong{font-size:14px;margin-top:9px}.empty span{font-size:11px;color:#8793aa;margin-top:5px}.screenbadge{position:absolute;left:12px;top:12px;background:#ff3157;color:#fff;border-radius:5px;font-size:9px;font-weight:800;padding:5px 7px;letter-spacing:.7px}.screenbadge:before{content:"";display:inline-block;width:5px;height:5px;background:white;border-radius:50%;margin-right:5px;vertical-align:1px}.playerfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px}.nowtitle{font-size:13px;font-weight:700}.nowmeta{font-size:10px;color:var(--muted);margin-top:4px}.playeractions{display:flex;gap:7px;flex-wrap:wrap}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:9px 11px;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer}.btn.primary{background:linear-gradient(120deg,#12bfe3,#0878b6);border:0;color:#03121b}.btn:active,.channel:active{transform:scale(.98)}.channelrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.channel{cursor:pointer;min-width:0;border:1px solid #252e42;background:linear-gradient(150deg,#171d2b,#0e121c);border-radius:13px;padding:11px 5px 10px;text-align:center;color:#fff;transition:.18s}.channel.active{border-color:var(--cyan);box-shadow:0 0 0 1px #18d6f344,0 0 20px #18d6f31b;background:#10212c}.chlogo{height:37px;display:grid;place-items:center;margin-bottom:7px;font-size:18px;font-weight:900;letter-spacing:-.5px}.chlogo.red{color:#ff334d}.chlogo.blue{color:#39bdf7}.chlogo.gold{color:#f9ca52}.chlogo.purple{color:#d6a3ff}.chname{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chcat{font-size:9px;color:#7f8ba1;margin-top:4px}.notice{margin-top:17px;background:linear-gradient(110deg,#171421,#101522);border:1px solid #33253b;border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:9px;font-size:11px;color:#c3ccda}.notice b{color:#ff4265;font-size:10px;letter-spacing:.6px}.ticker{margin-top:12px;display:flex;gap:10px;align-items:center;background:#0d1420;border:1px solid #1f2a3d;border-radius:11px;padding:11px 13px;font-size:11px}.tickerlogo{font-weight:800;white-space:nowrap}.tickerlogo span{color:#ff3157}.tickertext{color:#aeb8ca;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.join{margin-top:15px;text-align:center;background:linear-gradient(140deg,#111522,#0b0e17);border:1px solid #252b3a;border-radius:15px;padding:18px 12px}.join h3{font-size:16px;margin:0 0 6px}.join p{font-size:11px;color:#8e9ab0;margin:0 auto 13px;max-width:360px;line-height:1.6}.footer{text-align:center;color:#657187;font-size:10px;padding:18px 0 0}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modalbox{width:min(480px,100%);background:#111725;border:1px solid #34405a;border-radius:16px;padding:17px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalhead h3{font-size:15px;margin:0}.xbtn{background:#252e40;border:0;color:#fff;border-radius:8px;padding:7px 10px}.fieldlabel{display:block;font-size:11px;color:#9eabc0;margin:11px 0 6px}.field{width:100%;border:1px solid #303b50;background:#090e18;color:white;border-radius:9px;padding:11px;font-size:12px;outline:none}.hint{font-size:10px;color:#7d8ba1;line-height:1.6;margin-top:10px}.modalbuttons{display:flex;gap:8px;margin-top:13px}.modalbuttons .btn{flex:1}@media(min-width:700px){.wrap{padding-top:22px}.channelrow{grid-template-columns:repeat(5,minmax(0,1fr))}.screen{aspect-ratio:16/7}.sectionhead{margin-top:25px}.topbar{padding:14px 18px}}@media(max-width:420px){.playersticky{margin-left:0;margin-right:0;padding-left:0;padding-right:0}.playersticky .sectionhead{margin-top:14px}.screen{aspect-ratio:16/9}.wrap{padding:9px}.topbar{padding:10px}.brandicon{width:33px;height:33px}.tagline{font-size:8px}.channelrow{gap:6px}.channel{padding:9px 3px}.chlogo{height:30px;font-size:15px}.chname{font-size:9px}.chcat{font-size:8px}.playerfoot{align-items:flex-start;flex-direction:column}.playeractions{width:100%}.playeractions .btn{flex:1}}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Inter,"Hind Siliguri",sans-serif;overflow:hidden;overscroll-behavior:none}
+.wrap{height:100dvh;max-width:1100px;margin:auto;padding:9px 9px 0;display:flex;flex-direction:column;min-height:0}
+.topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(16,21,34,.98);border:1px solid #253047;border-radius:17px;padding:10px;z-index:10}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}.brandicon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1cdbf6,#087eae);color:#03121b;font-size:21px;font-weight:900}.brandname{font-size:clamp(15px,3.6vw,22px);font-weight:800;letter-spacing:.4px;white-space:nowrap}.nova{color:#ff3d55}.version{font-size:10px;color:#9aa7bd;vertical-align:top;margin-left:4px}.tagline{font-size:9px;letter-spacing:1.1px;color:#8491a8;margin-top:2px}.search{width:min(220px,42vw);min-width:95px;border:1px solid #2b354a;background:#0b101b;border-radius:22px;padding:10px 12px;color:#fff;outline:none;font-size:12px}
+.playersticky{flex:0 0 auto;position:relative;z-index:2;background:var(--bg);padding-bottom:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 2px 9px}.sectionhead h2{font-size:15px;margin:0;font-weight:700}.livepill{font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--red);padding:6px 9px;border-radius:7px;white-space:nowrap}.playercard{background:#0d111c;border:1px solid #242d40;border-radius:16px;overflow:hidden}.screen{position:relative;background:#03050a;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020307}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,#182237 0,#080a12 72%);z-index:1}.tvicon{font-size:34px}.empty strong{font-size:14px;margin-top:9px}.empty span{font-size:11px;color:#8793aa;margin-top:5px}.screenbadge{position:absolute;left:12px;top:12px;z-index:2;background:#ff3157;color:#fff;border-radius:5px;font-size:9px;font-weight:800;padding:5px 7px;letter-spacing:.7px;pointer-events:none}.screenbadge:before{content:"";display:inline-block;width:5px;height:5px;background:white;border-radius:50%;margin-right:5px;vertical-align:1px}
+.playerfoot{padding:8px 11px;border-top:1px solid #1c2536;display:flex;align-items:center;justify-content:space-between;gap:8px}.nowtitle{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nowmeta{font-size:10px;color:var(--muted);margin-top:3px}.playeractions{display:flex;gap:6px;flex:0 0 auto}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
+.channelarea{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 0 20px;scrollbar-width:thin;scrollbar-color:#344057 transparent}.channelarea .sectionhead{margin:8px 2px 9px;padding:11px 12px;background:linear-gradient(100deg,#111b2a,#0d111c);border:1px solid #243149;border-radius:12px}.section-count{font-size:10px;color:#8190a7;white-space:nowrap}.channelrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.channel{cursor:pointer;min-width:0;border:1px solid #252e42;background:linear-gradient(150deg,#171d2b,#0e121c);border-radius:15px;padding:10px 4px;text-align:center;color:#fff;min-height:105px}.channel.active{border-color:var(--cyan);box-shadow:0 0 0 1px #18d6f344,0 0 18px #18d6f31b;background:#10212c}.chlogo{height:34px;display:grid;place-items:center;margin-bottom:7px;font-size:18px;font-weight:900}.chlogo.red{color:#ff334d}.chlogo.blue{color:#39bdf7}.chlogo.gold{color:#f9ca52}.chlogo.purple{color:#d6a3ff}.chlogo.green{color:#40e0a0}.chname{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chcat{font-size:9px;color:#7f8ba1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.footer{text-align:center;color:#657187;font-size:10px;padding:18px 0 10px}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modalbox{width:min(480px,100%);background:#111725;border:1px solid #34405a;border-radius:16px;padding:17px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalhead h3{font-size:15px;margin:0}.xbtn{background:#252e40;border:0;color:#fff;border-radius:8px;padding:7px 10px}.fieldlabel{display:block;font-size:11px;color:#9eabc0;margin:11px 0 6px}.field{width:100%;border:1px solid #303b50;background:#090e18;color:white;border-radius:9px;padding:11px;font-size:12px;outline:none}.hint{font-size:10px;color:#7d8ba1;line-height:1.6;margin-top:10px}.modalbuttons{display:flex;gap:8px;margin-top:13px}.modalbuttons .btn{flex:1}.primary{background:linear-gradient(120deg,#12bfe3,#0878b6);border:0;color:#03121b}
+@media(max-width:420px){.wrap{padding:9px 9px 0}.topbar{padding:9px}.brandicon{width:33px;height:33px;flex-basis:33px}.tagline{font-size:8px;letter-spacing:.8px}.screen{aspect-ratio:16/9}.playerfoot{padding:7px 9px}.playeractions .btn{padding:7px 8px}.channelrow{gap:6px}.channel{padding:9px 3px;min-height:102px}.chlogo{height:30px;font-size:16px}.chname{font-size:9px}.chcat{font-size:8px}}
 </style>
 </head>
 <body>
@@ -26,102 +26,75 @@ button,input,textarea{touch-action:manipulation}
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channel..." aria-label="Search channel">
 </header>
-<div class="playersticky">
-<div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><span class="livepill">● LIVE NOW</span></div>
-<section class="playercard">
- <div class="screen" id="screen">
-  <video id="video" controls playsinline preload="metadata"></video>
-  <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের Live Sports তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
-  <div class="screenbadge">LIVE</div>
+<section class="playersticky">
+ <div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><span class="livepill">● LIVE NOW</span></div>
+ <div class="playercard">
+  <div class="screen">
+   <video id="video" controls playsinline webkit-playsinline preload="none"></video>
+   <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
+   <div class="screenbadge">LIVE</div>
+  </div>
+  <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS এবং MPEG-DASH সমর্থিত</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
  </div>
- <div id="nowTitle" hidden>একটি চ্যানেল নির্বাচন করুন</div><div id="nowMeta" hidden>HLS (.m3u8) এবং MPEG-DASH (.mpd) সমর্থিত</div>
 </section>
+<main class="channelarea" id="channelArea">
+ <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="sportsCount">0 CHANNELS</span></div>
+ <div class="channelrow" id="sportsChannels"></div>
+ <div class="sectionhead"><h2>📺 Live TV Channels</h2><span class="section-count" id="tvCount">0 CHANNELS</span></div>
+ <div class="channelrow" id="tvChannels"></div>
+ <div class="footer">© 2026 SPORTYNOVA 1.0 · GitHub Pages Ready</div>
+</main>
 </div>
-<div class="sectionhead sports-head"><h2>⚽ Live Sports</h2><span class="section-count" id="sportsCount">0 CHANNELS</span></div>
-<div class="channelrow" id="sportsChannels"></div>
-<div class="sectionhead tv-head"><h2>📺 Live TV Channels</h2><span class="section-count" id="tvCount">0 CHANNELS</span></div>
-<div class="channelrow" id="tvChannels"></div>
-<div class="footer">© 2026 SPORTYNOVA 1.0 · GitHub Pages Ready</div>
-</div>
-
-<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="যেমন: My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/index.m3u8"><div class="hint">সমর্থিত: HLS .m3u8 এবং MPEG-DASH .mpd। DASH DRM বা CORS/সার্ভার অনুমতি প্রয়োজন হলে সেই সার্ভার থেকে অনুমতি থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
-
+<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/index.m3u8"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd) এবং ClearKey configuration সাপোর্ট করে। DRM লাইসেন্স/স্ট্রিম ব্যবহারের অনুমতি থাকা প্রয়োজন।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
 <script>
-const DEFAULT_CHANNELS = [
- {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
- {name:"Sports 2",category:"SPORTS",logo:"🏏",tone:"gold",url:""},
- {name:"News Live",category:"NEWS",logo:"NEWS",tone:"red",url:""},
- {name:"Entertainment",category:"ENTERTAINMENT",logo:"▶",tone:"purple",url:""},
- {name:"My Channel",category:"LIVE TV",logo:"TV",tone:"blue",url:""}
-];
-// Put your authorized channel streams in channels.json in the same GitHub repository.
-// channels.json uses separate arrays: liveSports and liveTvChannels.
-let channels = DEFAULT_CHANNELS.slice(), activeHls=null, activeDash=null;
 const $=id=>document.getElementById(id), video=$("video");
+let channels=[],activeHls=null,activeDash=null,activeKey=null;
+const defaults={liveSports:[
+{name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
+{name:"Cricket Live",category:"CRICKET",logo:"🏏",tone:"gold",url:""},
+{name:"Football Live",category:"FOOTBALL",logo:"⚽",tone:"blue",url:""}],liveTvChannels:[]};
 function safeText(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function isSports(ch){if(ch.section==="sports")return true;if(ch.section==="tv")return false;return /sport|football|soccer|cricket|sports/i.test(String(ch.category||""));}
+function isSports(ch){return ch.section==="sports"||(!ch.section&&/sport|football|soccer|cricket/i.test(String(ch.category||"")));}
 function render(list=channels){
- const sportsRoot=$("sportsChannels"), tvRoot=$("tvChannels");
- sportsRoot.innerHTML=""; tvRoot.innerHTML="";
- const sports=list.filter(isSports), tv=list.filter(ch=>!isSports(ch));
- function addCards(items,root){
-  items.forEach(ch=>{
-   const b=document.createElement("button");
-   b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
-   b.innerHTML=`<div class="chlogo ${safeText(ch.tone||"blue")}">${safeText(ch.logo||"▶")}</div><div class="chname">${safeText(ch.name)}</div><div class="chcat">${safeText(ch.category||"LIVE TV")}</div>`;
-   b.addEventListener("click",()=>{if(ch.url)playStream(ch.url,ch.name,ch.category);else openModal("urlModal",ch.name);});
-   root.appendChild(b);
-  });
- }
- addCards(sports,sportsRoot); addCards(tv,tvRoot);
- $("sportsCount").textContent=sports.length+" CHANNELS";
- $("tvCount").textContent=tv.length+" CHANNELS";
- $("sportsChannels").parentElement.style.display=sports.length?"grid":"none";
- $("tvChannels").parentElement.style.display=tv.length?"grid":"none";
+ const s=$("sportsChannels"),t=$("tvChannels");s.innerHTML="";t.innerHTML="";
+ const sports=list.filter(isSports),tv=list.filter(c=>!isSports(c));
+ function cards(items,root){items.forEach(ch=>{const b=document.createElement("button");b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");b.innerHTML=`<div class="chlogo ${safeText(ch.tone||"blue")}">${safeText(ch.logo||"▶")}</div><div class="chname">${safeText(ch.name)}</div><div class="chcat">${safeText(ch.category||"LIVE TV")}</div>`;b.addEventListener("click",()=>ch.url?playStream(ch.url,ch.name,ch.category,ch.drm):openModal(ch.name));root.appendChild(b);});}
+ cards(sports,s);cards(tv,t);$("sportsCount").textContent=sports.length+" CHANNELS";$("tvCount").textContent=tv.length+" CHANNELS";
 }
-
-function clearEngines(){if(activeHls){activeHls.destroy();activeHls=null}if(activeDash){activeDash.reset();activeDash=null}video.pause();video.removeAttribute("src");video.load();}
-function playStream(url,name="Live TV",category="LIVE TV"){
- if(!/^https?:\/\//i.test(url)){alert("দয়া করে http:// অথবা https:// দিয়ে শুরু হওয়া সঠিক URL দিন।");return}
- clearEngines(); $("empty").style.display="none"; $("nowTitle").textContent=name; $("nowMeta").textContent=category+" · Connecting…";
- video.dataset.currentUrl=url;
- const u=url.split("?")[0].toLowerCase();
- if(u.endsWith(".mpd")){
-  if(window.dashjs){activeDash=dashjs.MediaPlayer().create();activeDash.initialize(video,url,true);activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{$("nowMeta").textContent=category+" · MPEG-DASH";});activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>{$("nowMeta").textContent="Stream error · URL/CORS/codec পরীক্ষা করুন";});}
-  else fallbackNative(url);
- }else if(u.endsWith(".m3u8") && window.Hls && Hls.isSupported()){
-  activeHls=new Hls({enableWorker:true,lowLatencyMode:true});activeHls.loadSource(url);activeHls.attachMedia(video);
-  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{$("nowMeta").textContent=category+" · HLS Live";video.play().catch(()=>{});});
-  activeHls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal)$("nowMeta").textContent="Stream error · URL/CORS/codec পরীক্ষা করুন";});
- }else fallbackNative(url);
- video.play().catch(()=>{});
- render();
-}
-function fallbackNative(url){video.src=url;video.addEventListener("loadedmetadata",()=>{$("nowMeta").textContent="Live stream";},{once:true});}
-function openModal(id,preset=""){document.querySelectorAll(".modal").forEach(m=>m.classList.remove("open"));$(id).classList.add("open");if(preset)$("streamName").value=preset;}
-document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>b.closest(".modal").classList.remove("open")));
-$("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন।");return} $("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
-$("search").addEventListener("input",e=>{const q=e.target.value.toLowerCase();render(channels.filter(c=>(c.name+" "+c.category).toLowerCase().includes(q)))});
-async function loadConfig(){
- try{
-  const r=await fetch("./channels.json",{cache:"no-store"});
-  if(r.ok){
-   const data=await r.json();
-   // New format keeps sports and television channels explicitly separate.
-   if(data && !Array.isArray(data)){
-    const sports=Array.isArray(data.liveSports)?data.liveSports.map(c=>({...c,section:"sports",category:c.category||"SPORTS"})):[];
-    const tv=Array.isArray(data.liveTvChannels)?data.liveTvChannels.map(c=>({...c,section:"tv",category:c.category||"LIVE TV"})):[];
-    channels=[...sports,...tv].filter(c=>c&&c.name);
-   }else if(Array.isArray(data)){
-    // Backward compatibility for older flat-list JSON files.
-    channels=data.filter(c=>c&&c.name);
-   }
+function stopEngines(){if(activeHls){activeHls.destroy();activeHls=null}if(activeDash){activeDash.reset();activeDash=null}video.pause();video.removeAttribute("src");video.load();activeKey=null;}
+function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;}
+function playStream(url,name="Live TV",category="LIVE TV",drm=null){
+ if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
+ stopEngines();$("empty").style.display="none";video.dataset.currentUrl=url;showStatus(name,category+" · Connecting…");
+ const base=url.split("?")[0].toLowerCase();
+ if(base.includes(".mpd")&&window.dashjs){
+  activeDash=dashjs.MediaPlayer().create();
+  if(drm&&drm.scheme==="clearkey"&&drm.license){
+   const parts=String(drm.license).split(":");
+   if(parts.length===2){activeDash.setProtectionData({"org.w3.clearkey":{" clearkeys":{}}});activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[parts[0]]:parts[1]}}});}
+  }else{
+   const params=new URLSearchParams(url.split("?")[1]||"");
+   const scheme=params.get("drmScheme"),license=params.get("drmLicense");
+   if(scheme==="clearkey"&&license){const p=license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0]]:p[1]}}});}
   }
- }catch(e){console.warn("channels.json could not be loaded",e)}
- render();
+  activeDash.initialize(video,url,true);
+  activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>showStatus(name,category+" · MPEG-DASH"));
+  activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>showStatus(name,"Stream error: URL/CORS/DRM/license পরীক্ষা করুন"));
+ }else if(base.endsWith(".m3u8")&&window.Hls&&Hls.isSupported()){
+  activeHls=new Hls({enableWorker:true,lowLatencyMode:true});activeHls.loadSource(url);activeHls.attachMedia(video);
+  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{showStatus(name,category+" · HLS Live");video.play().catch(()=>{});});
+  activeHls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal)showStatus(name,"Stream error: URL/CORS/codec পরীক্ষা করুন");});
+ }else{video.src=url;video.load();}
+ video.play().catch(()=>{});render();
 }
+function openModal(name=""){ $("urlModal").classList.add("open");$("streamName").value=name;$("streamUrl").value=""; }
+$("customBtn").onclick=()=>openModal();$("stopBtn").onclick=()=>{stopEngines();$("empty").style.display="flex";delete video.dataset.currentUrl;showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
+$("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
+$("search").addEventListener("input",e=>{const q=e.target.value.toLowerCase();render(channels.filter(c=>(c.name+" "+c.category).toLowerCase().includes(q)));});
+async function loadConfig(){try{const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();const sports=(d.liveSports||[]).map(c=>({...c,section:"sports"}));const tv=(d.liveTvChannels||[]).map(c=>({...c,section:"tv"}));channels=[...sports,...tv].filter(c=>c&&c.name);}}catch(e){console.warn("channels.json load failed",e)}if(!channels.length)channels=[...defaults.liveSports.map(c=>({...c,section:"sports"}))];render();}
 loadConfig();
 </script>
 </body></html>

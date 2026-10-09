@@ -31,12 +31,12 @@
  <div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><span class="livepill">● LIVE NOW</span></div>
  <div class="playercard">
   <div class="screen">
-   <video id="video" controls playsinline webkit-playsinline preload="none"></video>
+   <video id="video" controls playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
   </div>
   <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS এবং MPEG-DASH সমর্থিত</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
  </div>
- <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA 1.0 — স্বাগতম! ⚠️ প্রিয় দর্শক চ্যানেল প্লে হতে ৫ থেকে ১০ সেকেন্ড টাইম নিতে পারে। কোনো চ্যানেল সাময়িকভাবে কাজ না করলে একটু পর আবার চেষ্টা করুন। আপনাদের আরও ভালো সার্ভিস দিতে আমরা প্রতিনিয়ত কাজ করে যাচ্ছি। ধন্যবাদ আমাদের সাথে থাকার জন্য ❤️
+ <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA 1.0 — স্বাগতম! ⚠️ চ্যানেল দ্রুত চালু করার জন্য প্লেয়ার আপডেট করা হয়েছে। সার্ভার বা ইন্টারনেট ধীর হলে কিছুটা সময় লাগতে পারে। আপনাদের আরও ভালো সার্ভিস দিতে আমরা প্রতিনিয়ত কাজ করে যাচ্ছি। ধন্যবাদ আমাদের সাথে থাকার জন্য ❤️
 ।</span></div></div>
 </section>
 <main class="channelarea" id="channelArea">
@@ -87,7 +87,14 @@ function render(list=channels){
  });}
  cards(sports,s);cards(tv,t);$("sportsCount").textContent=sports.length+" CHANNELS";$("tvCount").textContent=tv.length+" CHANNELS";
 }
-async function stopEngines(){if(activeHls){activeHls.destroy();activeHls=null}if(activeDash){activeDash.reset();activeDash=null}if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}video.pause();video.removeAttribute("src");video.load();activeKey=null;}
+function stopEngines(){
+  // Tear down the previous stream without waiting for async DRM cleanup.
+  if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
+  if(activeDash){const old=activeDash;activeDash=null;try{old.reset()}catch(e){}}
+  if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
+  video.pause();video.onloadedmetadata=null;video.onerror=null;
+  video.removeAttribute("src");video.load();activeKey=null;
+}
 function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;}
 function parseStreamInput(raw, drmFromJson=null){
  const text=String(raw||"").trim();
@@ -116,15 +123,15 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
- await stopEngines();if(requestId!==playRequestId)return;
+ stopEngines();if(requestId!==playRequestId)return;
  $("empty").style.display="none";video.dataset.currentUrl=rawUrl;showStatus(name,category+" · Connecting…");
  video.crossOrigin="anonymous";
  const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
  if(kind==="mpd"&&window.shaka){
   shaka.polyfill.installAll();
   if(!shaka.Player.isBrowserSupported()){report("এই ব্রাউজারে MPEG-DASH সমর্থন নেই");return}
-  activeShaka=new shaka.Player();
-  activeShaka.configure({streaming:{bufferingGoal:10,rebufferingGoal:2,bufferBehind:30,retryParameters:{timeout:20000,stallTimeout:7000,connectionTimeout:10000,maxAttempts:3,baseDelay:700,backoffFactor:1.6,fuzzFactor:0.25}},manifest:{retryParameters:{timeout:15000,stallTimeout:6000,connectionTimeout:9000,maxAttempts:3,baseDelay:500}},drm:{retryParameters:{timeout:15000,maxAttempts:2}},abr:{enabled:true,defaultBandwidthEstimate:1800000}});
+  activeShaka=new shaka.Player(video);
+  activeShaka.configure({streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,lowLatencyMode:true,retryParameters:{timeout:12000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:2,baseDelay:400,backoffFactor:1.5,fuzzFactor:0.2}},manifest:{retryParameters:{timeout:10000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:2,baseDelay:400}},drm:{retryParameters:{timeout:10000,maxAttempts:2}},abr:{enabled:true,defaultBandwidthEstimate:2500000}});
   try{
    await activeShaka.attach(video);if(requestId!==playRequestId)return;
    const clearKeys={};
@@ -139,7 +146,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
   if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
   activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>report("DASH error · URL/CORS/DRM পরীক্ষা করুন"));activeDash.initialize(video,url,true);
  }else if((kind==="hls"||kind==="unknown")&&window.Hls&&Hls.isSupported()){
-  activeHls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:30,maxBufferLength:30,manifestLoadingTimeOut:20000,manifestLoadingMaxRetry:3,levelLoadingTimeOut:20000,levelLoadingMaxRetry:3,fragLoadingTimeOut:30000,fragLoadingMaxRetry:4});
+  activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:10,maxBufferLength:12,maxMaxBufferLength:20,manifestLoadingTimeOut:12000,manifestLoadingMaxRetry:2,levelLoadingTimeOut:12000,levelLoadingMaxRetry:2,fragLoadingTimeOut:20000,fragLoadingMaxRetry:3,startLevel:-1});
   activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
   activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){report("HLS · Playing");video.play().catch(()=>{})}});
   activeHls.on(Hls.Events.ERROR,(e,d)=>{if(requestId!==playRequestId||!d.fatal)return;

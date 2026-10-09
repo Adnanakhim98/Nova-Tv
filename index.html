@@ -139,17 +139,29 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
   if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
   activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>report("DASH error · URL/CORS/DRM পরীক্ষা করুন"));activeDash.initialize(video,url,true);
  }else if((kind==="hls"||kind==="unknown")&&window.Hls&&Hls.isSupported()){
-  let hlsNetworkRetries=0,hlsMediaRetries=0;
+  let hlsNetworkRetries=0,hlsMediaRetries=0,hlsManifestLoaded=false;
   activeHls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:30,maxBufferLength:30,manifestLoadingTimeOut:20000,manifestLoadingMaxRetry:2,levelLoadingTimeOut:20000,levelLoadingMaxRetry:2,fragLoadingTimeOut:30000,fragLoadingMaxRetry:2});
   activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
-  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){report("HLS · Manifest loaded, starting playback…");video.play().catch(()=>report("HLS লোড হয়েছে · Play চাপুন"))}});
+  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{hlsManifestLoaded=true;if(requestId===playRequestId){report("HLS · Manifest loaded, starting playback…");video.play().catch(()=>report("HLS লোড হয়েছে · Play চাপুন"))}});
   activeHls.on(Hls.Events.ERROR,(e,d)=>{
    if(requestId!==playRequestId)return;
    const detail=String(d.details||d.type||"unknown");
    const status=d.response&&d.response.code?" · HTTP "+d.response.code:"";
    if(d.type===Hls.ErrorTypes.NETWORK_ERROR){
-    if(hlsNetworkRetries<2&&activeHls){hlsNetworkRetries++;report("HLS সংযোগ ব্যর্থ · Retry "+hlsNetworkRetries+"/2");try{activeHls.startLoad()}catch(err){report("HLS network error: "+detail+status)}}
-    else if(d.fatal){report("HLS লিংক লোড হয়নি: "+detail+status+" · লিংক/সার্ভার/CORS পরীক্ষা করুন");}
+    if(hlsNetworkRetries<2&&activeHls){
+     hlsNetworkRetries++;
+     report("HLS সংযোগে সমস্যা · Retry "+hlsNetworkRetries+"/2 · "+detail+status);
+     try{activeHls.startLoad()}catch(err){report("HLS network error: "+detail+status)}
+     if(hlsNetworkRetries===2){
+      const checkedUrl=url;
+      setTimeout(()=>{
+       if(requestId===playRequestId&&!hlsManifestLoaded&&activeHls){
+        report("HLS সংযোগ ব্যর্থ: "+detail+status+" · URL/DNS/CORS/Referrer পরীক্ষা করুন");
+        console.warn("SPORTYNOVA HLS network diagnostic",{url:checkedUrl,detail,status,response:d.response||null,error:d});
+       }
+      },10000);
+     }
+    }else if(d.fatal){report("HLS লিংক লোড হয়নি: "+detail+status+" · লিংক/সার্ভার/CORS পরীক্ষা করুন");}
    }else if(d.type===Hls.ErrorTypes.MEDIA_ERROR){
     if(hlsMediaRetries<1&&activeHls){hlsMediaRetries++;report("HLS media recover হচ্ছে…");try{activeHls.recoverMediaError()}catch(err){report("HLS media error: "+detail)}}
     else if(d.fatal)report("HLS media/codec error: "+detail);

@@ -2,13 +2,13 @@
   "liveSports": [
     {
       "name": "BAN LEG. VS WI LEG.",
-      "category": "Sports",
+      "category": "Live Sports",
       "logo": "▶",
       "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Borussia%20Dortmund%20Vs%20SV%20Werder%20Bremen.jpg",
       "fallbackLogo": "▶",
       "tone": "blue",
       "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd|drmScheme=clearkey&drmLicense=335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281",
-      "section": "sports",
+      "section": "liveSports",
       "drm": {
         "scheme": "clearkey",
         "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
@@ -34,13 +34,13 @@
     },
     {
       "name": "MPD Sports 2",
-      "category": "Sports",
+      "category": "Live Sports",
       "logo": "⚽",
       "logoUrl": "",
       "fallbackLogo": "⚽",
       "tone": "gold",
       "url": "",
-      "section": "sports",
+      "section": "liveSports",
       "streams": [
         {
           "name": "Server 1",
@@ -58,13 +58,13 @@
     },
     {
       "name": "MPD Sports 3",
-      "category": "Sports",
+      "category": "Live Sports",
       "logo": "🏆",
       "logoUrl": "",
       "fallbackLogo": "🏆",
       "tone": "purple",
       "url": "",
-      "section": "sports",
+      "section": "liveSports",
       "streams": [
         {
           "name": "Server 1",

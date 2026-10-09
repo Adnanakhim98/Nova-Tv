@@ -2,7 +2,7 @@
   "liveSports": [
     {
       "name": "BAN LEG. VS WI LEG.",
-      "category": "MPD / DASH",
+      "category": "Sports",
       "logo": "▶",
       "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Borussia%20Dortmund%20Vs%20SV%20Werder%20Bremen.jpg",
       "fallbackLogo": "▶",
@@ -34,7 +34,7 @@
     },
     {
       "name": "MPD Sports 2",
-      "category": "MPD / DASH",
+      "category": "Sports",
       "logo": "⚽",
       "logoUrl": "",
       "fallbackLogo": "⚽",
@@ -58,7 +58,7 @@
     },
     {
       "name": "MPD Sports 3",
-      "category": "MPD / DASH",
+      "category": "Sports",
       "logo": "🏆",
       "logoUrl": "",
       "fallbackLogo": "🏆",
@@ -84,7 +84,7 @@
   "liveTvChannels": [
     {
       "name": "Boishakhi TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen6.aynaott.com/1d3uG9VCgrR9DRtWZM57/tracks-v1a1/mono.ts.m3u8",
@@ -93,7 +93,7 @@
     },
     {
       "name": "Asian TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen6.aynaott.com/pKb5k6NnzxsKpWUs6E8M/tracks-v1a1/mono.ts.m3u8",
@@ -102,7 +102,7 @@
     },
     {
       "name": "Deepto TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "purple",
       "url": "https://byphdgllyk.gpcdn.net/hls/deeptotv/0_1/index.m3u8",
@@ -111,7 +111,7 @@
     },
     {
       "name": "Nagorik TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://box.bbaria.net/Nagorik_TV/tracks-v1a1/mono.m3u8",
@@ -120,7 +120,7 @@
     },
     {
       "name": "NTV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8",
@@ -129,7 +129,7 @@
     },
     {
       "name": "RTV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "http://tvsen5.aynascope.net/RtvHD/index.m3u8",
@@ -138,7 +138,7 @@
     },
     {
       "name": "Channel 9",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "9",
       "tone": "red",
       "url": "https://box.bbaria.net/Channel9/tracks-v1a1/index.m3u8",
@@ -147,7 +147,7 @@
     },
     {
       "name": "Ekhon TV",
-      "category": "NEWS",
+      "category": "News",
       "logo": "📰",
       "tone": "red",
       "url": "https://tvsen6.aynaott.com/fbgZV3X17hwWcyfZ4pdb/tracks-v1a1/mono.ts.m3u8",
@@ -156,7 +156,7 @@
     },
     {
       "name": "Channel i",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen6.aynaott.com/FNHpYvGZ7FkCE10PwTHm/index.m3u8",
@@ -165,7 +165,7 @@
     },
     {
       "name": "Ananda TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "purple",
       "url": "https://tvsen6.aynaott.com/LeUAm4F1iixYns3s3Non/tracks-v1a1/mono.ts.m3u8",
@@ -174,7 +174,7 @@
     },
     {
       "name": "ATN Bangla",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen5.aynaott.com/atnbangla/tracks-v1a1/mono.ts.m3u8",
@@ -183,7 +183,7 @@
     },
     {
       "name": "Zee Bangla Sonar",
-      "category": "ENTERTAINMENT",
+      "category": "Indian",
       "logo": "▶",
       "tone": "purple",
       "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/ColorsHD/default/Zeebanglahd.m3u8",
@@ -192,7 +192,7 @@
     },
     {
       "name": "Bijoy TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://stream.ottplus.live/live/bijoy_tv_abr/live/bijoy_tv_720/chunks.m3u8",
@@ -201,7 +201,7 @@
     },
     {
       "name": "Channel 1",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://stream.ottplus.bd/live/channel_1_hd_abr/index.m3u8",
@@ -210,7 +210,7 @@
     },
     {
       "name": "Channel S",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://app.ncare.live/live-orgin/channels.stream/live-orgin/channels.stream/chunks.m3u8",
@@ -219,7 +219,7 @@
     },
     {
       "name": "Desh TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "green",
       "url": "https://tvsen6.aynaott.com/ryFkXfd1a4CQ7mMdc820/index.m3u8",
@@ -228,7 +228,7 @@
     },
     {
       "name": "ME TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://iptvbd.live/metv1080/1080.m3u8",
@@ -237,7 +237,7 @@
     },
     {
       "name": "My TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8",
@@ -246,7 +246,7 @@
     },
     {
       "name": "NRB TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://app.ncare.live/live-orgin/nrb-eu.stream/playlist.m3u8",
@@ -255,7 +255,7 @@
     },
     {
       "name": "Rajdhani TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://stream.shariarsuvo.com/hls5/rajdhanicable.m3u8",
@@ -264,7 +264,7 @@
     },
     {
       "name": "SRK TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "purple",
       "url": "https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/tracks-v1a1/mono.m3u8",
@@ -273,7 +273,7 @@
     },
     {
       "name": "Bangla TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen6.aynaott.com/39ee93nUbCCmm5LsyD4t/index.m3u8",
@@ -282,7 +282,7 @@
     },
     {
       "name": "ETV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen5.aynaott.com/SyQuXz8sC3TB/index.m3u8",
@@ -291,7 +291,7 @@
     },
     {
       "name": "Global TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8",
@@ -300,7 +300,7 @@
     },
     {
       "name": "Mohona TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/AkyX5dunzju4cpo26dr7/index.m3u8",
@@ -309,7 +309,7 @@
     },
     {
       "name": "Green TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "green",
       "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8",
@@ -318,7 +318,7 @@
     },
     {
       "name": "Maasranga TV",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://mtv.sunplex.live/MAASRANGA/index.m3u8",
@@ -327,7 +327,7 @@
     },
     {
       "name": "Channel 16",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8",
@@ -336,7 +336,7 @@
     },
     {
       "name": "Bangla Vision",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen5.aynaott.com/tgUzpPc9r6xw/index.m3u8",
@@ -345,7 +345,7 @@
     },
     {
       "name": "Channel 52",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/channel52/tracks-v1a1/mono.ts.m3u8",
@@ -354,7 +354,7 @@
     },
     {
       "name": "GTV",
-      "category": "SPORTS",
+      "category": "Sports",
       "logo": "🏏",
       "tone": "green",
       "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/gazibdz.stream/live-orgin/gazibdz.stream/chunks.m3u8",
@@ -363,7 +363,7 @@
     },
     {
       "name": "Amar Bangla",
-      "category": "BANGLA TV",
+      "category": "Bangla",
       "logo": "📺",
       "tone": "green",
       "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/amarbanglatv.stream/playlist.m3u8",
@@ -372,7 +372,7 @@
     },
     {
       "name": "Enter TV",
-      "category": "ENTERTAINMENT",
+      "category": "Entertainment",
       "logo": "▶",
       "tone": "purple",
       "url": "https://live1.entertv.com.bd/entertv/tracks-v1a1/mono.m3u8",
@@ -381,7 +381,7 @@
     },
     {
       "name": "DASH Demo Channel",
-      "category": "DASH DEMO",
+      "category": "Sports",
       "logo": "▶",
       "tone": "blue",
       "url": "https://a96aivottlinear-a.akamaihd.net/OTTB/pdx-nitro/live/clients/dash/enc/mzbsju2adh/out/v1/6b81fa196f61416485f38d5879b80529/cenc.mpd?|drmScheme=clearkey&drmLicense=d6408a31865544e4b7cc831ff2f44e04:89a868afa2ff706aea7fa1b9ebc8f19e",

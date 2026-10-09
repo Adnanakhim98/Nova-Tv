@@ -5,21 +5,24 @@
       "category": "SPORTS",
       "logo": "⚽",
       "tone": "blue",
-      "url": ""
+      "url": "",
+      "section": "sports"
     },
     {
       "name": "Cricket Live",
       "category": "CRICKET",
       "logo": "🏏",
       "tone": "gold",
-      "url": ""
+      "url": "",
+      "section": "sports"
     },
     {
       "name": "Football Live",
       "category": "FOOTBALL",
       "logo": "⚽",
       "tone": "blue",
-      "url": ""
+      "url": "",
+      "section": "sports"
     }
   ],
   "liveTvChannels": [
@@ -253,6 +256,17 @@
       "logo": "▶",
       "tone": "purple",
       "url": "https://live1.entertv.com.bd/entertv/tracks-v1a1/mono.m3u8"
+    },
+    {
+      "name": "DASH Demo Channel",
+      "category": "DASH DEMO",
+      "logo": "▶",
+      "tone": "blue",
+      "url": "https://a96aivottlinear-a.akamaihd.net/OTTB/pdx-nitro/live/clients/dash/enc/mzbsju2adh/out/v1/6b81fa196f61416485f38d5879b80529/cenc.mpd?|drmScheme=clearkey&drmLicense=d6408a31865544e4b7cc831ff2f44e04:89a868afa2ff706aea7fa1b9ebc8f19e",
+      "drm": {
+        "scheme": "clearkey",
+        "license": "d6408a31865544e4b7cc831ff2f44e04:89a868afa2ff706aea7fa1b9ebc8f19e"
+      }
     }
   ]
 }

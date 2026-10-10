@@ -69,6 +69,10 @@ function isChannelShown(ch){
  const value=String(ch.Show ?? ch.show ?? "Y").trim().toLowerCase();
  return !["n","no","false","0","hide","hidden"].includes(value);
 }
+function isServerShown(stream){
+ const value=String(stream?.Show ?? stream?.show ?? "Y").trim().toLowerCase();
+ return !["n","no","false","0","hide","hidden"].includes(value);
+}
 function categoryFor(ch){
  const raw=String(ch.category||"").toLowerCase(),name=String(ch.name||"").toLowerCase();
  if(ch.section==="liveSports")return "Live Sports";
@@ -276,6 +280,7 @@ function openServerModal(ch){
  if(!streams.length && ch.url) streams=[{name:"HLS Server 1",url:""},{name:"MPD Server 1",url:ch.url,drm:ch.drm},{name:"HLS Server 2",url:""},{name:"MPD Server 2",url:""}];
  while(streams.length<4) streams.push({name:["HLS Server 1","MPD Server 1","HLS Server 2","MPD Server 2"][streams.length]||("Server "+(streams.length+1)),url:""});
  streams.slice(0,4).forEach((stream,i)=>{
+   if(!isServerShown(stream)) return;
   const url=String(stream.url||"").trim();
   const b=document.createElement("button");
   b.type="button";b.className="serverchoice"+(url?" ready":"");b.disabled=!url;

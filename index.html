@@ -34,7 +34,7 @@
    <video id="video" controls playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
   </div>
-  <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS এবং MPEG-DASH সমর্থিত</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH, MP4/WebM এবং Auto Alternative Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA 1.0 — স্বাগতম! ⚠️ চ্যানেল দ্রুত চালু করার জন্য প্লেয়ার আপডেট করা হয়েছে। সার্ভার বা ইন্টারনেট ধীর হলে কিছুটা সময় লাগতে পারে। আপনাদের আরও ভালো সার্ভিস দিতে আমরা প্রতিনিয়ত কাজ করে যাচ্ছি। ধন্যবাদ আমাদের সাথে থাকার জন্য ❤️
 ।</span></div></div>
@@ -222,55 +222,84 @@ function streamKind(url){
  if(/\.(ts|m2ts)$/.test(path))return "transport";
  return "unknown";
 }
-async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
+async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engineIndex=0){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  stopEngines();if(requestId!==playRequestId)return;
- $("empty").style.display="none";video.dataset.currentUrl=rawUrl;showStatus(name,category+" · Connecting…");
- video.crossOrigin="anonymous";
+ $("empty").style.display="none";video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";
  const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
- if(kind==="mpd"&&window.shaka){
-  shaka.polyfill.installAll();
-  if(!shaka.Player.isBrowserSupported()){report("এই ব্রাউজারে MPEG-DASH সমর্থন নেই");return}
-  activeShaka=new shaka.Player(video);
-  activeShaka.configure({streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,lowLatencyMode:true,retryParameters:{timeout:12000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:2,baseDelay:400,backoffFactor:1.5,fuzzFactor:0.2}},manifest:{retryParameters:{timeout:10000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:2,baseDelay:400}},drm:{retryParameters:{timeout:10000,maxAttempts:2}},abr:{enabled:true,defaultBandwidthEstimate:2500000}});
-  try{
+ // Try compatible engines in order. If one cannot load/play, move to the next automatically.
+ const candidates=kind==="mpd"
+   ? ["shaka","dashjs","native"]
+   : kind==="hls"
+     ? ["hlsjs","native"]
+     : kind==="direct"||kind==="transport"
+       ? ["native","hlsjs"]
+       : ["hlsjs","shaka","dashjs","native"];
+ const engines=candidates.filter((v,i,a)=>a.indexOf(v)===i);
+ let engine=engines[engineIndex];
+ if(!engine){report("সব player-এ চালানো যায়নি · URL/CORS/DRM/codec পরীক্ষা করুন");return}
+ let settled=false, timer=null;
+ const clearFallback=()=>{if(timer){clearTimeout(timer);timer=null}video.onerror=null};
+ const fallback=(reason)=>{
+   if(settled||requestId!==playRequestId)return;
+   settled=true;clearFallback();
+   console.warn("Player failed:",engine,reason||"unknown");
+   stopEngines();
+   if(requestId!==playRequestId)return;
+   if(engineIndex+1<engines.length){
+     showStatus(name,"একটি player কাজ করেনি · Alternative player চেষ্টা হচ্ছে…");
+     playStream(rawUrl,name,category,drm,engineIndex+1);
+   }else{
+     $("empty").style.display="flex";
+     report("চালানো যায়নি · URL/CORS/DRM/codec/সার্ভার পরীক্ষা করুন");
+   }
+ };
+ const success=(label)=>{
+   if(settled||requestId!==playRequestId)return;
+   settled=true;clearFallback();report(label+" · Playing");
+ };
+ // A manifest can hang without firing an error; move to the next engine after 15 seconds.
+ timer=setTimeout(()=>fallback("loading timeout"),15000);
+ video.onerror=()=>fallback("native media error");
+ video.addEventListener("playing",()=>{if(requestId===playRequestId)success(engine==="native"?"Native player":engine.toUpperCase())},{once:true});
+ try{
+  if(engine==="shaka"&&window.shaka){
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported()){fallback("browser unsupported");return}
+   activeShaka=new shaka.Player(video);
+   activeShaka.configure({streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,lowLatencyMode:true,retryParameters:{timeout:10000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:1,baseDelay:300}},manifest:{retryParameters:{timeout:8000,maxAttempts:1}},drm:{retryParameters:{timeout:8000,maxAttempts:1}},abr:{enabled:true,defaultBandwidthEstimate:2500000}});
+   activeShaka.addEventListener("error",evt=>fallback("Shaka error "+(evt.detail?.code||"")));
    await activeShaka.attach(video);if(requestId!==playRequestId)return;
    const clearKeys={};
    if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase()}
    if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-   activeShaka.addEventListener("error",evt=>{const d=evt.detail||{};report("DASH error "+(d.code||"")+" · URL/CORS/DRM/codec পরীক্ষা করুন")});
-   report("DASH manifest লোড হচ্ছে…");
-   const loadPromise=activeShaka.load(url);
-   // Start the playback request immediately; retry when the manifest is ready.
-   video.play().catch(()=>{});
-   await loadPromise;if(requestId!==playRequestId)return;setupShakaQualities();report("MPEG-DASH · Playing");await video.play().catch(()=>{});
-  }catch(err){report("DASH চালানো যায়নি · URL/CORS/DRM পরীক্ষা করুন");console.warn("Shaka error",err)}
- }else if(kind==="mpd"&&window.dashjs){
-  activeDash=dashjs.MediaPlayer().create();
-  activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:10,bufferTimeAtTopQuality:10},lowLatencyEnabled:true,abr:{initialBitrate:{video:1500}}}});
-  if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
-  activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>report("DASH error · URL/CORS/DRM পরীক্ষা করুন"));
-   activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId){setupDashjsQualities();video.play().catch(()=>{})}});
-   if(dashjs.MediaPlayer.events.PLAYBACK_METADATA_LOADED)activeDash.on(dashjs.MediaPlayer.events.PLAYBACK_METADATA_LOADED,()=>{if(requestId===playRequestId)video.play().catch(()=>{})});
+   report("Shaka player · লিংক লোড হচ্ছে…");
+   await activeShaka.load(url);if(requestId!==playRequestId)return;
+   setupShakaQualities();video.play().catch(()=>{});success("Shaka / MPEG-DASH");
+  }else if(engine==="dashjs"&&window.dashjs){
+   activeDash=dashjs.MediaPlayer().create();
+   activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:10,bufferTimeAtTopQuality:10},lowLatencyEnabled:true,abr:{initialBitrate:{video:1500}}}});
+   if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
+   activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>fallback("dash.js error"));
+   activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId){setupDashjsQualities();video.play().catch(()=>{});success("dash.js / MPEG-DASH")}});
    activeDash.initialize(video,url,true);
- }else if((kind==="hls"||kind==="unknown")&&window.Hls&&Hls.isSupported()){
-  activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:8,maxBufferLength:8,maxMaxBufferLength:14,manifestLoadingTimeOut:10000,manifestLoadingMaxRetry:2,levelLoadingTimeOut:10000,levelLoadingMaxRetry:2,fragLoadingTimeOut:16000,fragLoadingMaxRetry:3,startLevel:-1,capLevelToPlayerSize:true});
-  activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId){activeHls.loadSource(url);video.play().catch(()=>{})}});
-  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();report("HLS · Playing");video.play().catch(()=>{})}});
-  activeHls.on(Hls.Events.ERROR,(e,d)=>{if(requestId!==playRequestId||!d.fatal)return;
-   if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&activeHls){report("HLS network error · আবার চেষ্টা হচ্ছে…");try{activeHls.startLoad()}catch(err){report("HLS লিংক/CORS/সার্ভার পরীক্ষা করুন")}}
-   else if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&activeHls){report("HLS media recover হচ্ছে…");try{activeHls.recoverMediaError()}catch(err){report("HLS codec/stream error")}}
-   else report("HLS চালানো যায়নি · URL/CORS/Referrer/codec পরীক্ষা করুন");
-  });activeHls.attachMedia(video);
- }else{
-  // Native fallback for Safari/Android native HLS and direct MP4/WebM/TS URLs.
-  video.src=url;video.load();
-  video.onloadedmetadata=()=>{if(requestId===playRequestId){report((kind==="hls"?"Native HLS":kind==="transport"?"Transport Stream":"Direct media")+" · Playing");video.play().catch(()=>{})}};
-  video.onerror=()=>{if(requestId===playRequestId)report("Playback failed · server/CORS/format/referrer restriction হতে পারে")};
- }
- if(kind==="direct"||kind==="transport")video.play().catch(()=>{});
+  }else if(engine==="hlsjs"&&window.Hls&&Hls.isSupported()){
+   activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:8,maxBufferLength:8,maxMaxBufferLength:14,manifestLoadingTimeOut:10000,manifestLoadingMaxRetry:1,levelLoadingTimeOut:10000,levelLoadingMaxRetry:1,fragLoadingTimeOut:12000,fragLoadingMaxRetry:1,startLevel:-1,capLevelToPlayerSize:true});
+   activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId){activeHls.loadSource(url);video.play().catch(()=>{})}});
+   activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{});success("HLS.js")}});
+   activeHls.on(Hls.Events.ERROR,(e,d)=>{if(requestId!==playRequestId||!d.fatal)return;fallback("HLS.js "+d.type)});
+   activeHls.attachMedia(video);
+  }else if(engine==="native"){
+   video.src=url;video.load();
+   video.onloadedmetadata=()=>{if(requestId===playRequestId){video.play().then(()=>success(kind==="hls"?"Native HLS":kind==="mpd"?"Native DASH (browser-supported)":"Native media")).catch(()=>{})}};
+   // Some streams do not fire loadedmetadata until playback is attempted.
+   video.play().then(()=>success("Native player")).catch(()=>{});
+  }else{
+   fallback("player unavailable");
+  }
+ }catch(err){fallback(err?.message||"player exception")}
  render();
 }
 function openServerModal(ch){

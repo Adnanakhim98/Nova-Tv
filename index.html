@@ -34,7 +34,7 @@
    <video id="video" controls playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
   </div>
-  <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS এবং MPEG-DASH সমর্থিত</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS এবং MPEG-DASH সমর্থিত</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA 1.0 — স্বাগতম! ⚠️ চ্যানেল দ্রুত চালু করার জন্য প্লেয়ার আপডেট করা হয়েছে। সার্ভার বা ইন্টারনেট ধীর হলে কিছুটা সময় লাগতে পারে। আপনাদের আরও ভালো সার্ভিস দিতে আমরা প্রতিনিয়ত কাজ করে যাচ্ছি। ধন্যবাদ আমাদের সাথে থাকার জন্য ❤️
 ।</span></div></div>
@@ -55,7 +55,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeKey=null,playRequestId=0;
+let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeKey=null,playRequestId=0,qualityMode="";
 video.preload="auto";
 const defaults={liveSports:[
 {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
@@ -143,6 +143,46 @@ function render(list=channels){
  items.forEach(ch=>makeChannelCard(ch,row,categoryInfo[selectedCategory].title.replace(/^[^ ]+\s/,""),false));
  if(items.length)root.appendChild(row);
 }
+function hideQualitySelector(){
+ const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";
+}
+function showQualityOptions(options,mode){
+ const sel=$("qualitySelect");sel.innerHTML="";
+ const auto=document.createElement("option");auto.value="auto";auto.textContent="Auto";sel.appendChild(auto);
+ options.forEach((item,i)=>{const opt=document.createElement("option");opt.value=String(item.value??i);opt.textContent=item.label;sel.appendChild(opt)});
+ sel.style.display=options.length?"inline-block":"none";qualityMode=options.length?mode:"";sel.value="auto";
+}
+$("qualitySelect").addEventListener("change",()=>{
+ const value=$("qualitySelect").value;
+ try{
+  if(qualityMode==="hls"&&activeHls) activeHls.currentLevel=value==="auto"?-1:Number(value);
+  else if(qualityMode==="shaka"&&activeShaka){
+   if(value==="auto")activeShaka.configure({abr:{enabled:true}});
+   else {activeShaka.configure({abr:{enabled:false}});const track=activeShaka.getVariantTracks().find(t=>String(t.id)===value);if(track)activeShaka.selectVariantTrack(track,true)}
+  }else if(qualityMode==="dashjs"&&activeDash){
+   if(value==="auto")activeDash.setAutoSwitchQualityFor("video",true);
+   else {activeDash.setAutoSwitchQualityFor("video",false);activeDash.setQualityFor("video",Number(value))}
+  }
+ }catch(e){console.warn("Quality switch failed",e)}
+});
+function setupHlsQualities(){
+ if(!activeHls)return;
+ const levels=activeHls.levels||[];
+ showQualityOptions(levels.map((l,i)=>({value:i,label:(l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps")})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"hls");
+}
+function setupShakaQualities(){
+ if(!activeShaka)return;
+ const tracks=activeShaka.getVariantTracks().filter(t=>t.height);
+ const unique=[];const seen=new Set();
+ tracks.forEach(t=>{const key=String(t.height)+"p";if(!seen.has(key)){seen.add(key);unique.push({value:t.id,label:key})}});
+ unique.sort((a,b)=>parseInt(b.label)-parseInt(a.label));
+ showQualityOptions(unique,"shaka");
+}
+function setupDashjsQualities(){
+ if(!activeDash)return;
+ const levels=activeDash.getBitrateInfoListFor("video")||[];
+ showQualityOptions(levels.map((l,i)=>({value:i,label:l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps"})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"dashjs");
+}
 function stopEngines(){
   // Tear down the previous stream without waiting for async DRM cleanup.
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
@@ -194,17 +234,19 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase()}
    if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
    activeShaka.addEventListener("error",evt=>{const d=evt.detail||{};report("DASH error "+(d.code||"")+" · URL/CORS/DRM/codec পরীক্ষা করুন")});
-   report("DASH manifest লোড হচ্ছে…");await activeShaka.load(url);if(requestId!==playRequestId)return;report("MPEG-DASH · Playing");await video.play().catch(()=>{});
+   report("DASH manifest লোড হচ্ছে…");await activeShaka.load(url);if(requestId!==playRequestId)return;setupShakaQualities();report("MPEG-DASH · Playing");await video.play().catch(()=>{});
   }catch(err){report("DASH চালানো যায়নি · URL/CORS/DRM পরীক্ষা করুন");console.warn("Shaka error",err)}
  }else if(kind==="mpd"&&window.dashjs){
   activeDash=dashjs.MediaPlayer().create();
   activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:10,bufferTimeAtTopQuality:10},lowLatencyEnabled:true,abr:{initialBitrate:{video:1500}}}});
   if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
-  activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>report("DASH error · URL/CORS/DRM পরীক্ষা করুন"));activeDash.initialize(video,url,true);
+  activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>report("DASH error · URL/CORS/DRM পরীক্ষা করুন"));
+   activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId)setupDashjsQualities()});
+   activeDash.initialize(video,url,true);
  }else if((kind==="hls"||kind==="unknown")&&window.Hls&&Hls.isSupported()){
   activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:10,maxBufferLength:12,maxMaxBufferLength:20,manifestLoadingTimeOut:12000,manifestLoadingMaxRetry:2,levelLoadingTimeOut:12000,levelLoadingMaxRetry:2,fragLoadingTimeOut:20000,fragLoadingMaxRetry:3,startLevel:-1});
   activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
-  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){report("HLS · Playing");video.play().catch(()=>{})}});
+  activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();report("HLS · Playing");video.play().catch(()=>{})}});
   activeHls.on(Hls.Events.ERROR,(e,d)=>{if(requestId!==playRequestId||!d.fatal)return;
    if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&activeHls){report("HLS network error · আবার চেষ্টা হচ্ছে…");try{activeHls.startLoad()}catch(err){report("HLS লিংক/CORS/সার্ভার পরীক্ষা করুন")}}
    else if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&activeHls){report("HLS media recover হচ্ছে…");try{activeHls.recoverMediaError()}catch(err){report("HLS codec/stream error")}}

@@ -48,7 +48,7 @@
  <div class="footer">© 2026 SPORTYNOVA 1.0 · GitHub Pages Ready</div>
 </main>
 </div>
-<div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">যে সার্ভারটি চালাতে চান সেটি নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
+<div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">HLS Server 1, MPD Server 1, HLS Server 2 অথবা MPD Server 2 থেকে সার্ভার নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
@@ -266,9 +266,9 @@ function openServerModal(ch){
  $("serverModalTitle").textContent=(ch.name||"Live Sports")+" — Server নির্বাচন";
  root.innerHTML="";
  let streams=Array.isArray(ch.streams)?ch.streams:[];
- if(!streams.length && ch.url) streams=[{name:"Server 1",url:ch.url,drm:ch.drm},{name:"Server 2",url:""},{name:"Server 3",url:""}];
- while(streams.length<3) streams.push({name:"Server "+(streams.length+1),url:""});
- streams.slice(0,3).forEach((stream,i)=>{
+ if(!streams.length && ch.url) streams=[{name:"MPD Server 1",url:ch.url,drm:ch.drm},{name:"MPD Server 2",url:""},{name:"HLS Server 1",url:""},{name:"HLS Server 2",url:""}];
+ while(streams.length<4) streams.push({name:["HLS Server 1","MPD Server 1","HLS Server 2","MPD Server 2"][streams.length]||("Server "+(streams.length+1)),url:""});
+ streams.slice(0,4).forEach((stream,i)=>{
   const url=String(stream.url||"").trim();
   const b=document.createElement("button");
   b.type="button";b.className="serverchoice"+(url?" ready":"");b.disabled=!url;

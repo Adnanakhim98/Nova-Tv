@@ -1,171 +1,31 @@
 {
   "channels": [
     {
-      "name": "Jalsha Movie",
-      "category": "Movies",
+      "name": "Islam TV",
+      "category": "Islamic",
       "logo": "▶",
-      "tone": "purple",
-      "url": "https://iptvlive-beta.vercel.app/jalsha-movies/index.m3u8",
-      "logoUrl": "https://static.wikia.nocookie.net/logopedia/images/0/04/Jalsha_Movies_HD.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Jalsha Movie HD",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "http://103.165.93.31:8095/jalshaMovies/index.m3u8",
-      "logoUrl": "https://static.wikia.nocookie.net/logopedia/images/0/04/Jalsha_Movies_HD.png",
-      "fallbackLogo": "▶",
-      "Show": "No"
-    },
-    {
-      "name": "G Series",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8",
-      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/2/2b/B4U_Music.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Shanda TV",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://live.sanandatelevision.in/sananda/tracks-v1a1/mono.m3u8",
-      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Movie Bangla",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://stream.ottplus.live/live/movie_bangla_abr/index.m3u8",
-      "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/CXz4PJwBcqxnFHJBPwrG/posters/2f913e34-3a6c-45e6-9f1f-97bf129a2ff5.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Sony Max",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://drk6xq0vhn.gpcdn.net/live/max_hd_abr/index.m3u8",
-      "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/Ay52-JQBv9knK3AHFDWt/posters/00afb30b-3c19-4c4c-abd8-891db94e4767.webp",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Sony Max-2",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://drk6xq0vhn.gpcdn.net/live/max_2_abr/live/max_2_720/chunks.m3u8",
+      "tone": "green",
+      "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8",
       "logoUrl": "",
       "fallbackLogo": "▶",
       "Show": "Yes"
     },
     {
-      "name": "Goldmines",
-      "category": "Movies",
+      "name": "Madani TV",
+      "category": "Islamic",
       "logo": "▶",
-      "tone": "purple",
-      "url": "https://streams.tangotv.in/GOLDMINES/ORIGIN/index.m3u8",
-      "logoUrl": "https://otapp.store/uploads/tv_image/sm/goldmines-movies.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Goldmines2",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://mumt03.tangotv.in/Dsly5z3HGOLDMINES2/tracks-v1a1/mono.m3u8",
-      "logoUrl": "https://otapp.store/uploads/tv_image/sm/goldmines-movies.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "GOLDMINES ACTION",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://mumt03.tangotv.in/Dsly5z3HGOLDMINESACTION/index.m3u8",
+      "tone": "green",
+      "url": "https://tvsen3.aynaott.com/z24qLsqV/index.m3u8",
       "logoUrl": "",
       "fallbackLogo": "▶",
       "Show": "Yes"
     },
     {
-      "name": "GOLDMINEMOVIES",
-      "category": "Movies",
+      "name": "Iqra Bangla",
+      "category": "Islamic",
       "logo": "▶",
-      "tone": "purple",
-      "url": "https://streams.tangotv.in/GOLDMINEMOVIES/ORIGIN/index.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "GOLDMINES BOLLYWOOD",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://mumt03.tangotv.in/Dsly5z3HGOLDMINESBOLLYWOOD/index.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Colors Cineplex",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://d1rc86nwwc9fag.cloudfront.net/260723/smil:rishteycineplexukdev.smil/chunklist_b1928000.m3u8",
-      "logoUrl": "https://jiotv.catchup.cdn.jio.com/dare_images/images/ColorsCineplexHD.png",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Zee Bangla",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://iptvlive.ahmed-bd-org.workers.dev/sananda-tv-1/index.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "▶",
-      "Show": "No"
-    },
-    {
-      "name": "Colors Risthey",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://manatv.akamaized.net/090823/smil:ristheyamerica.smil/playlist.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "▶",
-      "Show": "Yes"
-    },
-    {
-      "name": "Zee Cinema",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/NGCHD/default/NGCHD.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "▶",
-      "Show": "No"
-    },
-    {
-      "name": "Sony Pix",
-      "category": "Movies",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://drk6xq0vhn.gpcdn.net/live/pix_hd_abr/live/sony_pix_hd_720/chunks.m3u8",
+      "tone": "green",
+      "url": "https://tvsen3.aynaott.com/EuEy5mBW/index.m3u8",
       "logoUrl": "",
       "fallbackLogo": "▶",
       "Show": "Yes"

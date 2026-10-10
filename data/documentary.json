@@ -5,7 +5,7 @@
       "category": "documentary",
       "logo": "▶",
       "tone": "purple",
-      "url": "http://202.70.146.135:8000/play/a05z/index.m3u8",
+      "url": "https://prod-linear-media.toffeelive.com/cdn/live/discovery_sd/playlist.m3u8?edge-cache-token=Expires=1791604935~Starts=1791601335~URLPrefix=aHR0cHM6Ly9wcm9kLWxpbmVhci1tZWRpYS50b2ZmZWVsaXZlLmNvbQ~Data=eyJzdWJzY3JpYmVyX2lkIjoiMmYyNmEyZmYtODRkYS00NzRiLWJiN2EtMjFlY2VhZTIyNDBmIn0~Signature=XeQ3Q7Jz87P2F1_mfP54Rua9aJ47gnAJYFQK_Wdlbh2Xf42Rs2jVqQM8NfV39eONVIzQ_oG8iJeTLCFmB7GgCA",
       "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/KS6x-JQBv9knK3AHwDZy/posters/6594d216-aaca-4eee-b6f5-bbc6b80feb15.webp",
       "fallbackLogo": "▶"
     },

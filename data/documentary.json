@@ -7,7 +7,8 @@
       "tone": "purple",
       "url": "https://prod-linear-media.toffeelive.com/cdn/live/discovery_sd/playlist.m3u8?edge-cache-token=Expires=1791604935~Starts=1791601335~URLPrefix=aHR0cHM6Ly9wcm9kLWxpbmVhci1tZWRpYS50b2ZmZWVsaXZlLmNvbQ~Data=eyJzdWJzY3JpYmVyX2lkIjoiMmYyNmEyZmYtODRkYS00NzRiLWJiN2EtMjFlY2VhZTIyNDBmIn0~Signature=XeQ3Q7Jz87P2F1_mfP54Rua9aJ47gnAJYFQK_Wdlbh2Xf42Rs2jVqQM8NfV39eONVIzQ_oG8iJeTLCFmB7GgCA",
       "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/KS6x-JQBv9knK3AHwDZy/posters/6594d216-aaca-4eee-b6f5-bbc6b80feb15.webp",
-      "fallbackLogo": "▶"
+      "fallbackLogo": "▶",
+      "show": "no"
     },
     {
       "name": "Discovery Bangla",
@@ -16,7 +17,8 @@
       "tone": "purple",
       "url": "http://myxpanel.pro:80/live/Ander1/Ander1/694020.ts",
       "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/KS6x-JQBv9knK3AHwDZy/posters/6594d216-aaca-4eee-b6f5-bbc6b80feb15.webp",
-      "fallbackLogo": "▶"
+      "fallbackLogo": "▶",
+      "show": "yes"
     },
     {
       "name": "Discovery Bangla 2",
@@ -25,7 +27,8 @@
       "tone": "purple",
       "url": "https://jioplaylistdown.yecic62314.workers.dev/live.m3u8?id=573",
       "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/KS6x-JQBv9knK3AHwDZy/posters/6594d216-aaca-4eee-b6f5-bbc6b80feb15.webp",
-      "fallbackLogo": "▶"
+      "fallbackLogo": "▶",
+      "show": "yes"
     },
     {
       "name": "National Geography HD",
@@ -34,7 +37,8 @@
       "tone": "purple",
       "url": "http://202.70.146.135:8000/play/a05o/index.m3u8",
       "logoUrl": "https://web.aynaott.com/storage/019dd92f-107c-7056-9e79-e5233f6e51d9/uploads/images/2026-07-15/images_25b786047244481532eb505dfba85580_playmist_nat_geo_tv_400x400.jpg",
-      "fallbackLogo": "▶"
+      "fallbackLogo": "▶",
+      "show": "yes"
     },
     {
       "name": "Love Natural",
@@ -43,7 +47,8 @@
       "tone": "purple",
       "url": "http://27.124.71.27/Love_Nature/index.m3u8",
       "logoUrl": "https://i.postimg.cc/MZR248Yw/20240823-024104.png",
-      "fallbackLogo": "▶"
+      "fallbackLogo": "▶",
+      "show": "no"
     },
     {
       "name": "Animal Planet",
@@ -52,7 +57,8 @@
       "tone": "purple",
       "url": "https://drk6xq0vhn.gpcdn.net/live/animal_planet_hd/index.m3u8",
       "logoUrl": "https://i.postimg.cc/43NXkFx5/20240823_023458.png",
-      "fallbackLogo": "▶"
+      "fallbackLogo": "▶",
+      "show": "yes"
     }
   ]
 }

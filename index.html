@@ -250,7 +250,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
  const candidates=kind==="mpd"
    ? ["shaka","jw","dashjs","native"]
    : kind==="hls"
-     ? ["hlsjs","jw","native"]
+     ? ["hlsjs","shaka","jw","native"]
      : kind==="direct"||kind==="transport"
        ? ["native","jw","hlsjs"]
        : ["hlsjs","jw","shaka","dashjs","native"];
@@ -278,7 +278,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
    settled=true;clearFallback();report(label+" · Playing");
  };
  // A manifest can hang without firing an error; move to the next engine after 15 seconds.
- timer=setTimeout(()=>fallback("loading timeout"),15000);
+ timer=setTimeout(()=>fallback("loading timeout"),30000);
  video.onerror=()=>fallback("native media error");
  video.addEventListener("playing",()=>{if(requestId===playRequestId)success(engine==="native"?"Native player":engine.toUpperCase())},{once:true});
  try{
@@ -302,7 +302,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported()){fallback("browser unsupported");return}
    activeShaka=new shaka.Player(video);
-   activeShaka.configure({streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,lowLatencyMode:true,retryParameters:{timeout:10000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:1,baseDelay:300}},manifest:{retryParameters:{timeout:8000,maxAttempts:1}},drm:{retryParameters:{timeout:8000,maxAttempts:1}},abr:{enabled:true,defaultBandwidthEstimate:2500000}});
+   activeShaka.configure({streaming:{bufferingGoal:30,rebufferingGoal:5,bufferBehind:30,lowLatencyMode:false,retryParameters:{timeout:20000,stallTimeout:10000,connectionTimeout:10000,maxAttempts:4,baseDelay:500}},manifest:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:500}},drm:{retryParameters:{timeout:15000,maxAttempts:3,baseDelay:500}},abr:{enabled:true,defaultBandwidthEstimate:1800000,bandwidthDowngradeTarget:0.9,bandwidthUpgradeTarget:0.8}});
    activeShaka.addEventListener("error",evt=>fallback("Shaka error "+(evt.detail?.code||"")));
    await activeShaka.attach(video);if(requestId!==playRequestId)return;
    const clearKeys={};
@@ -313,13 +313,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
    setupShakaQualities();video.play().catch(()=>{});success("Shaka / MPEG-DASH");
   }else if(engine==="dashjs"&&window.dashjs){
    activeDash=dashjs.MediaPlayer().create();
-   activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:10,bufferTimeAtTopQuality:10},lowLatencyEnabled:true,abr:{initialBitrate:{video:1500}}}});
+   activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:20,bufferTimeAtTopQuality:25,bufferTimeAtTopQualityLongForm:40},lowLatencyEnabled:false,abr:{initialBitrate:{video:1200},autoSwitchBitrate:{video:true}}}});
    if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
    activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>fallback("dash.js error"));
    activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId){setupDashjsQualities();video.play().catch(()=>{});success("dash.js / MPEG-DASH")}});
    activeDash.initialize(video,url,true);
   }else if(engine==="hlsjs"&&window.Hls&&Hls.isSupported()){
-   activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:8,maxBufferLength:8,maxMaxBufferLength:14,manifestLoadingTimeOut:10000,manifestLoadingMaxRetry:1,levelLoadingTimeOut:10000,levelLoadingMaxRetry:1,fragLoadingTimeOut:12000,fragLoadingMaxRetry:1,startLevel:-1,capLevelToPlayerSize:true});
+   activeHls=new Hls({enableWorker:true,lowLatencyMode:false,backBufferLength:30,maxBufferLength:30,maxMaxBufferLength:60,maxBufferSize:60000000,manifestLoadingTimeOut:20000,manifestLoadingMaxRetry:4,manifestLoadingRetryDelay:800,levelLoadingTimeOut:20000,levelLoadingMaxRetry:4,levelLoadingRetryDelay:800,fragLoadingTimeOut:30000,fragLoadingMaxRetry:6,fragLoadingRetryDelay:800,startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1800000,abrBandWidthFactor:0.9,abrBandWidthUpFactor:0.7});
    activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId){activeHls.loadSource(url);video.play().catch(()=>{})}});
    activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{});success("HLS.js")}});
    activeHls.on(Hls.Events.ERROR,(e,d)=>{if(requestId!==playRequestId||!d.fatal)return;fallback("HLS.js "+d.type)});

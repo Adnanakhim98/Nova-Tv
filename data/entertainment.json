@@ -1,12 +1,57 @@
 {
   "channels": [
     {
-      "name": "Enter TV",
+      "name": "Zee Bangla",
       "category": "Entertainment",
       "logo": "▶",
       "tone": "purple",
-      "url": "https://live1.entertv.com.bd/entertv/tracks-v1a1/mono.m3u8",
-      "logoUrl": "",
+      "url": "https://d1rc86nwwc9fag.cloudfront.net/260723/smil:zeebangla.smil/chunklist_b896000.m3u8",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
+      "fallbackLogo": "▶"
+    },
+    {
+      "name": "Enter 10 Bangla",
+      "category": "Entertainment",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "https://live-bangla.akamaized.net/liveabr/playlist.m3u8",
+      "logoUrl": "https://i.postimg.cc/vBHj3r3J/images-fc0d1242765efd4c1494fbfe4ff65c7a-playmist-enter-10-bangla400x400.jpg",
+      "fallbackLogo": "▶"
+    },
+    {
+      "name": "Colors Bangla",
+      "category": "Entertainment",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "https://footfytv.pro/proxy/direct?url=http://103.165.93.31:8095/colorsBangla/tracks-v1a1/mono.m3u8",
+      "logoUrl": "https://dl.dropbox.com/s/44vdhjj6fja02co/CBHD.jpg",
+      "fallbackLogo": "▶"
+    },
+    {
+      "name": "Sony Aath",
+      "category": "Entertainment",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "https://allinonereborn2.online/livtest3/stream_proxy.php?url=https%3A%2F%2Fallinonereborn2.online%2Fsony-new%2Fplaylists%2Fsony_aath.m3u8",
+      "logoUrl": "https://sonypicturesnetworks.com/images/logos/SONY%20AATH.png",
+      "fallbackLogo": "▶"
+    },
+    {
+      "name": "Colors Bangla",
+      "category": "Entertainment",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "http://live.balajibroadband.com:3500/live/1369.m3u8",
+      "logoUrl": "https://dl.dropbox.com/s/44vdhjj6fja02co/CBHD.jpg",
+      "fallbackLogo": "▶"
+    },
+    {
+      "name": "Star Jalsha",
+      "category": "Entertainment",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "https://da86m1sqpm3o0.cloudfront.net/28072023/smil:starjalsha.smil/chunklist_b1928000.m3u8",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Star_Jalsha_logo_2023.png?20230625063343",
       "fallbackLogo": "▶"
     }
   ]

@@ -7,19 +7,19 @@
       "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Afghanistan%20Vs%20Bangladesh.jpg",
       "fallbackLogo": "▶",
       "tone": "blue",
-      "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd|drmScheme=clearkey&drmLicense=335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281",
+      "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/v8s736w0hw/out/v1/157d723d80d94a3998a06a8e78ad0686/cenc.mpd|drmScheme=clearkey&drmLicense=09269747be60ae1f8d4283d6d5d01fd2:a46879b547df24d568c8f89ae6c3273c",
       "section": "liveSports",
       "drm": {
         "scheme": "clearkey",
-        "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
+        "license": "09269747be60ae1f8d4283d6d5d01fd2:a46879b547df24d568c8f89ae6c3273c"
       },
       "streams": [
         {
           "name": "Server 1",
-          "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd|drmScheme=clearkey&drmLicense=335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281",
+          "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/v8s736w0hw/out/v1/157d723d80d94a3998a06a8e78ad0686/cenc.mpd|drmScheme=clearkey&drmLicense=09269747be60ae1f8d4283d6d5d01fd2:a46879b547df24d568c8f89ae6c3273c",
           "drm": {
             "scheme": "clearkey",
-            "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
+            "license": "09269747be60ae1f8d4283d6d5d01fd2:a46879b547df24d568c8f89ae6c3273c"
           }
         },
         {

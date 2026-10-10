@@ -57,6 +57,8 @@
 const $=id=>document.getElementById(id), video=$("video");
 let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeKey=null,playRequestId=0,qualityMode="";
 video.preload="auto";
+video.autoplay=true;
+video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
 const defaults={liveSports:[
 {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
 {name:"Cricket Live",category:"CRICKET",logo:"🏏",tone:"gold",url:""},
@@ -234,18 +236,23 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase()}
    if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
    activeShaka.addEventListener("error",evt=>{const d=evt.detail||{};report("DASH error "+(d.code||"")+" · URL/CORS/DRM/codec পরীক্ষা করুন")});
-   report("DASH manifest লোড হচ্ছে…");await activeShaka.load(url);if(requestId!==playRequestId)return;setupShakaQualities();report("MPEG-DASH · Playing");await video.play().catch(()=>{});
+   report("DASH manifest লোড হচ্ছে…");
+   const loadPromise=activeShaka.load(url);
+   // Start the playback request immediately; retry when the manifest is ready.
+   video.play().catch(()=>{});
+   await loadPromise;if(requestId!==playRequestId)return;setupShakaQualities();report("MPEG-DASH · Playing");await video.play().catch(()=>{});
   }catch(err){report("DASH চালানো যায়নি · URL/CORS/DRM পরীক্ষা করুন");console.warn("Shaka error",err)}
  }else if(kind==="mpd"&&window.dashjs){
   activeDash=dashjs.MediaPlayer().create();
   activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:10,bufferTimeAtTopQuality:10},lowLatencyEnabled:true,abr:{initialBitrate:{video:1500}}}});
   if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
   activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>report("DASH error · URL/CORS/DRM পরীক্ষা করুন"));
-   activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId)setupDashjsQualities()});
+   activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId){setupDashjsQualities();video.play().catch(()=>{})}});
+   if(dashjs.MediaPlayer.events.PLAYBACK_METADATA_LOADED)activeDash.on(dashjs.MediaPlayer.events.PLAYBACK_METADATA_LOADED,()=>{if(requestId===playRequestId)video.play().catch(()=>{})});
    activeDash.initialize(video,url,true);
  }else if((kind==="hls"||kind==="unknown")&&window.Hls&&Hls.isSupported()){
-  activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:10,maxBufferLength:12,maxMaxBufferLength:20,manifestLoadingTimeOut:12000,manifestLoadingMaxRetry:2,levelLoadingTimeOut:12000,levelLoadingMaxRetry:2,fragLoadingTimeOut:20000,fragLoadingMaxRetry:3,startLevel:-1});
-  activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
+  activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:8,maxBufferLength:8,maxMaxBufferLength:14,manifestLoadingTimeOut:10000,manifestLoadingMaxRetry:2,levelLoadingTimeOut:10000,levelLoadingMaxRetry:2,fragLoadingTimeOut:16000,fragLoadingMaxRetry:3,startLevel:-1,capLevelToPlayerSize:true});
+  activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId){activeHls.loadSource(url);video.play().catch(()=>{})}});
   activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();report("HLS · Playing");video.play().catch(()=>{})}});
   activeHls.on(Hls.Events.ERROR,(e,d)=>{if(requestId!==playRequestId||!d.fatal)return;
    if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&activeHls){report("HLS network error · আবার চেষ্টা হচ্ছে…");try{activeHls.startLoad()}catch(err){report("HLS লিংক/CORS/সার্ভার পরীক্ষা করুন")}}
@@ -266,7 +273,7 @@ function openServerModal(ch){
  $("serverModalTitle").textContent=(ch.name||"Live Sports")+" — Server নির্বাচন";
  root.innerHTML="";
  let streams=Array.isArray(ch.streams)?ch.streams:[];
- if(!streams.length && ch.url) streams=[{name:"MPD Server 1",url:ch.url,drm:ch.drm},{name:"MPD Server 2",url:""},{name:"HLS Server 1",url:""},{name:"HLS Server 2",url:""}];
+ if(!streams.length && ch.url) streams=[{name:"HLS Server 1",url:""},{name:"MPD Server 1",url:ch.url,drm:ch.drm},{name:"HLS Server 2",url:""},{name:"MPD Server 2",url:""}];
  while(streams.length<4) streams.push({name:["HLS Server 1","MPD Server 1","HLS Server 2","MPD Server 2"][streams.length]||("Server "+(streams.length+1)),url:""});
  streams.slice(0,4).forEach((stream,i)=>{
   const url=String(stream.url||"").trim();
@@ -275,7 +282,13 @@ function openServerModal(ch){
   const left=document.createElement("strong");left.textContent=String(stream.name||("Server "+(i+1)));
   const right=document.createElement("span");right.textContent=url?"▶ PLAY":"লিংক যোগ করা হয়নি";
   b.append(left,right);
-  b.addEventListener("click",()=>{if(!url)return;modal.classList.remove("open");playStream(url,ch.name,(ch.category||"SPORTS")+" · "+(stream.name||("Server "+(i+1))),stream.drm||ch.drm||null);});
+  b.addEventListener("click",()=>{
+   if(!url||b.disabled)return;
+   modal.classList.remove("open");
+   // A single tap selects the server and immediately begins the playback attempt.
+   showStatus(ch.name||"Live Sports",(stream.name||("Server "+(i+1)))+" · Connecting…");
+   playStream(url,ch.name,(ch.category||"SPORTS")+" · "+(stream.name||("Server "+(i+1))),stream.drm||ch.drm||null);
+  });
   root.appendChild(b);
  });
  modal.classList.add("open");
@@ -290,18 +303,9 @@ async function loadConfig(){
  try{
   const results=await Promise.all(Object.entries(files).map(async([category,path])=>{try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();return (d.channels||d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv",category:category}));}catch(e){console.warn("Could not load "+path,e);return [];}}));
   channels=results.flat();
-  // Try the recommended /data path first, then root for older/simple deployments.
   for(const path of ["./data/live-sports.json","./live-sports.json"]){
-   try{
-    const r=await fetch(path,{cache:"no-store"});
-    if(!r.ok)continue;
-    const d=await r.json();
-    const items=(d.liveSports||d.channels||[]);
-    if(Array.isArray(items)){
-     liveSports=items.filter(c=>c&&c.name).map(c=>({...c,section:"liveSports",category:"Live Sports"}));
-     if(liveSports.length)break;
-    }
-   }catch(e){console.warn("Could not load "+path,e)}
+   try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;const d=await r.json();const items=(d.liveSports||d.channels||[]);if(Array.isArray(items)){liveSports=items.filter(c=>c&&c.name).map(c=>({...c,section:"liveSports",category:"Live Sports"}));if(liveSports.length)break;}}
+   catch(e){console.warn("Could not load "+path,e)}
   }
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).map(c=>({...c,section:"liveSports",category:"Live Sports"})).filter(c=>c&&c.name);}}

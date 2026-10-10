@@ -90,7 +90,6 @@
       "logo": "▶",
       "logoUrl": "",
       "fallbackLogo": "▶",
-      "show": "No"
       "tone": "blue",
        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd|drmScheme=clearkey&drmLicense=290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247",
       "section": "liveSports",
@@ -132,7 +131,6 @@
       "logo": "🏆",
       "logoUrl": "",
       "fallbackLogo": "🏆",
-      "show": "No"
       "tone": "purple",
        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd|drmScheme=clearkey&drmLicense=290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247",
       "section": "liveSports",

@@ -66,7 +66,7 @@ const defaults={liveSports:[
 function safeText(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 // Live TV JSON control: show Y/yes shows a channel; N/no hides it. Missing show defaults to visible.
 function isChannelShown(ch){
- const value=String(ch.show ?? "Y").trim().toLowerCase();
+ const value=String(ch.Show ?? ch.show ?? "Y").trim().toLowerCase();
  return !["n","no","false","0","hide","hidden"].includes(value);
 }
 function categoryFor(ch){
@@ -308,7 +308,7 @@ async function loadConfig(){
    catch(e){console.warn("Could not load "+path,e)}
   }
   // Backward compatibility: use the old combined file only if the separate files are empty.
-  if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).map(c=>({...c,section:"liveSports",category:"Live Sports"})).filter(c=>c&&c.name);}}
+  if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
  }catch(e){console.warn("Separate JSON load failed",e)}
  if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();
 }

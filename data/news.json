@@ -1,0 +1,13 @@
+{
+  "channels": [
+    {
+      "name": "Ekhon TV",
+      "category": "News",
+      "logo": "📰",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/fbgZV3X17hwWcyfZ4pdb/tracks-v1a1/mono.ts.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "📰"
+    }
+  ]
+}

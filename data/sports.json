@@ -1,0 +1,26 @@
+{
+  "channels": [
+    {
+      "name": "GTV",
+      "category": "Sports",
+      "logo": "🏏",
+      "tone": "green",
+      "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/gazibdz.stream/live-orgin/gazibdz.stream/chunks.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "🏏"
+    },
+    {
+      "name": "DASH Demo Channel",
+      "category": "Sports",
+      "logo": "▶",
+      "tone": "blue",
+      "url": "https://a96aivottlinear-a.akamaihd.net/OTTB/pdx-nitro/live/clients/dash/enc/mzbsju2adh/out/v1/6b81fa196f61416485f38d5879b80529/cenc.mpd?|drmScheme=clearkey&drmLicense=d6408a31865544e4b7cc831ff2f44e04:89a868afa2ff706aea7fa1b9ebc8f19e",
+      "drm": {
+        "scheme": "clearkey",
+        "license": "d6408a31865544e4b7cc831ff2f44e04:89a868afa2ff706aea7fa1b9ebc8f19e"
+      },
+      "logoUrl": "",
+      "fallbackLogo": "▶"
+    }
+  ]
+}

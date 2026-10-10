@@ -1,0 +1,84 @@
+{
+  "liveSports": [
+    {
+      "name": "BAN LEG. VS WI LEG.",
+      "category": "Live Sports",
+      "logo": "▶",
+      "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Borussia%20Dortmund%20Vs%20SV%20Werder%20Bremen.jpg",
+      "fallbackLogo": "▶",
+      "tone": "blue",
+      "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd|drmScheme=clearkey&drmLicense=335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281",
+      "section": "liveSports",
+      "drm": {
+        "scheme": "clearkey",
+        "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
+      },
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd|drmScheme=clearkey&drmLicense=335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281",
+          "drm": {
+            "scheme": "clearkey",
+            "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
+          }
+        },
+        {
+          "name": "Server 2 · HLS",
+          "url": "https://live2.zundrixmediapipeline.com/live/channel2.m3u8"
+        },
+        {
+          "name": "Server 3",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "MPD Sports 2",
+      "category": "Live Sports",
+      "logo": "⚽",
+      "logoUrl": "",
+      "fallbackLogo": "⚽",
+      "tone": "gold",
+      "url": "",
+      "section": "liveSports",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": ""
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        },
+        {
+          "name": "Server 3",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "MPD Sports 3",
+      "category": "Live Sports",
+      "logo": "🏆",
+      "logoUrl": "",
+      "fallbackLogo": "🏆",
+      "tone": "purple",
+      "url": "",
+      "section": "liveSports",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": ""
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        },
+        {
+          "name": "Server 3",
+          "url": ""
+        }
+      ]
+    }
+  ]
+}

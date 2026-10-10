@@ -64,8 +64,8 @@ const defaults={liveSports:[
 function safeText(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 // Live TV JSON control: show "no" hides a channel; missing show defaults to visible.
 function isChannelShown(ch){
- const value=String(ch.show ?? "yes").trim().toLowerCase();
- return value !== "no";
+ const value=String(ch.show ?? "Y").trim().toLowerCase();
+ return value !== "N";
 }
 function categoryFor(ch){
  const raw=String(ch.category||"").toLowerCase(),name=String(ch.name||"").toLowerCase();

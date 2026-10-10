@@ -63,18 +63,21 @@ const defaults={liveSports:[
 {name:"Football Live",category:"FOOTBALL",logo:"⚽",tone:"blue",url:""}],liveTvChannels:[]};
 function safeText(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function categoryFor(ch){
- const raw=String(ch.category||"").toLowerCase(),name=String(ch.name||"").toLowerCase();
+ const raw=String(ch.category||"").trim().toLowerCase(),name=String(ch.name||"").toLowerCase();
  if(ch.section==="liveSports")return "Live Sports";
+ // Respect the category explicitly assigned in its own JSON file.
+ const explicit={bangla:"Bangla",india:"India",indian:"India",music:"Music",sports:"Sports",news:"News",entertainment:"Entertainment"};
+ if(explicit[raw])return explicit[raw];
  if(/sport|football|soccer|cricket|mpd|dash/.test(raw)||/\b(gtv|sony ten|star sports)\b/.test(name))return "Sports";
  if(/music/.test(raw+" "+name)||/9xm|b4u music|zoom/.test(name))return "Music";
  if(/news/.test(raw)||/news|dbc|ekhon tv/.test(name))return "News";
- if(/zee|jalsha|sony|colors|star |sun tv|indian/.test(name)||/indian/.test(raw))return "Indian";
+ if(/zee|jalsha|sony|colors|star |sun tv|indian/.test(name))return "India";
  if(/bangla/.test(raw)||/boishakhi|asian tv|deepto|nagorik|ntv|rtv|channel i|atn bangla|bijoy|desh tv|me tv|my tv|nrb tv|rajdhani|srk tv|mohona|green tv|maasranga|bangla vision|channel 16|channel 52|amar bangla/.test(name))return "Bangla";
  return "Entertainment";
 }
 const categoryInfo={
  "Bangla":{title:"🇧🇩 Bangla TV",order:1},
- "Indian":{title:"🇮🇳 Indian TV",order:2},
+ "India":{title:"🇮🇳 Indian TV",order:2},
  "Music":{title:"🎵 Music",order:3},
  "Sports":{title:"⚽ Sports",order:4},
  "News":{title:"📰 News",order:5},
@@ -224,7 +227,37 @@ $("customBtn").onclick=()=>openModal();$("stopBtn").onclick=async()=>{playReques
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
 $("search").addEventListener("input",()=>render(channels));
-async function loadConfig(){try{const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();liveSports=(d.liveSports||[]).map(c=>({...c,section:"liveSports",category:"Live Sports"})).filter(c=>c&&c.name);channels=(d.liveTvChannels||[]).map(c=>({...c,section:"tv"})).filter(c=>c&&c.name);}}catch(e){console.warn("channels.json load failed",e)}if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();}
+const categoryFiles={
+ "Bangla":"./data/bangla.json",
+ "India":"./data/india.json",
+ "Music":"./data/music.json",
+ "Sports":"./data/sports.json",
+ "News":"./data/news.json",
+ "Entertainment":"./data/entertainment.json"
+};
+async function fetchJson(path){
+ const response=await fetch(path,{cache:"no-store"});
+ if(!response.ok)throw new Error(path+" returned HTTP "+response.status);
+ return response.json();
+}
+async function loadConfig(){
+ const categoryLoads=Object.entries(categoryFiles).map(async([category,path])=>{
+  try{
+   const data=await fetchJson(path);
+   return (data.channels||[]).filter(ch=>ch&&ch.name).map(ch=>({...ch,section:"tv",category}));
+  }catch(error){console.warn("Category JSON load failed:",path,error);return []}
+ });
+ try{
+  const [sportsData,...categoryLists]=await Promise.all([fetchJson("./data/live-sports.json"),...categoryLoads]);
+  liveSports=(sportsData.liveSports||[]).filter(ch=>ch&&ch.name).map(ch=>({...ch,section:"liveSports",category:"Live Sports"}));
+  channels=categoryLists.flat();
+ }catch(error){
+  console.warn("Live sports JSON load failed",error);
+  liveSports=defaults.liveSports.map(ch=>({...ch,section:"liveSports",category:"Live Sports"}));
+ }
+ if(!liveSports.length)liveSports=defaults.liveSports.map(ch=>({...ch,section:"liveSports",category:"Live Sports"}));
+ render();
+}
 loadConfig();
 // Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});

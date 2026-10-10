@@ -28,7 +28,7 @@
         },
         {
           "name": "Server 3",
-          "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls"
+          "url": "http://103.151.60.162:2122/play/a030/index.m3u8"
         }
       ]
     },

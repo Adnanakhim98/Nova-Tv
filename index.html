@@ -98,6 +98,24 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playerLoading span{font-size:12px;color:#b8c7dc}
 .playerLoading .loaderRing{width:32px;height:32px}
 /* The requested waiting overlay is shown only during stream startup/fallback. */
+
+/* Compact channel cards: reduce height only; keep existing features and layout */
+.channel{min-height:82px!important;padding:7px 4px!important}
+.chlogo{height:25px!important;margin-bottom:4px!important;font-size:16px!important}
+.chlogo img{height:25px!important;max-height:25px!important;max-width:76px!important}
+.chname{line-height:1.2!important}
+.chcat{margin-top:3px!important;line-height:1.15!important}
+.channelrow.sportsrow .channel,.sportsrow .channel{min-height:90px!important;padding:7px 5px!important}
+.channelrow.sportsrow .chlogo,.sportsrow .chlogo{height:29px!important;margin-bottom:4px!important}
+.channelrow.sportsrow .chlogo img,.sportsrow .chlogo img{height:29px!important;max-height:29px!important}
+@media(max-width:420px){
+ .channel{min-height:78px!important;padding:6px 3px!important}
+ .chlogo{height:23px!important;margin-bottom:3px!important}
+ .chlogo img{height:23px!important;max-height:23px!important}
+ .channelrow.sportsrow .channel,.sportsrow .channel{min-height:84px!important;padding:6px 4px!important}
+ .channelrow.sportsrow .chlogo,.sportsrow .chlogo{height:26px!important;margin-bottom:3px!important}
+ .channelrow.sportsrow .chlogo img,.sportsrow .chlogo img{height:26px!important;max-height:26px!important}
+}
 </style>
 </head>
 <body>

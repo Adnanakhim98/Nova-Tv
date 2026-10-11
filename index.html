@@ -68,6 +68,24 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playercard:fullscreen{width:100%;height:100%;border:0;border-radius:0;background:#000;display:flex;flex-direction:column}.playercard:fullscreen .screen{flex:1;aspect-ratio:auto;min-height:0}.playercard:fullscreen .playerfoot{flex:0 0 auto}
 @media(max-width:420px){.playerfoot{align-items:flex-start;flex-wrap:wrap}.playerfoot>div:first-child{width:100%}.playeractions{width:100%;justify-content:flex-end}.playeractions .btn{flex:0 0 auto}.screenFullBtn{width:33px;height:31px}.playerLoading strong{font-size:13px}}
 
+
+/* Compact player info panel: keep all existing actions on one row on mobile. */
+.playerfoot{padding:7px 10px;min-height:0;gap:7px;align-items:center}
+.playerfoot>div:first-child{min-width:0;flex:1 1 auto;width:auto}
+.nowtitle{font-size:12px;line-height:1.25}
+.nowmeta{font-size:10px;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.playeractions{width:auto;flex:0 0 auto;flex-wrap:nowrap;gap:5px;justify-content:flex-end}
+.playeractions .btn{min-height:30px;padding:6px 8px;font-size:10px}
+#qualitySelect{max-width:78px!important;width:72px}
+@media(max-width:420px){
+ .playerfoot{padding:6px 7px;flex-wrap:nowrap;align-items:center}
+ .playerfoot>div:first-child{width:auto;flex:1 1 0;min-width:0}
+ .nowtitle{font-size:11px;max-width:100%}
+ .nowmeta{font-size:9px;max-width:100%}
+ .playeractions{width:auto;flex:0 0 auto;flex-wrap:nowrap;gap:4px}
+ .playeractions .btn{min-height:29px;padding:5px 7px;font-size:9px}
+ #qualitySelect{width:65px;max-width:65px!important;padding:5px 2px!important}
+}
 </style>
 </head>
 <body>
@@ -83,9 +101,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
    <video id="video" controls playsinline webkit-playsinline preload="metadata" autoplay></video>
    <div id="jwplayerContainer" aria-label="JW Player"></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
-   <div class="playerLiveBadge" id="playerLiveBadge"><i></i> LIVE</div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">Connecting to stream</strong><span id="loadingMessage">সার্ভারের সাথে সংযোগ করা হচ্ছে…</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
-   <button class="screenFullBtn" id="fullscreenBtn" type="button" aria-label="Fullscreen">⛶</button>
   </div>
   <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও Auto Alternative Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
@@ -428,8 +444,6 @@ function openModal(name=""){ $("urlModal").classList.add("open");$("streamName")
 $("customBtn").onclick=()=>openModal();
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm);};
-$("fullscreenBtn").onclick=async()=>{const target=$("playercard")||document.querySelector(".playercard");try{if(document.fullscreenElement){await document.exitFullscreen()}else if(target&&target.requestFullscreen){await target.requestFullscreen()}else if(video.webkitEnterFullscreen){video.webkitEnterFullscreen()}else{showStatus($("nowTitle").textContent,"এই browser-এ fullscreen সমর্থিত নয়")}}catch(e){console.warn("Fullscreen unavailable",e)}};
-document.addEventListener("fullscreenchange",()=>{const b=$("fullscreenBtn");if(b)b.textContent=document.fullscreenElement?"⤢":"⛶";});
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
 $("search").addEventListener("input",()=>render(channels));

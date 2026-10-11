@@ -116,6 +116,37 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  .channelrow.sportsrow .chlogo,.sportsrow .chlogo{height:26px!important;margin-bottom:3px!important}
  .channelrow.sportsrow .chlogo img,.sportsrow .chlogo img{height:26px!important;max-height:26px!important}
 }
+
+/* User-requested layout adjustment: compact top branding + Live Sports heading, taller video */
+.topbar{
+  padding:5px 8px !important;
+  gap:8px !important;
+  min-height:0 !important;
+}
+.topbar .brand{gap:7px !important}
+.topbar .brandicon{
+  width:32px !important;height:32px !important;flex-basis:32px !important;
+  border-radius:10px !important;font-size:18px !important;
+}
+.topbar .brandname{font-size:clamp(14px,3.4vw,20px) !important}
+.topbar .tagline{font-size:7.5px !important;letter-spacing:1px !important;line-height:1.15 !important}
+.topbar .search{padding:7px 10px !important;font-size:11px !important}
+.channelarea > .sectionhead{
+  margin:4px 2px 6px !important;
+  padding:6px 10px !important;
+  min-height:0 !important;
+  border-radius:10px !important;
+}
+.channelarea > .sectionhead h2{font-size:clamp(12px,3.4vw,16px) !important;line-height:1.2 !important}
+.channelarea > .sectionhead .section-count{font-size:9px !important}
+.playersticky .screen{aspect-ratio:16/10 !important}
+@media(max-width:420px){
+  .topbar{padding:5px 7px !important}
+  .topbar .brandicon{width:30px !important;height:30px !important;flex-basis:30px !important}
+  .topbar .search{width:min(190px,40vw) !important;min-width:88px !important;padding:7px 9px !important}
+  .playersticky .screen{aspect-ratio:16/10 !important}
+}
+
 </style>
 </head>
 <body>

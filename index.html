@@ -86,6 +86,18 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  .playeractions .btn{min-height:29px;padding:5px 7px;font-size:9px}
  #qualitySelect{width:65px;max-width:65px!important;padding:5px 2px!important}
 }
+
+/* SPORTYNOVA requested update: branded wait screen, two-row categories, shorter live player */
+.screen{aspect-ratio:16/7.8;min-height:145px;max-height:280px}
+@media(max-width:420px){.screen{aspect-ratio:16/8.2;min-height:135px;max-height:205px}}
+@media(min-width:700px){.screen{aspect-ratio:16/7.5;min-height:220px;max-height:440px}}
+.category-tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(31px,auto));grid-auto-flow:row;gap:6px;overflow:visible!important;padding:2px 1px 8px;margin-bottom:6px;scroll-snap-type:none}
+.category-tab{min-width:0!important;width:100%!important;max-width:100%;padding:7px 3px!important;border-radius:10px!important;white-space:normal!important;overflow-wrap:anywhere;font-size:clamp(8px,2.25vw,10px)!important;line-height:1.15;display:flex;align-items:center;justify-content:center;text-align:center}
+.playerLoading{background:linear-gradient(145deg,rgba(5,9,20,.96),rgba(10,18,32,.94));gap:8px}
+.playerLoading strong{font-size:clamp(15px,4vw,21px);font-weight:900;letter-spacing:.35px;color:#f5fbff;text-shadow:0 0 18px #21d8f455}
+.playerLoading span{font-size:12px;color:#b8c7dc}
+.playerLoading .loaderRing{width:32px;height:32px}
+/* The requested waiting overlay is shown only during stream startup/fallback. */
 </style>
 </head>
 <body>
@@ -101,7 +113,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
    <video id="video" controls playsinline webkit-playsinline preload="metadata" autoplay></video>
    <div id="jwplayerContainer" aria-label="JW Player"></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
-   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">Connecting to stream</strong><span id="loadingMessage">সার্ভারের সাথে সংযোগ করা হচ্ছে…</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
+   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">Please wait… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
   </div>
   <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও Auto Alternative Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
@@ -274,7 +286,7 @@ function setupDashjsQualities(){
  showQualityOptions(levels.map((l,i)=>({value:i,label:l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps"})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"dashjs");
 }
 let lastStreamRequest=null;
-function setPlayerLoading(show,title="Connecting to stream",message="সার্ভারের সাথে সংযোগ করা হচ্ছে…",error=false){
+function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="Please wait… ভিডিও চালু হচ্ছে",error=false){
  const panel=$("playerLoading");if(!panel)return;
  panel.classList.toggle("show",!!show);
  $("loadingTitle").textContent=title;$("loadingMessage").textContent=message;
@@ -322,7 +334,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm};
  stopEngines();if(requestId!==playRequestId)return;
- $("empty").style.display="none";setLiveBadge(false);setPlayerLoading(true,"Connecting to stream","সার্ভারের সাথে সংযোগ করা হচ্ছে…",false);video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";
+ $("empty").style.display="none";setLiveBadge(false);setPlayerLoading(true,"SPORTYNOVA 1.0","Please wait… ভিডিও চালু হচ্ছে",false);video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";
  const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
  // Try compatible engines in order. If one cannot load/play, move to the next automatically.
  const candidates=kind==="mpd"
@@ -345,7 +357,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
    if(requestId!==playRequestId)return;
    if(engineIndex+1<engines.length){
      showStatus(name,"Alternative player চেষ্টা হচ্ছে…");
-     setPlayerLoading(true,"Trying another player","প্রথম player কাজ করেনি; বিকল্প player চেষ্টা হচ্ছে…",false);
+     setPlayerLoading(true,"SPORTYNOVA 1.0","Please wait… বিকল্প player চেষ্টা হচ্ছে",false);
      playStream(rawUrl,name,category,drm,engineIndex+1);
    }else{
      $("empty").style.display="none";$("jwplayerContainer").style.display="none";video.style.display="";
@@ -354,6 +366,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
  };
  const success=(label)=>{
    if(settled||requestId!==playRequestId)return;
+   // Keep SPORTYNOVA 1.0 / Please wait visible until real playback starts.
+   if(engine!=="jw"&&(video.paused||video.readyState<2))return;
    settled=true;clearFallback();report(label+" · Playing");
  };
  // A manifest can hang without firing an error; move to the next engine after 15 seconds.

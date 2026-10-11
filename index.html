@@ -147,6 +147,36 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   .playersticky .screen{aspect-ratio:16/10 !important}
 }
 
+
+/* Final player-fit fix: keep every supported player aligned to the full responsive screen. */
+.playersticky .playercard{width:100%;min-width:0}
+.playersticky .screen{
+  position:relative!important;display:block!important;width:100%!important;height:auto!important;
+  aspect-ratio:16/9!important;min-height:0!important;max-height:none!important;flex:none!important;
+  overflow:hidden!important;background:#000!important;isolation:isolate
+}
+.playersticky .screen>video{
+  position:absolute!important;inset:0!important;display:block!important;
+  width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;
+  max-width:none!important;max-height:none!important;object-fit:contain!important;
+  object-position:center center!important;background:#000!important;margin:0!important;padding:0!important
+}
+.playersticky #jwplayerContainer{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;background:#000!important
+}
+.playersticky #jwplayerContainer .jwplayer,
+.playersticky #jwplayerContainer .jw-wrapper,
+.playersticky #jwplayerContainer .jw-aspect,
+.playersticky #jwplayerContainer .jw-media,
+.playersticky #jwplayerContainer video,
+.playersticky #jwplayerContainer iframe{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important
+}
+@media(max-width:420px){.playersticky .screen{aspect-ratio:16/9!important;min-height:0!important;max-height:none!important}}
+
 </style>
 </head>
 <body>

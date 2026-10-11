@@ -61,7 +61,7 @@
       "streams": [
         {
           "name": "HLS Server 1",
-          "url": "",
+          "url": "https://tvsen7.aynaott.com/rEBp38Ax/index.m3u8",
           "show": "yes"
         },
         {
@@ -76,7 +76,7 @@
         {
           "name": "HLS Server 2",
           "url": "",
-          "show": "yes"
+          "show": "no"
         },
         {
           "name": "MPD Server 2",
@@ -85,7 +85,7 @@
             "scheme": "clearkey",
             "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
           },
-          "show": "yes"
+          "show": "no"
         }
       ],
       "show": "yes"
@@ -133,7 +133,7 @@
           "show": "yes"
         }
       ],
-      "show": "yes"
+      "show": "no"
     },
     
     {
@@ -179,7 +179,7 @@
           "show": "yes"
         }
       ],
-      "show": "yes"
+      "show": "no"
     },
     {
       "name": "Australia Vs South africa",
@@ -224,7 +224,7 @@
           "show": "yes"
         }
       ],
-      "show": "yes"
+      "show": "no"
     },
     {
       "name": "New Sports 2",
@@ -269,7 +269,7 @@
           "show": "yes"
         }
       ],
-      "show": "yes"
+      "show": "no"
     },
     {
       "name": "MPD Sports 3",

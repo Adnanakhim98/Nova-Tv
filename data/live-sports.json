@@ -43,7 +43,12 @@
           "show": "No"
         }
       ],
-      "show": "no"
+      "show": "yes",
+      "id": 1,
+      "startTime": "2026-10-13T18:00:00+06:00",
+      "endTime": "2026-10-13T20:30:00+06:00",
+      "enabled": true,
+      "status": "auto"
     },
     {
       "name": "Australia Vs South africa",
@@ -88,9 +93,14 @@
           "show": "no"
         }
       ],
-      "show": "no"
+      "show": "yes",
+      "id": 2,
+      "startTime": "2026-10-13T20:30:00+06:00",
+      "endTime": "2026-10-13T23:00:00+06:00",
+      "enabled": true,
+      "status": "auto"
     },
-{
+    {
       "name": "Pakistan Vs Srilanka",
       "category": "Live Sports",
       "logo": "⚽",
@@ -133,9 +143,13 @@
           "show": "no"
         }
       ],
-      "show": "yes"
+      "show": "yes",
+      "id": 3,
+      "startTime": "2026-10-14T18:00:00+06:00",
+      "endTime": "2026-10-14T20:30:00+06:00",
+      "enabled": true,
+      "status": "auto"
     },
-    
     {
       "name": "India Vs West indies",
       "category": "Live Sports",
@@ -179,7 +193,12 @@
           "show": "no"
         }
       ],
-      "show": "yes"
+      "show": "yes",
+      "id": 4,
+      "startTime": "2026-10-14T20:30:00+06:00",
+      "endTime": "2026-10-14T23:00:00+06:00",
+      "enabled": true,
+      "status": "auto"
     },
     {
       "name": "Man City Vs Liverpool.",
@@ -224,7 +243,12 @@
           "show": "no"
         }
       ],
-      "show": "yes"
+      "show": "yes",
+      "id": 5,
+      "startTime": "2026-10-15T01:00:00+06:00",
+      "endTime": "2026-10-15T03:30:00+06:00",
+      "enabled": true,
+      "status": "auto"
     },
     {
       "name": "New Sports 2",
@@ -269,7 +293,12 @@
           "show": "yes"
         }
       ],
-      "show": "no"
+      "show": "yes",
+      "id": 6,
+      "startTime": "2026-10-15T18:00:00+06:00",
+      "endTime": "2026-10-15T20:30:00+06:00",
+      "enabled": true,
+      "status": "auto"
     },
     {
       "name": "MPD Sports 3",
@@ -314,7 +343,12 @@
           "show": "yes"
         }
       ],
-      "show": "no"
+      "show": "yes",
+      "id": 7,
+      "startTime": "2026-10-15T20:30:00+06:00",
+      "endTime": "2026-10-15T23:00:00+06:00",
+      "enabled": true,
+      "status": "auto"
     }
   ]
 }

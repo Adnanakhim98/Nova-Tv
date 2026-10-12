@@ -190,6 +190,13 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .channelarea .sectionhead{margin-top:5px!important;margin-bottom:5px!important;padding:9px 11px!important}
 .category-tabs{margin-top:0!important}
 @media(max-width:420px){.playersticky{padding-bottom:2px!important}.playersticky .sectionhead{margin-top:4px!important;margin-bottom:4px!important}.playersticky .noticebar{height:29px!important;min-height:29px!important;margin-top:3px!important}.channelarea .sectionhead{margin-top:4px!important;margin-bottom:5px!important;padding:8px 10px!important}}
+
+/* Auto match status badges */
+.matchStatus{display:inline-flex;align-items:center;justify-content:center;gap:4px;margin:0 auto 5px;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:900;letter-spacing:.55px;line-height:1;background:#26344a;color:#c8d5e8;border:1px solid #3a4b65}
+.matchStatus.live{background:#4b1524;color:#fff;border-color:#ff4264;box-shadow:0 0 12px #ff315733}
+.matchStatus.live:before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:livePulse 1.3s infinite}
+.matchStatus.upcoming{background:#12384a;color:#7deaff;border-color:#167b9d}
+
 </style>
 </head>
 <body>
@@ -293,6 +300,22 @@ const categoryInfo={
  "Documentary":{title:"🎞️ Documentary",order:10}
 };
 let selectedCategory="Bangla";
+function getMatchStatus(ch, now=Date.now()){
+ const start=Date.parse(ch.startTime||"");
+ const end=Date.parse(ch.endTime||"");
+ // If dates are missing/invalid, keep the match visible as UPCOMING until configured.
+ if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)return {state:"upcoming",label:"UPCOMING",hidden:false};
+ if(now>=end)return {state:"ended",label:"ENDED",hidden:true};
+ if(now>=start)return {state:"live",label:"LIVE",hidden:false};
+ return {state:"upcoming",label:"UPCOMING",hidden:false};
+}
+function visibleScheduledMatches(list){
+ const now=Date.now();
+ return list.filter(ch=>{
+  if(ch.enabled===false||!isChannelShown(ch))return false;
+  return !getMatchStatus(ch,now).hidden;
+ });
+}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
@@ -303,7 +326,11 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  }else logoBox.textContent=logoValue;
  const name=document.createElement("div");name.className="chname";name.textContent=String(ch.name||"Unnamed channel");
  const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
- b.append(logoBox,name,category);
+ if(isLiveEvent){
+  const state=getMatchStatus(ch);
+  const badge=document.createElement("div");badge.className="matchStatus "+state.state;badge.textContent=state.label;
+  b.append(logoBox,badge,name,category);
+ }else{b.append(logoBox,name,category)}
  b.addEventListener("click",()=>{
   if(isLiveEvent){openServerModal(ch)}
   else if(ch.url){playStream(ch.url,ch.name,categoryLabel,ch.drm)}
@@ -315,7 +342,7 @@ function render(list=channels){
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
  tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
  const query=$("search").value.trim().toLowerCase();
- const liveEvents=liveSports.filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
+ const liveEvents=visibleScheduledMatches(liveSports).filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
  liveEvents.forEach(ch=>makeChannelCard(ch,sportsRoot,"Live Sports",true));
  $("liveSportsCount").textContent=liveEvents.length+" CHANNELS";
  const filtered=list.filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
@@ -568,6 +595,8 @@ async function loadConfig(){
  if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();
 }
 loadConfig();
+// Refresh match badges and automatically hide matches after their endTime.
+setInterval(()=>{if(liveSports.length)render(channels)},30000);
 // Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
 document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});

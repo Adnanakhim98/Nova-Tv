@@ -44,8 +44,8 @@
     ],
     "show": "yes",
     "id": 1,
-    "startTime": "2026-10-13T18:00:00+06:00",
-    "endTime": "2026-10-13T20:30:00+06:00",
+    "startTime": "2026-10-11T18:00:00+06:00",
+    "endTime": "2026-10-12T20:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "TEST"

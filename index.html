@@ -199,7 +199,14 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .channelrow.sportsrow .chcat{display:none!important;}
 .sports-status{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 5px;padding:3px 9px;border:1px solid #2796b9;border-radius:999px;background:#12394b;color:#83e4ff;font-size:9px;font-weight:900;letter-spacing:.5px;line-height:1.2;}
 .sports-status.is-live{border-color:#f04d70;background:#491a2b;color:#ff9caf;}
-@media(max-width:420px){.channelrow.sportsrow .channel{min-height:132px!important;padding:9px 4px!important}.channelrow.sportsrow .chlogo{height:55px!important;margin-bottom:5px!important}.channelrow.sportsrow .chlogo img{height:53px!important;max-height:53px!important}.sports-status{font-size:9px;padding:3px 8px}}
+@media(max-width:420px){.channelrow.sportsrow .channel{min-height:0!important;height:auto!important;padding:4px 4px 5px!important;gap:0!important}.channelrow.sportsrow .chlogo{height:58px!important;margin:0 0 3px!important;padding:0!important}.channelrow.sportsrow .chlogo img{height:56px!important;max-height:56px!important;width:100%!important;max-width:100%!important;object-fit:contain!important}.sports-status{font-size:9px;padding:3px 8px;margin:0 auto 3px!important}.channelrow.sportsrow .chname{margin:0!important;padding:0!important;line-height:1.2!important}}
+/* Final match-card spacing: logo starts near card top; team name sits close under status, without extra blank padding. */
+.channelrow.sportsrow .channel{min-height:0!important;height:auto!important;padding:5px 5px 6px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:0!important}
+.channelrow.sportsrow .chlogo{margin:0 0 4px!important;padding:0!important;flex:0 0 auto!important}
+.channelrow.sportsrow .chlogo img{display:block!important;margin:0 auto!important}
+.channelrow.sportsrow .sports-status{margin:0 auto 4px!important;flex:0 0 auto!important}
+.channelrow.sportsrow .chname{margin:0!important;padding:0!important;flex:0 0 auto!important;line-height:1.2!important}
+@media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
 
 </style>
 </head>

@@ -48,7 +48,8 @@
       "startTime": "2026-10-13T18:00:00+06:00",
       "endTime": "2026-10-13T20:30:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "ODI"
     },
     {
       "name": "Australia Vs South africa",
@@ -98,7 +99,8 @@
       "startTime": "2026-10-13T20:30:00+06:00",
       "endTime": "2026-10-13T23:00:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "TEST"
     },
     {
       "name": "Pakistan Vs Srilanka",
@@ -148,7 +150,8 @@
       "startTime": "2026-10-14T18:00:00+06:00",
       "endTime": "2026-10-14T20:30:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "ODI"
     },
     {
       "name": "India Vs West indies",
@@ -198,13 +201,14 @@
       "startTime": "2026-10-14T20:30:00+06:00",
       "endTime": "2026-10-14T23:00:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "T20"
     },
     {
       "name": "Man City Vs Liverpool.",
       "category": "Live Sports",
       "logo": "⚽",
-      "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Atlanta%20Falcons%20Vs%20Baltimore%20Ravens.jpg",
+      "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Liverpool%20FC%20Vs%20Manchester%20City.jpg",
       "fallbackLogo": "⚽",
       "tone": "gold",
       "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd|drmScheme=clearkey&drmLicense=290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247",
@@ -248,7 +252,8 @@
       "startTime": "2026-10-15T01:00:00+06:00",
       "endTime": "2026-10-15T03:30:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "FOOTBALL"
     },
     {
       "name": "New Sports 2",
@@ -295,10 +300,11 @@
       ],
       "show": "yes",
       "id": 6,
-      "startTime": "2026-10-10T18:00:00+06:00",
+      "startTime": "2026-10-15T18:00:00+06:00",
       "endTime": "2026-10-15T20:30:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "FOOTBALL"
     },
     {
       "name": "MPD Sports 3",
@@ -348,7 +354,8 @@
       "startTime": "2026-10-15T20:30:00+06:00",
       "endTime": "2026-10-15T23:00:00+06:00",
       "enabled": true,
-      "status": "auto"
+      "status": "auto",
+      "matchType": "FOOTBALL"
     }
   ]
 }

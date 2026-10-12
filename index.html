@@ -599,9 +599,25 @@ async function loadConfig(){
  try{
   const results=await Promise.all(Object.entries(files).map(async([category,path])=>{try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();return (d.channels||d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv",category:category}));}catch(e){console.warn("Could not load "+path,e);return [];}}));
   channels=results.flat();
-  for(const path of ["./data/live-sports.json","./live-sports.json"]){
-   try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;const d=await r.json();const items=(d.liveSports||d.channels||[]);if(Array.isArray(items)){liveSports=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));if(liveSports.length)break;}}
-   catch(e){console.warn("Could not load "+path,e)}
+  // Each live match is maintained in its own JSON file under data/matches/.
+  // Example: data/matches/match-1.json contains { "match": { ... } }.
+  const matchFiles=Array.from({length:7},(_,i)=>`./data/matches/match-${i+1}.json`);
+  const matchResults=await Promise.all(matchFiles.map(async path=>{
+   try{
+    const r=await fetch(path,{cache:"no-store"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    const item=d.match||(Array.isArray(d.liveSports)?d.liveSports[0]:null)||(Array.isArray(d.channels)?d.channels[0]:null);
+    return item&&item.name&&isChannelShown(item)?{...item,section:"liveSports",category:"Live Sports"}:null;
+   }catch(e){console.warn("Could not load match file "+path,e);return null;}
+  }));
+  liveSports=matchResults.filter(Boolean);
+  // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
+  if(!liveSports.length){
+   for(const path of ["./data/live-sports.json","./live-sports.json"]){
+    try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;const d=await r.json();const items=(d.liveSports||d.channels||[]);if(Array.isArray(items)){liveSports=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));if(liveSports.length)break;}}
+    catch(e){console.warn("Could not load "+path,e)}
+   }
   }
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}

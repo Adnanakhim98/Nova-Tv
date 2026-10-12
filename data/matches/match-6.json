@@ -1,0 +1,53 @@
+{
+  "match": {
+    "name": "New Sports 2",
+    "category": "Live Sports",
+    "logo": "▶",
+    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/FC%20Augsburg%20Vs%20FC%20Bayern%20M%C3%BCnchen.jpg",
+    "fallbackLogo": "▶",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/w8kwdfmlgs/out/v1/3aa321e477504937a439b602e078eb18/cenc.mpd|drmScheme=clearkey&drmLicense=51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b",
+    "section": "liveSports",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b"
+    },
+    "streams": [
+      {
+        "name": "HLS Server 1",
+        "url": "",
+        "show": "yes"
+      },
+      {
+        "name": "MPD Server 1",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/w8kwdfmlgs/out/v1/3aa321e477504937a439b602e078eb18/cenc.mpd|drmScheme=clearkey&drmLicense=51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "HLS Server 2",
+        "url": "",
+        "show": "yes"
+      },
+      {
+        "name": "MPD Server 2",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd|drmScheme=clearkey&drmLicense=82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+        },
+        "show": "yes"
+      }
+    ],
+    "show": "yes",
+    "id": 6,
+    "startTime": "2026-10-15T18:00:00+06:00",
+    "endTime": "2026-10-15T20:30:00+06:00",
+    "enabled": true,
+    "status": "auto",
+    "matchType": "FOOTBALL"
+  }
+}

@@ -191,11 +191,15 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .category-tabs{margin-top:0!important}
 @media(max-width:420px){.playersticky{padding-bottom:2px!important}.playersticky .sectionhead{margin-top:4px!important;margin-bottom:4px!important}.playersticky .noticebar{height:29px!important;min-height:29px!important;margin-top:3px!important}.channelarea .sectionhead{margin-top:4px!important;margin-bottom:5px!important;padding:8px 10px!important}}
 
-/* Auto match status badges */
-.matchStatus{display:inline-flex;align-items:center;justify-content:center;gap:4px;margin:0 auto 5px;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:900;letter-spacing:.55px;line-height:1;background:#26344a;color:#c8d5e8;border:1px solid #3a4b65}
-.matchStatus.live{background:#4b1524;color:#fff;border-color:#ff4264;box-shadow:0 0 12px #ff315733}
-.matchStatus.live:before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:livePulse 1.3s infinite}
-.matchStatus.upcoming{background:#12384a;color:#7deaff;border-color:#167b9d}
+/* Sports card polish: larger logos, keep the three-column cards compact. */
+.channelrow.sportsrow .channel{min-height:132px!important;padding:10px 5px!important;}
+.channelrow.sportsrow .chlogo{height:62px!important;margin-bottom:6px!important;font-size:30px!important;}
+.channelrow.sportsrow .chlogo img{height:60px!important;max-height:60px!important;width:100%!important;max-width:100%!important;object-fit:contain!important;}
+.channelrow.sportsrow .chname{font-size:clamp(10px,2.7vw,12px)!important;line-height:1.25!important;}
+.channelrow.sportsrow .chcat{display:none!important;}
+.sports-status{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 5px;padding:3px 9px;border:1px solid #2796b9;border-radius:999px;background:#12394b;color:#83e4ff;font-size:9px;font-weight:900;letter-spacing:.5px;line-height:1.2;}
+.sports-status.is-live{border-color:#f04d70;background:#491a2b;color:#ff9caf;}
+@media(max-width:420px){.channelrow.sportsrow .channel{min-height:132px!important;padding:9px 4px!important}.channelrow.sportsrow .chlogo{height:55px!important;margin-bottom:5px!important}.channelrow.sportsrow .chlogo img{height:53px!important;max-height:53px!important}.sports-status{font-size:9px;padding:3px 8px}}
 
 </style>
 </head>
@@ -300,22 +304,6 @@ const categoryInfo={
  "Documentary":{title:"🎞️ Documentary",order:10}
 };
 let selectedCategory="Bangla";
-function getMatchStatus(ch, now=Date.now()){
- const start=Date.parse(ch.startTime||"");
- const end=Date.parse(ch.endTime||"");
- // If dates are missing/invalid, keep the match visible as UPCOMING until configured.
- if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)return {state:"upcoming",label:"UPCOMING",hidden:false};
- if(now>=end)return {state:"ended",label:"ENDED",hidden:true};
- if(now>=start)return {state:"live",label:"LIVE",hidden:false};
- return {state:"upcoming",label:"UPCOMING",hidden:false};
-}
-function visibleScheduledMatches(list){
- const now=Date.now();
- return list.filter(ch=>{
-  if(ch.enabled===false||!isChannelShown(ch))return false;
-  return !getMatchStatus(ch,now).hidden;
- });
-}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
@@ -325,12 +313,16 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   img.onerror=()=>{logoBox.innerHTML="";const f=document.createElement("span");f.className="logo-fallback";f.textContent=String(ch.fallbackLogo||"📺");logoBox.appendChild(f)};logoBox.appendChild(img);
  }else logoBox.textContent=logoValue;
  const name=document.createElement("div");name.className="chname";name.textContent=String(ch.name||"Unnamed channel");
- const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
  if(isLiveEvent){
-  const state=getMatchStatus(ch);
-  const badge=document.createElement("div");badge.className="matchStatus "+state.state;badge.textContent=state.label;
-  b.append(logoBox,badge,name,category);
- }else{b.append(logoBox,name,category)}
+  const status=document.createElement("div");status.className="sports-status";
+  const now=Date.now(),start=Date.parse(ch.startTime||""),end=Date.parse(ch.endTime||"");
+  const state=(Number.isFinite(start)&&Number.isFinite(end)&&now>=end)?"ENDED":(Number.isFinite(start)&&now>=start?"LIVE":"UPCOMING");
+  status.textContent=state; if(state==="LIVE")status.classList.add("is-live");
+  b.append(logoBox,status,name);
+ }else{
+  const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
+  b.append(logoBox,name,category);
+ }
  b.addEventListener("click",()=>{
   if(isLiveEvent){openServerModal(ch)}
   else if(ch.url){playStream(ch.url,ch.name,categoryLabel,ch.drm)}
@@ -342,7 +334,12 @@ function render(list=channels){
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
  tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
  const query=$("search").value.trim().toLowerCase();
- const liveEvents=visibleScheduledMatches(liveSports).filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
+ const now=Date.now();
+ const liveEvents=liveSports.filter(ch=>{
+  const end=Date.parse(ch.endTime||"");
+  if(Number.isFinite(end)&&now>=end)return false;
+  return !query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query);
+ });
  liveEvents.forEach(ch=>makeChannelCard(ch,sportsRoot,"Live Sports",true));
  $("liveSportsCount").textContent=liveEvents.length+" CHANNELS";
  const filtered=list.filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
@@ -595,8 +592,8 @@ async function loadConfig(){
  if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();
 }
 loadConfig();
-// Refresh match badges and automatically hide matches after their endTime.
-setInterval(()=>{if(liveSports.length)render(channels)},30000);
+// Refresh match status and hide ended matches automatically.
+setInterval(()=>render(channels),30000);
 // Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
 document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});

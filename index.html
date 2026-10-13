@@ -159,12 +159,25 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   aspect-ratio:16/9!important;min-height:0!important;max-height:none!important;flex:none!important;
   overflow:hidden!important;background:#000!important;isolation:isolate
 }
+/* Plyr settings / quality menu: solid dark panel so labels stay readable over video */
+.playersticky .screen .plyr__menu__container,
+.playersticky .screen .plyr__menu__container [role="menu"]{
+  background:rgba(10,16,29,.98)!important;color:#f4f7ff!important;
+  border:1px solid rgba(33,216,244,.32)!important;border-radius:12px!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.6)!important;opacity:1!important;text-shadow:none!important
+}
+.playersticky .screen .plyr__menu__container button,
+.playersticky .screen .plyr__menu__container [role="menuitem"],
+.playersticky .screen .plyr__menu__container label,
+.playersticky .screen .plyr__menu__container span{color:#f4f7ff!important;text-shadow:none!important}
+.playersticky .screen .plyr__menu__container button:hover,
+.playersticky .screen .plyr__menu__container [role="menuitem"]:hover{background:rgba(33,216,244,.18)!important;color:#35e3ff!important}
 /* Plyr quality menu injected from actual HLS/DASH tracks */
-.plyr-quality-menu{border-top:1px solid rgba(255,255,255,.14);margin-top:4px;padding:8px 10px;max-height:190px;overflow-y:auto;color:#fff;font-size:13px}
-.plyr-quality-title{font-weight:700;color:#fff;margin:0 0 6px;padding:0 2px;font-size:12px}
-.plyr-quality-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:#e8edf6;text-align:left;padding:7px 5px;border-radius:5px;font:inherit;cursor:pointer}
-.plyr-quality-option:hover,.plyr-quality-option.active{background:rgba(33,216,244,.18);color:#35e3ff}
-.plyr-quality-option .tick{font-weight:900}
+.plyr-quality-menu{background:rgba(10,16,29,.98)!important;border-top:1px solid rgba(255,255,255,.14);margin-top:4px;padding:8px 10px;max-height:190px;overflow-y:auto;color:#f4f7ff!important;font-size:13px;opacity:1!important}
+.plyr-quality-title{font-weight:700;color:#f4f7ff!important;margin:0 0 6px;padding:0 2px;font-size:12px}
+.plyr-quality-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:#f4f7ff!important;text-align:left;padding:7px 5px;border-radius:5px;font:inherit;cursor:pointer;opacity:1!important;text-shadow:none!important}
+.plyr-quality-option:hover,.plyr-quality-option.active{background:rgba(33,216,244,.2)!important;color:#35e3ff!important}
+.plyr-quality-option .tick{font-weight:900;color:#35e3ff!important}
 #qualitySelect{display:none!important}
 /* Plyr player skin: keep the player inside SPORTYNOVA's responsive video frame. */
 .playersticky .screen>.plyr{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1;--plyr-color-main:#21d8f4;--plyr-video-control-color:#f5f8ff;--plyr-video-control-color-hover:#06111a}

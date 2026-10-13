@@ -240,6 +240,11 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 @media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
 
 
+/* Keep the Settings gear available, but hide the Speed row inside its menu. */
+.playersticky .screen .plyr__menu__container [data-plyr="speed"],
+.playersticky .screen .plyr__menu__container [data-plyr="speed"]:is(button),
+.playersticky .screen .plyr__menu__container [role="menuitem"][data-plyr="speed"] {display:none!important}
+
 /* Compact, scrollable quality menu for small mobile screens */
 .playersticky .screen .plyr__menu__container {
   width: min(150px, 42vw) !important;
@@ -324,7 +329,7 @@ let plyrPlayer=null;
 try{
  plyrPlayer=new Plyr(video,{
   controls:["play-large","play","progress","current-time","mute","volume","settings","fullscreen"],
-  settings:["captions"],
+  settings:["speed"],
   autoplay:true,
   clickToPlay:true,
   hideControls:true,

@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#070912">
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
 <title>SPORTYNOVA 1.0 — Live TV</title>
@@ -158,6 +159,11 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   aspect-ratio:16/9!important;min-height:0!important;max-height:none!important;flex:none!important;
   overflow:hidden!important;background:#000!important;isolation:isolate
 }
+/* Plyr player skin: keep the player inside SPORTYNOVA's responsive video frame. */
+.playersticky .screen>.plyr{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1;--plyr-color-main:#21d8f4;--plyr-video-control-color:#f5f8ff;--plyr-video-control-color-hover:#06111a}
+.playersticky .screen>.plyr .plyr__video-wrapper{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;padding-bottom:0!important;background:#000!important}
+.playersticky .screen>.plyr video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center center!important;background:#000!important;margin:0!important;padding:0!important}
+.playersticky .screen>.plyr .plyr__controls{z-index:4}
 .playersticky .screen>video{
   position:absolute!important;inset:0!important;display:block!important;
   width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;
@@ -246,11 +252,25 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 </div>
 <div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">HLS Server 1, MPD Server 1, HLS Server 2 অথবা MPD Server 2 থেকে সার্ভার নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
+let plyrPlayer=null;
+try{
+ plyrPlayer=new Plyr(video,{
+  controls:["play-large","play","progress","current-time","mute","volume","settings","fullscreen"],
+  settings:["captions","speed"],
+  autoplay:true,
+  clickToPlay:true,
+  hideControls:true,
+  keyboard:{focused:true,global:false},
+  tooltips:{controls:true,seek:true},
+  ratio:"16:9"
+ });
+}catch(e){console.warn("Plyr initialization failed; using browser controls.",e)}
 let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="";
 // JW Player requires your own licensed library URL / Player Library ID.
 // Replace YOUR_PLAYER_LIBRARY_ID with the ID from your JW Player dashboard.

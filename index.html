@@ -159,6 +159,13 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   aspect-ratio:16/9!important;min-height:0!important;max-height:none!important;flex:none!important;
   overflow:hidden!important;background:#000!important;isolation:isolate
 }
+/* Plyr quality menu injected from actual HLS/DASH tracks */
+.plyr-quality-menu{border-top:1px solid rgba(255,255,255,.14);margin-top:4px;padding:8px 10px;max-height:190px;overflow-y:auto;color:#fff;font-size:13px}
+.plyr-quality-title{font-weight:700;color:#fff;margin:0 0 6px;padding:0 2px;font-size:12px}
+.plyr-quality-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:#e8edf6;text-align:left;padding:7px 5px;border-radius:5px;font:inherit;cursor:pointer}
+.plyr-quality-option:hover,.plyr-quality-option.active{background:rgba(33,216,244,.18);color:#35e3ff}
+.plyr-quality-option .tick{font-weight:900}
+#qualitySelect{display:none!important}
 /* Plyr player skin: keep the player inside SPORTYNOVA's responsive video frame. */
 .playersticky .screen>.plyr{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1;--plyr-color-main:#21d8f4;--plyr-video-control-color:#f5f8ff;--plyr-video-control-color-hover:#06111a}
 .playersticky .screen>.plyr .plyr__video-wrapper{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;padding-bottom:0!important;background:#000!important}
@@ -271,7 +278,8 @@ try{
   ratio:"16:9"
  });
 }catch(e){console.warn("Plyr initialization failed; using browser controls.",e)}
-let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="";
+setTimeout(()=>refreshPlyrQualityMenu(),0);
+let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="",qualityOptions=[];
 // JW Player requires your own licensed library URL / Player Library ID.
 // Replace YOUR_PLAYER_LIBRARY_ID with the ID from your JW Player dashboard.
 const JWPLAYER_LIBRARY_URL="https://cdn.jwplayer.com/libraries/YOUR_PLAYER_LIBRARY_ID.js";
@@ -398,14 +406,32 @@ function render(list=channels){
  items.forEach(ch=>makeChannelCard(ch,row,searching?categoryFor(ch):categoryInfo[selectedCategory].title.replace(/^[^ ]+\s/,""),false));
  if(items.length)root.appendChild(row);
 }
+function refreshPlyrQualityMenu(){
+ const root=document.querySelector(".plyr__menu__container");
+ if(!root)return;
+ let panel=root.querySelector(".plyr-quality-menu");
+ if(!panel){panel=document.createElement("div");panel.className="plyr-quality-menu";panel.setAttribute("aria-label","Video quality");root.appendChild(panel)}
+ panel.innerHTML="";
+ if(!qualityOptions.length){panel.style.display="none";return}
+ panel.style.display="block";
+ const title=document.createElement("div");title.className="plyr-quality-title";title.textContent="Quality";panel.appendChild(title);
+ const choices=[{value:"auto",label:"Auto"},...qualityOptions];
+ choices.forEach(item=>{
+  const b=document.createElement("button");b.type="button";b.className="plyr-quality-option"+(String($("qualitySelect").value)===String(item.value)?" active":"");
+  b.innerHTML="<span></span><span class=\"tick\"></span>";b.children[0].textContent=item.label;b.children[1].textContent=String($ ("qualitySelect").value)===String(item.value)?"✓":"";
+  b.addEventListener("click",()=>{const sel=$("qualitySelect");sel.value=String(item.value);sel.dispatchEvent(new Event("change"));refreshPlyrQualityMenu();});
+  panel.appendChild(b);
+ });
+}
 function hideQualitySelector(){
- const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";
+ const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";qualityOptions=[];refreshPlyrQualityMenu();
 }
 function showQualityOptions(options,mode){
  const sel=$("qualitySelect");sel.innerHTML="";
  const auto=document.createElement("option");auto.value="auto";auto.textContent="Auto";sel.appendChild(auto);
+ qualityOptions=options.slice();
  options.forEach((item,i)=>{const opt=document.createElement("option");opt.value=String(item.value??i);opt.textContent=item.label;sel.appendChild(opt)});
- sel.style.display=options.length?"inline-block":"none";qualityMode=options.length?mode:"";sel.value="auto";
+ sel.style.display="none";qualityMode=options.length?mode:"";sel.value="auto";refreshPlyrQualityMenu();
 }
 $("qualitySelect").addEventListener("change",()=>{
  const value=$("qualitySelect").value;
@@ -419,6 +445,7 @@ $("qualitySelect").addEventListener("change",()=>{
    else {activeDash.setAutoSwitchQualityFor("video",false);activeDash.setQualityFor("video",Number(value))}
   }
  }catch(e){console.warn("Quality switch failed",e)}
+ refreshPlyrQualityMenu();
 });
 function setupHlsQualities(){
  if(!activeHls)return;

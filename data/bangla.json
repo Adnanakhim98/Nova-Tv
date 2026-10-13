@@ -11,7 +11,8 @@
       "show": "Y"
     },
 
-      "name": "SKR TV",
+    {
+    "name": "SKR TV",
       "category": "Bangla",
       "logo": "📺",
       "tone": "red",

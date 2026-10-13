@@ -16,7 +16,7 @@
       {
         "name": "HLS Server 1",
         "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjkl/index.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "MPD Server 1",

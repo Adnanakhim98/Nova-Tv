@@ -239,6 +239,48 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .channelrow.sportsrow .chname{margin:0!important;padding:0!important;flex:0 0 auto!important;line-height:1.2!important}
 @media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
 
+
+/* Compact, scrollable quality menu for small mobile screens */
+.playersticky .screen .plyr__menu__container {
+  width: min(150px, 42vw) !important;
+  max-width: 150px !important;
+  max-height: 42vh !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  border-radius: 9px !important;
+}
+.playersticky .screen .plyr__menu__container [role="menu"] {
+  max-height: 42vh !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.playersticky .screen .plyr-quality-menu {
+  max-height: 105px !important;
+  overflow-y: auto !important;
+  padding: 5px 6px !important;
+  margin-top: 2px !important;
+  font-size: 11px !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.playersticky .screen .plyr-quality-title {
+  font-size: 10px !important;
+  margin-bottom: 3px !important;
+}
+.playersticky .screen .plyr-quality-option {
+  min-height: 26px !important;
+  padding: 4px 5px !important;
+  gap: 6px !important;
+  border-radius: 5px !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+}
+.playersticky .screen .plyr__menu__container button,
+.playersticky .screen .plyr__menu__container [role="menuitem"] {
+  font-size: 11px !important;
+}
+
 </style>
 </head>
 <body>

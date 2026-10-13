@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#070912">
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link href="https://vjs.zencdn.net/7.17.0/video-js.css" rel="stylesheet">
 <meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
 <title>SPORTYNOVA 1.0 — Live TV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -159,48 +159,6 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   aspect-ratio:16/9!important;min-height:0!important;max-height:none!important;flex:none!important;
   overflow:hidden!important;background:#000!important;isolation:isolate
 }
-/* Plyr settings / quality menu: solid dark panel so labels stay readable over video */
-.playersticky .screen .plyr__menu__container,
-.playersticky .screen .plyr__menu__container [role="menu"]{
-  background:rgba(10,16,29,.98)!important;color:#f4f7ff!important;
-  border:1px solid rgba(33,216,244,.32)!important;border-radius:12px!important;
-  box-shadow:0 8px 28px rgba(0,0,0,.6)!important;opacity:1!important;text-shadow:none!important
-}
-.playersticky .screen .plyr__menu__container button,
-.playersticky .screen .plyr__menu__container [role="menuitem"],
-.playersticky .screen .plyr__menu__container label,
-.playersticky .screen .plyr__menu__container span{color:#f4f7ff!important;text-shadow:none!important}
-.playersticky .screen .plyr__menu__container button:hover,
-.playersticky .screen .plyr__menu__container [role="menuitem"]:hover{background:rgba(33,216,244,.18)!important;color:#35e3ff!important}
-/* Plyr quality menu injected from actual HLS/DASH tracks */
-.plyr-quality-menu{background:rgba(10,16,29,.98)!important;border-top:1px solid rgba(255,255,255,.14);margin-top:4px;padding:8px 10px;max-height:190px;overflow-y:auto;color:#f4f7ff!important;font-size:13px;opacity:1!important}
-.plyr-quality-title{font-weight:700;color:#f4f7ff!important;margin:0 0 6px;padding:0 2px;font-size:12px}
-.plyr-quality-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:#f4f7ff!important;text-align:left;padding:7px 5px;border-radius:5px;font:inherit;cursor:pointer;opacity:1!important;text-shadow:none!important}
-.plyr-quality-option:hover,.plyr-quality-option.active{background:rgba(33,216,244,.2)!important;color:#35e3ff!important}
-.plyr-quality-option .tick{font-weight:900;color:#35e3ff!important}
-#qualitySelect{display:none!important}
-
-/* Mobile: landscape-style player overlay; desktop/TV: native fullscreen. */
-.playercard.mobile-rotated{
- position:fixed!important;z-index:2147483647!important;
- width:100dvh!important;height:100vw!important;
- max-width:none!important;max-height:none!important;
- left:calc((100vw - 100dvh)/2)!important;
- top:calc((100dvh - 100vw)/2)!important;
- margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
- transform:rotate(90deg)!important;transform-origin:center center!important;
- display:flex!important;flex-direction:column!important;background:#000!important;
- overflow:hidden!important;box-shadow:none!important;
-}
-.playercard.mobile-rotated .screen{flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;overflow:hidden!important;}
-.playercard.mobile-rotated .playerfoot{display:none!important;}
-.playercard.mobile-rotated .screen>.plyr,.playercard.mobile-rotated .screen>#jwplayerContainer{width:100%!important;height:100%!important;}
-body.mobile-player-rotated{overflow:hidden!important;touch-action:manipulation!important;}
-/* Plyr player skin: keep the player inside SPORTYNOVA's responsive video frame. */
-.playersticky .screen>.plyr{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1;--plyr-color-main:#21d8f4;--plyr-video-control-color:#f5f8ff;--plyr-video-control-color-hover:#06111a}
-.playersticky .screen>.plyr .plyr__video-wrapper{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;padding-bottom:0!important;background:#000!important}
-.playersticky .screen>.plyr video{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center center!important;background:#000!important;margin:0!important;padding:0!important}
-.playersticky .screen>.plyr .plyr__controls{z-index:4}
 .playersticky .screen>video{
   position:absolute!important;inset:0!important;display:block!important;
   width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;
@@ -257,61 +215,26 @@ body.mobile-player-rotated{overflow:hidden!important;touch-action:manipulation!i
 @media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
 
 
-/* Keep the Settings gear available, but hide the Speed row inside its menu. */
-.playersticky .screen .plyr__menu__container [data-plyr="speed"],
-.playersticky .screen .plyr__menu__container [data-plyr="speed"]:is(button),
-.playersticky .screen .plyr__menu__container [role="menuitem"][data-plyr="speed"] {display:none!important}
-
-/* Compact, scrollable quality menu for small mobile screens */
-.playersticky .screen .plyr__menu__container {
-  width: min(150px, 42vw) !important;
-  max-width: 150px !important;
-  max-height: 42vh !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-  border-radius: 9px !important;
+/* Video.js player skin — integrated with the existing responsive player frame */
+.playersticky .screen .video-js{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;
+ padding-top:0!important;background:#000!important;z-index:1;font-family:Inter,"Hind Siliguri",sans-serif;
 }
-.playersticky .screen .plyr__menu__container [role="menu"] {
-  max-height: 42vh !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+.playersticky .screen .video-js .vjs-tech{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ object-fit:contain!important;object-position:center center!important;background:#000!important;
 }
-.playersticky .screen .plyr-quality-menu {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  column-gap: 5px !important;
-  row-gap: 3px !important;
-  max-height: 125px !important;
-  overflow-y: auto !important;
-  padding: 5px 6px !important;
-  margin-top: 2px !important;
-  font-size: 11px !important;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  align-items: start;
+.playersticky .screen .video-js .vjs-control-bar{
+ background:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,.45));
 }
-.playersticky .screen .plyr-quality-title {
-  grid-column: 1 / -1 !important;
+.playersticky .screen .video-js .vjs-play-progress,
+.playersticky .screen .video-js .vjs-volume-level{background:#21d8f4}
+.playersticky .screen .video-js .vjs-big-play-button{
+ left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid #ffffff80;
+ border-radius:14px;background:rgba(12,22,36,.82);color:#21d8f4;
 }
-.playersticky .screen .plyr-quality-title {
-  font-size: 10px !important;
-  margin-bottom: 3px !important;
-}
-.playersticky .screen .plyr-quality-option {
-  min-width: 0 !important;
-  min-height: 26px !important;
-  padding: 4px 5px !important;
-  gap: 4px !important;
-  border-radius: 5px !important;
-  font-size: 11px !important;
-  line-height: 1.15 !important;
-}
-.playersticky .screen .plyr__menu__container button,
-.playersticky .screen .plyr__menu__container [role="menuitem"] {
-  font-size: 11px !important;
-}
-
+.playersticky .screen .video-js .vjs-live-control{display:flex!important}
 </style>
 </head>
 <body>
@@ -324,7 +247,7 @@ body.mobile-player-rotated{overflow:hidden!important;touch-action:manipulation!i
  <div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
-   <video id="video" controls playsinline webkit-playsinline preload="metadata" autoplay></video>
+   <video id="video" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline webkit-playsinline preload="metadata"></video>
    <div id="jwplayerContainer" aria-label="JW Player"></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
@@ -345,61 +268,22 @@ body.mobile-player-rotated{overflow:hidden!important;touch-action:manipulation!i
 </div>
 <div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">HLS Server 1, MPD Server 1, HLS Server 2 অথবা MPD Server 2 থেকে সার্ভার নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script src="https://vjs.zencdn.net/7.17.0/video.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let plyrPlayer=null;
-try{
- plyrPlayer=new Plyr(video,{
-  controls:["play-large","play","progress","current-time","mute","volume","settings","fullscreen"],
-  settings:["speed"],
-  autoplay:true,
-  clickToPlay:true,
-  hideControls:true,
-  keyboard:{focused:true,global:false},
-  tooltips:{controls:true,seek:true},
-  ratio:"16:9"
- });
-}catch(e){console.warn("Plyr initialization failed; using browser controls.",e)}
-setTimeout(()=>refreshPlyrQualityMenu(),0);
-
-// Mobile fullscreen: rotate the player overlay; PC/TV: use native fullscreen.
-(function setupDeviceAwareFullscreen(){
- const card=document.querySelector('.playercard');
- if(!card)return;
- const isMobileRotationDevice=()=>window.matchMedia('(pointer: coarse)').matches && Math.min(window.innerWidth,window.innerHeight)<=900;
- let orientationWasLocked=false;
- let previousOrientation='';
- async function enterRotated(){
-   card.classList.add('mobile-rotated');document.body.classList.add('mobile-player-rotated');
-   try{
-     if(screen.orientation && screen.orientation.lock){
-       previousOrientation=screen.orientation.type||'';
-       await screen.orientation.lock('landscape');orientationWasLocked=true;
-     }
-   }catch(e){/* Some mobile browsers block orientation lock; CSS rotation is fallback. */}
- }
- function exitRotated(){
-   card.classList.remove('mobile-rotated');document.body.classList.remove('mobile-player-rotated');
-   if(orientationWasLocked){try{screen.orientation.unlock();}catch(e){}orientationWasLocked=false;}
- }
- document.addEventListener('click',function(e){
-   const btn=e.target.closest('.plyr__control[data-plyr="fullscreen"]');
-   if(!btn)return;
-   if(isMobileRotationDevice()){
-     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-     if(card.classList.contains('mobile-rotated'))exitRotated();else enterRotated();
-   }
- },true);
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&card.classList.contains('mobile-rotated'))exitRotated();});
- window.addEventListener('resize',()=>{if(card.classList.contains('mobile-rotated') && !isMobileRotationDevice())exitRotated();});
- window.addEventListener('orientationchange',()=>{if(card.classList.contains('mobile-rotated')){setTimeout(()=>{card.style.visibility='visible';},150);}});
-})();
-
-let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="",qualityOptions=[];
+let vjsPlayer=null;
+if(typeof window.videojs==="function"){
+ try{
+  vjsPlayer=window.videojs(video,{
+   liveui:true,controls:true,autoplay:false,preload:"metadata",fluid:false,responsive:true,
+   controlBar:{pictureInPictureToggle:true,volumePanel:{inline:false},remainingTimeDisplay:false}
+  });
+ }catch(e){console.warn("Video.js initialization failed; using native controls",e)}
+}
+let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="";
 // JW Player requires your own licensed library URL / Player Library ID.
 // Replace YOUR_PLAYER_LIBRARY_ID with the ID from your JW Player dashboard.
 const JWPLAYER_LIBRARY_URL="https://cdn.jwplayer.com/libraries/YOUR_PLAYER_LIBRARY_ID.js";
@@ -526,32 +410,14 @@ function render(list=channels){
  items.forEach(ch=>makeChannelCard(ch,row,searching?categoryFor(ch):categoryInfo[selectedCategory].title.replace(/^[^ ]+\s/,""),false));
  if(items.length)root.appendChild(row);
 }
-function refreshPlyrQualityMenu(){
- const root=document.querySelector(".plyr__menu__container");
- if(!root)return;
- let panel=root.querySelector(".plyr-quality-menu");
- if(!panel){panel=document.createElement("div");panel.className="plyr-quality-menu";panel.setAttribute("aria-label","Video quality");root.appendChild(panel)}
- panel.innerHTML="";
- if(!qualityOptions.length){panel.style.display="none";return}
- panel.style.display="block";
- const title=document.createElement("div");title.className="plyr-quality-title";title.textContent="Quality";panel.appendChild(title);
- const choices=[{value:"auto",label:"Auto"},...qualityOptions];
- choices.forEach(item=>{
-  const b=document.createElement("button");b.type="button";b.className="plyr-quality-option"+(String($("qualitySelect").value)===String(item.value)?" active":"");
-  b.innerHTML="<span></span><span class=\"tick\"></span>";b.children[0].textContent=item.label;b.children[1].textContent=String($ ("qualitySelect").value)===String(item.value)?"✓":"";
-  b.addEventListener("click",()=>{const sel=$("qualitySelect");sel.value=String(item.value);sel.dispatchEvent(new Event("change"));refreshPlyrQualityMenu();});
-  panel.appendChild(b);
- });
-}
 function hideQualitySelector(){
- const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";qualityOptions=[];refreshPlyrQualityMenu();
+ const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";
 }
 function showQualityOptions(options,mode){
  const sel=$("qualitySelect");sel.innerHTML="";
  const auto=document.createElement("option");auto.value="auto";auto.textContent="Auto";sel.appendChild(auto);
- qualityOptions=options.slice();
  options.forEach((item,i)=>{const opt=document.createElement("option");opt.value=String(item.value??i);opt.textContent=item.label;sel.appendChild(opt)});
- sel.style.display="none";qualityMode=options.length?mode:"";sel.value="auto";refreshPlyrQualityMenu();
+ sel.style.display=options.length?"inline-block":"none";qualityMode=options.length?mode:"";sel.value="auto";
 }
 $("qualitySelect").addEventListener("change",()=>{
  const value=$("qualitySelect").value;
@@ -565,7 +431,6 @@ $("qualitySelect").addEventListener("change",()=>{
    else {activeDash.setAutoSwitchQualityFor("video",false);activeDash.setQualityFor("video",Number(value))}
   }
  }catch(e){console.warn("Quality switch failed",e)}
- refreshPlyrQualityMenu();
 });
 function setupHlsQualities(){
  if(!activeHls)return;
@@ -601,8 +466,10 @@ function stopEngines(){
   if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
   if(activeJw){const old=activeJw;activeJw=null;try{old.remove()}catch(e){}}
   const jwBox=$("jwplayerContainer");if(jwBox){jwBox.style.display="none";jwBox.innerHTML=""}
-  video.style.display="";video.pause();video.onloadedmetadata=null;video.onerror=null;
-  video.removeAttribute("src");video.load();delete video.dataset.currentUrl;activeKey=null;
+  video.style.display="";if(vjsPlayer){try{vjsPlayer.show();vjsPlayer.el().style.display="";}catch(e){}}video.pause();video.onloadedmetadata=null;video.onerror=null;
+  video.removeAttribute("src");
+  try{if(vjsPlayer){vjsPlayer.reset();}else{video.load();}}catch(e){video.load();}
+  delete video.dataset.currentUrl;activeKey=null;
 }
 function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else if(/চালানো যায়নি|চালানো যাচ্ছে না|পরীক্ষা করুন|ব্যর্থ/i.test(meta)){setLiveBadge(false);setPlayerLoading(true,"Stream চালু করা যায়নি",meta,true)}else{setLiveBadge(false);}}
 function parseStreamInput(raw, drmFromJson=null){
@@ -634,7 +501,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm};
  stopEngines();if(requestId!==playRequestId)return;
- $("empty").style.display="none";setLiveBadge(false);setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";
+ $("empty").style.display="none";setLiveBadge(false);setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);video.dataset.currentUrl=rawUrl;
  const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
  // Try compatible engines in order. If one cannot load/play, move to the next automatically.
  const candidates=kind==="mpd"
@@ -661,6 +528,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
      playStream(rawUrl,name,category,drm,engineIndex+1);
    }else{
      $("empty").style.display="none";$("jwplayerContainer").style.display="none";video.style.display="";
+     if(vjsPlayer){try{vjsPlayer.show();vjsPlayer.el().style.display="";}catch(e){}}
      report("চালানো যায়নি · অন্য সার্ভার চেষ্টা করুন; URL/CORS/DRM/codec পরীক্ষা করুন");
    }
  };
@@ -684,6 +552,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
     fallback("ClearKey DRM fallback");return;
    }
    const jwBox=$("jwplayerContainer");jwBox.innerHTML="";jwBox.style.display="block";video.style.display="none";
+    if(vjsPlayer){try{vjsPlayer.el().style.display="none";}catch(e){}}
    const jwConfig={file:url,width:"100%",height:"100%",aspectratio:"16:9",autostart:true,controls:true,stretching:"uniform"};
    if(kind==="hls")jwConfig.type="hls";
    else if(kind==="mpd")jwConfig.type="dash";

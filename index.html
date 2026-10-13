@@ -179,6 +179,23 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .plyr-quality-option:hover,.plyr-quality-option.active{background:rgba(33,216,244,.2)!important;color:#35e3ff!important}
 .plyr-quality-option .tick{font-weight:900;color:#35e3ff!important}
 #qualitySelect{display:none!important}
+
+/* Mobile: landscape-style player overlay; desktop/TV: native fullscreen. */
+.playercard.mobile-rotated{
+ position:fixed!important;z-index:2147483647!important;
+ width:100dvh!important;height:100vw!important;
+ max-width:none!important;max-height:none!important;
+ left:calc((100vw - 100dvh)/2)!important;
+ top:calc((100dvh - 100vw)/2)!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ transform:rotate(90deg)!important;transform-origin:center center!important;
+ display:flex!important;flex-direction:column!important;background:#000!important;
+ overflow:hidden!important;box-shadow:none!important;
+}
+.playercard.mobile-rotated .screen{flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;overflow:hidden!important;}
+.playercard.mobile-rotated .playerfoot{display:none!important;}
+.playercard.mobile-rotated .screen>.plyr,.playercard.mobile-rotated .screen>#jwplayerContainer{width:100%!important;height:100%!important;}
+body.mobile-player-rotated{overflow:hidden!important;touch-action:manipulation!important;}
 /* Plyr player skin: keep the player inside SPORTYNOVA's responsive video frame. */
 .playersticky .screen>.plyr{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1;--plyr-color-main:#21d8f4;--plyr-video-control-color:#f5f8ff;--plyr-video-control-color-hover:#06111a}
 .playersticky .screen>.plyr .plyr__video-wrapper{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;padding-bottom:0!important;background:#000!important}
@@ -348,6 +365,40 @@ try{
  });
 }catch(e){console.warn("Plyr initialization failed; using browser controls.",e)}
 setTimeout(()=>refreshPlyrQualityMenu(),0);
+
+// Mobile fullscreen: rotate the player overlay; PC/TV: use native fullscreen.
+(function setupDeviceAwareFullscreen(){
+ const card=document.querySelector('.playercard');
+ if(!card)return;
+ const isMobileRotationDevice=()=>window.matchMedia('(pointer: coarse)').matches && Math.min(window.innerWidth,window.innerHeight)<=900;
+ let orientationWasLocked=false;
+ let previousOrientation='';
+ async function enterRotated(){
+   card.classList.add('mobile-rotated');document.body.classList.add('mobile-player-rotated');
+   try{
+     if(screen.orientation && screen.orientation.lock){
+       previousOrientation=screen.orientation.type||'';
+       await screen.orientation.lock('landscape');orientationWasLocked=true;
+     }
+   }catch(e){/* Some mobile browsers block orientation lock; CSS rotation is fallback. */}
+ }
+ function exitRotated(){
+   card.classList.remove('mobile-rotated');document.body.classList.remove('mobile-player-rotated');
+   if(orientationWasLocked){try{screen.orientation.unlock();}catch(e){}orientationWasLocked=false;}
+ }
+ document.addEventListener('click',function(e){
+   const btn=e.target.closest('.plyr__control[data-plyr="fullscreen"]');
+   if(!btn)return;
+   if(isMobileRotationDevice()){
+     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+     if(card.classList.contains('mobile-rotated'))exitRotated();else enterRotated();
+   }
+ },true);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&card.classList.contains('mobile-rotated'))exitRotated();});
+ window.addEventListener('resize',()=>{if(card.classList.contains('mobile-rotated') && !isMobileRotationDevice())exitRotated();});
+ window.addEventListener('orientationchange',()=>{if(card.classList.contains('mobile-rotated')){setTimeout(()=>{card.style.visibility='visible';},150);}});
+})();
+
 let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="",qualityOptions=[];
 // JW Player requires your own licensed library URL / Player Library ID.
 // Replace YOUR_PLAYER_LIBRARY_ID with the ID from your JW Player dashboard.

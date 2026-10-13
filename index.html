@@ -261,22 +261,31 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   scrollbar-width: thin;
 }
 .playersticky .screen .plyr-quality-menu {
-  max-height: 105px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  column-gap: 5px !important;
+  row-gap: 3px !important;
+  max-height: 125px !important;
   overflow-y: auto !important;
   padding: 5px 6px !important;
   margin-top: 2px !important;
   font-size: 11px !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+  align-items: start;
+}
+.playersticky .screen .plyr-quality-title {
+  grid-column: 1 / -1 !important;
 }
 .playersticky .screen .plyr-quality-title {
   font-size: 10px !important;
   margin-bottom: 3px !important;
 }
 .playersticky .screen .plyr-quality-option {
+  min-width: 0 !important;
   min-height: 26px !important;
   padding: 4px 5px !important;
-  gap: 6px !important;
+  gap: 4px !important;
   border-radius: 5px !important;
   font-size: 11px !important;
   line-height: 1.15 !important;

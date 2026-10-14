@@ -30,7 +30,7 @@
       {
         "name": "HLS Server 2",
         "url": "https://playztv-apps.pages.dev/a-sports/index.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "MPD Server 2",

@@ -728,3 +728,31 @@ document.addEventListener("touchend", e => {
 }, {passive:false});
 </script>
 </body></html>
+
+<style>
+/* Landscape player: use the full width on both sides and keep the bottom info bar transparent. */
+@media (orientation: landscape) and (max-height: 600px){
+  .playercard:fullscreen .screen video,
+  .playercard:-webkit-full-screen .screen video,
+  .playercard.mobile-rotated .screen video{
+    object-fit:cover!important;
+    width:100%!important;height:100%!important;
+    max-width:none!important;max-height:none!important;
+  }
+  .playercard:fullscreen .playerfoot,
+  .playercard:-webkit-full-screen .playerfoot,
+  .playercard.mobile-rotated .playerfoot{
+    background:transparent!important;
+    background-color:rgba(0,0,0,.12)!important;
+    border-top:1px solid rgba(255,255,255,.12)!important;
+    backdrop-filter:blur(2px);
+    -webkit-backdrop-filter:blur(2px);
+  }
+}
+.playercard:fullscreen .playerfoot,
+.playercard:-webkit-full-screen .playerfoot,
+.playercard.mobile-rotated .playerfoot{
+  background:rgba(0,0,0,.12)!important;
+  border-top-color:rgba(255,255,255,.12)!important;
+}
+</style>

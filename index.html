@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 10:35 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 10:56 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -648,6 +648,23 @@ const formatClock=seconds=>{
  return h?`${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 };
 $("playPauseBtn").addEventListener("click",()=>{if(video.paused)video.play().catch(()=>{});else video.pause()});
+const centerPlayPauseBtn = $("centerPlayPauseBtn");
+if(centerPlayPauseBtn){
+ centerPlayPauseBtn.addEventListener("click", e=>{
+  e.stopPropagation();
+  if(video.paused) video.play().catch(()=>{});
+  else video.pause();
+ });
+ const syncCenterPlayPause=()=>{
+  centerPlayPauseBtn.textContent=video.paused?"▶":"Ⅱ";
+  centerPlayPauseBtn.setAttribute("aria-label",video.paused?"Play video":"Pause video");
+ };
+ video.addEventListener("play",syncCenterPlayPause);
+ video.addEventListener("pause",syncCenterPlayPause);
+ video.addEventListener("ended",syncCenterPlayPause);
+ syncCenterPlayPause();
+}
+
 video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
 video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
 $("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
@@ -854,3 +871,56 @@ document.addEventListener("touchend", e => {
   }
 }
 </style>
+
+<style>
+/* LAST UPDATE: 16 October 2026, 10:56 PM Bangladesh time.
+   Landscape fullscreen player height reduced by 10%; play/pause control centered. */
+.center-play-pause{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:9!important;
+  width:58px!important;
+  height:58px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid rgba(255,255,255,.5)!important;
+  border-radius:50%!important;
+  background:rgba(5,12,24,.68)!important;
+  color:#fff!important;
+  font-size:25px!important;
+  line-height:1!important;
+  box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 18px rgba(33,216,244,.16)!important;
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  cursor:pointer;
+  padding:0!important;
+}
+.center-play-pause:active{scale:.94}
+.playerLoading.show ~ .center-play-pause{display:none!important}
+.playercard:fullscreen .center-play-pause,
+.playercard:-webkit-full-screen .center-play-pause,
+.playercard.mobile-rotated .center-play-pause{
+  width:64px!important;height:64px!important;font-size:28px!important;
+}
+@media(max-width:420px){
+  .center-play-pause{width:50px!important;height:50px!important;font-size:22px!important}
+}
+@media screen and (orientation:landscape){
+  .playercard:fullscreen,
+  .playercard:-webkit-full-screen,
+  .playercard.mobile-rotated{
+    height:90vh!important;
+    height:90dvh!important;
+    max-height:90vh!important;
+    max-height:90dvh!important;
+    top:5vh!important;
+    top:5dvh!important;
+    bottom:auto!important;
+    margin-top:0!important;
+  }
+}
+</style>
+

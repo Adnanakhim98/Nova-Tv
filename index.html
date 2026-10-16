@@ -1,3 +1,4 @@
+<!-- LAST UPDATE: 16 October 2026, 10:35 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -727,8 +728,6 @@ document.addEventListener("touchend", e => {
   lastTouchEnd = now;
 }, {passive:false});
 </script>
-</body></html>
-
 <style>
 /* Landscape player: use the full width on both sides and keep the bottom info bar transparent. */
 @media (orientation: landscape) and (max-height: 600px){
@@ -756,3 +755,84 @@ document.addEventListener("touchend", e => {
   border-top-color:rgba(255,255,255,.12)!important;
 }
 </style>
+
+<style>
+/* LAST UPDATE: 16 October 2026, 10:35 PM Bangladesh time.
+   Auto-hide the orange-marked channel information bar after 5 seconds.
+   Tap the video display to show it again. */
+.playersticky .playercard .playerfoot{
+  transition:opacity .25s ease, transform .25s ease, max-height .25s ease, padding .25s ease;
+  max-height:100px;
+  overflow:hidden;
+}
+.playersticky .playercard.info-bar-hidden .playerfoot{
+  opacity:0!important;
+  transform:translateY(12px);
+  max-height:0!important;
+  min-height:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  border-top-width:0!important;
+  pointer-events:none!important;
+}
+/* Fill the entire phone display when fullscreen is active. */
+.playercard:fullscreen .screen video,
+.playercard:-webkit-full-screen .screen video,
+.playercard.mobile-rotated .screen video{
+  object-fit:cover!important;
+  object-position:center center!important;
+}
+.playercard:fullscreen .screen,
+.playercard:-webkit-full-screen .screen,
+.playercard.mobile-rotated .screen{
+  width:100%!important;height:100%!important;min-height:0!important;
+}
+</style>
+<script>
+(() => {
+  const card = document.querySelector(".playersticky .playercard");
+  const screen = document.getElementById("playerScreen");
+  if (!card || !screen) return;
+  let hideInfoTimer = null;
+
+  function showInfoBar() {
+    card.classList.remove("info-bar-hidden");
+    if (hideInfoTimer) clearTimeout(hideInfoTimer);
+    hideInfoTimer = setTimeout(() => {
+      // Keep the info bar available while the URL/server modal is open.
+      if (!document.querySelector(".modal.open")) card.classList.add("info-bar-hidden");
+    }, 5000);
+  }
+
+  // The player information bar is visible briefly when a channel starts.
+  showInfoBar();
+  screen.addEventListener("click", (event) => {
+    if (event.target.closest(".nova-controls, button, select, .playerLoading, .empty")) return;
+    showInfoBar();
+  });
+  // Reveal the info bar after playback/channel changes, then hide after 5 seconds.
+  const video = document.getElementById("video");
+  if (video) {
+    video.addEventListener("playing", showInfoBar);
+    video.addEventListener("loadedmetadata", showInfoBar);
+  }
+  document.querySelectorAll("#customBtn, #stopBtn, #playCustom, [data-close]").forEach(el => {
+    el.addEventListener("click", () => {
+      card.classList.remove("info-bar-hidden");
+      if (hideInfoTimer) clearTimeout(hideInfoTimer);
+      if (!el.matches("[data-close]")) hideInfoTimer = setTimeout(() => {
+        if (!document.querySelector(".modal.open")) card.classList.add("info-bar-hidden");
+      }, 5000);
+    });
+  });
+  // On screen interaction, reset the timer without interfering with player controls.
+  ["pointermove", "touchstart", "keydown"].forEach(type => {
+    card.addEventListener(type, event => {
+      if (event.target.closest(".playerfoot, .nova-controls, button, select, input")) return;
+      showInfoBar();
+    }, {passive:true});
+  });
+})();
+</script>
+</body>
+</html>

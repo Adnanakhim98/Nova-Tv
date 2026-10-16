@@ -201,6 +201,30 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .channelrow.sportsrow .chname{margin:0!important;padding:0!important;flex:0 0 auto!important;line-height:1.2!important}
 @media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
 
+
+/* Replacement standalone-style video player controls */
+.playersticky .screen{position:relative!important}
+.playersticky .screen>video{z-index:1}
+.playersticky .empty{z-index:2}
+.playersticky .playerLoading{z-index:8}
+.nova-controls{position:absolute;left:0;right:0;bottom:0;z-index:7;padding:30px 10px 8px;background:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,0));opacity:1;transition:opacity .25s}
+.nova-progress-row{display:flex;align-items:center;gap:8px;color:#f4f7ff;font-size:10px;font-weight:700;margin-bottom:7px}
+.nova-progress-row input{flex:1;min-width:0;height:4px;accent-color:#21d8f4;cursor:pointer}
+.nova-control-row{display:flex;align-items:center;gap:6px;min-width:0}
+.nova-control-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 8px;border:1px solid #ffffff30;border-radius:8px;background:#111a2bd9;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
+.nova-control-btn:active{transform:scale(.95)}
+.nova-control-spacer{flex:1}
+.nova-fit-select{max-width:68px;height:30px;border:1px solid #ffffff30;border-radius:8px;background:#111a2b;color:#fff;font-size:10px;padding:0 4px}
+.playercard:fullscreen .nova-controls{padding:44px 18px 14px}
+.playercard:fullscreen .nova-control-btn{height:38px;min-width:40px;font-size:15px}
+.playercard:fullscreen .nova-progress-row{font-size:12px}
+@media(max-width:420px){.nova-controls{padding:25px 6px 6px}.nova-control-row{gap:4px}.nova-control-btn{height:28px;min-width:28px;padding:0 6px;font-size:11px}.nova-fit-select{height:28px;max-width:56px;font-size:9px}.nova-progress-row{gap:5px;font-size:9px}}
+@media(hover:hover){.nova-controls{opacity:.35}.playersticky .screen:hover .nova-controls,.nova-controls:focus-within{opacity:1}}
+.playercard.mobile-rotated{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;border:0!important;border-radius:0!important;background:#000!important;display:flex!important;flex-direction:column!important}
+.playercard.mobile-rotated .screen{flex:1!important;width:100%!important;height:auto!important;aspect-ratio:auto!important;min-height:0!important}
+.playercard.mobile-rotated .playerfoot{display:none!important}
+.playercard.mobile-rotated .nova-controls{padding:34px 12px 10px}
+
 </style>
 </head>
 <body>
@@ -213,9 +237,21 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  <div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
-   <video id="video" controls playsinline webkit-playsinline preload="auto" autoplay></video>
+   <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
+   <div class="nova-controls" id="novaControls">
+    <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
+    <div class="nova-control-row">
+     <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause">▶</button>
+     <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
+     <button class="nova-control-btn" id="liveBtn">● LIVE</button>
+     <span class="nova-control-spacer"></span>
+     <select class="nova-fit-select" id="fitSelect" aria-label="ভিডিও ফিট"><option value="contain">Fit</option><option value="cover">Fill</option><option value="zoom">Zoom</option></select>
+     <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
+     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
+    </div>
+   </div>
   </div>
   <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
@@ -592,6 +628,70 @@ async function loadConfig(){
  }catch(e){console.warn("Separate JSON load failed",e)}
  if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();
 }
+
+// Standalone-style player controls connected to the existing HLS/Shaka engine.
+const playerCard=document.querySelector(".playersticky .playercard");
+const screenEl=$("playerScreen"),seekBar=$("seekBar");
+const formatClock=seconds=>{
+ if(!Number.isFinite(seconds)||seconds<0)return "00:00";
+ const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=Math.floor(seconds%60);
+ return h?`${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+};
+$("playPauseBtn").addEventListener("click",()=>{if(video.paused)video.play().catch(()=>{});else video.pause()});
+video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
+video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
+$("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
+video.addEventListener("volumechange",()=>{$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
+video.addEventListener("timeupdate",()=>{
+ const duration=video.duration;
+ if(Number.isFinite(duration)&&duration>0){
+  $("currentTime").textContent=formatClock(video.currentTime);$("durationTime").textContent=formatClock(duration);
+  if(!seekBar.matches(":active"))seekBar.value=String(Math.round(video.currentTime/duration*1000));
+ }else{
+  $("currentTime").textContent="LIVE";$("durationTime").textContent=video.seekable.length?"LIVE":"--:--";
+  if(video.seekable.length&&!seekBar.matches(":active")){const start=video.seekable.start(0),end=video.seekable.end(video.seekable.length-1);seekBar.value=String(end>start?Math.round((video.currentTime-start)/(end-start)*1000):1000)}
+ }
+});
+seekBar.addEventListener("change",()=>{
+ const duration=video.duration;
+ if(Number.isFinite(duration)&&duration>0)video.currentTime=Number(seekBar.value)/1000*duration;
+ else if(video.seekable.length){const start=video.seekable.start(0),end=video.seekable.end(video.seekable.length-1);video.currentTime=start+(end-start)*Number(seekBar.value)/1000}
+});
+$("liveBtn").addEventListener("click",()=>{try{if(video.seekable.length){video.currentTime=video.seekable.end(video.seekable.length-1);video.play().catch(()=>{})}}catch(e){console.warn("Go-live unavailable",e)}});
+$("fitSelect").addEventListener("change",()=>{
+ const mode=$("fitSelect").value;video.style.objectFit=mode==="zoom"?"cover":mode;video.style.transform=mode==="zoom"?"scale(1.18)":"none";
+});
+$("pipBtn").addEventListener("click",async()=>{
+ try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
+});
+async function enterPlayerFullscreen(){
+ const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+ try{
+  if(playerCard.requestFullscreen){await playerCard.requestFullscreen();if(mobile)try{await screen.orientation?.lock?.("landscape")}catch(e){}}
+  else if(playerCard.webkitRequestFullscreen)playerCard.webkitRequestFullscreen();
+  else {playerCard.classList.add("mobile-rotated");if(mobile)try{await screen.orientation?.lock?.("landscape")}catch(e){}}
+ }catch(e){if(mobile)playerCard.classList.add("mobile-rotated");else console.warn("Fullscreen unavailable",e)}
+}
+$("fullscreenBtn").addEventListener("click",()=>{
+ if(document.fullscreenElement||document.webkitFullscreenElement||playerCard.classList.contains("mobile-rotated")){
+  if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+  playerCard.classList.remove("mobile-rotated");try{screen.orientation?.unlock?.()}catch(e){}
+ }else enterPlayerFullscreen();
+});
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){playerCard.classList.remove("mobile-rotated");try{screen.orientation?.unlock?.()}catch(e){}}});
+document.addEventListener("webkitfullscreenchange",()=>{if(!document.webkitFullscreenElement){playerCard.classList.remove("mobile-rotated");try{screen.orientation?.unlock?.()}catch(e){}}});
+let lastVideoTap=0;
+screenEl.addEventListener("click",e=>{
+ if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
+ const now=Date.now();if(now-lastVideoTap<320){if(video.paused)video.play().catch(()=>{});else video.pause()}lastVideoTap=now;
+});
+// Direct player URL support. The requested stream is used when no ?url= parameter exists.
+const DEFAULT_STREAM="https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8";
+const pageParams=new URLSearchParams(location.search);
+const requestedStream=pageParams.get("url");
+const requestedName=pageParams.get("name")||"SPORTYNOVA Live";
+if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
+else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
 loadConfig();
 // Refresh match status and hide ended matches automatically.
 setInterval(()=>render(channels),30000);

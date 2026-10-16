@@ -246,6 +246,21 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 @media(max-width:420px){.update-stamp{font-size:9px;padding-bottom:4px}.center-play-pause{width:50px;height:50px;font-size:22px}}
 
 </style>
+
+<style>
+/* Landscape player height reduced by 10% as requested. */
+@media (orientation: landscape) {
+  .playercard:fullscreen .screen,
+  .playercard:-webkit-full-screen .screen,
+  .playercard.mobile-rotated .screen {
+    flex: 0 0 90% !important;
+    height: 90% !important;
+    max-height: 90% !important;
+    align-self: center !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">

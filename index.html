@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 10:56 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 11:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -284,7 +284,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <button class="nova-control-btn" id="liveBtn">● LIVE</button>
      <span class="nova-control-spacer"></span>
-     <select class="nova-fit-select" id="fitSelect" aria-label="ভিডিও ফিট"><option value="contain">Fit</option><option value="cover">Fill</option><option value="zoom">Zoom</option></select>
+     <select class="nova-fit-select" id="fitSelect" aria-label="ভিডিও ফিট"><option value="contain">Fit</option><option value="cover">Fill</option><option value="zoom">Zoom</option><option value="zoomout">Zoom Out</option></select>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
@@ -712,9 +712,19 @@ seekBar.addEventListener("change",()=>{
  else if(video.seekable.length){const start=video.seekable.start(0),end=video.seekable.end(video.seekable.length-1);video.currentTime=start+(end-start)*Number(seekBar.value)/1000}
 });
 $("liveBtn").addEventListener("click",()=>{try{if(video.seekable.length){video.currentTime=video.seekable.end(video.seekable.length-1);video.play().catch(()=>{})}}catch(e){console.warn("Go-live unavailable",e)}});
-$("fitSelect").addEventListener("change",()=>{
- const mode=$("fitSelect").value;video.style.objectFit=mode==="zoom"?"cover":mode;video.style.transform=mode==="zoom"?"scale(1.18)":"none";
-});
+function applyVideoFit(mode){
+ // Use CSS variables so Fit/Fill/Zoom/Zoom Out keep working in native fullscreen too.
+ let fit="contain", transform="none";
+ if(mode==="cover"){fit="cover";transform="none"}
+ else if(mode==="zoom"){fit="cover";transform="scale(1.18)"}
+ else if(mode==="zoomout"){fit="contain";transform="scale(.88)"}
+ video.style.setProperty("--video-fit",fit);
+ video.style.setProperty("--video-transform",transform);
+ video.style.setProperty("object-fit",fit,"important");
+ video.style.setProperty("transform",transform,"important");
+}
+$("fitSelect").addEventListener("change",()=>applyVideoFit($("fitSelect").value));
+applyVideoFit($("fitSelect").value);
 $("pipBtn").addEventListener("click",async()=>{
  try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
 });
@@ -823,8 +833,9 @@ document.addEventListener("touchend", e => {
 .playercard:fullscreen .screen video,
 .playercard:-webkit-full-screen .screen video,
 .playercard.mobile-rotated .screen video{
-  object-fit:cover!important;
+  object-fit:var(--video-fit, contain)!important;
   object-position:center center!important;
+  transform:var(--video-transform, none)!important;
 }
 .playercard:fullscreen .screen,
 .playercard:-webkit-full-screen .screen,
@@ -903,5 +914,10 @@ document.addEventListener("touchend", e => {
   sync();
 })();
 </script>
+
+<style>
+/* LAST UPDATE: 16 October 2026, 11:06 PM Bangladesh time. Fix fullscreen fit modes. */
+.playercard:fullscreen .screen video,.playercard:-webkit-full-screen .screen video,.playercard.mobile-rotated .screen video{object-fit:var(--video-fit,contain)!important;transform:var(--video-transform,none)!important;object-position:center center!important}
+</style>
 </body>
 </html>

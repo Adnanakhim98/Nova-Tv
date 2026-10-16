@@ -235,10 +235,21 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playercard:fullscreen.controls-hidden .nova-controls,.playercard.mobile-rotated.controls-hidden .nova-controls{opacity:0!important}
 .playercard.mobile-rotated .nova-controls{padding:34px 12px 10px}
 
+
+.update-stamp{flex:0 0 auto;text-align:center;color:#9eacc2;font-size:10px;line-height:1.3;padding:0 4px 5px;letter-spacing:.15px}
+.center-play-pause{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9;width:54px;height:54px;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff70;border-radius:50%;background:#07111dcc;color:#fff;font-size:24px;box-shadow:0 4px 24px #0008;backdrop-filter:blur(5px);cursor:pointer}
+.center-play-pause:active{transform:translate(-50%,-50%) scale(.94)}
+.center-play-pause.is-playing{opacity:0;transition:opacity .2s}
+.playersticky .screen{aspect-ratio:16/10!important;min-height:0!important}
+.playersticky .screen>video{object-fit:cover!important;object-position:center center!important}
+.playercard:fullscreen .screen>video,.playercard:-webkit-full-screen .screen>video,.playercard.mobile-rotated .screen>video{object-fit:contain!important}
+@media(max-width:420px){.update-stamp{font-size:9px;padding-bottom:4px}.center-play-pause{width:50px;height:50px;font-size:22px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
+<div class="update-stamp">শেষ আপডেট: ১৬ অক্টোবর ২০২৬ · রাত ১১:০৬ (বাংলাদেশ সময়)</div>
 <header class="topbar">
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
@@ -250,6 +261,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
+   <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
@@ -851,76 +863,30 @@ document.addEventListener("touchend", e => {
   });
 })();
 </script>
+
+<script>
+(() => {
+  const video = document.getElementById("video");
+  const button = document.getElementById("centerPlayPause");
+  if (!video || !button) return;
+  function sync() {
+    const playing = !video.paused && !video.ended;
+    button.textContent = playing ? "Ⅱ" : "▶";
+    button.setAttribute("aria-label", playing ? "ভিডিও Pause করুন" : "ভিডিও চালান");
+    button.classList.toggle("is-playing", playing);
+  }
+  button.addEventListener("click", async (event) => {
+    event.preventDefault(); event.stopPropagation();
+    if (video.paused) { try { await video.play(); } catch (e) { button.classList.remove("is-playing"); } }
+    else video.pause();
+    sync();
+  });
+  video.addEventListener("play", sync);
+  video.addEventListener("playing", sync);
+  video.addEventListener("pause", sync);
+  video.addEventListener("ended", sync);
+  sync();
+})();
+</script>
 </body>
 </html>
-<style>
-/* LAST UPDATE: 16 October 2026, 10:45 PM Bangladesh time.
-   Landscape mode: reduce the fullscreen player height by 5% (95% viewport height). */
-@media screen and (orientation:landscape){
-  .playercard:fullscreen,
-  .playercard:-webkit-full-screen,
-  .playercard.mobile-rotated{
-    height:95vh!important;
-    height:95dvh!important;
-    max-height:95vh!important;
-    max-height:95dvh!important;
-    top:2.5vh!important;
-    top:2.5dvh!important;
-    bottom:auto!important;
-    margin-top:0!important;
-  }
-}
-</style>
-
-<style>
-/* LAST UPDATE: 16 October 2026, 10:56 PM Bangladesh time.
-   Landscape fullscreen player height reduced by 10%; play/pause control centered. */
-.center-play-pause{
-  position:absolute!important;
-  left:50%!important;
-  top:50%!important;
-  transform:translate(-50%,-50%)!important;
-  z-index:9!important;
-  width:58px!important;
-  height:58px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  border:1px solid rgba(255,255,255,.5)!important;
-  border-radius:50%!important;
-  background:rgba(5,12,24,.68)!important;
-  color:#fff!important;
-  font-size:25px!important;
-  line-height:1!important;
-  box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 18px rgba(33,216,244,.16)!important;
-  backdrop-filter:blur(5px);
-  -webkit-backdrop-filter:blur(5px);
-  cursor:pointer;
-  padding:0!important;
-}
-.center-play-pause:active{scale:.94}
-.playerLoading.show ~ .center-play-pause{display:none!important}
-.playercard:fullscreen .center-play-pause,
-.playercard:-webkit-full-screen .center-play-pause,
-.playercard.mobile-rotated .center-play-pause{
-  width:64px!important;height:64px!important;font-size:28px!important;
-}
-@media(max-width:420px){
-  .center-play-pause{width:50px!important;height:50px!important;font-size:22px!important}
-}
-@media screen and (orientation:landscape){
-  .playercard:fullscreen,
-  .playercard:-webkit-full-screen,
-  .playercard.mobile-rotated{
-    height:90vh!important;
-    height:90dvh!important;
-    max-height:90vh!important;
-    max-height:90dvh!important;
-    top:5vh!important;
-    top:5dvh!important;
-    bottom:auto!important;
-    margin-top:0!important;
-  }
-}
-</style>
-

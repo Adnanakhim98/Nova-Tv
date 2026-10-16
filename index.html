@@ -223,6 +223,15 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playercard.mobile-rotated{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;border:0!important;border-radius:0!important;background:#000!important;display:flex!important;flex-direction:column!important}
 .playercard.mobile-rotated .screen{flex:1!important;width:100%!important;height:auto!important;aspect-ratio:auto!important;min-height:0!important}
 .playercard.mobile-rotated .playerfoot{display:none!important}
+/* Landscape: use the full safe viewport and let video credits remain visible. */
+.playercard:fullscreen,.playercard:-webkit-full-screen{width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;box-sizing:border-box!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}
+.playercard:fullscreen .screen,.playercard:-webkit-full-screen .screen{flex:1 1 auto!important;min-height:0!important;width:100%!important;aspect-ratio:auto!important}
+.playercard:fullscreen .screen video,.playercard:-webkit-full-screen .screen video{object-fit:contain!important}
+.playercard.mobile-rotated{height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;box-sizing:border-box!important}
+.playercard.mobile-rotated .nova-controls{padding:24px 12px calc(10px + env(safe-area-inset-bottom,0px))!important}
+.playercard.controls-hidden .nova-controls{opacity:0!important;pointer-events:none!important}
+.playercard.controls-hidden .screenFullBtn{opacity:0!important;pointer-events:none!important}
+.playercard:fullscreen.controls-hidden .nova-controls,.playercard.mobile-rotated.controls-hidden .nova-controls{opacity:0!important}
 .playercard.mobile-rotated .nova-controls{padding:34px 12px 10px}
 
 </style>
@@ -675,16 +684,28 @@ async function enterPlayerFullscreen(){
 $("fullscreenBtn").addEventListener("click",()=>{
  if(document.fullscreenElement||document.webkitFullscreenElement||playerCard.classList.contains("mobile-rotated")){
   if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
-  playerCard.classList.remove("mobile-rotated");try{screen.orientation?.unlock?.()}catch(e){}
+  playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}
  }else enterPlayerFullscreen();
 });
-document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){playerCard.classList.remove("mobile-rotated");try{screen.orientation?.unlock?.()}catch(e){}}});
-document.addEventListener("webkitfullscreenchange",()=>{if(!document.webkitFullscreenElement){playerCard.classList.remove("mobile-rotated");try{screen.orientation?.unlock?.()}catch(e){}}});
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
+document.addEventListener("webkitfullscreenchange",()=>{if(!document.webkitFullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
 let lastVideoTap=0;
 screenEl.addEventListener("click",e=>{
  if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
  const now=Date.now();if(now-lastVideoTap<320){if(video.paused)video.play().catch(()=>{});else video.pause()}lastVideoTap=now;
 });
+// Hide overlay controls after a short delay in landscape/fullscreen so they do not cover video credits.
+let controlsHideTimer=null;
+function showPlayerControls(){
+ playerCard.classList.remove("controls-hidden");
+ if(controlsHideTimer)clearTimeout(controlsHideTimer);
+ const fullscreen=!!(document.fullscreenElement||document.webkitFullscreenElement||playerCard.classList.contains("mobile-rotated"));
+ if(fullscreen)controlsHideTimer=setTimeout(()=>playerCard.classList.add("controls-hidden"),3500);
+}
+["pointermove","pointerdown","touchstart","keydown"].forEach(evt=>playerCard.addEventListener(evt,showPlayerControls,{passive:true}));
+video.addEventListener("playing",showPlayerControls);
+video.addEventListener("pause",()=>playerCard.classList.remove("controls-hidden"));
+
 // Direct player URL support. The requested stream is used when no ?url= parameter exists.
 const DEFAULT_STREAM="https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8";
 const pageParams=new URLSearchParams(location.search);

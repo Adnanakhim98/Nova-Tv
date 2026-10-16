@@ -836,3 +836,21 @@ document.addEventListener("touchend", e => {
 </script>
 </body>
 </html>
+<style>
+/* LAST UPDATE: 16 October 2026, 10:45 PM Bangladesh time.
+   Landscape mode: reduce the fullscreen player height by 5% (95% viewport height). */
+@media screen and (orientation:landscape){
+  .playercard:fullscreen,
+  .playercard:-webkit-full-screen,
+  .playercard.mobile-rotated{
+    height:95vh!important;
+    height:95dvh!important;
+    max-height:95vh!important;
+    max-height:95dvh!important;
+    top:2.5vh!important;
+    top:2.5dvh!important;
+    bottom:auto!important;
+    margin-top:0!important;
+  }
+}
+</style>

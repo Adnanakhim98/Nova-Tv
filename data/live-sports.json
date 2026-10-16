@@ -46,7 +46,7 @@
       "show": "yes",
       "id": 1,
       "startTime": "2026-10-14T08:00:00+06:00",
-      "endTime": "2026-10-14T17:30:00+06:00",
+      "endTime": "2026-10-18T17:30:00+06:00",
       "enabled": true,
       "status": "auto",
       "matchType": "ODI"

@@ -247,27 +247,16 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 <div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">HLS Server 1, MPD Server 1, HLS Server 2 অথবা MPD Server 2 থেকে সার্ভার নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js" defer></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
+// Optimized single-player mode: HLS.js for .m3u8, Shaka for .mpd, native video for direct files.
+// Actual start time still depends on network/server response and browser autoplay permissions.
 let channels=[],liveSports=[],activeHls=null,activeDash=null,activeShaka=null,activeJw=null,activeKey=null,playRequestId=0,qualityMode="";
-// JW Player requires your own licensed library URL / Player Library ID.
-// Replace YOUR_PLAYER_LIBRARY_ID with the ID from your JW Player dashboard.
-const JWPLAYER_LIBRARY_URL="https://cdn.jwplayer.com/libraries/YOUR_PLAYER_LIBRARY_ID.js";
-let jwLibraryPromise=null;
-function ensureJwPlayer(){
- if(typeof window.jwplayer==="function")return Promise.resolve(true);
- if(!JWPLAYER_LIBRARY_URL||JWPLAYER_LIBRARY_URL.includes("YOUR_PLAYER_LIBRARY_ID"))return Promise.resolve(false);
- if(!jwLibraryPromise)jwLibraryPromise=new Promise(resolve=>{
-  const script=document.createElement("script");script.src=JWPLAYER_LIBRARY_URL;script.async=true;
-  script.onload=()=>resolve(typeof window.jwplayer==="function");
-  script.onerror=()=>resolve(false);document.head.appendChild(script);
- });
- return jwLibraryPromise;
-}
-video.preload="metadata";
+video.preload="auto";
 video.autoplay=true;
+video.setAttribute("playsinline","");
+video.setAttribute("webkit-playsinline","");
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
 const defaults={liveSports:[
 {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
@@ -504,27 +493,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
    settled=true;clearFallback();report(label+" · Playing");
  };
  // A manifest can hang without firing an error; move to the next engine after 15 seconds.
- timer=setTimeout(()=>fallback("loading timeout"),9000);
+ timer=setTimeout(()=>fallback("loading timeout"),12000);
  video.onerror=()=>fallback("native media error");
  video.addEventListener("playing",()=>{if(requestId===playRequestId)success(engine==="native"?"Native player":engine.toUpperCase())},{once:true});
  try{
-  if(engine==="jw"){
-   const available=await ensureJwPlayer();
-   if(requestId!==playRequestId)return;
-   if(!available){fallback("JW Player library not configured or unavailable");return}
-   if(parsed.scheme==="clearkey"&&parsed.license){
-    report("JW Player ClearKey DRM সরাসরি সমর্থিত নাও হতে পারে · বিকল্প player চেষ্টা হচ্ছে…");
-    fallback("ClearKey DRM fallback");return;
-   }
-   const jwBox=$("jwplayerContainer");jwBox.innerHTML="";jwBox.style.display="block";video.style.display="none";
-   const jwConfig={file:url,width:"100%",height:"100%",aspectratio:"16:9",autostart:true,controls:true,stretching:"uniform"};
-   if(kind==="hls")jwConfig.type="hls";
-   else if(kind==="mpd")jwConfig.type="dash";
-   activeJw=window.jwplayer(jwBox).setup(jwConfig);
-   activeJw.on("play",()=>success("JW Player"));
-   activeJw.on("setupError",()=>fallback("JW Player setup error"));
-   activeJw.on("error",()=>fallback("JW Player playback error"));
-  }else if(engine==="shaka"&&window.shaka){
+  if(engine==="shaka"&&window.shaka){
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported()){fallback("browser unsupported");return}
    activeShaka=new shaka.Player(video);
@@ -537,13 +510,6 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,engi
    report("Shaka player · লিংক লোড হচ্ছে…");
    await activeShaka.load(url);if(requestId!==playRequestId)return;
    setupShakaQualities();video.play().catch(()=>{});success("Shaka / MPEG-DASH");
-  }else if(engine==="dashjs"&&window.dashjs){
-   activeDash=dashjs.MediaPlayer().create();
-   activeDash.updateSettings({streaming:{buffer:{bufferTimeDefault:8,bufferTimeAtTopQuality:12,bufferTimeAtTopQualityLongForm:15},lowLatencyEnabled:true,abr:{initialBitrate:{video:700},autoSwitchBitrate:{video:true}},retryAttempts:{MPD:2,MediaSegment:2,InitializationSegment:2,BitstreamSwitchingSegment:2,IndexSegment:2,other:2},retryIntervals:{MPD:500,MediaSegment:500,InitializationSegment:500,BitstreamSwitchingSegment:500,IndexSegment:500,other:500}}});
-   if(parsed.scheme==="clearkey"&&parsed.license){const p=parsed.license.split(":");if(p.length===2)activeDash.setProtectionData({"org.w3.clearkey":{"clearkeys":{[p[0].trim()]:p[1].trim()}}})}
-   activeDash.on(dashjs.MediaPlayer.events.ERROR,()=>fallback("dash.js error"));
-   activeDash.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED,()=>{if(requestId===playRequestId){setupDashjsQualities();video.play().catch(()=>{});success("dash.js / MPEG-DASH")}});
-   activeDash.initialize(video,url,true);
   }else if(engine==="hlsjs"&&window.Hls&&Hls.isSupported()){
    activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:15,maxBufferLength:12,maxMaxBufferLength:20,maxBufferSize:25000000,manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:400,levelLoadingTimeOut:7000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:400,fragLoadingTimeOut:10000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:400,startLevel:0,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:900000,abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.75});
    activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId){activeHls.loadSource(url);video.play().catch(()=>{})}});

@@ -1,9 +1,9 @@
 {
   "match": {
-    "name": "Bangladesh W VS Australia W",
+    "name": "Bangladesh VS Zimbabwe",
     "category": "Live Sports",
     "logo": "▶",
-    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Australia%20Women%20Vs%20Bangladesh%20Women.jpg",
+    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Bangladesh%20Vs%20Zimbabwe.jpg",
     "fallbackLogo": "▶",
     "tone": "blue",
     "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/v8s736w0hw/out/v1/157d723d80d94a3998a06a8e78ad0686/cenc.mpd|drmScheme=clearkey&drmLicense=09269747be60ae1f8d4283d6d5d01fd2:a46879b547df24d568c8f89ae6c3273c",
@@ -15,8 +15,8 @@
     "streams": [
       {
         "name": "HLS Server 1",
-        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjkl/index.m3u8",
-        "show": "no"
+        "url": "https://saseries.akamaized.net/hls/live/2110097/306-tapmad/master.m3u8",
+        "show": "yes"
       },
       {
         "name": "MPD Server 1",
@@ -25,7 +25,7 @@
           "scheme": "clearkey",
           "license": "9b642c93aae95d414b5cf3b7486da7cd:f349ed601c76da554355e0fcc32f7b9f"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "HLS Server 2",
@@ -48,6 +48,6 @@
     "endTime": "2026-10-18T17:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "ODI"
+    "matchType": "T20"
   }
 }

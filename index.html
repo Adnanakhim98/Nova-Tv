@@ -251,55 +251,6 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .screen.shaka-ui-active .nova-controls{display:none!important}
 .screen.shaka-ui-active .center-play-pause{display:none!important}
 .screen.shaka-ui-active .shaka-controls-container{z-index:5}
-
-
-/* SPORTYNOVA Smart UI refresh — preserve every channel logo/icon and existing behavior */
-:root{--bg:#070a12;--panel:#101725;--panel2:#151e2e;--line:#28364d;--cyan:#21d8f4;--red:#ff3c60;--muted:#95a3bb;--text:#f4f8ff}
-body{background:radial-gradient(ellipse at 50% -15%,#152840 0, #080a12 48%,#060810 100%)!important}
-.wrap{max-width:1120px!important;padding-top:10px!important}
-.update-stamp{color:#9caac1!important;letter-spacing:.15px}
-.topbar{background:linear-gradient(120deg,#121c2cF5,#0d1320F5)!important;border-color:#2c3c56!important;box-shadow:0 10px 30px #0003, inset 0 1px #ffffff08!important;backdrop-filter:blur(14px)}
-.brandicon{border-radius:14px!important;box-shadow:0 0 22px #18d6f344, inset 0 1px #ffffff66!important}
-.brandname{letter-spacing:.65px!important}.tagline{font-weight:600!important}
-.search{background:#080e19!important;border-color:#34425b!important;box-shadow:inset 0 2px 7px #0003;transition:border-color .2s,box-shadow .2s}
-.search:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 3px #21d8f41c!important}
-.playersticky{background:transparent!important}
-.playersticky>.sectionhead{padding:2px 2px 8px!important}
-.playersticky>.sectionhead h2{font-size:clamp(14px,3.7vw,19px)!important;letter-spacing:-.25px}
-.contacttext{font-weight:500!important}
-.contactlink{border-radius:10px!important;box-shadow:0 4px 12px #0002;transition:transform .18s,filter .18s}
-.contactlink.telegram{background:linear-gradient(135deg,#22a8e5,#087db8)!important}.contactlink.whatsapp{background:linear-gradient(135deg,#21b875,#087d4b)!important}
-.playercard{border:1px solid #2b3a52!important;border-radius:20px!important;background:#080b12!important;box-shadow:0 14px 38px #0005,0 0 0 1px #ffffff04!important}
-.screen{background:radial-gradient(ellipse at center,#111827,#020307 72%)!important}
-.playerfoot{background:linear-gradient(100deg,#111a29,#0c111c)!important;border-top-color:#26334a!important}
-.nowtitle{letter-spacing:.1px}.nowmeta{line-height:1.4}
-.btn,.nova-control-btn,.nova-fit-select{transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important}
-.btn{border-color:#35435b!important;background:linear-gradient(135deg,#1b273a,#121a29)!important;border-radius:11px!important}
-.btn:active,.nova-control-btn:active{transform:scale(.96)}
-.noticebar{border-color:#2b4058!important;border-radius:12px!important;background:linear-gradient(100deg,#111e2d,#0b1220)!important;box-shadow:0 5px 15px #0002}
-.notice-label{background:linear-gradient(120deg,#25d9f1,#0785bd)!important}
-.channelarea .sectionhead{background:linear-gradient(110deg,#152235,#0e1420)!important;border-color:#2a3b54!important;box-shadow:0 6px 20px #0002!important}
-.channelarea .sectionhead h2{letter-spacing:-.2px}
-.section-count{font-weight:700!important;letter-spacing:.45px}
-/* Channel cards: keep original .chlogo and its image/emoji content untouched */
-.channel{background:linear-gradient(145deg,#182337 0%,#0d1421 75%)!important;border-color:#2a3850!important;border-radius:16px!important;box-shadow:0 6px 16px #0002!important;isolation:isolate}
-.channel:before{background:linear-gradient(135deg,#ffffff0b,transparent 48%)!important;z-index:-1}
-.channel.active{background:linear-gradient(145deg,#123044,#0c1a28)!important;border-color:#24d9f3!important;box-shadow:0 0 0 1px #21d8f433,0 7px 22px #12cde41a!important}
-.channel:focus-visible,.category-tab:focus-visible,.btn:focus-visible{outline:2px solid var(--cyan)!important;outline-offset:2px}
-.chlogo{filter:drop-shadow(0 3px 7px #0006)!important}
-.chlogo img{object-fit:contain!important;/* keep channel logo/icon visible */}
-.chname{font-weight:750!important;letter-spacing:.05px!important}
-.chcat{color:#8e9db5!important}
-.category-tabs{gap:7px!important}
-.category-tab{background:linear-gradient(145deg,#151e2d,#101623)!important;border-color:#2b3950!important;color:#c3cee0!important;border-radius:11px!important;box-shadow:0 3px 10px #0002!important;transition:all .18s ease!important}
-.category-tab.active{background:linear-gradient(120deg,#21d2eb,#087db8)!important;color:#04131b!important;border-color:#34e5fa!important;box-shadow:0 5px 17px #10c8e433!important}
-.modalbox{background:linear-gradient(145deg,#151e2d,#0d1320)!important;border-color:#34445e!important;box-shadow:0 22px 70px #0009!important}
-.serverchoice{border-radius:13px!important;background:linear-gradient(120deg,#1a293e,#111a29)!important;border-color:#31415a!important}
-.field{background:#080e19!important;border-color:#34425b!important}
-.footer{color:#74829a!important}
-@media(hover:hover){.channel:hover{transform:translateY(-2px)!important;border-color:#3e7186!important;box-shadow:0 11px 24px #0005!important}.category-tab:hover,.btn:hover{border-color:#3c7288!important;filter:brightness(1.08)}}
-@media(max-width:420px){.topbar{gap:7px!important}.search{padding:10px 10px!important;font-size:11px!important}.brand{gap:7px!important}.brandname{font-size:clamp(14px,3.7vw,18px)!important}.playercard{border-radius:17px!important}.channel{border-radius:14px!important}.category-tabs{gap:5px!important}.channelarea .sectionhead{border-radius:13px!important}}
-
 </style>
 
 <style>
@@ -362,7 +313,7 @@ body{background:radial-gradient(ellipse at 50% -15%,#152840 0, #080a12 48%,#0608
     </div>
    </div>
   </div>
-  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn screenFitBtn" id="fitScreenBtn" type="button">Fit screen</button><button class="btn screenFitBtn" id="fillScreenBtn" type="button">Fill screen</button><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
 ।</span></div></div>
@@ -436,7 +387,7 @@ const categoryInfo={
 };
 let selectedCategory="Bangla";
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
- const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");b.dataset.streamUrl=String(ch.url||"");b.setAttribute("aria-pressed",ch.url&&ch.url===video.dataset.currentUrl?"true":"false");
+ const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
  const logoValue=String(ch.logoUrl||ch.logo||"▶").trim();
  if(/^https?:\/\//i.test(logoValue)){
@@ -472,14 +423,6 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   else{openModal(ch.name)}
  });
  root.appendChild(b);
-}
-function markActiveChannelCards(rawUrl){
- const selected=String(rawUrl||"");
- document.querySelectorAll(".channel").forEach(card=>{
-  const isActive=!!selected && card.dataset.streamUrl===selected;
-  card.classList.toggle("active",isActive);
-  card.setAttribute("aria-pressed",isActive?"true":"false");
- });
 }
 function render(list=channels){
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
@@ -603,7 +546,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  $("empty").style.display="none";
  setLiveBadge(false);hideQualitySelector();
  setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);
- video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="auto";video.autoplay=true;video.muted=false;video.volume=1;markActiveChannelCards(rawUrl);
+ video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="auto";video.autoplay=true;video.muted=false;video.volume=1;
  let engine="Shaka Player",settled=false,timer=null;
  const report=msg=>{if(requestId===playRequestId)showStatus(name,msg)};
  const clearStartupTimer=()=>{if(timer){clearTimeout(timer);timer=null}};
@@ -654,6 +597,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    hlsAlternativeFrame.style.display="block";
    showStatus(name,"HLS / M3U8 · Alternative Player");
    setPlayerLoading(false);
+   render();
    return;
   }
   if(kind==="mpd"){
@@ -684,6 +628,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    video.muted=false;video.volume=1;video.src=url;video.load();video.play().catch(()=>{});
   }
  }catch(err){fail(err?.message||"player exception")}
+ render();
 }
 function openServerModal(ch){
  const modal=$("serverModal"),root=$("serverChoices");
@@ -713,14 +658,10 @@ function openServerModal(ch){
 }
 function openModal(name=""){ $("urlModal").classList.add("open");$("streamName").value=name;$("streamUrl").value=""; }
 $("customBtn").onclick=()=>openModal();
-$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();markActiveChannelCards("");showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");};
+$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
-let searchRenderTimer=null;
-$("search").addEventListener("input",()=>{
- if(searchRenderTimer)clearTimeout(searchRenderTimer);
- searchRenderTimer=setTimeout(()=>{render(channels);},120);
-});
+$("search").addEventListener("input",()=>render(channels));
 async function loadConfig(){
  const files={Bangla:"./data/bangla.json",Indian:"./data/india.json",Sports:"./data/sports.json",News:"./data/news.json",Music:"./data/music.json",Entertainment:"./data/entertainment.json",Movie:"./data/movie.json",Cartoon:"./data/cartoon.json",Religion:"./data/religion.json",Documentary:"./data/documentary.json"};
  try{
@@ -801,6 +742,8 @@ function applyVideoFit(mode){
  video.style.setProperty("transform",transform,"important");
 }
 $("fitSelect").addEventListener("change",()=>applyVideoFit($("fitSelect").value));
+$("fitScreenBtn").addEventListener("click",()=>{ $("fitSelect").value="contain"; applyVideoFit("contain"); });
+$("fillScreenBtn").addEventListener("click",()=>{ $("fitSelect").value="fill"; applyVideoFit("fill"); });
 applyVideoFit($("fitSelect").value);
 $("pipBtn").addEventListener("click",async()=>{
  try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
@@ -847,22 +790,7 @@ if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
 else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
 loadConfig();
 // Refresh match status and hide ended matches automatically.
-// Avoid rebuilding every channel card on a timer: this can stutter/freeze on mobile.
- // Sports event labels update in place without recreating the channel catalogue.
-setInterval(()=>{
- const now=Date.now();
- document.querySelectorAll("#liveSportsChannels .channel").forEach(card=>{
-  const status=card.querySelector(".sports-status");
-  if(!status)return;
-  // Keep status refresh lightweight; full event filtering happens on the next user render.
-  const name=card.querySelector(".chname")?.textContent||"";
-  const event=liveSports.find(item=>String(item.name||"")===name);
-  if(!event)return;
-  const start=Date.parse(event.startTime||""),end=Date.parse(event.endTime||"");
-  const state=(Number.isFinite(start)&&Number.isFinite(end)&&now>=end)?"ENDED":(Number.isFinite(start)&&now>=start?"LIVE":"UPCOMING");
-  status.textContent=state;status.classList.toggle("is-live",state==="LIVE");
- });
-},60000);
+setInterval(()=>render(channels),30000);
 // Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
 document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});
@@ -1009,8 +937,10 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
 </html>
 
 <style>
-/* Keep internal video-fit selector hidden; removed the separate Fit/Fill action buttons. */
+/* Dedicated Fit screen / Fill screen buttons. */
 #fitSelect{display:none!important}
+.screenFitBtn{white-space:nowrap!important;min-width:68px!important}
+@media(max-width:420px){.screenFitBtn{font-size:9px!important;padding:5px 6px!important;min-width:0!important}}
 </style>
 
 <style>
@@ -1047,17 +977,3 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
   new MutationObserver(keepVisible).observe(card, {attributes:true, attributeFilter:['class']});
 })();
 </script>
-
-<style id="sportynova-smooth-mobile">
-/* Mobile-first performance polish: avoid costly hover transforms on touch devices. */
-@media (hover:none), (pointer:coarse) {
-  .channel:hover,.category-tab:hover,.btn:hover,.serverchoice:hover {
-    transform:none!important;
-    filter:none!important;
-  }
-}
-.channel,.category-tab,.btn,.contactlink,.serverchoice {
-  -webkit-tap-highlight-color:transparent;
-}
-.channel { contain:layout paint; }
-</style>

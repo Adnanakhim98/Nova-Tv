@@ -532,11 +532,10 @@ function streamKind(url){
  if(/\.(ts|m2ts)$/.test(path))return "transport";
  return "unknown";
 }
-function launchAlternativePlayer(requestId, url, name, reason=""){
+function launchAlternativePlayer(requestId, url, name, reason="", onLoadFailure=null){
  if(requestId!==playRequestId)return;
  const frame=$("alternativeFrame"),videoEl=$("video"),screen=$("playerScreen");
  if(!frame||!url)return;
- // Destroy the main playback engine before loading the separately hosted JW Player wrapper.
  if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
  if(activeShakaUI){const old=activeShakaUI;activeShakaUI=null;try{old.destroy()}catch(e){}}
  if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
@@ -548,25 +547,31 @@ function launchAlternativePlayer(requestId, url, name, reason=""){
  $("nowTitle").textContent=name||"Live TV";
  $("nowMeta").textContent="ALT Player · বিকল্প প্লেয়ার চালু হচ্ছে";
  let done=false;
- const timeout=setTimeout(()=>{
-  if(requestId!==playRequestId||done)return;
-  done=true;setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ার পেজ লোড হতে দেরি হচ্ছে। লিংক/সার্ভার পরীক্ষা করুন।",true);
-  $("nowMeta").textContent="Alternative Player · লোড নিশ্চিত করা যায়নি";
- },18000);
- frame.onload=()=>{
-  if(requestId!==playRequestId||done)return;
-  done=true;clearTimeout(timeout);setPlayerLoading(false);
-  $("nowMeta").textContent="Alternative Player · পেজ লোড হয়েছে (ভিডিও চলা নিশ্চিত নয়)";
+ const onAltReady=(event)=>{
+  if(event.source!==frame.contentWindow||event.origin!==location.origin||event.data?.type!=="rs-alternative-player-frame-loaded"||requestId!==playRequestId||done)return;
+  done=true;clearTimeout(timeout);window.removeEventListener("message",onAltReady);setPlayerLoading(false);
+  $("nowMeta").textContent="Alternative Player · প্লেয়ার পেজ লোড হয়েছে (ভিডিও চলা নিশ্চিত নয়)";
   setLiveBadge(false);
  };
+ window.addEventListener("message",onAltReady);
+ const timeout=setTimeout(()=>{
+  if(requestId!==playRequestId||done)return;
+  done=true;window.removeEventListener("message",onAltReady);frame.onload=null;frame.onerror=null;
+  if(typeof onLoadFailure==="function"){onLoadFailure();return;}
+  setPlayerLoading(true,"Alternative Player","১২ সেকেন্ডেও বিকল্প প্লেয়ার লোড হয়নি। লিংক/সার্ভার পরীক্ষা করুন।",true);
+  $("nowMeta").textContent="Alternative Player · লোড ব্যর্থ";
+ },12000);
+ frame.onload=()=>{};
  frame.onerror=()=>{
   if(requestId!==playRequestId||done)return;
-  done=true;clearTimeout(timeout);setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ার লোড করা যায়নি।",true);
+  done=true;clearTimeout(timeout);window.removeEventListener("message",onAltReady);
+  if(typeof onLoadFailure==="function"){onLoadFailure();return;}
+  setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ার লোড করা যায়নি।",true);
   $("nowMeta").textContent="Alternative Player · লোড ব্যর্থ";
  };
  frame.src=target;
 }
-async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
+async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,forceDefault=false){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
@@ -584,7 +589,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
   if(requestId!==playRequestId||settled)return;
   console.warn("SPORTYNOVA playback error:",reason||"unknown");clearStartupTimer();
   // Automatically try the user's alternative JW Player after the primary engine fails.
-  if(!alternativeAttempted){alternativeAttempted=true;settled=true;launchAlternativePlayer(requestId,url,name,reason);return;}
+  if(!alternativeAttempted&&!forceDefault){alternativeAttempted=true;settled=true;launchAlternativePlayer(requestId,url,name,reason);return;}
   settled=true;setLiveBadge(false);setPlayerLoading(true,"Stream চালু করা যায়নি","লিংক / সার্ভার / CORS / DRM পরীক্ষা করুন",true);
   $("nowTitle").textContent=name;$("nowMeta").textContent="চালানো যায়নি · অন্য সার্ভার চেষ্টা করুন";
  };
@@ -592,8 +597,18 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
   if(requestId!==playRequestId||settled||video.paused||video.readyState<2)return;
   settled=true;clearStartupTimer();report(label+" · Playing");
  };
+ // HLS/M3U8 starts in the alternative player first; if its page fails to load
+ // within 12 seconds, retry using the default Shaka/HLS.js player.
+ if(kind==="hls"&&!forceDefault){
+  alternativeAttempted=true;
+  launchAlternativePlayer(requestId,url,name,"HLS alternative-first",()=>{
+   if(requestId===playRequestId)playStream(rawUrl,name,category,drm,true);
+  });
+  return;
+ }
  video.onerror=()=>fail("media error");video.onplaying=()=>success(engine);
- timer=setTimeout(()=>fail("startup timeout"),20000);
+ // MPD/default playback gets 12 seconds to start before switching to alternative.
+ timer=setTimeout(()=>fail("startup timeout (12 seconds)"),12000);
  const configureShaka=player=>{
   player.configure({
    streaming:{bufferingGoal:4,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,

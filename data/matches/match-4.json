@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "India Vs West indies",
+    "name": "England Cham Vs West indies Cham",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/India%20Vs%20West%20Indies.jpg",
@@ -44,8 +44,8 @@
     ],
     "show": "yes",
     "id": 4,
-    "startTime": "2026-10-17T19:20:00+06:00",
-    "endTime": "2026-10-17T23:00:00+06:00",
+    "startTime": "2026-10-18T19:20:00+06:00",
+    "endTime": "2026-10-19T01:00:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "T20"

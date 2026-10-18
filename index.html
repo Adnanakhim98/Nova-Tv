@@ -19,7 +19,7 @@
 .wrap{height:100dvh;max-width:1100px;margin:auto;padding:9px 9px 0;display:flex;flex-direction:column;min-height:0}
 .topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(16,21,34,.98);border:1px solid #253047;border-radius:17px;padding:10px;z-index:10}
 .brand{display:flex;align-items:center;gap:9px;min-width:0}.brandicon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1cdbf6,#087eae);color:#03121b;font-size:21px;font-weight:900}.brandname{font-size:clamp(15px,3.6vw,22px);font-weight:800;letter-spacing:.4px;white-space:nowrap}.nova{color:#ff3d55}.version{font-size:10px;color:#9aa7bd;vertical-align:top;margin-left:4px}.tagline{font-size:9px;letter-spacing:1.1px;color:#8491a8;margin-top:2px}.search{width:min(220px,42vw);min-width:95px;border:1px solid #2b354a;background:#0b101b;border-radius:22px;padding:10px 12px;color:#fff;outline:none;font-size:12px}
-.playersticky{flex:0 0 auto;position:relative;z-index:2;background:var(--bg);padding-bottom:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 2px 9px}.sectionhead h2{font-size:15px;margin:0;font-weight:700}.livepill{font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--red);padding:6px 9px;border-radius:7px;white-space:nowrap}.contactbox{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;min-width:0}.contacttext{font-size:9px;line-height:1.25;color:#aebbd0;text-align:right;max-width:120px}.contactlink{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:10px;font-weight:800;color:#fff;padding:7px 9px;border-radius:7px;white-space:nowrap;border:1px solid #2b3850;background:#182133}.contactlink.telegram{background:#168bc3;border-color:#168bc3}.contactlink.whatsapp{background:#168b55;border-color:#168b55}.searchhint{font-size:11px;color:#9aa7bd;margin:0 2px 8px}.playercard{background:#0d111c;border:1px solid #242d40;border-radius:16px;overflow:hidden}.screen{position:relative;background:#03050a;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020307}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,#182237 0,#080a12 72%);z-index:1}.tvicon{font-size:34px}.empty strong{font-size:14px;margin-top:9px}.empty span{font-size:11px;color:#8793aa;margin-top:5px}.playerfoot{padding:8px 11px;border-top:1px solid #1c2536;display:flex;align-items:center;justify-content:space-between;gap:8px}.noticebar{height:34px;margin-top:7px;display:flex;align-items:center;gap:9px;overflow:hidden;border:1px solid #26364b;border-radius:9px;background:linear-gradient(90deg,#111b2a,#0b1220);white-space:nowrap}.notice-label{height:100%;display:flex;align-items:center;flex:0 0 auto;padding:0 10px;background:linear-gradient(120deg,#13c9e9,#0879b5);color:#04131b;font-size:10px;font-weight:900;letter-spacing:.5px}.notice-window{position:relative;flex:1;min-width:0;overflow:hidden;height:100%;display:flex;align-items:center}.notice-text{display:inline-block;flex:0 0 auto;padding-left:0;font-size:11px;font-weight:600;color:#eaf7ff;animation:noticeMove 32s linear infinite}@keyframes noticeMove{from{transform:translateX(100%)}to{transform:translateX(-100%)}}.noticebar:hover .notice-text{animation-play-state:paused}.nowtitle{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nowmeta{font-size:10px;color:var(--muted);margin-top:3px}.playeractions{display:flex;gap:6px;flex:0 0 auto}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
+.playersticky{flex:0 0 auto;position:relative;z-index:2;background:var(--bg);padding-bottom:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 2px 9px}.sectionhead h2{font-size:15px;margin:0;font-weight:700}.livepill{font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--red);padding:6px 9px;border-radius:7px;white-space:nowrap}.contactbox{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;min-width:0}.contacttext{font-size:9px;line-height:1.25;color:#aebbd0;text-align:right;max-width:120px}.contactlink{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:10px;font-weight:800;color:#fff;padding:7px 9px;border-radius:7px;white-space:nowrap;border:1px solid #2b3850;background:#182133}.contactlink.telegram{background:#168bc3;border-color:#168bc3}.contactlink.whatsapp{background:#168b55;border-color:#168b55}.searchhint{font-size:11px;color:#9aa7bd;margin:0 2px 8px}.playercard{background:#0d111c;border:1px solid #242d40;border-radius:16px;overflow:hidden}.screen{position:relative;background:#03050a;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020307}.screen .hls-alt-frame{display:none;position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:3}.screen.hls-alt-active .hls-alt-frame{display:block}.screen.hls-alt-active video,.screen.hls-alt-active .nova-controls{display:none!important}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,#182237 0,#080a12 72%);z-index:1}.tvicon{font-size:34px}.empty strong{font-size:14px;margin-top:9px}.empty span{font-size:11px;color:#8793aa;margin-top:5px}.playerfoot{padding:8px 11px;border-top:1px solid #1c2536;display:flex;align-items:center;justify-content:space-between;gap:8px}.noticebar{height:34px;margin-top:7px;display:flex;align-items:center;gap:9px;overflow:hidden;border:1px solid #26364b;border-radius:9px;background:linear-gradient(90deg,#111b2a,#0b1220);white-space:nowrap}.notice-label{height:100%;display:flex;align-items:center;flex:0 0 auto;padding:0 10px;background:linear-gradient(120deg,#13c9e9,#0879b5);color:#04131b;font-size:10px;font-weight:900;letter-spacing:.5px}.notice-window{position:relative;flex:1;min-width:0;overflow:hidden;height:100%;display:flex;align-items:center}.notice-text{display:inline-block;flex:0 0 auto;padding-left:0;font-size:11px;font-weight:600;color:#eaf7ff;animation:noticeMove 32s linear infinite}@keyframes noticeMove{from{transform:translateX(100%)}to{transform:translateX(-100%)}}.noticebar:hover .notice-text{animation-play-state:paused}.nowtitle{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nowmeta{font-size:10px;color:var(--muted);margin-top:3px}.playeractions{display:flex;gap:6px;flex:0 0 auto}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
 .channelarea{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 0 20px;scrollbar-width:thin;scrollbar-color:#344057 transparent}.channelarea .sectionhead{margin:8px 2px 9px;padding:11px 12px;background:linear-gradient(100deg,#111b2a,#0d111c);border:1px solid #243149;border-radius:12px}.section-count{font-size:10px;color:#8190a7;white-space:nowrap}.channelrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.channelrow.sportsrow{grid-template-columns:repeat(3,minmax(0,1fr))}.channelrow.sportsrow .channel{min-height:118px;padding:12px 6px}.channelrow.sportsrow .chlogo{height:48px;margin-bottom:9px}.channelrow.sportsrow .chlogo img{max-width:100%;height:46px}.channel{cursor:pointer;min-width:0;border:1px solid #252e42;background:linear-gradient(150deg,#171d2b,#0e121c);border-radius:15px;padding:10px 4px;text-align:center;color:#fff;min-height:105px}.channel.active{border-color:var(--cyan);box-shadow:0 0 0 1px #18d6f344,0 0 18px #18d6f31b;background:#10212c}.chlogo{height:34px;display:grid;place-items:center;margin-bottom:7px;font-size:18px;font-weight:900}.chlogo img{display:block;width:100%;max-width:76px;height:34px;object-fit:contain;border-radius:5px}.chlogo .logo-fallback{font-size:18px;line-height:1}.chlogo.red{color:#ff334d}.chlogo.blue{color:#39bdf7}.chlogo.gold{color:#f9ca52}.chlogo.purple{color:#d6a3ff}.chlogo.green{color:#40e0a0}.chname{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chcat{font-size:9px;color:#7f8ba1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sportsrow{grid-template-columns:repeat(3,minmax(0,1fr))!important}.sportsrow .channel{min-height:118px;padding:12px 6px}.sportsrow .chlogo{height:48px;margin-bottom:9px}.sportsrow .chlogo img{max-width:100%;height:46px}.category-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(34px,auto);gap:7px;padding:2px 1px 10px;margin:0 0 8px;overflow:visible}.category-tab{min-width:0;width:100%;border:1px solid #2a354a;background:#121927;color:#b8c4d8;border-radius:12px;padding:8px 3px;font-size:10px;font-weight:700;line-height:1.2;white-space:normal;overflow-wrap:anywhere;cursor:pointer}.category-tab.active{background:linear-gradient(120deg,#12bfe3,#0878b6);border-color:#18d6f3;color:#04131b;box-shadow:0 0 12px #18d6f322}.footer{text-align:center;color:#657187;font-size:10px;padding:18px 0 10px}
 .modal{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modalbox{width:min(480px,100%);background:#111725;border:1px solid #34405a;border-radius:16px;padding:17px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalhead h3{font-size:15px;margin:0}.xbtn{background:#252e40;border:0;color:#fff;border-radius:8px;padding:7px 10px}.fieldlabel{display:block;font-size:11px;color:#9eabc0;margin:11px 0 6px}.field{width:100%;border:1px solid #303b50;background:#090e18;color:white;border-radius:9px;padding:11px;font-size:12px;outline:none}.hint{font-size:10px;color:#7d8ba1;line-height:1.6;margin-top:10px}.modalbuttons{display:flex;gap:8px;margin-top:13px}.modalbuttons .btn{flex:1}.primary{background:linear-gradient(120deg,#12bfe3,#0878b6);border:0;color:#03121b}
 
@@ -299,6 +299,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="metadata" autoplay></video>
+   <iframe id="hlsAlternativeFrame" class="hls-alt-frame" title="HLS Alternative Player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
@@ -331,7 +332,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
-const $=id=>document.getElementById(id), video=$("video");
+const $=id=>document.getElementById(id), video=$("video"), hlsAlternativeFrame=$("hlsAlternativeFrame");
 // Keep the existing Fit/Zoom selector available while Shaka supplies the playback controls.
 (()=>{const fit=$("fitSelect"),actions=document.querySelector(".playeractions"),quality=$("qualitySelect");if(fit&&actions&&quality)actions.insertBefore(fit,quality);})();
 let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
@@ -495,6 +496,8 @@ function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="দ্রুত �
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){
+  if(hlsAlternativeFrame){hlsAlternativeFrame.onload=null;hlsAlternativeFrame.src="about:blank";hlsAlternativeFrame.style.display="none";}
+  if(screenEl)screenEl.classList.remove("hls-alt-active");
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
   if(activeShakaUI){const oldUI=activeShakaUI;activeShakaUI=null;try{oldUI.destroy()}catch(e){}}
   if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
@@ -583,49 +586,45 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
   return keys;
  };
  try{
-  if(!window.shaka)throw new Error("Shaka library unavailable");
-  shaka.polyfill.installAll();
-  if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
-
-  // Every stream gets the requested Shaka UI. Shaka handles MPD/HLS; direct files use
-  // the same Shaka control overlay with the browser's native media pipeline.
-  activeShaka=new shaka.Player();
-  configureShaka(activeShaka);
-  activeShaka.addEventListener("error",evt=>{
+  // HLS/M3U8 is routed to the supplied standalone alternative player.
+  // MPD/DASH continues to use the existing Shaka player below.
+  if(kind==="hls"){
+   clearStartupTimer();settled=true;
+   video.style.display="none";
+   screenEl.classList.add("hls-alt-active");
+   const params=new URLSearchParams();params.set("url",url);
+   hlsAlternativeFrame.src="./hls-player.html?"+params.toString();
+   hlsAlternativeFrame.style.display="block";
+   showStatus(name,"HLS / M3U8 · Alternative Player");
+   setPlayerLoading(false);
+   render();
+   return;
+  }
+  if(kind==="mpd"){
+   if(!window.shaka)throw new Error("Shaka library unavailable");
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
+   engine="Shaka / MPEG-DASH";report("MPEG-DASH · লিংক লোড হচ্ছে…");
+   activeShaka=new shaka.Player();configureShaka(activeShaka);
+   activeShaka.addEventListener("error",evt=>{
+    if(requestId===playRequestId)console.warn("Shaka playback error",evt.detail?.code||"");
+   });
+   await activeShaka.attach(video);
    if(requestId!==playRequestId)return;
-   console.warn("Shaka playback error",evt.detail?.code||"");
-  });
-  await activeShaka.attach(video);
-  if(requestId!==playRequestId)return;
-  createShakaUi(activeShaka);
-  const keys=makeClearKeys();if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
-
-  if(kind==="mpd"||kind==="hls"){
-   engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / HLS";
-   report((kind==="mpd"?"MPEG-DASH":"HLS")+" · লিংক লোড হচ্ছে…");
-   try{
-    await activeShaka.load(url);
-    if(requestId!==playRequestId)return;
-    setupShakaQualities();video.play().catch(()=>{});
-   }catch(shakaError){
-    if(requestId!==playRequestId)return;
-    console.warn("Shaka load failed; trying compatible fallback",shakaError);
-    if(kind!=="hls")throw shakaError;
-    // HLS fallback only changes the decoding engine; keep the same Shaka UI on screen.
-    if(activeShaka){try{await activeShaka.unload()}catch(e){}}
-    if(window.Hls&&Hls.isSupported()){
-     engine="HLS.js fallback";
-     activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:8,maxBufferLength:8,maxMaxBufferLength:12,startLevel:0,capLevelToPlayerSize:true,manifestLoadingTimeOut:6000,manifestLoadingMaxRetry:1,fragLoadingTimeOut:10000,fragLoadingMaxRetry:1});
-     activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
-     activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{})}});
-     activeHls.on(Hls.Events.ERROR,(event,data)=>{if(requestId===playRequestId&&data.fatal)fail("HLS.js "+data.type)});
-     activeHls.attachMedia(video);
-    }else if(video.canPlayType("application/vnd.apple.mpegurl")){
-     engine="Native HLS fallback";video.src=url;video.load();video.play().catch(()=>{});
-    }else throw shakaError;
-   }
+   createShakaUi(activeShaka);
+   const keys=makeClearKeys();if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
+   await activeShaka.load(url);
+   if(requestId!==playRequestId)return;
+   setupShakaQualities();video.play().catch(()=>{});
   }else{
    engine="Shaka UI / Native Media";
+   if(window.shaka && shaka.Player.isBrowserSupported()){
+    shaka.polyfill.installAll();activeShaka=new shaka.Player();configureShaka(activeShaka);
+    await activeShaka.attach(video);
+    if(requestId!==playRequestId)return;
+    createShakaUi(activeShaka);
+    const keys=makeClearKeys();if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
+   }
    video.src=url;video.load();video.play().catch(()=>{});
   }
  }catch(err){fail(err?.message||"player exception")}

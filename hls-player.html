@@ -252,10 +252,8 @@ bvol.addEventListener('click',e=>{
   keepAudioOn();
 });
 // Keep the HLS player unmuted whenever playback starts or volume changes.
-vid.addEventListener('play', keepAudioOn);
-vid.addEventListener('volumechange',()=>{
-  if(vid.muted || vid.volume !== 1) keepAudioOn();
-});
+['play','playing','loadedmetadata','canplay','volumechange'].forEach(eventName=>vid.addEventListener(eventName,keepAudioOn));
+keepAudioOn();
 
 /* Live / Go Live */
 function updateLive(){

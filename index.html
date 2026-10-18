@@ -246,6 +246,11 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playercard:fullscreen .screen>video,.playercard:-webkit-full-screen .screen>video,.playercard.mobile-rotated .screen>video{object-fit:contain!important}
 @media(max-width:420px){.update-stamp{font-size:9px;padding-bottom:4px}.center-play-pause{width:50px;height:50px;font-size:22px}}
 
+
+/* Use the new Shaka controls for every stream type; retain Fit/Zoom in the player footer. */
+.screen.shaka-ui-active .nova-controls{display:none!important}
+.screen.shaka-ui-active .center-play-pause{display:none!important}
+.screen.shaka-ui-active .shaka-controls-container{z-index:5}
 </style>
 
 <style>
@@ -330,6 +335,8 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
+// Keep the existing Fit/Zoom selector available while Shaka supplies the playback controls.
+(()=>{const fit=$("fitSelect"),actions=document.querySelector(".playeractions"),quality=$("qualitySelect");if(fit&&actions&&quality)actions.insertBefore(fit,quality);})();
 let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
 video.preload="auto";
 video.autoplay=true;
@@ -531,106 +538,92 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  stopEngines();
  if(requestId!==playRequestId)return;
  $("empty").style.display="none";
- setLiveBadge(false);
- hideQualitySelector();
+ setLiveBadge(false);hideQualitySelector();
  setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);
- video.dataset.currentUrl=rawUrl;
- video.crossOrigin="anonymous";
- video.preload="auto";
- video.autoplay=true;
-
- let engine="native", settled=false, timer=null;
- const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
+ video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="auto";video.autoplay=true;
+ let engine="Shaka Player",settled=false,timer=null;
+ const report=msg=>{if(requestId===playRequestId)showStatus(name,msg)};
  const clearStartupTimer=()=>{if(timer){clearTimeout(timer);timer=null}};
- const fail=(reason)=>{
-   if(requestId!==playRequestId||settled)return;
-   settled=true;clearStartupTimer();
-   console.warn("SPORTYNOVA playback error:",reason||"unknown");
-   setLiveBadge(false);
-   setPlayerLoading(true,"Stream চালু করা যায়নি","লিংক / সার্ভার / CORS / DRM পরীক্ষা করুন",true);
-   $("nowTitle").textContent=name;
-   $("nowMeta").textContent="চালানো যায়নি · অন্য সার্ভার চেষ্টা করুন";
+ const fail=reason=>{
+  if(requestId!==playRequestId||settled)return;
+  settled=true;clearStartupTimer();console.warn("SPORTYNOVA playback error:",reason||"unknown");
+  setLiveBadge(false);setPlayerLoading(true,"Stream চালু করা যায়নি","লিংক / সার্ভার / CORS / DRM পরীক্ষা করুন",true);
+  $("nowTitle").textContent=name;$("nowMeta").textContent="চালানো যায়নি · অন্য সার্ভার চেষ্টা করুন";
  };
- const success=(label)=>{
-   if(requestId!==playRequestId||settled)return;
-   if(video.paused||video.readyState<2)return;
-   settled=true;clearStartupTimer();
-   report(label+" · Playing");
+ const success=label=>{
+  if(requestId!==playRequestId||settled||video.paused||video.readyState<2)return;
+  settled=true;clearStartupTimer();report(label+" · Playing");
  };
- video.onerror=()=>fail("media error");
- video.onplaying=()=>success(engine);
- // A single startup deadline reports a real failure; it does not start another player.
- timer=setTimeout(()=>fail("startup timeout"),15000);
-
+ video.onerror=()=>fail("media error");video.onplaying=()=>success(engine);
+ timer=setTimeout(()=>fail("startup timeout"),20000);
+ const configureShaka=player=>{
+  player.configure({
+   streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:12,lowLatencyMode:true,
+    retryParameters:{timeout:8000,stallTimeout:5000,connectionTimeout:5000,maxAttempts:2,baseDelay:300}},
+   manifest:{retryParameters:{timeout:8000,maxAttempts:2,baseDelay:300}},
+   drm:{retryParameters:{timeout:8000,maxAttempts:2,baseDelay:300}},
+   abr:{enabled:true,defaultBandwidthEstimate:1500000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
+  });
+ };
+ const createShakaUi=player=>{
+  try{
+   if(activeShakaUI){try{activeShakaUI.destroy()}catch(e){}activeShakaUI=null}
+   activeShakaUI=new shaka.ui.Overlay(player,screenEl,video);
+   activeShakaUI.configure({addBigPlayButton:true,controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"],seekBarColors:{base:"#828282",buffered:"#ffc336",played:"#21d8f4"}});
+   screenEl.classList.add("shaka-ui-active");
+  }catch(e){console.warn("Shaka UI initialization failed",e);screenEl.classList.remove("shaka-ui-active")}
+ };
+ const makeClearKeys=()=>{
+  const keys={};
+  if(parsed.scheme==="clearkey"&&parsed.license){const parts=parsed.license.split(":");if(parts.length===2)keys[parts[0].trim().replace(/-/g,"").toLowerCase()]=parts[1].trim().replace(/-/g,"").toLowerCase()}
+  return keys;
+ };
  try{
-   if(kind==="mpd"){
-     engine="Shaka / MPEG-DASH";
-     if(!window.shaka)throw new Error("Shaka library unavailable");
-     shaka.polyfill.installAll();
-     if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
-     activeShaka=new shaka.Player(video);
-     activeShaka.configure({
-       streaming:{
-         bufferingGoal:8,rebufferingGoal:2,bufferBehind:12,lowLatencyMode:true,
-         retryParameters:{timeout:6000,stallTimeout:4000,connectionTimeout:4000,maxAttempts:2,baseDelay:250}
-       },
-       manifest:{retryParameters:{timeout:6000,maxAttempts:2,baseDelay:250}},
-       drm:{retryParameters:{timeout:6000,maxAttempts:2,baseDelay:250}},
-       abr:{enabled:true,defaultBandwidthEstimate:1200000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
-     });
-     activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
-     await activeShaka.attach(video);
-     if(requestId!==playRequestId)return;
-     // Use Shaka's own controls for MPEG-DASH streams, matching the requested standalone player.
-     try{
-       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
-       activeShakaUI.configure({
-         addBigPlayButton:true,
-         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"],
-         seekBarColors:{base:"#828282",buffered:"#ffc336",played:"#21d8f4"}
-       });
-       screenEl.classList.add("shaka-ui-active");
-     }catch(uiError){console.warn("Shaka UI overlay unavailable; using SPORTYNOVA controls",uiError)}
-     const clearKeys={};
-     if(parsed.scheme==="clearkey"&&parsed.license){
-       const p=parsed.license.split(":");
-       if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase();
-     }
-     if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-     report("MPEG-DASH · লিংক লোড হচ্ছে…");
-     await activeShaka.load(url);
-     if(requestId!==playRequestId)return;
-     setupShakaQualities();
-     video.play().catch(()=>{});
-   }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
-     engine="HLS.js";
-     activeHls=new Hls({
-       enableWorker:true,lowLatencyMode:true,backBufferLength:10,
-       maxBufferLength:8,maxMaxBufferLength:14,maxBufferSize:20000000,
-       manifestLoadingTimeOut:6000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:250,
-       levelLoadingTimeOut:6000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:250,
-       fragLoadingTimeOut:9000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:300,
-       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1200000,
-       abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.8
-     });
-     activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
-       if(requestId===playRequestId){activeHls.loadSource(url);}
-     });
-     activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
-       if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{});}
-     });
-     activeHls.on(Hls.Events.ERROR,(event,data)=>{
-       if(requestId!==playRequestId||!data.fatal)return;
-       fail("HLS.js "+data.type);
-     });
+  if(!window.shaka)throw new Error("Shaka library unavailable");
+  shaka.polyfill.installAll();
+  if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
+
+  // Every stream gets the requested Shaka UI. Shaka handles MPD/HLS; direct files use
+  // the same Shaka control overlay with the browser's native media pipeline.
+  activeShaka=new shaka.Player();
+  configureShaka(activeShaka);
+  activeShaka.addEventListener("error",evt=>{
+   if(requestId!==playRequestId)return;
+   console.warn("Shaka playback error",evt.detail?.code||"");
+  });
+  await activeShaka.attach(video);
+  if(requestId!==playRequestId)return;
+  createShakaUi(activeShaka);
+  const keys=makeClearKeys();if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
+
+  if(kind==="mpd"||kind==="hls"){
+   engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / HLS";
+   report((kind==="mpd"?"MPEG-DASH":"HLS")+" · লিংক লোড হচ্ছে…");
+   try{
+    await activeShaka.load(url);
+    if(requestId!==playRequestId)return;
+    setupShakaQualities();video.play().catch(()=>{});
+   }catch(shakaError){
+    if(requestId!==playRequestId)return;
+    console.warn("Shaka load failed; trying compatible fallback",shakaError);
+    if(kind!=="hls")throw shakaError;
+    // HLS fallback only changes the decoding engine; keep the same Shaka UI on screen.
+    if(activeShaka){try{await activeShaka.unload()}catch(e){}}
+    if(window.Hls&&Hls.isSupported()){
+     engine="HLS.js fallback";
+     activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:10,maxBufferLength:10,maxMaxBufferLength:16,startLevel:-1,capLevelToPlayerSize:true,manifestLoadingTimeOut:8000,manifestLoadingMaxRetry:2,fragLoadingTimeOut:12000,fragLoadingMaxRetry:2});
+     activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
+     activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{})}});
+     activeHls.on(Hls.Events.ERROR,(event,data)=>{if(requestId===playRequestId&&data.fatal)fail("HLS.js "+data.type)});
      activeHls.attachMedia(video);
-   }else{
-     // Native playback for direct files, transport streams, and browsers with native HLS.
-     engine=kind==="hls"?"Native HLS":"Native media";
-     video.src=url;
-     video.load();
-     video.play().catch(()=>{});
+    }else if(video.canPlayType("application/vnd.apple.mpegurl")){
+     engine="Native HLS fallback";video.src=url;video.load();video.play().catch(()=>{});
+    }else throw shakaError;
    }
+  }else{
+   engine="Shaka UI / Native Media";
+   video.src=url;video.load();video.play().catch(()=>{});
+  }
  }catch(err){fail(err?.message||"player exception")}
  render();
 }

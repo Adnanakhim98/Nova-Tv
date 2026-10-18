@@ -298,7 +298,8 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  <div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
-   <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
+   <video id="video" playsinline webkit-playsinline preload="metadata" autoplay></video>
+   <iframe id="alternativeFrame" title="SPORTYNOVA Alternative Player" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="no-referrer-when-downgrade" style="display:none"></iframe>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
@@ -315,7 +316,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
     </div>
    </div>
   </div>
-  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn screenFitBtn" id="fitScreenBtn" type="button">Fit screen</button><button class="btn screenFitBtn" id="fillScreenBtn" type="button">Fill screen</button><button class="btn" id="alternativePlayerBtn" type="button" title="বিকল্প JW Player-এ চালান">ALT</button><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
 ।</span></div></div>
@@ -495,7 +496,8 @@ function stopEngines(){
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
   if(activeShakaUI){const oldUI=activeShakaUI;activeShakaUI=null;try{oldUI.destroy()}catch(e){}}
   if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
-  if(screenEl)screenEl.classList.remove("shaka-ui-active");
+  if(screenEl)screenEl.classList.remove("shaka-ui-active","alternative-active");
+  const altFrame=$("alternativeFrame");if(altFrame){altFrame.onload=null;altFrame.onerror=null;altFrame.style.display="none";altFrame.removeAttribute("src");}
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
@@ -530,6 +532,40 @@ function streamKind(url){
  if(/\.(ts|m2ts)$/.test(path))return "transport";
  return "unknown";
 }
+function launchAlternativePlayer(requestId, url, name, reason=""){
+ if(requestId!==playRequestId)return;
+ const frame=$("alternativeFrame"),videoEl=$("video"),screen=$("playerScreen");
+ if(!frame||!url)return;
+ // Destroy the main playback engine before loading the separately hosted JW Player wrapper.
+ if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
+ if(activeShakaUI){const old=activeShakaUI;activeShakaUI=null;try{old.destroy()}catch(e){}}
+ if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
+ screen.classList.remove("shaka-ui-active");screen.classList.add("alternative-active");
+ videoEl.pause();videoEl.removeAttribute("src");videoEl.load();videoEl.style.display="none";
+ frame.style.display="block";
+ const target="./alternative-player.html?url="+encodeURIComponent(url);
+ setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ারে ভিডিও লোড হচ্ছে…",false);
+ $("nowTitle").textContent=name||"Live TV";
+ $("nowMeta").textContent="ALT Player · বিকল্প প্লেয়ার চালু হচ্ছে";
+ let done=false;
+ const timeout=setTimeout(()=>{
+  if(requestId!==playRequestId||done)return;
+  done=true;setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ার পেজ লোড হতে দেরি হচ্ছে। লিংক/সার্ভার পরীক্ষা করুন।",true);
+  $("nowMeta").textContent="Alternative Player · লোড নিশ্চিত করা যায়নি";
+ },18000);
+ frame.onload=()=>{
+  if(requestId!==playRequestId||done)return;
+  done=true;clearTimeout(timeout);setPlayerLoading(false);
+  $("nowMeta").textContent="Alternative Player · পেজ লোড হয়েছে (ভিডিও চলা নিশ্চিত নয়)";
+  setLiveBadge(false);
+ };
+ frame.onerror=()=>{
+  if(requestId!==playRequestId||done)return;
+  done=true;clearTimeout(timeout);setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ার লোড করা যায়নি।",true);
+  $("nowMeta").textContent="Alternative Player · লোড ব্যর্থ";
+ };
+ frame.src=target;
+}
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
@@ -540,14 +576,16 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  $("empty").style.display="none";
  setLiveBadge(false);hideQualitySelector();
  setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);
- video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="auto";video.autoplay=true;
- let engine="Shaka Player",settled=false,timer=null;
+ video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="metadata";video.autoplay=true;
+ let engine="Shaka Player",settled=false,timer=null,alternativeAttempted=false;
  const report=msg=>{if(requestId===playRequestId)showStatus(name,msg)};
  const clearStartupTimer=()=>{if(timer){clearTimeout(timer);timer=null}};
  const fail=reason=>{
   if(requestId!==playRequestId||settled)return;
-  settled=true;clearStartupTimer();console.warn("SPORTYNOVA playback error:",reason||"unknown");
-  setLiveBadge(false);setPlayerLoading(true,"Stream চালু করা যায়নি","লিংক / সার্ভার / CORS / DRM পরীক্ষা করুন",true);
+  console.warn("SPORTYNOVA playback error:",reason||"unknown");clearStartupTimer();
+  // Automatically try the user's alternative JW Player after the primary engine fails.
+  if(!alternativeAttempted){alternativeAttempted=true;settled=true;launchAlternativePlayer(requestId,url,name,reason);return;}
+  settled=true;setLiveBadge(false);setPlayerLoading(true,"Stream চালু করা যায়নি","লিংক / সার্ভার / CORS / DRM পরীক্ষা করুন",true);
   $("nowTitle").textContent=name;$("nowMeta").textContent="চালানো যায়নি · অন্য সার্ভার চেষ্টা করুন";
  };
  const success=label=>{
@@ -558,11 +596,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  timer=setTimeout(()=>fail("startup timeout"),20000);
  const configureShaka=player=>{
   player.configure({
-   streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:12,lowLatencyMode:true,
+   streaming:{bufferingGoal:4,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,
     retryParameters:{timeout:8000,stallTimeout:5000,connectionTimeout:5000,maxAttempts:2,baseDelay:300}},
    manifest:{retryParameters:{timeout:8000,maxAttempts:2,baseDelay:300}},
    drm:{retryParameters:{timeout:8000,maxAttempts:2,baseDelay:300}},
-   abr:{enabled:true,defaultBandwidthEstimate:1500000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
+   abr:{enabled:true,defaultBandwidthEstimate:800000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
   });
  };
  const createShakaUi=player=>{
@@ -611,7 +649,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
     if(activeShaka){try{await activeShaka.unload()}catch(e){}}
     if(window.Hls&&Hls.isSupported()){
      engine="HLS.js fallback";
-     activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:10,maxBufferLength:10,maxMaxBufferLength:16,startLevel:-1,capLevelToPlayerSize:true,manifestLoadingTimeOut:8000,manifestLoadingMaxRetry:2,fragLoadingTimeOut:12000,fragLoadingMaxRetry:2});
+     activeHls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:8,maxBufferLength:8,maxMaxBufferLength:12,startLevel:0,capLevelToPlayerSize:true,manifestLoadingTimeOut:6000,manifestLoadingMaxRetry:1,fragLoadingTimeOut:10000,fragLoadingMaxRetry:1});
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{if(requestId===playRequestId)activeHls.loadSource(url)});
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{})}});
      activeHls.on(Hls.Events.ERROR,(event,data)=>{if(requestId===playRequestId&&data.fatal)fail("HLS.js "+data.type)});
@@ -657,6 +695,14 @@ function openModal(name=""){ $("urlModal").classList.add("open");$("streamName")
 $("customBtn").onclick=()=>openModal();
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm);};
+$("alternativePlayerBtn").onclick=()=>{
+ if(!lastStreamRequest){alert("আগে একটি চ্যানেল নির্বাচন করুন।");return;}
+ const parsed=parseStreamInput(lastStreamRequest.rawUrl,lastStreamRequest.drm);
+ if(!/^https?:\/\//i.test(parsed.url)){alert("সঠিক stream URL পাওয়া যায়নি।");return;}
+ const requestId=++playRequestId;clearTimeout(window.__rsAltLoadTimer);
+ stopEngines();
+ launchAlternativePlayer(requestId,parsed.url,lastStreamRequest.name||"Live TV","manual alternative");
+};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
 $("search").addEventListener("input",()=>render(channels));
@@ -741,7 +787,7 @@ function applyVideoFit(mode){
  // Smart Fill preserves the original aspect ratio; the screen uses a soft gradient backdrop
  // rather than stretching the picture or cropping its edges. Only Zoom intentionally crops.
  let fit="contain", transform="none";
- if(mode==="fill"){fit="contain";transform="none"}
+ if(mode==="fill"||mode==="cover"){fit="cover";transform="none"}
  else if(mode==="cover"){fit="cover";transform="none"}
  else if(mode==="zoom"){fit="cover";transform="scale(1.12)"}
  else if(mode==="zoomout"){fit="contain";transform="scale(.88)"}
@@ -751,6 +797,8 @@ function applyVideoFit(mode){
  video.style.setProperty("transform",transform,"important");
 }
 $("fitSelect").addEventListener("change",()=>applyVideoFit($("fitSelect").value));
+$("fitScreenBtn").addEventListener("click",()=>{ $("fitSelect").value="contain"; applyVideoFit("contain"); });
+$("fillScreenBtn").addEventListener("click",()=>{ $("fitSelect").value="fill"; applyVideoFit("fill"); });
 applyVideoFit($("fitSelect").value);
 $("pipBtn").addEventListener("click",async()=>{
  try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
@@ -970,3 +1018,12 @@ document.addEventListener("touchend", e => {
 
 </body>
 </html>
+
+<style>
+/* Dedicated Fit screen / Fill screen buttons. */
+#fitSelect{display:none!important}
+.screenFitBtn{white-space:nowrap!important;min-width:68px!important}
+@media(max-width:420px){.screenFitBtn{font-size:9px!important;padding:5px 6px!important;min-width:0!important}}
+#alternativeFrame{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;background:#000!important;z-index:4!important}
+.screen.alternative-active .shaka-controls-container,.screen.alternative-active .nova-controls{display:none!important}
+</style>

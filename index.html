@@ -947,33 +947,3 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
 /* User request: no loading overlay and no HTML play/pause button. */
 #playerLoading,.playerLoading,#centerPlayPause,.center-play-pause,#playPauseBtn{display:none!important}
 </style>
-
-
-<style id="sportynova-keep-channel-bar-visible">
-/* Keep the orange-marked channel information/action bar visible at all times. */
-.playersticky .playercard .playerfoot,
-.playersticky .playercard.info-bar-hidden .playerfoot {
-  display:flex !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  transform:none !important;
-  max-height:none !important;
-  min-height:0 !important;
-  height:auto !important;
-  overflow:visible !important;
-  padding-top:initial !important;
-  padding-bottom:initial !important;
-  border-top-width:1px !important;
-  pointer-events:auto !important;
-}
-</style>
-<script>
-/* Cancel the old 5-second auto-hide behavior for the channel bar. */
-(() => {
-  const card = document.querySelector('.playersticky .playercard');
-  if (!card) return;
-  card.classList.remove('info-bar-hidden');
-  const keepVisible = () => card.classList.remove('info-bar-hidden');
-  new MutationObserver(keepVisible).observe(card, {attributes:true, attributeFilter:['class']});
-})();
-</script>

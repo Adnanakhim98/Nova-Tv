@@ -410,7 +410,14 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   b.append(logoBox,name,category);
  }
  b.addEventListener("click",()=>{
-  if(isLiveEvent){openServerModal(ch)}
+  if(isLiveEvent){
+   const streams=Array.isArray(ch.streams)?ch.streams:[];
+   const firstReady=streams.find(stream=>stream&&String(stream.url||"").trim()&&isServerShown(stream));
+   if(firstReady){
+    playStream(String(firstReady.url).trim(),ch.name,(ch.category||"SPORTS")+" · "+String(firstReady.name||"Server"),firstReady.drm||ch.drm||null);
+   }else if(ch.url){playStream(ch.url,ch.name,categoryLabel,ch.drm)}
+   else{openServerModal(ch)}
+  }
   else if(ch.url){playStream(ch.url,ch.name,categoryLabel,ch.drm)}
   else{openModal(ch.name)}
  });
@@ -749,10 +756,10 @@ $("fullscreenBtn").addEventListener("click",()=>{
 });
 document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
 document.addEventListener("webkitfullscreenchange",()=>{if(!document.webkitFullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
-let lastVideoTap=0;
+// Single tap on the video area: resume playback if paused; never require a double tap.
 screenEl.addEventListener("click",e=>{
  if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
- const now=Date.now();if(now-lastVideoTap<320){if(video.paused)video.play().catch(()=>{});else video.pause()}lastVideoTap=now;
+ if(video.paused) video.play().catch(()=>{});
 });
 // Hide overlay controls after a short delay in landscape/fullscreen so they do not cover video credits.
 let controlsHideTimer=null;
@@ -780,12 +787,7 @@ setInterval(()=>render(channels),30000);
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
 document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});
 document.addEventListener("gestureend", e => e.preventDefault(), {passive:false});
-let lastTouchEnd = 0;
-document.addEventListener("touchend", e => {
-  const now = Date.now();
-  if (now - lastTouchEnd <= 300) e.preventDefault();
-  lastTouchEnd = now;
-}, {passive:false});
+// Do not cancel touchend: doing so can suppress the normal single-tap click on mobile.
 </script>
 <style>
 /* Landscape player: use the full width on both sides and keep the bottom info bar transparent. */

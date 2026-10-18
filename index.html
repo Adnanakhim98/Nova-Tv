@@ -436,7 +436,7 @@ const categoryInfo={
 };
 let selectedCategory="Bangla";
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
- const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
+ const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");b.dataset.streamUrl=String(ch.url||"");b.setAttribute("aria-pressed",ch.url&&ch.url===video.dataset.currentUrl?"true":"false");
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
  const logoValue=String(ch.logoUrl||ch.logo||"▶").trim();
  if(/^https?:\/\//i.test(logoValue)){
@@ -472,6 +472,14 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   else{openModal(ch.name)}
  });
  root.appendChild(b);
+}
+function markActiveChannelCards(rawUrl){
+ const selected=String(rawUrl||"");
+ document.querySelectorAll(".channel").forEach(card=>{
+  const isActive=!!selected && card.dataset.streamUrl===selected;
+  card.classList.toggle("active",isActive);
+  card.setAttribute("aria-pressed",isActive?"true":"false");
+ });
 }
 function render(list=channels){
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
@@ -595,7 +603,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  $("empty").style.display="none";
  setLiveBadge(false);hideQualitySelector();
  setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);
- video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="auto";video.autoplay=true;video.muted=false;video.volume=1;
+ video.dataset.currentUrl=rawUrl;video.crossOrigin="anonymous";video.preload="auto";video.autoplay=true;video.muted=false;video.volume=1;markActiveChannelCards(rawUrl);
  let engine="Shaka Player",settled=false,timer=null;
  const report=msg=>{if(requestId===playRequestId)showStatus(name,msg)};
  const clearStartupTimer=()=>{if(timer){clearTimeout(timer);timer=null}};
@@ -646,7 +654,6 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    hlsAlternativeFrame.style.display="block";
    showStatus(name,"HLS / M3U8 · Alternative Player");
    setPlayerLoading(false);
-   render();
    return;
   }
   if(kind==="mpd"){
@@ -677,7 +684,6 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    video.muted=false;video.volume=1;video.src=url;video.load();video.play().catch(()=>{});
   }
  }catch(err){fail(err?.message||"player exception")}
- render();
 }
 function openServerModal(ch){
  const modal=$("serverModal"),root=$("serverChoices");
@@ -707,10 +713,14 @@ function openServerModal(ch){
 }
 function openModal(name=""){ $("urlModal").classList.add("open");$("streamName").value=name;$("streamUrl").value=""; }
 $("customBtn").onclick=()=>openModal();
-$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
+$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();markActiveChannelCards("");showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
-$("search").addEventListener("input",()=>render(channels));
+let searchRenderTimer=null;
+$("search").addEventListener("input",()=>{
+ if(searchRenderTimer)clearTimeout(searchRenderTimer);
+ searchRenderTimer=setTimeout(()=>{render(channels);},120);
+});
 async function loadConfig(){
  const files={Bangla:"./data/bangla.json",Indian:"./data/india.json",Sports:"./data/sports.json",News:"./data/news.json",Music:"./data/music.json",Entertainment:"./data/entertainment.json",Movie:"./data/movie.json",Cartoon:"./data/cartoon.json",Religion:"./data/religion.json",Documentary:"./data/documentary.json"};
  try{
@@ -837,7 +847,22 @@ if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
 else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
 loadConfig();
 // Refresh match status and hide ended matches automatically.
-setInterval(()=>render(channels),30000);
+// Avoid rebuilding every channel card on a timer: this can stutter/freeze on mobile.
+ // Sports event labels update in place without recreating the channel catalogue.
+setInterval(()=>{
+ const now=Date.now();
+ document.querySelectorAll("#liveSportsChannels .channel").forEach(card=>{
+  const status=card.querySelector(".sports-status");
+  if(!status)return;
+  // Keep status refresh lightweight; full event filtering happens on the next user render.
+  const name=card.querySelector(".chname")?.textContent||"";
+  const event=liveSports.find(item=>String(item.name||"")===name);
+  if(!event)return;
+  const start=Date.parse(event.startTime||""),end=Date.parse(event.endTime||"");
+  const state=(Number.isFinite(start)&&Number.isFinite(end)&&now>=end)?"ENDED":(Number.isFinite(start)&&now>=start?"LIVE":"UPCOMING");
+  status.textContent=state;status.classList.toggle("is-live",state==="LIVE");
+ });
+},60000);
 // Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
 document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});
@@ -1022,3 +1047,17 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
   new MutationObserver(keepVisible).observe(card, {attributes:true, attributeFilter:['class']});
 })();
 </script>
+
+<style id="sportynova-smooth-mobile">
+/* Mobile-first performance polish: avoid costly hover transforms on touch devices. */
+@media (hover:none), (pointer:coarse) {
+  .channel:hover,.category-tab:hover,.btn:hover,.serverchoice:hover {
+    transform:none!important;
+    filter:none!important;
+  }
+}
+.channel,.category-tab,.btn,.contactlink,.serverchoice {
+  -webkit-tap-highlight-color:transparent;
+}
+.channel { contain:layout paint; }
+</style>

@@ -8,6 +8,7 @@
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
 <meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
 <title>SPORTYNOVA 1.0 — Live TV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,6 +262,25 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 }
 </style>
 
+
+
+<style>
+/* Shaka Player UI replacement for MPEG-DASH playback; HLS/native streams retain SPORTYNOVA controls. */
+.playersticky .screen.shaka-ui-active .nova-controls,
+.playersticky .screen.shaka-ui-active #centerPlayPause{
+  display:none!important;
+}
+.playersticky .screen.shaka-ui-active .shaka-controls-container{
+  z-index:12!important;
+}
+.playersticky .screen.shaka-ui-active .shaka-video-container,
+.playersticky .screen.shaka-ui-active video{
+  background:#000!important;
+}
+.playersticky .screen.shaka-ui-active .shaka-controls-button-panel button{
+  color:#fff!important;
+}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -307,10 +327,10 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 <div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">HLS Server 1, MPD Server 1, HLS Server 2 অথবা MPD Server 2 থেকে সার্ভার নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeKey=null,playRequestId=0,qualityMode="";
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -466,7 +486,9 @@ function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="দ্রুত �
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
+  if(activeShakaUI){const oldUI=activeShakaUI;activeShakaUI=null;try{oldUI.destroy()}catch(e){}}
   if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
+  if(screenEl)screenEl.classList.remove("shaka-ui-active");
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
@@ -559,6 +581,16 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
+     // Use Shaka's own controls for MPEG-DASH streams, matching the requested standalone player.
+     try{
+       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
+       activeShakaUI.configure({
+         addBigPlayButton:true,
+         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"],
+         seekBarColors:{base:"#828282",buffered:"#ffc336",played:"#21d8f4"}
+       });
+       screenEl.classList.add("shaka-ui-active");
+     }catch(uiError){console.warn("Shaka UI overlay unavailable; using SPORTYNOVA controls",uiError)}
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        const p=parsed.license.split(":");

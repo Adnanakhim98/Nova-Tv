@@ -63,7 +63,7 @@ button{font-family:inherit}
 
 <body>
 <div id="player">
-  <video id="vid" autoplay muted playsinline preload="metadata"></video>
+  <video id="vid" autoplay playsinline preload="metadata"></video>
 
   <div id="overlay">
     <div class="spinner"></div>
@@ -242,11 +242,16 @@ showControls();
 
 /* Volume */
 function syncVolume(){
-  bvol.textContent = vid.muted ? '🔇' : '🔊';
+  // Keep the player unmuted by default.
+  vid.muted = false;
+  vid.volume = 1;
+  bvol.textContent = '🔊';
 }
 bvol.addEventListener('click',e=>{
   e.stopPropagation();
-  vid.muted = !vid.muted;
+  // This button restores full sound; it never mutes the player.
+  vid.muted = false;
+  vid.volume = 1;
   syncVolume();
 });
 
@@ -443,6 +448,8 @@ async function loadStream(urls){
   if(token !== loadToken) return;
 
   vid.pause();
+  vid.muted = false;
+  vid.volume = 1;
   vid.removeAttribute('src');
   vid.load();
   hlsQualities = [];
@@ -498,7 +505,8 @@ async function loadStream(urls){
         currentQuality = 'Auto';
         renderQualities(qualityList);
 
-        vid.muted = true;
+        vid.muted = false;
+        vid.volume = 1;
         syncVolume();
         try{await vid.play()}catch(e){}
         setTimeout(()=>{if(token===loadToken && !vid.paused) hideLoading()},8000);

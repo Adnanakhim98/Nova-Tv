@@ -63,7 +63,7 @@ button{font-family:inherit}
 
 <body>
 <div id="player">
-  <video id="vid" autoplay muted playsinline preload="metadata"></video>
+  <video id="vid" autoplay playsinline preload="metadata"></video>
 
   <div id="overlay">
     <div class="spinner"></div>
@@ -209,7 +209,7 @@ function syncPlay(){
 function togglePlay(){
   if(vid.paused){
     userPaused = false;
-    vid.play().catch(()=>{});
+    keepAudioOn(); vid.play().catch(()=>{});
   }else{
     userPaused = true;
     vid.pause();
@@ -241,13 +241,20 @@ player.addEventListener('click',e=>{
 showControls();
 
 /* Volume */
-function syncVolume(){
-  bvol.textContent = vid.muted ? '🔇' : '🔊';
+function keepAudioOn(){
+  if(vid.muted) vid.muted = false;
+  if(vid.volume !== 1) vid.volume = 1;
+  bvol.textContent = '🔊';
 }
+function syncVolume(){ keepAudioOn(); }
 bvol.addEventListener('click',e=>{
   e.stopPropagation();
-  vid.muted = !vid.muted;
-  syncVolume();
+  keepAudioOn();
+});
+// Keep the HLS player unmuted whenever playback starts or volume changes.
+vid.addEventListener('play', keepAudioOn);
+vid.addEventListener('volumechange',()=>{
+  if(vid.muted || vid.volume !== 1) keepAudioOn();
 });
 
 /* Live / Go Live */
@@ -262,7 +269,7 @@ livepill.addEventListener('click',()=>{
   if(!isLive || !vid.seekable.length) return;
   vid.currentTime = vid.seekable.end(vid.seekable.length-1);
   userPaused = false;
-  vid.play().catch(()=>{});
+  keepAudioOn(); vid.play().catch(()=>{});
 });
 setInterval(updateLive,2000);
 
@@ -498,7 +505,8 @@ async function loadStream(urls){
         currentQuality = 'Auto';
         renderQualities(qualityList);
 
-        vid.muted = true;
+        vid.muted = false;
+        vid.volume = 1;
         syncVolume();
         try{await vid.play()}catch(e){}
         setTimeout(()=>{if(token===loadToken && !vid.paused) hideLoading()},8000);
@@ -510,7 +518,7 @@ async function loadStream(urls){
          vid.canPlayType('application/vnd.apple.mpegurl')){
         vid.src = url;
         vid.load();
-        await vid.play().catch(()=>{});
+        await keepAudioOn(); vid.play().catch(()=>{});
         hideLoading();
         return;
       }

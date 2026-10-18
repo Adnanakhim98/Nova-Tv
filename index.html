@@ -542,6 +542,43 @@ function launchAlternativePlayer(requestId, url, name, reason="", onLoadFailure=
  screen.classList.remove("shaka-ui-active");screen.classList.add("alternative-active");
  videoEl.pause();videoEl.removeAttribute("src");videoEl.load();videoEl.style.display="none";
  frame.style.display="block";
+ const target="./video-player.html?url="+encodeURIComponent(url);
+ setPlayerLoading(true,"Alternative Video Player","নতুন বিকল্প প্লেয়ারে ভিডিও চালু হচ্ছে…",false);
+ $("nowTitle").textContent=name||"Live TV";
+ $("nowMeta").textContent="Alternative Video Player · ভিডিও চালু হওয়ার অপেক্ষায়";
+ let done=false;
+ const cleanup=()=>{clearTimeout(timeout);window.removeEventListener("message",onMessage);frame.onload=null;frame.onerror=null};
+ const fallback=(why)=>{
+  if(done||requestId!==playRequestId)return;
+  done=true;cleanup();
+  // If this new player cannot start playback, try the existing JW-based alternative.
+  launchLegacyAlternativePlayer(requestId,url,name,reason||why,()=>{
+   if(typeof onLoadFailure==="function")onLoadFailure();
+   else setPlayerLoading(true,"Alternative Player","নতুন ও আগের বিকল্প প্লেয়ার চালু হয়নি। অন্য সার্ভার চেষ্টা করুন।",true);
+  });
+ };
+ const onMessage=(event)=>{
+  if(event.source!==frame.contentWindow||event.origin!==location.origin||requestId!==playRequestId||done)return;
+  if(event.data?.type==="sportynova-video-player-playing"){
+   done=true;cleanup();setPlayerLoading(false);$("nowMeta").textContent="Alternative Video Player · ভিডিও চলছে";setLiveBadge(false);
+  }else if(event.data?.type==="sportynova-video-player-error")fallback(event.data.detail||"alternative video player error");
+ };
+ window.addEventListener("message",onMessage);
+ const timeout=setTimeout(()=>fallback("alternative video player startup timeout (12 seconds)"),12000);
+ frame.onload=()=>{};
+ frame.onerror=()=>fallback("alternative video player page failed to load");
+ frame.src=target;
+}
+function launchLegacyAlternativePlayer(requestId, url, name, reason="", onLoadFailure=null){
+ if(requestId!==playRequestId)return;
+ const frame=$("alternativeFrame"),videoEl=$("video"),screen=$("playerScreen");
+ if(!frame||!url)return;
+ if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
+ if(activeShakaUI){const old=activeShakaUI;activeShakaUI=null;try{old.destroy()}catch(e){}}
+ if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
+ screen.classList.remove("shaka-ui-active");screen.classList.add("alternative-active");
+ videoEl.pause();videoEl.removeAttribute("src");videoEl.load();videoEl.style.display="none";
+ frame.style.display="block";
  const target="./alternative-player.html?url="+encodeURIComponent(url);
  setPlayerLoading(true,"Alternative Player","বিকল্প প্লেয়ারে ভিডিও লোড হচ্ছে…",false);
  $("nowTitle").textContent=name||"Live TV";

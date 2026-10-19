@@ -249,7 +249,6 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 
 /* Use the new Shaka controls for every stream type; retain Fit/Zoom in the player footer. */
 .screen.shaka-ui-active .nova-controls{display:none!important}
-.screen.shaka-ui-active .center-play-pause{display:none!important}
 .screen.shaka-ui-active .shaka-controls-container{z-index:5}
 </style>
 
@@ -298,9 +297,9 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  <div class="sectionhead"><h2>লাইভ টিভি <span style="color:#6d7b92;font-weight:500">/ Live TV</span></h2><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
-   <video id="video" playsinline webkit-playsinline preload="metadata" autoplay>
-    <button type="button" id="novaCenterPlayPause" class="nova-center-play-pause" aria-label="Play video">▶</button></video>
+   <video id="video" playsinline webkit-playsinline preload="metadata" autoplay></video>
    <iframe id="hlsAlternativeFrame" class="hls-alt-frame" title="HLS Alternative Player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>
+   <button type="button" id="novaCenterPlayPause" class="nova-center-play-pause" aria-label="Play video">▶</button>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
@@ -945,8 +944,8 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
 </style>
 
 <style>
-/* User request: no loading overlay and no HTML play/pause button. */
-#playerLoading,.playerLoading,#centerPlayPause,.center-play-pause,#playPauseBtn{display:none!important}
+/* Keep legacy loading overlays hidden without hiding the active center play/pause button. */
+#playerLoading,.playerLoading,#centerPlayPause,#playPauseBtn{display:none!important}
 </style>
 
 
@@ -1031,3 +1030,16 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
  refresh();
 })();
 </script>
+
+<style>
+/* Final fix: center Play/Pause button must sit outside the video element and above all player layers. */
+#playerScreen{position:relative!important}
+#novaCenterPlayPause.nova-center-play-pause{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ position:absolute!important;left:50%!important;top:50%!important;
+ transform:translate(-50%,-50%)!important;z-index:999!important;
+ pointer-events:auto!important;
+}
+#novaCenterPlayPause.nova-center-play-pause.is-playing{opacity:.82!important}
+#novaCenterPlayPause.nova-center-play-pause:active{transform:translate(-50%,-50%) scale(.94)!important}
+</style>

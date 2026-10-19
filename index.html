@@ -586,35 +586,46 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
   return keys;
  };
  try{
-  // One unified Shaka player/video element handles both HLS (.m3u8) and MPEG-DASH (.mpd).
-  // This keeps every sports match and TV channel inside the same player UI.
-  if(kind==="hls"||kind==="mpd"){
+  // HLS/M3U8 is routed to the supplied standalone alternative player.
+  // MPD/DASH continues to use the existing Shaka player below.
+  if(kind==="hls"){
+   clearStartupTimer();settled=true;
+   video.style.display="none";
+   screenEl.classList.add("hls-alt-active");
+   const params=new URLSearchParams();params.set("url",url);
+   hlsAlternativeFrame.src="./hls-player.html?"+params.toString();
+   hlsAlternativeFrame.style.display="block";
+   showStatus(name,"HLS / M3U8 · Alternative Player");
+   setPlayerLoading(false);
+   render();
+   return;
+  }
+  if(kind==="mpd"){
    if(!window.shaka)throw new Error("Shaka library unavailable");
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
-   engine=kind==="hls"?"Shaka Unified Player / HLS":"Shaka Unified Player / MPEG-DASH";
-   report((kind==="hls"?"HLS / M3U8":"MPEG-DASH")+" · একই প্লেয়ারে লোড হচ্ছে…");
-   activeShaka=new shaka.Player();
-   configureShaka(activeShaka);
+   engine="Shaka / MPEG-DASH";report("MPEG-DASH · লিংক লোড হচ্ছে…");
+   activeShaka=new shaka.Player();configureShaka(activeShaka);
    activeShaka.addEventListener("error",evt=>{
-    if(requestId===playRequestId)console.warn("Unified playback error",evt.detail?.code||"");
+    if(requestId===playRequestId)console.warn("Shaka playback error",evt.detail?.code||"");
    });
    await activeShaka.attach(video);
    if(requestId!==playRequestId)return;
    createShakaUi(activeShaka);
-   const keys=makeClearKeys();
-   if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
+   const keys=makeClearKeys();if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
    await activeShaka.load(url);
    if(requestId!==playRequestId)return;
-   keepVideoUnmuted();
-   setupShakaQualities();
-   video.muted=false;video.volume=1;
-   try{await video.play()}catch(playError){console.warn("Autoplay with sound may require a user tap",playError)}
+   keepVideoUnmuted();setupShakaQualities();video.play().catch(()=>{});
   }else{
-   engine="Unified Video / Native Media";
-   // Direct MP4/WebM and browser-supported media also use the same video element.
-   video.muted=false;video.volume=1;video.src=url;video.load();
-   try{await video.play()}catch(playError){console.warn("Autoplay with sound may require a user tap",playError)}
+   engine="Shaka UI / Native Media";
+   if(window.shaka && shaka.Player.isBrowserSupported()){
+    shaka.polyfill.installAll();activeShaka=new shaka.Player();configureShaka(activeShaka);
+    await activeShaka.attach(video);
+    if(requestId!==playRequestId)return;
+    createShakaUi(activeShaka);
+    const keys=makeClearKeys();if(Object.keys(keys).length)activeShaka.configure({drm:{clearKeys:keys}});
+   }
+   video.muted=false;video.volume=1;video.src=url;video.load();video.play().catch(()=>{});
   }
  }catch(err){fail(err?.message||"player exception")}
  render();

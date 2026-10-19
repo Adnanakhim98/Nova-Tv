@@ -10,6 +10,47 @@
       "fallbackLogo": "🏏"
     },
     {
+  "name": "Fussball",
+  "category": "Sports",
+  "logo": "▶",
+  "tone": "blue",
+  "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ssdefyhkkr/out/v1/cf01290cb7f64525bdf861580a016ca8/cenc.mpd|drmScheme=clearkey&drmLicense=0ad4080cdff8c60b1233b22087f0b340:285f129c5eca01dd08a5d5a14ad801c8",
+  "drm": {
+    "scheme": "clearkey",
+    "license": "0ad4080cdff8c60b1233b22087f0b340:285f129c5eca01dd08a5d5a14ad801c8"
+  },
+  "logoUrl": "",
+  "fallbackLogo": "▶"
+    },
+
+    {
+  "name": "beIN Sports 1",
+  "category": "Sports",
+  "logo": "▶",
+  "tone": "blue",
+  "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd|drmScheme=clearkey&drmLicense=335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281",
+  "drm": {
+    "scheme": "clearkey",
+    "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
+  },
+  "logoUrl": "",
+  "fallbackLogo": "▶"
+    },
+
+    {
+  "name": "unknown",
+  "category": "Sports",
+  "logo": "▶",
+  "tone": "blue",
+  "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dx5hfbpk7u/out/v1/c14185a397544650b9761d43ad2e8e91/cenc.mpd|drmScheme=clearkey&drmLicense=36a385124dcdfb2f0969935065e03afa:ccecd65514dff22eae493b975ccf9a9e",
+  "drm": {
+    "scheme": "clearkey",
+    "license": "36a385124dcdfb2f0969935065e03afa:ccecd65514dff22eae493b975ccf9a9e"
+  },
+  "logoUrl": "",
+  "fallbackLogo": "▶"
+    },
+    {
       "name": "DASH Demo Channel",
       "category": "Sports",
       "logo": "▶",

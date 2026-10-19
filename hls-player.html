@@ -443,6 +443,11 @@ async function destroyPlayer(){
 
 async function loadStream(urls){
   const token = ++loadToken;
+  const firstUrl = String((urls||[]).find(Boolean)||'').split('|')[0];
+  if(!/\.m3u8(?:$|[?#])/i.test(firstUrl)){
+    showError('HLS Player Only','এই Player শুধু .m3u8 / HLS লিংক চালায়।');
+    return;
+  }
   showLoading();
   await destroyPlayer();
   if(token !== loadToken) return;

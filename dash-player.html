@@ -1,137 +1,47 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="referrer" content="no-referrer">
-<title>Video Player</title>
-
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070912">
+<title>SPORTYNOVA DASH Player</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  background: #000;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-}
-
-#player-container {
-  position: fixed;
-  inset: 0;
-  background: #000;
-}
-
-video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #000;
-}
-
-#status {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 10;
-  color: white;
-  background: #222;
-  border-radius: 20px;
-  padding: 8px 12px;
-  font-size: 12px;
-}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#000;color:#f5f8ff;font-family:Arial,sans-serif}body{display:flex;flex-direction:column}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:#101624;border-bottom:1px solid #28354b}.title{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status{font-size:11px;color:#21d8f4;white-space:nowrap}video{width:100%;height:calc(100% - 48px);flex:1;min-height:0;object-fit:contain;background:#000}.error{position:absolute;left:12px;right:12px;bottom:12px;padding:10px;background:#32121b;border:1px solid #ff4264;border-radius:8px;font-size:12px;display:none;line-height:1.5}.error.show{display:block}
 </style>
 </head>
-
 <body>
-
-<div id="player-container">
-  <video id="video"
-    autoplay
-    playsinline
-    preload="metadata">
-  </video>
-</div>
-
-<div id="status">Player Ready</div>
-
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
-
+<header class="head"><div class="title" id="title">SPORTYNOVA DASH Player</div><div class="status" id="status">লোড হচ্ছে…</div></header>
+<video id="video" controls autoplay playsinline></video><div class="error" id="error"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
 <script>
-async function initPlayer() {
-  const video = document.getElementById("video");
-  const container = document.getElementById("player-container");
-  const status = document.getElementById("status");
-
-  try {
-    shaka.polyfill.installAll();
-
-    if (!shaka.Player.isBrowserSupported()) {
-      status.textContent = "Browser Not Supported";
-      return;
-    }
-
-    const player = new shaka.Player();
-    await player.attach(video);
-
-    const ui = new shaka.ui.Overlay(
-      player,
-      container,
-      video
-    );
-
-    ui.configure({
-      addBigPlayButton: true,
-      controlPanelElements: [
-        "play_pause",
-        "mute",
-        "time_and_duration",
-        "spacer",
-        "quality",
-        "picture_in_picture",
-        "fullscreen"
-      ]
-    });
-
-    // নিজের অনুমোদিত ভিডিও স্ট্রিম URL এখানে দিন
-    const streamUrl = "YOUR_AUTHORIZED_STREAM_URL";
-
-    status.textContent = "Loading...";
-
-    await player.load(streamUrl);
-
-    status.textContent = "Ready";
-    video.play().catch(() => {});
-
-    video.addEventListener("playing", () => {
-      status.textContent = "Playing";
-    });
-
-    player.addEventListener("error", (event) => {
-      status.textContent =
-        "Playback Error: " + event.detail.code;
-    });
-
-  } catch (error) {
-    status.textContent = "Unable to Play Video";
-    console.error(error);
-  }
-}
-
-document.addEventListener(
-  "DOMContentLoaded",
-  initPlayer
-);
+(async()=>{
+ const q=new URLSearchParams(location.search), raw=q.get('url')||'', name=q.get('name')||'Live TV';
+ const title=document.getElementById('title'),status=document.getElementById('status'),video=document.getElementById('video'),error=document.getElementById('error');
+ title.textContent=name;
+ function fail(msg){status.textContent='Playback error';error.textContent=msg;error.classList.add('show')}
+ if(!raw){fail('Stream URL পাওয়া যায়নি। মূল সাইট থেকে একটি চ্যানেল নির্বাচন করুন।');return}
+ const parts=raw.split('|'), url=parts.shift().trim(), params=new URLSearchParams(parts.join('&'));
+ try{
+   if(!window.shaka){fail('Shaka Player লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।');return}
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported()){fail('এই ব্রাউজারে DASH playback সমর্থিত নয়।');return}
+   const player=new shaka.Player();
+   await player.attach(video);
+   player.addEventListener('error',e=>{const d=e.detail||{};fail('DASH চালানো যায়নি। URL, CORS বা DRM সেটিং পরীক্ষা করুন। (Error '+(d.code||'unknown')+')')});
+   const scheme=(params.get('drmScheme')||'').toLowerCase();
+   const license=params.get('drmLicense')||'';
+   if(scheme==='clearkey'&&license.includes(':')){
+     let [kid,key]=license.split(':');
+     const clean=x=>x.replace(/[^0-9a-f]/gi,'').toLowerCase();
+     kid=clean(kid);key=clean(key);
+     if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
+   }
+   player.addEventListener('buffering',e=>status.textContent=e.buffering?'Buffering…':'DASH Ready');
+   await player.load(url);
+   status.textContent='DASH Ready';
+   video.play().catch(()=>status.textContent='▶ Play চাপুন');
+ }catch(e){fail('DASH চালানো যায়নি। Stream URL/CORS/DRM পরীক্ষা করুন। '+(e&&e.message?e.message:''))}
+ video.addEventListener('playing',()=>status.textContent='LIVE');video.addEventListener('waiting',()=>status.textContent='Buffering…');
+})();
 </script>
-
-</body>
-</html>
+</body></html>

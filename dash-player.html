@@ -6,42 +6,79 @@
 <meta name="theme-color" content="#070912">
 <title>SPORTYNOVA DASH Player</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#000;color:#f5f8ff;font-family:Arial,sans-serif}body{display:flex;flex-direction:column}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:#101624;border-bottom:1px solid #28354b}.title{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status{font-size:11px;color:#21d8f4;white-space:nowrap}video{width:100%;height:calc(100% - 48px);flex:1;min-height:0;object-fit:contain;background:#000}.error{position:absolute;left:12px;right:12px;bottom:12px;padding:10px;background:#32121b;border:1px solid #ff4264;border-radius:8px;font-size:12px;display:none;line-height:1.5}.error.show{display:block}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#000;color:#f5f8ff;font-family:Arial,sans-serif}
+body{display:flex;flex-direction:column}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:#101624;border-bottom:1px solid #28354b}
+.title{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.status{font-size:11px;color:#21d8f4;white-space:nowrap}
+video{width:100%;height:calc(100% - 48px);flex:1;min-height:0;object-fit:contain;background:#000}
+.message{margin:12px;padding:10px;background:#151e2e;border:1px solid #28354b;border-radius:8px;font-size:12px;line-height:1.5;display:none;white-space:pre-wrap}
+.message.show{display:block}
 </style>
 </head>
 <body>
 <header class="head"><div class="title" id="title">SPORTYNOVA DASH Player</div><div class="status" id="status">লোড হচ্ছে…</div></header>
-<video id="video" controls autoplay playsinline></video><div class="error" id="error"></div>
+<video id="video" controls autoplay playsinline></video><div class="message" id="message"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.8/shaka-player.compiled.js"></script>
 <script>
 (async()=>{
- const q=new URLSearchParams(location.search), raw=q.get('url')||'', name=q.get('name')||'Live TV';
- const title=document.getElementById('title'),status=document.getElementById('status'),video=document.getElementById('video'),error=document.getElementById('error');
+ const q=new URLSearchParams(location.search);
+ const raw=q.get('url')||'';
+ const name=q.get('name')||'Live TV';
+ const title=document.getElementById('title'), status=document.getElementById('status');
+ const video=document.getElementById('video'), message=document.getElementById('message');
  title.textContent=name;
- function fail(msg){status.textContent='Playback error';error.textContent=msg;error.classList.add('show')}
- if(!raw){fail('Stream URL পাওয়া যায়নি। মূল সাইট থেকে একটি চ্যানেল নির্বাচন করুন।');return}
- const parts=raw.split('|'), url=parts.shift().trim(), params=new URLSearchParams(parts.join('&'));
+ function show(msg){status.textContent='সমস্যা';message.textContent=msg;message.classList.add('show')}
+ function hexToBase64(hex){
+   const bytes=new Uint8Array(hex.match(/.{1,2}/g).map(x=>parseInt(x,16)));
+   let binary=''; bytes.forEach(b=>binary+=String.fromCharCode(b));
+   return btoa(binary).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');
+ }
+ if(!raw){show('Stream URL পাওয়া যায়নি। মূল সাইট থেকে একটি চ্যানেল নির্বাচন করুন।');return}
+ // URL format: manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY
+ const split=raw.split('|');
+ const manifestUrl=split.shift().trim();
+ const drmText=split.join('|');
+ const params=new URLSearchParams(drmText.replace(/^&/,''));
  try{
-   if(!window.shaka){fail('Shaka Player লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।');return}
+   if(!window.shaka){show('Shaka Player লোড হয়নি। ইন্টারনেট/CDN সংযোগ পরীক্ষা করুন।');return}
    shaka.polyfill.installAll();
-   if(!shaka.Player.isBrowserSupported()){fail('এই ব্রাউজারে DASH playback সমর্থিত নয়।');return}
+   if(!shaka.Player.isBrowserSupported()){show('এই ব্রাউজারে DASH playback সমর্থিত নয়। অন্য আধুনিক ব্রাউজারে চেষ্টা করুন।');return}
    const player=new shaka.Player();
    await player.attach(video);
-   player.addEventListener('error',e=>{const d=e.detail||{};fail('DASH চালানো যায়নি। URL, CORS বা DRM সেটিং পরীক্ষা করুন। (Error '+(d.code||'unknown')+')')});
-   const scheme=(params.get('drmScheme')||'').toLowerCase();
-   const license=params.get('drmLicense')||'';
-   if(scheme==='clearkey'&&license.includes(':')){
-     let [kid,key]=license.split(':');
-     const clean=x=>x.replace(/[^0-9a-f]/gi,'').toLowerCase();
-     kid=clean(kid);key=clean(key);
-     if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
-   }
+   player.addEventListener('error',e=>{
+     const d=e.detail||{};
+     show('DASH চালানো যায়নি। Error code: '+(d.code||'unknown')+
+       '\\nসম্ভাব্য কারণ: ভুল/মেয়াদোত্তীর্ণ URL, CORS, DRM বা ব্রাউজার-সাপোর্ট।');
+   });
    player.addEventListener('buffering',e=>status.textContent=e.buffering?'Buffering…':'DASH Ready');
-   await player.load(url);
+   const scheme=(params.get('drmScheme')||'').toLowerCase();
+   const license=(params.get('drmLicense')||'').trim();
+   if(scheme==='clearkey' && license){
+     const sep=license.indexOf(':');
+     if(sep>0){
+       const kidHex=license.slice(0,sep).replace(/[^0-9a-f]/gi,'').toLowerCase();
+       const keyHex=license.slice(sep+1).replace(/[^0-9a-f]/gi,'').toLowerCase();
+       if(kidHex.length===32 && keyHex.length===32){
+         // Shaka ClearKey configuration expects base64url KID/key values.
+         const kid=hexToBase64(kidHex), key=hexToBase64(keyHex);
+         player.configure({drm:{clearKeys:{[kid]:key}}});
+       }else{
+         show('ClearKey KID/KEY ফরম্যাট সঠিক নয়। KID এবং KEY প্রতিটি ৩২টি hexadecimal অক্ষরের হতে হবে।');
+         return;
+       }
+     }else{
+       show('drmLicense ফরম্যাট হওয়া উচিত KID:KEY।');
+       return;
+     }
+   }
+   await player.load(manifestUrl);
    status.textContent='DASH Ready';
-   video.play().catch(()=>status.textContent='▶ Play চাপুন');
- }catch(e){fail('DASH চালানো যায়নি। Stream URL/CORS/DRM পরীক্ষা করুন। '+(e&&e.message?e.message:''))}
- video.addEventListener('playing',()=>status.textContent='LIVE');video.addEventListener('waiting',()=>status.textContent='Buffering…');
+   try{await video.play()}catch(_){status.textContent='▶ Play চাপুন'}
+ }catch(e){
+   show('DASH চালানো যায়নি।\\n'+(e&&e.message?e.message:'অজানা ত্রুটি')+
+     '\\nStream URL, CORS এবং DRM তথ্য পরীক্ষা করুন।');
+ }
+ video.addEventListener('playing',()=>status.textContent='LIVE');
+ video.addEventListener('waiting',()=>status.textContent='Buffering…');
 })();
 </script>
 </body></html>

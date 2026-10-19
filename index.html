@@ -310,7 +310,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
     </div>
    </div>
   </div>
-  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS আলাদা Player · MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
 ।</span></div></div>
@@ -326,10 +326,11 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 </div>
 <div class="modal" id="serverModal"><div class="modalbox"><div class="modalhead"><h3 id="serverModalTitle">ম্যাচের সার্ভার নির্বাচন করুন</h3><button class="xbtn" data-close>✕</button></div><div class="hint" style="margin:0 0 10px">HLS Server 1, MPD Server 1, HLS Server 2 অথবা MPD Server 2 থেকে সার্ভার নির্বাচন করুন।</div><div id="serverChoices" class="serverchoices"></div><div class="hint">꧁𝐓𝐇𝐀𝐍𝐊𝐒 𝐅𝐎𝐑 𝐖𝐀𝐓𝐂𝐇𝐈𝐍𝐆 ꧂।</div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -461,6 +462,11 @@ $("qualitySelect").addEventListener("change",()=>{
   }
  }catch(e){console.warn("Quality switch failed",e)}
 });
+function setupHlsQualities(){
+ if(!activeHls)return;
+ const levels=activeHls.levels||[];
+ showQualityOptions(levels.map((l,i)=>({value:i,label:(l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps")})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"hls");
+}
 function setupShakaQualities(){
  if(!activeShaka)return;
  const tracks=activeShaka.getVariantTracks().filter(t=>t.height);
@@ -521,15 +527,6 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
- // HLS/m3u8 playback is handled by the separate hls-player.html page.
- if(kind==="hls"){
-   const target="./hls-player.html?url="+encodeURIComponent(url)
-     +"&name="+encodeURIComponent(name)
-     +"&category="+encodeURIComponent(category)
-     +(location.search ? "&return="+encodeURIComponent(location.pathname+location.search) : "");
-   location.href=target;
-   return;
- }
  lastStreamRequest={rawUrl,name,category,drm};
  stopEngines();
  if(requestId!==playRequestId)return;
@@ -605,9 +602,31 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      if(requestId!==playRequestId)return;
      setupShakaQualities();
      video.play().catch(()=>{});
+   }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
+     engine="HLS.js";
+     activeHls=new Hls({
+       enableWorker:true,lowLatencyMode:true,backBufferLength:10,
+       maxBufferLength:8,maxMaxBufferLength:14,maxBufferSize:20000000,
+       manifestLoadingTimeOut:6000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:250,
+       levelLoadingTimeOut:6000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:250,
+       fragLoadingTimeOut:9000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:300,
+       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1200000,
+       abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.8
+     });
+     activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
+       if(requestId===playRequestId){activeHls.loadSource(url);}
+     });
+     activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
+       if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{});}
+     });
+     activeHls.on(Hls.Events.ERROR,(event,data)=>{
+       if(requestId!==playRequestId||!data.fatal)return;
+       fail("HLS.js "+data.type);
+     });
+     activeHls.attachMedia(video);
    }else{
-     // Native playback for direct files and browser-supported media.
-     engine="Native media";
+     // Native playback for direct files, transport streams, and browsers with native HLS.
+     engine=kind==="hls"?"Native HLS":"Native media";
      video.src=url;
      video.load();
      video.play().catch(()=>{});

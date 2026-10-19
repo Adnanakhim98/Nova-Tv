@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: t16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1043,3 +1043,143 @@ document.addEventListener("gestureend", e => e.preventDefault(), {passive:false}
 #novaCenterPlayPause.nova-center-play-pause.is-playing{opacity:.82!important}
 #novaCenterPlayPause.nova-center-play-pause:active{transform:translate(-50%,-50%) scale(.94)!important}
 </style>
+
+<style>
+/* Final user update: transparent center control, auto-hide 4 seconds after playback. */
+#novaCenterPlayPause.nova-center-play-pause,
+.playersticky .screen.shaka-ui-active #novaCenterPlayPause.nova-center-play-pause {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: opacity .25s ease, transform .12s ease !important;
+}
+#novaCenterPlayPause.nova-center-play-pause.auto-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+</style>
+<script>
+(() => {
+  const video = document.getElementById('video');
+  const button = document.getElementById('novaCenterPlayPause');
+  const screen = document.getElementById('playerScreen');
+  if (!video || !button || button.dataset.autoHideWired === 'yes') return;
+  button.dataset.autoHideWired = 'yes';
+  let hideTimer;
+
+  function showButton() {
+    clearTimeout(hideTimer);
+    button.classList.remove('auto-hidden');
+    if (!video.paused && !video.ended) {
+      hideTimer = setTimeout(() => {
+        if (!video.paused && !video.ended) button.classList.add('auto-hidden');
+      }, 4000);
+    }
+  }
+
+  function syncButton() {
+    const playing = !video.paused && !video.ended;
+    button.textContent = playing ? 'Ⅱ' : '▶';
+    button.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+    if (playing) showButton();
+    else {
+      clearTimeout(hideTimer);
+      button.classList.remove('auto-hidden');
+    }
+  }
+
+  button.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    clearTimeout(hideTimer);
+    button.classList.remove('auto-hidden');
+    try {
+      if (video.paused || video.ended) await video.play();
+      else video.pause();
+    } catch (error) {
+      console.warn('Playback action was blocked by the browser:', error);
+    }
+    syncButton();
+  });
+
+  if (screen) screen.addEventListener('click', (event) => {
+    if (event.target === button) return;
+    if (!video.paused && !video.ended) showButton();
+  });
+  ['play', 'playing', 'pause', 'ended', 'emptied', 'loadstart', 'waiting'].forEach(type => {
+    video.addEventListener(type, syncButton);
+  });
+  syncButton();
+})();
+</script>
+
+
+<!-- Final robust auto-hide fix: works with native video and iframe-based stream players. -->
+<style>
+#novaCenterPlayPause.nova-center-play-pause.auto-hidden,
+#playerScreen #novaCenterPlayPause.nova-center-play-pause.auto-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+#novaCenterPlayPause.nova-center-play-pause {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition: opacity .25s ease, visibility .25s ease, transform .12s ease !important;
+}
+</style>
+<script>
+(() => {
+  const video = document.getElementById('video');
+  const button = document.getElementById('novaCenterPlayPause');
+  const screen = document.getElementById('playerScreen');
+  const frame = document.getElementById('hlsAlternativeFrame');
+  if (!button || button.dataset.finalAutoHideFix === 'yes') return;
+  button.dataset.finalAutoHideFix = 'yes';
+
+  let timer = null;
+  const hideAfterMs = 4000;
+
+  function showThenHide() {
+    clearTimeout(timer);
+    button.classList.remove('auto-hidden');
+    timer = setTimeout(() => button.classList.add('auto-hidden'), hideAfterMs);
+  }
+
+  function syncFromVideo() {
+    if (!video) return;
+    const playing = !video.paused && !video.ended;
+    button.textContent = playing ? 'Ⅱ' : '▶';
+    button.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+    if (playing) showThenHide();
+    else {
+      clearTimeout(timer);
+      button.classList.remove('auto-hidden');
+    }
+  }
+
+  // Registered last so this timer still runs after the existing player handlers.
+  button.addEventListener('click', showThenHide);
+
+  if (screen) {
+    screen.addEventListener('pointermove', showThenHide, { passive: true });
+    screen.addEventListener('pointerdown', (event) => {
+      if (event.target !== button) showThenHide();
+    }, { passive: true });
+    screen.addEventListener('touchstart', showThenHide, { passive: true });
+  }
+
+  if (video) {
+    ['play', 'playing', 'pause', 'ended', 'emptied', 'loadstart', 'waiting'].forEach(type => {
+      video.addEventListener(type, syncFromVideo);
+    });
+  }
+  if (frame) frame.addEventListener('load', showThenHide);
+  syncFromVideo();
+})();
+</script>

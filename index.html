@@ -609,16 +609,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
-     // Use Shaka's own controls for MPEG-DASH streams, matching the requested standalone player.
-     try{
-       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
-       activeShakaUI.configure({
-         addBigPlayButton:true,
-         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"],
-         seekBarColors:{base:"#828282",buffered:"#ffc336",played:"#21d8f4"}
-       });
-       screenEl.classList.add("shaka-ui-active");
-     }catch(uiError){console.warn("Shaka UI overlay unavailable; using SPORTYNOVA controls",uiError)}
+     // Use the single SPORTYNOVA control bar for MPD too; do not create Shaka's duplicate control icons.
+     screenEl.classList.add("shaka-ui-active");
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        const p=parsed.license.split(":");
@@ -1014,3 +1006,14 @@ document.addEventListener("touchend", e => {
 </style>
 </body>
 </html>
+
+<style>
+/* MPD duplicate-controls fix: keep only SPORTYNOVA controls, including its in-player quality selector. */
+.playersticky .screen.shaka-ui-active .shaka-controls-container,
+.playersticky .screen.shaka-ui-active .shaka-controls-container *,
+.playersticky .screen.shaka-ui-active .shaka-overflow-menu,
+.playersticky .screen.shaka-ui-active .shaka-context-menu,
+.playersticky .screen.shaka-ui-active .shaka-big-play-button { display:none!important; visibility:hidden!important; pointer-events:none!important; }
+.playersticky .screen.shaka-ui-active .nova-controls { display:block!important; visibility:visible!important; opacity:1!important; pointer-events:auto!important; z-index:20!important; }
+.playersticky .screen.shaka-ui-active .nova-controls .quality-in-player { display:inline-block; pointer-events:auto!important; }
+</style>

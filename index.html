@@ -328,14 +328,13 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <button class="nova-control-btn" id="liveBtn">● LIVE</button>
      <span class="nova-control-spacer"></span>
-     <select class="nova-fit-select quality-in-player" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none"><option value="auto">Auto</option></select>
      <select class="nova-fit-select" id="fitSelect" aria-label="ভিডিও ফিট"><option value="contain">Fit</option><option value="fill">Smart Fill</option><option value="zoom">Zoom</option><option value="zoomout">Zoom Out</option></select>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
    </div>
   </div>
-  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
 ।</span></div></div>
@@ -501,14 +500,10 @@ function setupShakaQualities(){
  showQualityOptions(unique,"shaka");
 }
 let lastStreamRequest=null;
-function setPlayerLoading(show,title="ভিডিও চালু হচ্ছে…",message="অনুগ্রহপূর্বক অপেক্ষা করুন · Please wait",error=false){
+function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",error=false){
+ // Loading overlay disabled: keep the video surface visible while the stream starts.
  const panel=$("playerLoading");
- if(!panel)return;
- $("loadingTitle").textContent=title;
- $("loadingMessage").textContent=message;
- $("retryBtn").style.display=error?"inline-flex":"none";
- panel.classList.toggle("show",!!show);
- panel.style.display=show?"flex":"none";
+ if(panel){panel.classList.remove("show");panel.style.display="none";}
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){
@@ -585,8 +580,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
    report(label+" · Playing");
  };
  video.onerror=()=>fail("media error");
- video.onwaiting=()=>{if(requestId===playRequestId&&!settled)setPlayerLoading(true,"ভিডিও লোড হচ্ছে…","সংযোগ স্থাপন করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন",false)};
- video.onplaying=()=>{setPlayerLoading(false);success(engine)};
+ video.onplaying=()=>success(engine);
  // A single startup deadline reports a real failure; it does not start another player.
  timer=setTimeout(()=>fail("startup timeout"),15000);
 
@@ -599,7 +593,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
        streaming:{
-         bufferingGoal:2,rebufferingGoal:0.5,bufferBehind:6,lowLatencyMode:true,
+         bufferingGoal:3,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,
          retryParameters:{timeout:4500,stallTimeout:2500,connectionTimeout:2500,maxAttempts:2,baseDelay:200}
        },
        manifest:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
@@ -609,8 +603,16 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
-     // Use the single SPORTYNOVA control bar for MPD too; do not create Shaka's duplicate control icons.
-     screenEl.classList.add("shaka-ui-active");
+     // Use Shaka's own controls for MPEG-DASH streams, matching the requested standalone player.
+     try{
+       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
+       activeShakaUI.configure({
+         addBigPlayButton:true,
+         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"],
+         seekBarColors:{base:"#828282",buffered:"#ffc336",played:"#21d8f4"}
+       });
+       screenEl.classList.add("shaka-ui-active");
+     }catch(uiError){console.warn("Shaka UI overlay unavailable; using SPORTYNOVA controls",uiError)}
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        const p=parsed.license.split(":");
@@ -626,10 +628,10 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:true,backBufferLength:10,
-       maxBufferLength:4,maxMaxBufferLength:8,maxBufferSize:12000000,
-       manifestLoadingTimeOut:4500,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:200,
-       levelLoadingTimeOut:4500,levelLoadingMaxRetry:1,levelLoadingRetryDelay:200,
-       fragLoadingTimeOut:7000,fragLoadingMaxRetry:1,fragLoadingRetryDelay:250,
+       maxBufferLength:8,maxMaxBufferLength:14,maxBufferSize:20000000,
+       manifestLoadingTimeOut:6000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:250,
+       levelLoadingTimeOut:6000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:250,
+       fragLoadingTimeOut:9000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:300,
        startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1200000,
        abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.8
      });
@@ -995,25 +997,5 @@ document.addEventListener("touchend", e => {
 }
 </style>
 
-
-<style>
-/* Keep quality selection inside the video overlay in portrait and landscape. */
-.nova-controls .quality-in-player{display:none;flex:0 0 auto;width:72px;max-width:72px!important;min-width:56px;height:30px;padding:0 4px!important;font-size:10px!important;background:#111a2b;color:#fff;border:1px solid #ffffff30;border-radius:8px;position:relative;z-index:15;pointer-events:auto}
-.playercard:fullscreen .nova-controls .quality-in-player,.playercard:-webkit-full-screen .nova-controls .quality-in-player,.playercard.mobile-rotated .nova-controls .quality-in-player{height:38px;max-width:86px!important;width:86px;font-size:12px!important}
-.playersticky .screen.shaka-ui-active .nova-controls{display:block!important;opacity:1!important;pointer-events:auto!important}
-.playersticky .screen.shaka-ui-active .nova-controls .quality-in-player{z-index:20}
-@media(max-width:420px){.nova-controls .quality-in-player{width:62px;max-width:62px!important;min-width:52px;font-size:9px!important}}
-</style>
 </body>
 </html>
-
-<style>
-/* MPD duplicate-controls fix: keep only SPORTYNOVA controls, including its in-player quality selector. */
-.playersticky .screen.shaka-ui-active .shaka-controls-container,
-.playersticky .screen.shaka-ui-active .shaka-controls-container *,
-.playersticky .screen.shaka-ui-active .shaka-overflow-menu,
-.playersticky .screen.shaka-ui-active .shaka-context-menu,
-.playersticky .screen.shaka-ui-active .shaka-big-play-button { display:none!important; visibility:hidden!important; pointer-events:none!important; }
-.playersticky .screen.shaka-ui-active .nova-controls { display:block!important; visibility:visible!important; opacity:1!important; pointer-events:auto!important; z-index:20!important; }
-.playersticky .screen.shaka-ui-active .nova-controls .quality-in-player { display:inline-block; pointer-events:auto!important; }
-</style>

@@ -15,22 +15,7 @@
     },
     "logoUrl": "",
     "fallbackLogo": "▶️"
-  },
-
-    {
-  "name": "EN VIVO FOX",
-  "category": "Sports",
-  "logo": "▶",
-  "tone": "blue",
-  "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/vkpoljjpkj/out/v1/502bcf68b3514cd28a220e6f0a43816f/cenc.mpd|drmScheme=clearkey&drmLicense=d1a163914db8ffad2c3e94f979896a0d:9728800a3959aafdd5b0bcfbf3768811",
-  "drm": {
-    "scheme": "clearkey",
-    "license": "d1a163914db8ffad2c3e94f979896a0d:9728800a3959aafdd5b0bcfbf3768811"
-  },
-  "logoUrl": "",
-  "fallbackLogo": "▶"
-  },
-    
+  },    
   {
     "name": "beIN Sports 1",
     "category": "Sports",
@@ -60,14 +45,14 @@
 
 
 {
-  "name": "Unknown 2",
+  "name": "EN VIVO FOX",
   "category": "Sports",
   "logo": "▶️",
   "tone": "blue",
-  "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd|drmScheme=clearkey&drmLicense=290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247",
+  "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/vkpoljjpkj/out/v1/502bcf68b3514cd28a220e6f0a43816f/cenc.mpd|drmScheme=clearkey&drmLicense=d1a163914db8ffad2c3e94f979896a0d:9728800a3959aafdd5b0bcfbf3768811",
   "drm": {
     "scheme": "clearkey",
-    "license": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
+    "license": "d1a163914db8ffad2c3e94f979896a0d:9728800a3959aafdd5b0bcfbf3768811"
   },
   "logoUrl": "",
   "fallbackLogo": "▶️"

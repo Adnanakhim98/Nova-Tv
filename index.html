@@ -818,17 +818,18 @@ screenEl.addEventListener("click",e=>{
  if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
  const now=Date.now();if(now-lastVideoTap<320){if(video.paused)video.play().catch(()=>{});else video.pause()}lastVideoTap=now;
 });
-// Hide overlay controls after a short delay in landscape/fullscreen so they do not cover video credits.
+// Automatically hide player controls 4 seconds after the last interaction in all orientations.
 let controlsHideTimer=null;
 function showPlayerControls(){
  playerCard.classList.remove("controls-hidden");
  if(controlsHideTimer)clearTimeout(controlsHideTimer);
- const fullscreen=!!(document.fullscreenElement||document.webkitFullscreenElement||playerCard.classList.contains("mobile-rotated"));
- if(fullscreen)controlsHideTimer=setTimeout(()=>playerCard.classList.add("controls-hidden"),3500);
+ controlsHideTimer=setTimeout(()=>{
+  if(!video.paused && !video.ended) playerCard.classList.add("controls-hidden");
+ },4000);
 }
 ["pointermove","pointerdown","touchstart","keydown"].forEach(evt=>playerCard.addEventListener(evt,showPlayerControls,{passive:true}));
 video.addEventListener("playing",showPlayerControls);
-video.addEventListener("pause",()=>playerCard.classList.remove("controls-hidden"));
+video.addEventListener("pause",()=>{if(controlsHideTimer)clearTimeout(controlsHideTimer);playerCard.classList.remove("controls-hidden")});
 
 // Swipe gestures: vertical swipe on left = brightness, right = volume; horizontal = seek.
 (function installSwipeControls(){

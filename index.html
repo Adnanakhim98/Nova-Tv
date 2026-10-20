@@ -1,4 +1,5 @@
-<!-- LAST UPDATE: 16 October 2026, 3 PM (Bangladesh time, UTC+06:00) -->
+
+<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -283,7 +284,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 </style>
 <style>
 /* No loading/spinner overlay; playback starts directly on the video surface. */
-#playerLoading,.playerLoading,.playerLoading.show{display:none!important;visibility:hidden!important;pointer-events:none!important}
+#playerLoading,.playerLoading,.playerLoading.show,.loaderRing{display:none!important;visibility:hidden!important;pointer-events:none!important;animation:none!important}
 </style>
 </head>
 <body>
@@ -299,7 +300,6 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
-   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
@@ -480,10 +480,10 @@ function setupShakaQualities(){
  showQualityOptions(unique,"shaka");
 }
 let lastStreamRequest=null;
-function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",error=false){
- // Loading overlay disabled: keep the video surface visible while the stream starts.
+function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="",error=false){
+ // Loading indicator removed completely; never cover the video surface.
  const panel=$("playerLoading");
- if(panel){panel.classList.remove("show");panel.style.display="none";}
+ if(panel) panel.remove();
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){

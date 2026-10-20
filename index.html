@@ -282,8 +282,12 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 }
 </style>
 <style>
-/* No loading/spinner overlay; playback starts directly on the video surface. */
-#playerLoading,.playerLoading,.playerLoading.show{display:none!important;visibility:hidden!important;pointer-events:none!important}
+/* Text-only waiting message shown while the selected stream starts; no spinner. */
+#playerLoading{display:none;visibility:visible;pointer-events:none;z-index:8;background:rgba(5,9,20,.92);backdrop-filter:blur(3px);gap:10px;text-align:center;padding:18px}
+#playerLoading.show{display:flex!important}
+#playerLoading .loaderRing{display:none!important}
+#playerLoading strong{font-family:Inter,"Hind Siliguri",sans-serif;font-size:clamp(14px,3.8vw,19px);line-height:1.5;color:#f5fbff}
+#playerLoading span{font-family:Inter,"Hind Siliguri",sans-serif;font-size:clamp(11px,2.8vw,14px);line-height:1.7;color:#b8c7dc}
 </style>
 </head>
 <body>
@@ -299,7 +303,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
-   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><div class="loaderRing"></div><strong id="loadingTitle">SPORTYNOVA 1.0</strong><span id="loadingMessage">দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
+   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
@@ -535,7 +539,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"SPORTYNOVA 1.0","দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",false);
+ setPlayerLoading(true,"অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন","Please Wait 7 to 10 Seconds.\nঅপেক্ষা করার জন্য ধন্যবাদ",false);
  video.dataset.currentUrl=rawUrl;
  video.crossOrigin="anonymous";
  video.preload="auto";

@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 123506 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -328,13 +328,14 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <button class="nova-control-btn" id="liveBtn">● LIVE</button>
      <span class="nova-control-spacer"></span>
+      <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
      <select class="nova-fit-select" id="fitSelect" aria-label="ভিডিও ফিট"><option value="contain">Fit</option><option value="fill">Smart Fill</option><option value="zoom">Zoom</option><option value="zoomout">Zoom Out</option></select>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
    </div>
   </div>
-  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:8px 5px"><option value="auto">Auto</option></select><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
+  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
 ।</span></div></div>
@@ -472,7 +473,7 @@ function hideQualitySelector(){
 }
 function showQualityOptions(options,mode){
  const sel=$("qualitySelect");sel.innerHTML="";
- const auto=document.createElement("option");auto.value="auto";auto.textContent="Auto";sel.appendChild(auto);
+ const auto=document.createElement("option");auto.value="auto";auto.textContent="Quality: Auto";sel.appendChild(auto);
  options.forEach((item,i)=>{const opt=document.createElement("option");opt.value=String(item.value??i);opt.textContent=item.label;sel.appendChild(opt)});
  sel.style.display=options.length?"inline-block":"none";qualityMode=options.length?mode:"";sel.value="auto";
 }
@@ -492,6 +493,8 @@ function setupHlsQualities(){
  showQualityOptions(levels.map((l,i)=>({value:i,label:(l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps")})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"hls");
 }
 function setupShakaQualities(){
+ hideQualitySelector();
+ return;
  if(!activeShaka)return;
  const tracks=activeShaka.getVariantTracks().filter(t=>t.height);
  const unique=[];const seen=new Set();
@@ -500,10 +503,15 @@ function setupShakaQualities(){
  showQualityOptions(unique,"shaka");
 }
 let lastStreamRequest=null;
-function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",error=false){
- // Loading overlay disabled: keep the video surface visible while the stream starts.
+function setPlayerLoading(show,title="ভিডিও চালু হচ্ছে…",message="Please wait while the stream connects.",error=false){
  const panel=$("playerLoading");
- if(panel){panel.classList.remove("show");panel.style.display="none";}
+ if(!panel)return;
+ $("loadingTitle").textContent=title;
+ $("loadingMessage").textContent=message;
+ const retry=$("retryBtn");
+ if(retry)retry.style.display=error?"inline-flex":"none";
+ panel.classList.toggle("show",!!show);
+ panel.style.display=show?"flex":"none";
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){
@@ -582,7 +590,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
  video.onerror=()=>fail("media error");
  video.onplaying=()=>success(engine);
  // A single startup deadline reports a real failure; it does not start another player.
- timer=setTimeout(()=>fail("startup timeout"),15000);
+ timer=setTimeout(()=>fail("startup timeout"),20000);
 
  try{
    if(kind==="mpd"){
@@ -629,9 +637,9 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:true,backBufferLength:10,
        maxBufferLength:8,maxMaxBufferLength:14,maxBufferSize:20000000,
-       manifestLoadingTimeOut:6000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:250,
-       levelLoadingTimeOut:6000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:250,
-       fragLoadingTimeOut:9000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:300,
+       manifestLoadingTimeOut:5000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:150,
+       levelLoadingTimeOut:5000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:150,
+       fragLoadingTimeOut:8000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:200,
        startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1200000,
        abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.8
      });
@@ -999,3 +1007,23 @@ document.addEventListener("touchend", e => {
 
 </body>
 </html>
+
+<style>
+/* Quality selector belongs to the video overlay and stays available in landscape/fullscreen.
+   It is shown only when HLS (.m3u8) quality levels are available. */
+#playerScreen #qualitySelect{width:auto!important;max-width:96px!important;min-width:72px;height:30px;padding:0 4px!important;background:#111a2b;color:#fff;border:1px solid #ffffff45;border-radius:8px;font-size:10px;flex:0 0 auto}
+#playerScreen .nova-control-row{position:relative;z-index:13}
+#playerLoading{pointer-events:none}
+#playerLoading.show{pointer-events:none}
+#playerScreen .playerLoading #retryBtn{pointer-events:auto}
+@media(max-width:420px){#playerScreen #qualitySelect{max-width:78px!important;min-width:62px;font-size:9px;height:28px}}
+</style>
+
+<style>
+#playerScreen #qualitySelect{width:auto!important;max-width:96px!important;min-width:72px;height:30px;padding:0 4px!important;background:#111a2b;color:#fff;border:1px solid #ffffff45;border-radius:8px;font-size:10px;flex:0 0 auto}
+#playerScreen .nova-control-row{position:relative;z-index:13}
+#playerLoading{pointer-events:none}
+#playerLoading.show{pointer-events:none}
+#playerScreen .playerLoading #retryBtn{pointer-events:auto}
+@media(max-width:420px){#playerScreen #qualitySelect{max-width:78px!important;min-width:62px;font-size:9px;height:28px}}
+</style>

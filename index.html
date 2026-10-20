@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 3 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -281,6 +281,10 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
   color:#fff!important;
 }
 </style>
+<style>
+/* No loading/spinner overlay; playback starts directly on the video surface. */
+#playerLoading,.playerLoading,.playerLoading.show{display:none!important;visibility:hidden!important;pointer-events:none!important}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -477,11 +481,9 @@ function setupShakaQualities(){
 }
 let lastStreamRequest=null;
 function setPlayerLoading(show,title="SPORTYNOVA 1.0",message="দ্রুত সংযোগ করা হচ্ছে… ভিডিও চালু হচ্ছে",error=false){
- const panel=$("playerLoading");if(!panel)return;
- panel.classList.toggle("show",!!show);
- $("loadingTitle").textContent=title;$("loadingMessage").textContent=message;
- const retry=$("retryBtn");retry.style.display=error?"inline-flex":"none";
- const ring=panel.querySelector(".loaderRing");if(ring)ring.style.display=error?"none":"block";
+ // Loading overlay disabled: keep the video surface visible while the stream starts.
+ const panel=$("playerLoading");
+ if(panel){panel.classList.remove("show");panel.style.display="none";}
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){
@@ -571,7 +573,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
        streaming:{
-         bufferingGoal:8,rebufferingGoal:2,bufferBehind:12,lowLatencyMode:true,
+         bufferingGoal:3,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,
          retryParameters:{timeout:6000,stallTimeout:4000,connectionTimeout:4000,maxAttempts:2,baseDelay:250}
        },
        manifest:{retryParameters:{timeout:6000,maxAttempts:2,baseDelay:250}},

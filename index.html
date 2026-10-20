@@ -289,6 +289,22 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 #playerLoading strong{font-family:Inter,"Hind Siliguri",sans-serif;font-size:clamp(14px,3.8vw,19px);line-height:1.5;color:#f5fbff}
 #playerLoading span{font-family:Inter,"Hind Siliguri",sans-serif;font-size:clamp(11px,2.8vw,14px);line-height:1.7;color:#b8c7dc}
 </style>
+
+<style>
+/* Landscape fullscreen: hide the bottom channel/action bar and give the video the full screen. */
+@media (orientation: landscape) {
+  .playercard:fullscreen .playerfoot,
+  .playercard:-webkit-full-screen .playerfoot,
+  .playercard.mobile-rotated .playerfoot { display:none!important; }
+  .playercard:fullscreen,
+  .playercard:-webkit-full-screen,
+  .playercard.mobile-rotated { width:100vw!important; height:100vh!important; height:100dvh!important; max-height:100dvh!important; padding:0!important; border:0!important; border-radius:0!important; }
+  .playercard:fullscreen .screen,
+  .playercard:-webkit-full-screen .screen,
+  .playercard.mobile-rotated .screen { flex:1 1 100%!important; width:100%!important; height:100%!important; max-height:none!important; min-height:0!important; aspect-ratio:auto!important; align-self:stretch!important; }
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -578,10 +594,10 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null){
      activeShaka.configure({
        streaming:{
          bufferingGoal:3,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,
-         retryParameters:{timeout:6000,stallTimeout:4000,connectionTimeout:4000,maxAttempts:2,baseDelay:250}
+         retryParameters:{timeout:4500,stallTimeout:2500,connectionTimeout:2500,maxAttempts:2,baseDelay:200}
        },
-       manifest:{retryParameters:{timeout:6000,maxAttempts:2,baseDelay:250}},
-       drm:{retryParameters:{timeout:6000,maxAttempts:2,baseDelay:250}},
+       manifest:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
+       drm:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
        abr:{enabled:true,defaultBandwidthEstimate:1200000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));

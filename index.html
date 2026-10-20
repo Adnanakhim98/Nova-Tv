@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 123506 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -236,6 +236,10 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playercard:fullscreen.controls-hidden .nova-controls,.playercard.mobile-rotated.controls-hidden .nova-controls{opacity:0!important}
 .playercard.mobile-rotated .nova-controls{padding:34px 12px 10px}
 
+/* Touch-swipe brightness/volume/seek HUD */
+.swipe-hud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9;display:none;align-items:center;gap:9px;min-width:112px;justify-content:center;padding:12px 16px;border:1px solid #ffffff30;border-radius:14px;background:rgba(5,10,20,.86);color:#fff;font-size:13px;font-weight:800;pointer-events:none;backdrop-filter:blur(8px)}
+.swipe-hud.visible{display:flex}.swipe-hud .swipe-icon{font-size:20px}.swipe-hud .swipe-detail{display:flex;flex-direction:column;gap:4px}.swipe-hud .swipe-label{font-size:10px;color:#c9d6e8;font-weight:600}.swipe-hud .swipe-meter{height:3px;width:74px;border-radius:5px;background:#ffffff35;overflow:hidden}.swipe-hud .swipe-meter span{display:block;height:100%;width:50%;background:#21d8f4;border-radius:5px}
+
 
 .update-stamp{flex:0 0 auto;text-align:center;color:#9eacc2;font-size:10px;line-height:1.3;padding:0 4px 5px;letter-spacing:.15px}
 .center-play-pause{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9;width:54px;height:54px;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff70;border-radius:50%;background:#07111dcc;color:#fff;font-size:24px;box-shadow:0 4px 24px #0008;backdrop-filter:blur(5px);cursor:pointer}
@@ -318,6 +322,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
+   <div class="swipe-hud" id="swipeHud" aria-live="polite"><span class="swipe-icon" id="swipeIcon">☀️</span><span class="swipe-detail"><span id="swipeValue">100%</span><span class="swipe-label" id="swipeLabel">Brightness</span><span class="swipe-meter"><span id="swipeMeterFill"></span></span></span></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
@@ -824,6 +829,62 @@ function showPlayerControls(){
 ["pointermove","pointerdown","touchstart","keydown"].forEach(evt=>playerCard.addEventListener(evt,showPlayerControls,{passive:true}));
 video.addEventListener("playing",showPlayerControls);
 video.addEventListener("pause",()=>playerCard.classList.remove("controls-hidden"));
+
+// Swipe gestures: vertical swipe on left = brightness, right = volume; horizontal = seek.
+(function installSwipeControls(){
+ const hud=$("swipeHud"), icon=$("swipeIcon"), value=$("swipeValue"), label=$("swipeLabel"), fill=$("swipeMeterFill");
+ if(!hud||!screenEl)return;
+ let start=null, hudTimer=null, gesture=null, startBrightness=1, startVolume=1, startTime=0;
+ let brightness=1;
+ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+ function showHud(type,amount,extra){
+  const pct=Math.round(clamp(amount,0,1)*100);
+  icon.textContent=type==="brightness"?"☀️":type==="volume"?(video.muted||video.volume===0?"🔇":"🔊"):"↔️";
+  label.textContent=type==="brightness"?"Brightness":type==="volume"?"Volume":"Seek";
+  value.textContent=type==="seek"?(extra||"LIVE"):pct+"%";
+  fill.style.width=(type==="seek"?50:pct)+"%";
+  hud.classList.add("visible");
+  if(hudTimer)clearTimeout(hudTimer);
+  hudTimer=setTimeout(()=>hud.classList.remove("visible"),950);
+ }
+ function getSeekRange(){
+  if(Number.isFinite(video.duration)&&video.duration>0)return {start:0,end:video.duration};
+  try{if(video.seekable&&video.seekable.length)return {start:video.seekable.start(0),end:video.seekable.end(video.seekable.length-1)}}catch(e){}
+  return null;
+ }
+ screenEl.addEventListener("touchstart",e=>{
+  if(e.touches.length!==1||e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
+  const t=e.touches[0],rect=screenEl.getBoundingClientRect();
+  // Ignore touches on the lower control strip.
+  if(t.clientY>rect.bottom-Math.max(58,rect.height*.19))return;
+  start={x:t.clientX,y:t.clientY,rect,at:Date.now()};gesture=null;startBrightness=brightness;startVolume=video.volume;startTime=video.currentTime;
+ },{passive:true});
+ screenEl.addEventListener("touchmove",e=>{
+  if(!start||e.touches.length!==1)return;
+  const t=e.touches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;
+  if(!gesture){if(Math.max(Math.abs(dx),Math.abs(dy))<14)return;gesture=Math.abs(dx)>Math.abs(dy)*1.15?"seek":(start.x<start.rect.left+start.rect.width/2?"brightness":"volume");}
+  if(gesture==="brightness"){
+   brightness=clamp(startBrightness-dy/start.rect.height,0.15,1.5);
+   video.style.filter=`brightness(${brightness})`;
+   showHud("brightness",brightness/1.5);
+  }else if(gesture==="volume"){
+   const vol=clamp(startVolume-dy/start.rect.height,0,1);
+   video.volume=vol;video.muted=vol===0;
+   showHud("volume",vol);
+  }else{
+   const range=getSeekRange();if(!range)return;
+   const span=range.end-range.start;if(span<=0)return;
+   const secondsPerWidth=Math.min(span/2,Math.max(30,span*.12));
+   const target=clamp(startTime+(dx/start.rect.width)*secondsPerWidth,range.start,range.end);
+   try{video.currentTime=target}catch(err){}
+   showHud("seek",0,formatClock(target));
+  }
+  if(e.cancelable)e.preventDefault();
+ },{passive:false});
+ const endGesture=()=>{start=null;gesture=null;if(hudTimer)clearTimeout(hudTimer);hudTimer=setTimeout(()=>hud.classList.remove("visible"),650)};
+ screenEl.addEventListener("touchend",endGesture,{passive:true});
+ screenEl.addEventListener("touchcancel",endGesture,{passive:true});
+})();
 
 // Direct player URL support. The requested stream is used when no ?url= parameter exists.
 const DEFAULT_STREAM="https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8";

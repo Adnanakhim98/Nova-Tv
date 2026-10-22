@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 16 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -335,7 +335,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <span class="nova-control-spacer"></span>
       <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
-     <span class="inline-server-group" aria-label="সার্ভার নির্বাচন"><button class="nova-control-btn inline-server-btn" id="server1Btn" type="button">Server 1</button><button class="nova-control-btn inline-server-btn" id="server2Btn" type="button">Server 2</button></span>
+     <span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><button class="nova-control-btn inline-server-btn" id="server1Btn" type="button">Server 1</button><button class="nova-control-btn inline-server-btn" id="server2Btn" type="button">Server 2</button><button class="nova-control-btn inline-server-btn sports-server-btn" id="server3Btn" type="button" style="display:none">Server 3</button><button class="nova-control-btn inline-server-btn sports-server-btn" id="server4Btn" type="button" style="display:none">Server 4</button></span>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
@@ -680,41 +680,55 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  render();
 }
 let currentServerChannel=null,currentChannelStreams=[];
+function isSportsChannel(ch){return !!ch && (ch.section==="liveSports" || /live sports|sports/i.test(String(ch.category||"")));}
 function getChannelStreams(ch){
- let streams=Array.isArray(ch.streams)?ch.streams.slice(0,2):[];
- if(!streams.length && ch.url) streams=[{name:"Server 1",url:ch.url,drm:ch.drm},{name:"Server 2",url:""}];
+ const count=isSportsChannel(ch)?4:2;
+ let streams=Array.isArray(ch.streams)?ch.streams.slice(0,count):[];
+ // Accept either streams[] or explicit server1..server4 / server1Url..server4Url fields.
+ if(!streams.length){
+  for(let i=1;i<=count;i++){
+   const url=ch["server"+i]||ch["server"+i+"Url"]||ch["server"+i+"URL"]|| (i===1?ch.url:"") || "";
+   streams.push({name:"Server "+i,url,drm:ch["drm"+i]||ch.drm||null});
+  }
+ }
  if(streams.length && !streams[0].url && ch.url) streams[0]={...streams[0],url:ch.url,drm:streams[0].drm||ch.drm};
- while(streams.length<2) streams.push({name:"Server "+(streams.length+1),url:""});
- return streams;
+ while(streams.length<count) streams.push({name:"Server "+(streams.length+1),url:""});
+ return streams.map((stream,i)=>({...stream,name:stream.name||("Server "+(i+1)),url:String(stream.url||stream.src||"").trim()}));
 }
 function setInlineServers(ch){
  currentServerChannel=ch;currentChannelStreams=getChannelStreams(ch);
- [1,2].forEach((n)=>{
+ const sports=isSportsChannel(ch);
+ [1,2,3,4].forEach((n)=>{
   const b=$("server"+n+"Btn"),stream=currentChannelStreams[n-1]||{},url=String(stream.url||"").trim();
+  b.style.display=(n<=2||sports)?"inline-flex":"none";
+  const kind=streamKind(url),typeLabel=sports?(n===1||n===3?"HLS":"DASH"):"";
+  b.textContent=sports?("Server "+n+" · "+typeLabel):("Server "+n);
   b.disabled=!url;b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);
-  b.title=url?(stream.name||("Server "+n)):"এই সার্ভারের URL যোগ করা হয়নি";
+  b.title=url?(stream.name||("Server "+n)):("এই সার্ভারের URL যোগ করা হয়নি");
  });
 }
 function playChannelDefault(ch){
  $("empty").style.display="none";
  setPlayerLoading(false);
  setInlineServers(ch);
- const first=currentChannelStreams[0]||{},second=currentChannelStreams[1]||{};
+ const first=currentChannelStreams[0]||{},fallback=currentChannelStreams.find((stream,i)=>i>0&&stream.url)?.url||"";
  const url=String(first.url||ch.url||"").trim();
- if(!url){showStatus(ch.name||"Live TV","Server 1 URL যোগ করা হয়নি");return;}
+ if(!url){showStatus(ch.name||"Live TV","Server 1 URL যোগ করা হয়নি · অন্য সার্ভার নির্বাচন করুন");return;}
  showStatus(ch.name||"Live TV","Server 1 · Connecting…");
- playStream(url,ch.name||"Live TV",(ch.category||"LIVE TV")+" · Server 1",first.drm||ch.drm||null,String(second.url||"").trim());
+ playStream(url,ch.name||"Live TV",(ch.category||"LIVE TV")+" · Server 1",first.drm||ch.drm||null,String(fallback||"").trim());
 }
 function playSelectedServer(index){
  if(!currentServerChannel)return;
  const stream=currentChannelStreams[index-1]||{},url=String(stream.url||"").trim();
  if(!url)return;
- const fallback=index===1?String(currentChannelStreams[1]?.url||"").trim():"";
+ const fallback=String(currentChannelStreams.find((item,i)=>i!==index-1&&item.url)?.url||"").trim();
  showStatus(currentServerChannel.name||"Live TV",(stream.name||("Server "+index))+" · Connecting…");
  playStream(url,currentServerChannel.name||"Live TV",(currentServerChannel.category||"LIVE TV")+" · "+(stream.name||("Server "+index)),stream.drm||currentServerChannel.drm||null,fallback);
 }
 $("server1Btn").onclick=()=>playSelectedServer(1);
 $("server2Btn").onclick=()=>playSelectedServer(2);
+$("server3Btn").onclick=()=>playSelectedServer(3);
+$("server4Btn").onclick=()=>playSelectedServer(4);
 $("customBtn").onclick=()=>openModal();
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};

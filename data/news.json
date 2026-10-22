@@ -1,13 +1,119 @@
+
 {
   "channels": [
     {
-      "name": "Ekhon TV",
+      "name": "Jamuna TV",
       "category": "News",
       "logo": "📰",
       "tone": "red",
-      "url": "https://tvsen6.aynaott.com/fbgZV3X17hwWcyfZ4pdb/tracks-v1a1/mono.ts.m3u8",
+      "url": "https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8",
       "logoUrl": "",
-      "fallbackLogo": "📰"
+      "fallbackLogo": "📰",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "DBC News",
+      "category": "News",
+      "logo": "📰",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "📰",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Ekattor TV",
+      "category": "News",
+      "logo": "📰",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "📰",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Channel 24",
+      "category": "News",
+      "logo": "📰",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/YrVDF8gu/index.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "📰",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/YrVDF8gu/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "News 24",
+      "category": "News",
+      "logo": "📰",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "📰",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "ATN News",
+      "category": "News",
+      "logo": "📰",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/da6WMXAk/index.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "📰",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/da6WMXAk/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     }
   ]
 }

@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:fথ6 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 12:fg06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -341,19 +341,6 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 </section>
 <main class="channelarea" id="channelArea">
  <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="liveSportsCount">0 CHANNELS</span></div>
- <section id="sportsPlayerSection" style="margin:0 0 12px;display:none">
-  <div class="playercard" id="sportsPlayerCard">
-   <div class="screen" id="sportsPlayerScreen">
-    <video id="sportsVideo" playsinline webkit-playsinline preload="auto" autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020307"></video>
-    <div class="empty" id="sportsEmpty"><div class="tvicon">⚽</div><strong>SPORTYNOVA LIVE SPORTS</strong><span>একটি লাইভ স্পোর্টস ইভেন্ট নির্বাচন করুন</span></div>
-    <div class="nova-controls" id="sportsControls">
-     <div class="nova-progress-row"><span id="sportsCurrentTime">LIVE</span><input id="sportsSeek" type="range" min="0" max="1000" value="0" aria-label="Sports video seek"><span id="sportsDuration">LIVE</span></div>
-     <div class="nova-control-row"><button class="nova-control-btn" id="sportsPlayPause" type="button">▶</button><button class="nova-control-btn" id="sportsMute" type="button">🔊</button><span class="nova-control-spacer"></span><span class="inline-server-group" id="sportsServerGroup" aria-label="Live Sports servers"><button class="nova-control-btn inline-server-btn" data-sports-server="1">Server 1 · HLS</button><button class="nova-control-btn inline-server-btn" data-sports-server="2">Server 2 · DASH</button><button class="nova-control-btn inline-server-btn" data-sports-server="3">Server 3 · HLS</button><button class="nova-control-btn inline-server-btn" data-sports-server="4">Server 4 · DASH</button></span><button class="nova-control-btn" id="sportsPip" aria-label="Picture in Picture">▣</button><button class="nova-control-btn" id="sportsFullscreen" aria-label="Fullscreen">⛶</button></div>
-    </div>
-   </div>
-   <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="sportsNowTitle">Live Sports</div><div class="nowmeta" id="sportsNowMeta">আলাদা Sports Player · HLS / MPEG-DASH</div></div><button class="btn" id="sportsStop" type="button">■ STOP</button></div>
-  </div>
- </section>
  <div class="channelrow sportsrow" id="liveSportsChannels"></div>
  <div class="sectionhead"><h2>📺 Live TV Channels</h2><span class="section-count" id="channelCount">0 CHANNELS</span></div>
  <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Channel categories"></div>
@@ -443,9 +430,7 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   b.append(logoBox,name,category);
  }
  b.addEventListener("click",()=>{
-  if(isLiveEvent){playSportsChannel(ch);return;}
-  if(ch.section==="liveSports" || isSportsChannel(ch)){playSportsChannel(ch);return;}
-  if(ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
+  if(isLiveEvent || ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
   else openModal(ch.name);
  });
  root.appendChild(b);
@@ -704,7 +689,8 @@ function setInlineServers(ch){
  const sports=isSportsChannel(ch);
  [1,2,3,4].forEach((n)=>{
   const b=$("server"+n+"Btn"),stream=currentChannelStreams[n-1]||{},url=String(stream.url||"").trim();
-  b.style.display=(sports?"inline-flex":(n<=2?"inline-flex":"none"));
+  // Live TV shows only Server 1/2; Live Sports shows all four.
+  b.style.display=(sports || n<=2)?"inline-flex":"none";
   const kind=streamKind(url),typeLabel=sports?(n===1||n===3?"HLS":"DASH"):"";
   b.textContent=sports?("Server "+n+" · "+typeLabel):("Server "+n);
   b.disabled=!url;b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);
@@ -729,47 +715,6 @@ function playSelectedServer(index){
  showStatus(currentServerChannel.name||"Live TV",(stream.name||("Server "+index))+" · Connecting…");
  playStream(url,currentServerChannel.name||"Live TV",(currentServerChannel.category||"LIVE TV")+" · "+(stream.name||("Server "+index)),stream.drm||currentServerChannel.drm||null,fallback);
 }
-// Independent Live Sports player: its video and playback engines never replace Live TV.
-const sportsVideo=$("sportsVideo"),sportsSection=$("sportsPlayerSection");
-let sportsHls=null,sportsShaka=null,sportsChannel=null,sportsStreams=[];
-function sportsStopEngines(){
- if(sportsHls){try{sportsHls.destroy()}catch(e){}sportsHls=null;}
- if(sportsShaka){const p=sportsShaka;sportsShaka=null;try{p.destroy()}catch(e){}}
- sportsVideo.pause();sportsVideo.removeAttribute("src");sportsVideo.load();
-}
-function sportsSetButtons(active){
- document.querySelectorAll("[data-sports-server]").forEach(b=>{const n=Number(b.dataset.sportsServer),st=sportsStreams[n-1],url=String(st?.url||"").trim();b.disabled=!url;b.classList.toggle("active",n===active);b.title=url?(st.name||("Server "+n)):"এই সার্ভারের URL যোগ করা হয়নি";});
-}
-async function playSportsServer(index){
- const stream=sportsStreams[index-1],url=String(stream?.url||"").trim();if(!url)return;
- sportsStopEngines();$("sportsEmpty").style.display="none";sportsSection.style.display="block";
- $("sportsNowTitle").textContent=sportsChannel?.name||"Live Sports";$("sportsNowMeta").textContent="Server "+index+" · "+([1,3].includes(index)?"HLS":"MPEG-DASH")+" · Connecting…";sportsSetButtons(index);
- try{
-  if(/\.mpd(?:[?#]|$)/i.test(url)){
-   if(!window.shaka)throw new Error("DASH player unavailable");
-   shaka.polyfill.installAll();sportsShaka=new shaka.Player(sportsVideo);await sportsShaka.load(url);sportsVideo.play().catch(()=>{});
-  }else if((/\.m3u8(?:[?#]|$)/i.test(url))&&window.Hls&&Hls.isSupported()){
-   sportsHls=new Hls({enableWorker:true,lowLatencyMode:true,maxBufferLength:8,manifestLoadingTimeOut:7000});
-   sportsHls.loadSource(url);sportsHls.attachMedia(sportsVideo);sportsHls.on(Hls.Events.MANIFEST_PARSED,()=>sportsVideo.play().catch(()=>{}));
-   sportsHls.on(Hls.Events.ERROR,(_e,d)=>{if(d.fatal)$("sportsNowMeta").textContent="Stream চালু হয়নি · অন্য Server নির্বাচন করুন";});
-  }else{sportsVideo.src=url;sportsVideo.load();sportsVideo.play().catch(()=>{});}
- }catch(e){$("sportsNowMeta").textContent="Stream চালু হয়নি · অন্য Server নির্বাচন করুন";}
-}
-function playSportsChannel(ch){
- sportsChannel=ch;sportsStreams=getChannelStreams(ch);sportsSection.style.display="block";$("sportsEmpty").style.display="flex";
- $("sportsNowTitle").textContent=ch.name||"Live Sports";$("sportsNowMeta").textContent="Live Sports · চারটি সার্ভার থেকে নির্বাচন করুন";
- sportsSetButtons(0);const first=sportsStreams.findIndex(st=>st.url);if(first>=0)playSportsServer(first+1);
- sportsSection.scrollIntoView({behavior:"smooth",block:"nearest"});
-}
-document.querySelectorAll("[data-sports-server]").forEach(b=>b.addEventListener("click",()=>playSportsServer(Number(b.dataset.sportsServer))));
-$("sportsPlayPause").onclick=()=>{if(sportsVideo.paused)sportsVideo.play().catch(()=>{});else sportsVideo.pause()};
-sportsVideo.addEventListener("play",()=>$("sportsPlayPause").textContent="Ⅱ");sportsVideo.addEventListener("pause",()=>$("sportsPlayPause").textContent="▶");
-$("sportsMute").onclick=()=>{sportsVideo.muted=!sportsVideo.muted;$("sportsMute").textContent=sportsVideo.muted?"🔇":"🔊"};
-sportsVideo.addEventListener("timeupdate",()=>{const d=sportsVideo.duration;if(Number.isFinite(d)&&d>0){$("sportsCurrentTime").textContent=formatClock(sportsVideo.currentTime);$("sportsDuration").textContent=formatClock(d);if(!$('sportsSeek').matches(':active'))$('sportsSeek').value=String(Math.round(sportsVideo.currentTime/d*1000));}else{$("sportsCurrentTime").textContent="LIVE";$("sportsDuration").textContent="LIVE";}});
-$("sportsSeek").addEventListener("change",()=>{if(Number.isFinite(sportsVideo.duration)&&sportsVideo.duration>0)sportsVideo.currentTime=sportsVideo.duration*Number($("sportsSeek").value)/1000});
-$("sportsPip").onclick=async()=>{try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled)await sportsVideo.requestPictureInPicture();}catch(e){}};
-$("sportsFullscreen").onclick=async()=>{try{const card=$("sportsPlayerCard");if(document.fullscreenElement)await document.exitFullscreen();else if(card.requestFullscreen)await card.requestFullscreen();else if(sportsVideo.webkitEnterFullscreen)sportsVideo.webkitEnterFullscreen();}catch(e){}};
-$("sportsStop").onclick=()=>{sportsStopEngines();$("sportsEmpty").style.display="flex";$("sportsNowMeta").textContent="প্লেব্যাক বন্ধ করা হয়েছে";sportsSetButtons(0)};
 $("server1Btn").onclick=()=>playSelectedServer(1);
 $("server2Btn").onclick=()=>playSelectedServer(2);
 $("server3Btn").onclick=()=>playSelectedServer(3);

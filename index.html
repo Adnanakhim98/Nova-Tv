@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, :06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 16 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -534,7 +534,7 @@ function stopEngines(){
   delete video.dataset.currentUrl;
   activeKey=null;
 }
-function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else if(/চালানো যায়নি|চালানো যাচ্ছে না|পরীক্ষা করুন|ব্যর্থ/i.test(meta)){setLiveBadge(false);setPlayerLoading(true,"Stream চালু করা যায়নি",meta,true)}else{setLiveBadge(false);}}
+function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else{setLiveBadge(false);/* Never cover the video surface or inline server controls with an error overlay. */setPlayerLoading(false);}}
 function parseStreamInput(raw, drmFromJson=null){
  const text=String(raw||"").trim();
  // Only the pipe-delimited suffix is player metadata. Preserve signed/query URLs intact.
@@ -588,10 +588,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      playStream(backup,name,category.replace(/Server 1/g,"Server 2"),drm,"");
      return;
    }
+   // Keep the player surface and inline Server 1 / Server 2 controls visible on failure.
+   // Do not cover the player with the blocking error overlay; the user can switch servers directly.
    setLiveBadge(false);
-   setPlayerLoading(true,"Stream চালু করা যায়নি","লিংক / সার্ভার / CORS / DRM পরীক্ষা করুন",true);
+   setPlayerLoading(false);
    $("nowTitle").textContent=name;
-   $("nowMeta").textContent="চালানো যায়নি · অন্য সার্ভার চেষ্টা করুন";
+   $("nowMeta").textContent="Stream চালু হয়নি · প্লেয়ারের Server 1 / Server 2 বাটন চাপুন";
+   setInlineServers(currentServerChannel || {name:name,url:rawUrl,category:category});
  };
  const success=(label)=>{
    if(requestId!==playRequestId||settled)return;
@@ -693,6 +696,8 @@ function setInlineServers(ch){
  });
 }
 function playChannelDefault(ch){
+ $("empty").style.display="none";
+ setPlayerLoading(false);
  setInlineServers(ch);
  const first=currentChannelStreams[0]||{},second=currentChannelStreams[1]||{};
  const url=String(first.url||ch.url||"").trim();

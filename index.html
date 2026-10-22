@@ -471,10 +471,42 @@ body{
 }
 </style>
 
+
+<style>
+/* Animated SPORTYNOVA branding + live Bangladesh clock */
+.live-clock{
+  display:flex;justify-content:center;align-items:center;flex-wrap:wrap;
+  gap:2px;padding:7px 8px 8px;margin:0 auto 7px;
+  color:#b9c9df;font-size:clamp(10px,2.7vw,12px);
+  border:1px solid rgba(24,214,243,.28);border-radius:10px;
+  background:linear-gradient(100deg,rgba(9,17,31,.96),rgba(10,34,47,.9),rgba(9,17,31,.96));
+  box-shadow:0 0 14px rgba(24,214,243,.08);
+  animation:clockGlow 3s ease-in-out infinite;
+}
+.clock-time{font-weight:800;color:#48e7ff;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.clock-date{font-weight:600;color:#e0e9f7}
+.clock-zone{color:#92a4bc}
+.clock-separator{color:#18d6f3;padding:0 2px}
+.brand{position:relative}
+.brandicon{animation:iconFloat 2.8s ease-in-out infinite,iconGlow 2.8s ease-in-out infinite;transform-origin:center}
+.brandname{animation:brandShimmer 4s ease-in-out infinite; background-size:200% auto}
+.brand .nova{animation:novaPulse 2.2s ease-in-out infinite}
+.brand .version{display:inline-block;animation:versionBob 2.4s ease-in-out infinite}
+.tagline{animation:taglineFade 4s ease-in-out infinite}
+@keyframes clockGlow{0%,100%{border-color:rgba(24,214,243,.22);box-shadow:0 0 10px rgba(24,214,243,.05)}50%{border-color:rgba(24,214,243,.55);box-shadow:0 0 17px rgba(24,214,243,.14)}}
+@keyframes iconFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-2deg)}}
+@keyframes iconGlow{0%,100%{box-shadow:0 0 0 rgba(24,214,243,0)}50%{box-shadow:0 0 16px rgba(24,214,243,.35)}}
+@keyframes brandShimmer{0%,100%{filter:brightness(1)}50%{filter:brightness(1.22)}}
+@keyframes novaPulse{0%,100%{text-shadow:0 0 0 rgba(255,61,85,0)}50%{text-shadow:0 0 10px rgba(255,61,85,.45)}}
+@keyframes versionBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes taglineFade{0%,100%{opacity:.72}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.live-clock,.brandicon,.brandname,.brand .nova,.brand .version,.tagline{animation:none!important}}
+</style>
+
 </head>
 <body>
 <div class="wrap">
-<div class="update-stamp">শেষ আপডেট: ২২ অক্টোবর ২০২৬ (বাংলাদেশ সময়)</div>
+<div class="update-stamp live-clock" id="liveClock" aria-live="off"><span class="clock-time">--:--:--</span><span class="clock-separator"> • </span><span class="clock-date">তারিখ লোড হচ্ছে…</span><span class="clock-zone"> (বাংলাদেশ সময়)</span></div>
 <header class="topbar">
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
@@ -1488,6 +1520,29 @@ document.addEventListener("touchend", e => {
   .channelrow.sportsrow .channel {transition:none}
 }
 </style>
+
+
+<script>
+(function(){
+  const clock=document.getElementById('liveClock');
+  if(!clock) return;
+  const timeEl=clock.querySelector('.clock-time');
+  const dateEl=clock.querySelector('.clock-date');
+  const timeFmt=new Intl.DateTimeFormat('bn-BD',{
+    timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+  });
+  const dateFmt=new Intl.DateTimeFormat('bn-BD',{
+    timeZone:'Asia/Dhaka',weekday:'short',day:'numeric',month:'long',year:'numeric'
+  });
+  function updateClock(){
+    const now=new Date();
+    timeEl.textContent=timeFmt.format(now);
+    dateEl.textContent=dateFmt.format(now);
+  }
+  updateClock();
+  setInterval(updateClock,1000);
+})();
+</script>
 
 </body>
 </html>

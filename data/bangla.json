@@ -1,4 +1,4 @@
-up{
+{
   "channels": [
     {
       "name": "Boishakhi TV",
@@ -28,7 +28,7 @@ up{
       "url": "https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/playlist.m3u8",
       "logoUrl": "",
       "fallbackLogo": "📺",
-      "show": "Yes",
+      "show": "Y",
       "streams": [
         {
           "name": "Server 1",
@@ -48,7 +48,7 @@ up{
       "url": "https://tvsen6.aynaott.com/pKb5k6NnzxsKpWUs6E8M/tracks-v1a1/mono.ts.m3u8",
       "logoUrl": "https://web.aynaott.com/storage/019dd92f-107c-7056-9e79-e5233f6e51d9/uploads/images/2026-07-02/images_a5ac9561e182c07073e46bc30b3c8cab_playmist_asian_tv.png",
       "fallbackLogo": "📺",
-      "show": "Yes",
+      "show": "Y",
       "streams": [
         {
           "name": "Server 1",
@@ -566,7 +566,7 @@ up{
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/channel52/tracks-v1a1/mono.ts.m3u8",
-      "logoUrl": "https://web.aynaott.com/storage/019dd92f-107c-7056-9e79-e5233f6e51d9/uploads/images/2026-07-26/images_9b7bab426198d5e39dea4b494cad717b_playmist_channel52.jpg",
+      "logoUrl": "",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [

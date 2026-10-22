@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 2:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -331,10 +331,9 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
     <div class="nova-control-row">
      <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause">▶</button>
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
-     <button class="nova-control-btn" id="liveBtn">● LIVE</button>
      <span class="nova-control-spacer"></span>
       <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
-     <select class="nova-fit-select" id="fitSelect" aria-label="ভিডিও ফিট"><option value="contain">Fit</option><option value="fill">Smart Fill</option><option value="zoom">Zoom</option><option value="zoomout">Zoom Out</option></select>
+     <button class="nova-control-btn" id="serversBtn" aria-label="Servers" title="সার্ভার পরিবর্তন">☷ SERVERS</button>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
@@ -675,7 +674,9 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  }catch(err){fail(err?.message||"player exception")}
  render();
 }
+let currentServerChannel=null;
 function openServerModal(ch){
+ currentServerChannel=ch;
  const modal=$("serverModal"),root=$("serverChoices");
  $("serverModalTitle").textContent=(ch.name||"Live TV")+" — Server নির্বাচন";
  root.innerHTML="";
@@ -703,6 +704,7 @@ function openServerModal(ch){
  modal.classList.add("open");
 }
 function openModal(name=""){ $("urlModal").classList.add("open");$("streamName").value=name;$("streamUrl").value=""; }
+$("serversBtn").onclick=()=>{if(currentServerChannel)openServerModal(currentServerChannel);else alert("প্রথমে একটি চ্যানেল নির্বাচন করুন।")};
 $("customBtn").onclick=()=>openModal();
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};
@@ -785,7 +787,7 @@ seekBar.addEventListener("change",()=>{
  if(Number.isFinite(duration)&&duration>0)video.currentTime=Number(seekBar.value)/1000*duration;
  else if(video.seekable.length){const start=video.seekable.start(0),end=video.seekable.end(video.seekable.length-1);video.currentTime=start+(end-start)*Number(seekBar.value)/1000}
 });
-$("liveBtn").addEventListener("click",()=>{try{if(video.seekable.length){video.currentTime=video.seekable.end(video.seekable.length-1);video.play().catch(()=>{})}}catch(e){console.warn("Go-live unavailable",e)}});
+
 function applyVideoFit(mode){
  // Smart Fill preserves the original aspect ratio; the screen uses a soft gradient backdrop
  // rather than stretching the picture or cropping its edges. Only Zoom intentionally crops.
@@ -799,8 +801,7 @@ function applyVideoFit(mode){
  video.style.setProperty("object-fit",fit,"important");
  video.style.setProperty("transform",transform,"important");
 }
-$("fitSelect").addEventListener("change",()=>applyVideoFit($("fitSelect").value));
-applyVideoFit($("fitSelect").value);
+applyVideoFit("contain");
 $("pipBtn").addEventListener("click",async()=>{
  try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
 });

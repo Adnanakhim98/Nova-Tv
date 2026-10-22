@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocer 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocer 026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -486,7 +486,7 @@ body{
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
    <div class="swipe-hud" id="swipeHud" aria-live="polite"><span class="swipe-icon" id="swipeIcon">☀️</span><span class="swipe-detail"><span id="swipeValue">100%</span><span class="swipe-label" id="swipeLabel">Brightness</span><span class="swipe-meter"><span id="swipeMeterFill"></span></span></span></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
-   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
+   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">চ্যানেল সংযোগ করা হচ্ছে…</strong><span id="loadingMessage">Connecting to stream…</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
@@ -738,7 +738,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","৮ সেকেন্ডের মধ্যে না চললে স্বয়ংক্রিয়ভাবে অন্য সার্ভারে চেষ্টা করা হবে।",false);
+ setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","দ্রুত সংযোগের চেষ্টা চলছে…",false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";
@@ -776,7 +776,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.onerror=()=>fail("media error");
  video.onplaying=()=>success(engine);
  // A single startup deadline reports a real failure; it does not start another player.
- timer=setTimeout(()=>fail("startup timeout after 8 seconds"),8000);
+ timer=setTimeout(()=>fail("startup timeout after 12 seconds"),12000);
 
  try{
    if(kind==="mpd"){
@@ -792,7 +792,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        },
        manifest:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
        drm:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
-       abr:{enabled:true,defaultBandwidthEstimate:1200000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
+       abr:{enabled:true,defaultBandwidthEstimate:800000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      // DASH variants may be discovered or updated after the manifest is loaded.
@@ -820,11 +820,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:true,backBufferLength:10,
-       maxBufferLength:8,maxMaxBufferLength:14,maxBufferSize:20000000,
+       maxBufferLength:6,maxMaxBufferLength:10,maxBufferSize:16000000,
        manifestLoadingTimeOut:5000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:150,
        levelLoadingTimeOut:5000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:150,
        fragLoadingTimeOut:8000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:200,
-       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1200000,
+       startLevel:0,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:800000,
        abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.8
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{

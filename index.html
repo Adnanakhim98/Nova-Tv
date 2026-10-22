@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocer 026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 2 Ocer 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -738,7 +738,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন…",false);
+ setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","দ্রুত সংযোগের চেষ্টা চলছে…",false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";
@@ -786,13 +786,45 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
+       // DASH startup tuning: begin with a conservative bitrate and a small
+       // buffer so the first picture can appear sooner on mobile connections.
        streaming:{
-         bufferingGoal:3,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,
-         retryParameters:{timeout:4500,stallTimeout:2500,connectionTimeout:2500,maxAttempts:2,baseDelay:200}
+         bufferingGoal:2,
+         rebufferingGoal:0.5,
+         bufferBehind:5,
+         lowLatencyMode:true,
+         startAtSegmentBoundary:false,
+         retryParameters:{
+           timeout:3000,
+           stallTimeout:2000,
+           connectionTimeout:2000,
+           maxAttempts:1,
+           baseDelay:150,
+           backoffFactor:1.5
+         }
        },
-       manifest:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
-       drm:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
-       abr:{enabled:true,defaultBandwidthEstimate:800000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
+       manifest:{
+         retryParameters:{
+           timeout:3000,
+           maxAttempts:1,
+           baseDelay:150,
+           backoffFactor:1.5
+         }
+       },
+       drm:{
+         retryParameters:{
+           timeout:3000,
+           maxAttempts:1,
+           baseDelay:150,
+           backoffFactor:1.5
+         }
+       },
+       abr:{
+         enabled:true,
+         defaultBandwidthEstimate:500000,
+         bandwidthDowngradeTarget:0.95,
+         bandwidthUpgradeTarget:0.85
+       }
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      // DASH variants may be discovered or updated after the manifest is loaded.
@@ -800,6 +832,10 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka.addEventListener("adaptation",()=>setupShakaQualities());
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
+     video.preload="auto";
+     video.playsInline=true;
+     video.setAttribute("playsinline","");
+     video.setAttribute("webkit-playsinline","");
      // Keep the same SPORTYNOVA overlay controls for DASH and HLS.
      // Do not attach Shaka UI: it hides the inline server buttons and replaces them
      // with its own controls on some mobile browsers.
@@ -811,7 +847,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase();
      }
      if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-     report("MPEG-DASH · লিংক লোড হচ্ছে…");
+     report("MPEG-DASH · দ্রুত সংযোগ করা হচ্ছে…");
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
      setupShakaQualities();

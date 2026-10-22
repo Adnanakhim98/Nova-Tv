@@ -15,7 +15,7 @@
     "streams": [
       {
         "name": "HLS Server 1",
-        "url": "https://tvsen5.aynaott.com/kP9vX2mZ7qL5wN3t/index.m3u8",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a14a9fb90c15fc60e91e1786b061/01a14a9feb881ea540a81c2b41b75e/main.m3u8",
         "show": "yes"
       },
       {

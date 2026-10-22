@@ -689,7 +689,8 @@ function setInlineServers(ch){
  const sports=isSportsChannel(ch);
  [1,2,3,4].forEach((n)=>{
   const b=$("server"+n+"Btn"),stream=currentChannelStreams[n-1]||{},url=String(stream.url||"").trim();
-  b.style.display="inline-flex";
+  // Live TV shows only Server 1/2; Live Sports shows all four.
+  b.style.display=(sports || n<=2)?"inline-flex":"none";
   const kind=streamKind(url),typeLabel=sports?(n===1||n===3?"HLS":"DASH"):"";
   b.textContent=sports?("Server "+n+" · "+typeLabel):("Server "+n);
   b.disabled=!url;b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);

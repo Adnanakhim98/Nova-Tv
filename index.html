@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Octoতথber 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 ঊঊOctober 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -271,20 +271,27 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 
 
 <style>
-/* MPD uses Shaka's dedicated UI; HLS/direct streams keep the original SPORTYNOVA controls. */
+/* One consistent player UI for HLS and DASH. Never allow Shaka/native controls
+   to cover the SPORTYNOVA server strip or replace the custom controls. */
 .playersticky .screen .nova-controls{display:block!important;z-index:15!important;}
 .playersticky .screen #centerPlayPause{z-index:14!important;}
 .playersticky .screen video{z-index:1!important;}
-.playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
+
+/* Dedicated Shaka UI for MPEG-DASH/MPD. Server buttons stay inside the player. */
 .playersticky .screen.mpd-player-mode .nova-controls,
 .playersticky .screen.mpd-player-mode #centerPlayPause{display:none!important;}
-.mpd-server-dock{display:none;position:absolute;left:10px;right:10px;bottom:54px;z-index:40;align-items:center;gap:7px;min-height:38px;padding:5px 8px;border:1px solid #18d6f36b;border-radius:12px;background:rgba(5,12,25,.84);backdrop-filter:blur(9px);pointer-events:auto;}
+.playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
+.mpd-server-dock{display:none;position:absolute;left:10px;right:10px;bottom:56px;z-index:100;align-items:center;gap:7px;min-height:38px;padding:5px 8px;border:1px solid rgba(24,214,243,.55);border-radius:12px;background:rgba(5,12,25,.90);backdrop-filter:blur(9px);pointer-events:auto;}
 .mpd-player-mode .mpd-server-dock{display:flex;}
-.mpd-server-label{flex:0 0 auto;font:800 9px Inter,Arial,sans-serif;letter-spacing:.7px;color:#18d6f3;}
-.mpd-server-dock .inline-server-group{width:auto;min-width:0;flex:1 1 auto;}
-.mpd-server-dock .inline-server-btn{border:1px solid #18d6f36b;border-radius:8px;background:#132237;color:#f4f7ff;min-height:29px;}
-.mpd-server-dock .inline-server-btn.active{background:#123e50;border-color:#18d6f3;box-shadow:0 0 10px #18d6f32b;}
-@media(max-width:420px){.mpd-server-dock{left:6px;right:6px;bottom:49px;gap:5px;padding:4px 6px}.mpd-server-label{font-size:8px}.mpd-server-dock .inline-server-btn{font-size:10px;padding:0 7px;}}
+.mpd-server-label{flex:0 0 auto;color:#18d6f3;font-size:9px;font-weight:800;letter-spacing:1px;}
+.mpd-server-dock .inline-server-group{width:auto;min-width:0;flex:1 1 auto;display:flex;overflow-x:auto;gap:6px;scrollbar-width:none;}
+.mpd-server-dock .inline-server-group::-webkit-scrollbar{display:none;}
+.mpd-server-dock .inline-server-btn{flex:0 0 auto;border:1px solid rgba(24,214,243,.55);border-radius:8px;background:#132237;color:#f4f7ff;min-height:29px;}
+.mpd-server-dock .inline-server-btn.active{background:#123e50;border-color:#18d6f3;box-shadow:0 0 10px rgba(24,214,243,.2);}
+@media(max-width:420px){.mpd-server-dock{left:6px;right:6px;bottom:50px;gap:5px;padding:4px 6px}.mpd-server-label{font-size:8px}.mpd-server-dock .inline-server-btn{font-size:10px;padding:0 7px;}}
+
+.playersticky .screen.shaka-ui-active .shaka-controls-container{display:none!important;}
+.playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
 #video{controls:false;}
 </style>
 <style>
@@ -513,7 +520,7 @@ body{
 </head>
 <body>
 <div class="wrap">
-<div class="update-stamp live-clock" id="liveClock" aria-live="off"><span class="clock-time">--:--:--</span><span class="clock-separator"> • </span><span class="clock-date">তারিখ লোড হচ্ছে…</span><span class="clock-zone"> (বাংলাদেশ সময়)</span></div>
+<div class="update-stamp live-clock" id="liveClock" aria-live="off"><span class="clock-time">--:--:--</span><span class="clock-separator"> • </span><span class="clock-date">তারিখ লোড হচ্ছে…</span><span class="clock-zone"> (Bangladesh Time)</span></div>
 <header class="topbar">
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
@@ -889,8 +896,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      video.playsInline=true;
      video.setAttribute("playsinline","");
      video.setAttribute("webkit-playsinline","");
-     // MPD/DASH gets its own Shaka UI controls. Server buttons are moved to a
-     // dedicated dock inside the same player surface, above the Shaka control bar.
+     // MPD/DASH uses its own Shaka control UI. The server strip is moved into
+     // a dedicated dock inside the same player, above Shaka's control bar.
      video.controls=false;
      activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
      activeShakaUI.configure({
@@ -1553,10 +1560,10 @@ document.addEventListener("touchend", e => {
   if(!clock) return;
   const timeEl=clock.querySelector('.clock-time');
   const dateEl=clock.querySelector('.clock-date');
-  const timeFmt=new Intl.DateTimeFormat('bn-BD',{
-    timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+  const timeFmt=new Intl.DateTimeFormat('en-BD',{
+    timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true
   });
-  const dateFmt=new Intl.DateTimeFormat('bn-BD',{
+  const dateFmt=new Intl.DateTimeFormat('en-BD',{
     timeZone:'Asia/Dhaka',weekday:'short',day:'numeric',month:'long',year:'numeric'
   });
   function updateClock(){

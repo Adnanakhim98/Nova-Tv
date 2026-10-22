@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026,:06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -215,8 +215,8 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .nova-control-row{display:flex;align-items:center;gap:6px;min-width:0}
 .nova-control-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 8px;border:1px solid #ffffff30;border-radius:8px;background:#111a2bd9;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
 .nova-control-btn:active{transform:scale(.95)}
-.inline-server-group{display:flex;align-items:center;gap:4px}.inline-server-btn{padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.35;cursor:not-allowed}
-@media(max-width:420px){.inline-server-btn{padding:0 5px;font-size:10px}}
+.inline-server-group{display:flex;align-items:center;gap:4px;flex:1 1 0;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}.inline-server-group::-webkit-scrollbar{display:none}.inline-server-btn{flex:0 0 auto;padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:420px){.inline-server-btn{padding:0 6px;font-size:10px}.inline-server-group{gap:4px;min-width:0}}
 .nova-control-spacer{flex:1}
 .nova-fit-select{max-width:68px;height:30px;border:1px solid #ffffff30;border-radius:8px;background:#111a2b;color:#fff;font-size:10px;padding:0 4px}
 .playercard:fullscreen .nova-controls{padding:44px 18px 14px}
@@ -700,7 +700,7 @@ function setInlineServers(ch){
  const sports=isSportsChannel(ch);
  [1,2,3,4].forEach((n)=>{
   const b=$("server"+n+"Btn"),stream=currentChannelStreams[n-1]||{},url=String(stream.url||"").trim();
-  b.style.display=(n<=2||sports)?"inline-flex":"none";
+  b.style.display="inline-flex";
   const kind=streamKind(url),typeLabel=sports?(n===1||n===3?"HLS":"DASH"):"";
   b.textContent=sports?("Server "+n+" · "+typeLabel):("Server "+n);
   b.disabled=!url;b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);
@@ -729,6 +729,12 @@ $("server1Btn").onclick=()=>playSelectedServer(1);
 $("server2Btn").onclick=()=>playSelectedServer(2);
 $("server3Btn").onclick=()=>playSelectedServer(3);
 $("server4Btn").onclick=()=>playSelectedServer(4);
+// Keep player utility icons fixed while the server strip can be swiped horizontally.
+const serverStrip=$("inlineServerGroup");
+if(serverStrip){
+ serverStrip.addEventListener("wheel",e=>{if(serverStrip.scrollWidth>serverStrip.clientWidth){e.preventDefault();serverStrip.scrollLeft+=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;}},{passive:false});
+ serverStrip.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){serverStrip.scrollBy({left:100,behavior:"smooth"});e.preventDefault()}else if(e.key==="ArrowLeft"){serverStrip.scrollBy({left:-100,behavior:"smooth"});e.preventDefault()}});
+}
 $("customBtn").onclick=()=>openModal();
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};

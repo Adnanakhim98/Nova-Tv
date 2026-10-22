@@ -738,7 +738,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","দ্রুত সংযোগের চেষ্টা চলছে…",false);
+ setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন…",false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";

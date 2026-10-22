@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026, 12:fg06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 October 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -307,7 +307,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 </head>
 <body>
 <div class="wrap">
-<div class="update-stamp">শেষ আপডেট: ১৬ অক্টোবর ২০২৬ · রাত ১১:০৬ (বাংলাদেশ সময়)</div>
+<div class="update-stamp">শেষ আপডেট: ২২ অক্টোবর ২০২৬ (বাংলাদেশ সময়)</div>
 <header class="topbar">
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
@@ -491,14 +491,24 @@ function setupHlsQualities(){
  showQualityOptions(levels.map((l,i)=>({value:i,label:(l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps")})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"hls");
 }
 function setupShakaQualities(){
- hideQualitySelector();
- return;
  if(!activeShaka)return;
- const tracks=activeShaka.getVariantTracks().filter(t=>t.height);
- const unique=[];const seen=new Set();
- tracks.forEach(t=>{const key=String(t.height)+"p";if(!seen.has(key)){seen.add(key);unique.push({value:t.id,label:key})}});
- unique.sort((a,b)=>parseInt(b.label)-parseInt(a.label));
- showQualityOptions(unique,"shaka");
+ try{
+  const tracks=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
+  // Keep one selectable variant per resolution, preferring the higher bitrate.
+  const byHeight=new Map();
+  tracks.forEach(t=>{
+   const height=Number(t.height);
+   if(!height)return;
+   const current=byHeight.get(height);
+   if(!current || Number(t.bandwidth||0)>Number(current.bandwidth||0))byHeight.set(height,t);
+  });
+  const options=[...byHeight.entries()].sort((a,b)=>b[0]-a[0])
+   .map(([height,t])=>({value:String(t.id),label:height+"p"}));
+  showQualityOptions(options,"shaka");
+ }catch(e){
+  console.warn("Could not read DASH quality tracks",e);
+  hideQualitySelector();
+ }
 }
 let lastStreamRequest=null;
 function setPlayerLoading(show,title="ভিডিও চালু হচ্ছে…",message="Please wait while the stream connects.",error=false){
@@ -618,6 +628,9 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        abr:{enabled:true,defaultBandwidthEstimate:1200000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
+     // DASH variants may be discovered or updated after the manifest is loaded.
+     activeShaka.addEventListener("trackschanged",()=>setupShakaQualities());
+     activeShaka.addEventListener("adaptation",()=>setupShakaQualities());
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
      // Keep the same SPORTYNOVA overlay controls for DASH and HLS.
@@ -1100,7 +1113,7 @@ document.addEventListener("touchend", e => {
 
 <style>
 /* Quality selector belongs to the video overlay and stays available in landscape/fullscreen.
-   It is shown only when HLS (.m3u8) quality levels are available. */
+   It is shown when HLS (.m3u8) or MPEG-DASH (.mpd) quality levels are available. */
 #playerScreen #qualitySelect{width:auto!important;max-width:96px!important;min-width:72px;height:30px;padding:0 4px!important;background:#111a2b;color:#fff;border:1px solid #ffffff45;border-radius:8px;font-size:10px;flex:0 0 auto}
 #playerScreen .nova-control-row{position:relative;z-index:13}
 #playerLoading{pointer-events:none}

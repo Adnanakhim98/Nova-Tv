@@ -1,4 +1,4 @@
-{
+up{
   "channels": [
     {
       "name": "Boishakhi TV",
@@ -226,7 +226,7 @@
       "logo": "📺",
       "tone": "red",
       "url": "https://stream.ottplus.live/live/bijoy_tv_abr/live/bijoy_tv_720/chunks.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://web.aynaott.com/storage/019dd92f-107c-7056-9e79-e5233f6e51d9/uploads/images/2026-07-02/images_82c9c8c5aa07c6b94a62cf2ffbe21375_playmist_bijoy_tv_400x400.jpg",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -246,7 +246,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://stream.ottplus.bd/live/channel_1_hd_abr/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://i.postimg.cc/Zqgx8hm1/20260430-184013.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -266,7 +266,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://app.ncare.live/live-orgin/channels.stream/live-orgin/channels.stream/chunks.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/WyPuDJsBEef-9-uVUA_z/posters/ea20055c-a824-443c-8083-ce8e2da8b922.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -286,7 +286,7 @@
       "logo": "📺",
       "tone": "green",
       "url": "https://tvsen6.aynaott.com/ryFkXfd1a4CQ7mMdc820/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://otapp.store/uploads/tv_image/sm/desh-tv.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -306,7 +306,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://iptvbd.live/metv1080/1080.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://www.metvbd.com/media/common/logo-fb.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -326,7 +326,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://otapp.store/uploads/tv_image/sm/my-tv.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -366,7 +366,7 @@
       "logo": "📺",
       "tone": "red",
       "url": "https://stream.shariarsuvo.com/hls5/rajdhanicable.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/KECGB54BuUSiBsg_dHyj/posters/58af9c58-ed80-458c-af13-cf381680cec6.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -426,7 +426,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen5.aynaott.com/SyQuXz8sC3TB/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://static.wikia.nocookie.net/etv-gspn-bangla/images/c/cd/Ekushey_Television_logo_2000-2002%2C_2007.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -446,7 +446,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://assets-prod.services.toffeelive.com/f_png,w_300,q_85/0y_tDJsBNnOkwJLWNrdE/posters/2ff058e1-630f-4657-8dc6-b677e65642c5.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -466,7 +466,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://tvsen6.aynaott.com/AkyX5dunzju4cpo26dr7/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://i.imgur.com/ENyPcL0.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -486,7 +486,7 @@
       "logo": "📺",
       "tone": "green",
       "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://i.postimg.cc/ry4QcVbh/20240822-231240.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -506,7 +506,7 @@
       "logo": "📺",
       "tone": "red",
       "url": "https://mtv.sunplex.live/MAASRANGA/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1773680325498.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -526,7 +526,7 @@
       "logo": "📺",
       "tone": "blue",
       "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGN4JrZ3Ur3BHiD2tQhsQq3WQ5DXpv7HATFyNDT6o-rSNwAZaeQieMBdfPoGPio5UPipGV2ZBb8rLmyYJe5vySfQjEmTE5MLc_6q8CKfXuzb4eRQREjPiyL5tkncb1Xt5pVMJa6t77CT98JvAFozg95IH_9qofXJ2s1ubKCbJ-_JsuRVb458aBztLImQ/s1080/1000015295.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [
@@ -546,7 +546,7 @@
       "logo": "📺",
       "tone": "red",
       "url": "https://tvsen5.aynaott.com/tgUzpPc9r6xw/index.m3u8",
-      "logoUrl": "",
+      "logoUrl": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735561344354.png",
       "fallbackLogo": "📺",
       "show": "Y",
       "streams": [

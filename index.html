@@ -304,6 +304,173 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 }
 </style>
 
+
+<style id="sportynova-ui-polish">
+/* UI polish only — existing player, stream logic, IDs and controls are preserved. */
+:root{
+  --ui-glass:rgba(15,22,36,.88);
+  --ui-border:rgba(142,174,214,.18);
+  --ui-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+html,body{background-color:#070912}
+body{
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(20,157,193,.12),transparent 34%),
+    radial-gradient(ellipse at 95% 18%,rgba(94,73,180,.10),transparent 30%),
+    #070912!important;
+}
+.wrap{gap:8px!important}
+.update-stamp{
+  color:#91a4bf!important;
+  font-size:9px!important;
+  letter-spacing:.35px!important;
+  text-shadow:0 1px 8px #000;
+}
+.topbar{
+  background:linear-gradient(115deg,rgba(20,31,50,.97),rgba(10,15,27,.96))!important;
+  border:1px solid rgba(106,151,192,.28)!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.035)!important;
+  backdrop-filter:blur(14px);
+}
+.brandicon{
+  background:linear-gradient(145deg,#53efff,#0a8fc1)!important;
+  box-shadow:0 0 20px rgba(33,216,244,.2)!important;
+}
+.brandname{ text-shadow:0 2px 12px rgba(0,0,0,.3) }
+.tagline{color:#a1b2c9!important}
+.search{
+  border-color:#35435b!important;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.25);
+}
+.search::placeholder{color:#8190a8}
+.playersticky .sectionhead{
+  align-items:center;
+}
+.playersticky .sectionhead h2{
+  letter-spacing:.1px;
+  text-shadow:0 1px 12px rgba(33,216,244,.08);
+}
+.contacttext{color:#b7c4d8!important}
+.contactlink{
+  box-shadow:0 3px 10px rgba(0,0,0,.14);
+  transition:filter .18s,transform .18s;
+}
+.contactlink:hover{filter:brightness(1.12)}
+.playercard{
+  border:1px solid rgba(118,157,201,.28)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.015)!important;
+  background:#050811!important;
+}
+.playersticky .screen{
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.playerfoot{
+  background:linear-gradient(100deg,#121b2b,#0a101c)!important;
+  border-top:1px solid rgba(130,160,200,.16)!important;
+}
+.nowtitle{color:#f7fbff!important}
+.nowmeta{color:#93a5bf!important}
+.playeractions .btn{
+  border-color:#34445e!important;
+  background:linear-gradient(180deg,#202c40,#151e2d)!important;
+}
+.playeractions #stopBtn{
+  border-color:rgba(255,80,110,.38)!important;
+  color:#ffb2c0!important;
+}
+.nova-controls{
+  background:linear-gradient(0deg,rgba(2,5,11,.97) 0%,rgba(3,7,14,.72) 55%,transparent 100%)!important;
+}
+.nova-control-btn{
+  border-color:rgba(188,211,241,.26)!important;
+  background:rgba(17,27,44,.91)!important;
+  box-shadow:0 2px 7px rgba(0,0,0,.18);
+  transition:background .16s,border-color .16s,transform .16s;
+}
+.nova-control-btn:hover{
+  background:#1b3447!important;
+  border-color:rgba(33,216,244,.65)!important;
+}
+.nova-control-btn:focus-visible,.btn:focus-visible,.category-tab:focus-visible,.channel:focus-visible{
+  outline:2px solid #35e4ff!important;
+  outline-offset:2px;
+}
+.nova-control-btn.active,.inline-server-btn.active{
+  background:linear-gradient(135deg,#12394a,#102638)!important;
+  border-color:#21d8f4!important;
+  color:#aaf5ff!important;
+}
+.nova-progress-row input{accent-color:#21d8f4}
+.noticebar{
+  border-color:rgba(88,157,190,.28)!important;
+  background:linear-gradient(100deg,rgba(16,29,46,.98),rgba(9,16,29,.98))!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.16)!important;
+}
+.notice-label{
+  background:linear-gradient(120deg,#52e8f7,#0a8fc4)!important;
+}
+.channelarea{
+  scrollbar-color:#3b536f transparent!important;
+}
+.channelarea .sectionhead{
+  background:linear-gradient(105deg,rgba(21,34,53,.96),rgba(11,17,29,.96))!important;
+  border-color:rgba(116,154,198,.2)!important;
+}
+.section-count{
+  padding:4px 8px;
+  border:1px solid rgba(137,162,198,.16);
+  border-radius:999px;
+  background:rgba(255,255,255,.025);
+  color:#a8bad2!important;
+  font-variant-numeric:tabular-nums;
+}
+.category-tab{
+  background:linear-gradient(180deg,#172235,#101725)!important;
+  border-color:#2d3d56!important;
+  color:#bdcbe0!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.12);
+}
+.category-tab.active{
+  background:linear-gradient(120deg,#39e4f4,#128fca)!important;
+  border-color:#5beafa!important;
+  color:#04121b!important;
+  box-shadow:0 5px 16px rgba(18,191,227,.22)!important;
+}
+.channel{
+  border-color:rgba(115,147,190,.2)!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.18)!important;
+}
+.channel.active{
+  border-color:#38e2f5!important;
+  background:linear-gradient(145deg,#123044,#0c1724)!important;
+  box-shadow:0 0 0 1px rgba(33,216,244,.22),0 7px 22px rgba(10,178,210,.12)!important;
+}
+.chlogo img{
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.25));
+}
+.chname{color:#f4f7ff!important}
+.chcat{color:#91a0b8!important}
+.hint{color:#a6b5ca!important}
+.footer{color:#75859e!important}
+.modal{backdrop-filter:blur(7px)}
+.modalbox{
+  border-color:rgba(127,164,207,.3)!important;
+  background:linear-gradient(145deg,#151f31,#0d1320)!important;
+}
+.field:focus{border-color:#21d8f4;box-shadow:0 0 0 3px rgba(33,216,244,.10)}
+@media(max-width:420px){
+  .wrap{gap:6px!important}
+  .topbar{box-shadow:0 5px 16px rgba(0,0,0,.22)!important}
+  .playersticky .sectionhead h2{font-size:12px!important}
+  .contactlink{padding:6px 7px!important}
+  .channel{box-shadow:0 4px 11px rgba(0,0,0,.16)!important}
+  .category-tab{box-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .contactlink,.nova-control-btn{transition:none!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1105,6 +1272,184 @@ document.addEventListener("touchend", e => {
   object-fit:var(--video-fit,contain)!important;
   transform:var(--video-transform,none)!important;
   object-position:center center!important;
+}
+</style>
+
+
+<style>
+/* SPORTYNOVA Premium Dark + Cyan: transparent controls and 4-second auto-hide */
+:root{
+  --bg:#070b13;
+  --panel:#0d1420;
+  --panel2:#111d2b;
+  --line:#24384a;
+  --cyan:#22d3ee;
+  --text:#f3fbff;
+}
+.topbar,.playercard,.noticebar,.channel,.category-tab,.modal-content{
+  border-color:rgba(34,211,238,.18)!important;
+}
+.brandicon,.retryOverlay,.category-tab.active,.channel.active{
+  box-shadow:0 0 18px rgba(34,211,238,.12);
+}
+.brandname .nova{color:#22d3ee!important}
+.playersticky .screen .nova-controls{
+  background:transparent!important;
+  background-image:linear-gradient(180deg,transparent,rgba(2,8,16,.28))!important;
+  box-shadow:none!important;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .22s ease,visibility .22s ease;
+}
+.playersticky .screen .nova-control-row,
+.playersticky .screen .nova-progress-row{
+  background:transparent!important;
+}
+.playersticky .screen .nova-control-btn{
+  background:rgba(5,15,26,.42)!important;
+  border-color:rgba(34,211,238,.3)!important;
+  color:#eafcff!important;
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+.playersticky .screen .nova-control-btn.active,
+.playersticky .screen .nova-control-btn:focus-visible{
+  background:rgba(34,211,238,.22)!important;
+  border-color:#22d3ee!important;
+  outline:2px solid rgba(34,211,238,.25);
+}
+.playersticky .screen .nova-progress-row input,
+.playersticky .screen #seekBar{accent-color:#22d3ee}
+.playersticky .screen.controls-hidden .nova-controls{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.playersticky .screen .center-play-pause{
+  background:rgba(5,15,26,.35)!important;
+  border-color:rgba(255,255,255,.62)!important;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+@media (prefers-reduced-motion:reduce){
+  .playersticky .screen .nova-controls{transition:none}
+}
+</style>
+<script>
+/* Auto-hide player controls after 4 seconds of inactivity.
+   Existing playback engines, buttons, IDs and server logic are not replaced. */
+(() => {
+  const screen = document.getElementById("playerScreen");
+  const video = document.getElementById("video");
+  if (!screen || !video) return;
+  let hideTimer = null;
+  const hide = () => {
+    if (video.paused || video.ended) return;
+    screen.classList.add("controls-hidden");
+  };
+  const show = () => {
+    screen.classList.remove("controls-hidden");
+    if (hideTimer) clearTimeout(hideTimer);
+    if (!video.paused && !video.ended) hideTimer = setTimeout(hide, 4000);
+  };
+  ["pointermove","pointerdown","touchstart","mousemove","keydown"].forEach(type => {
+    screen.addEventListener(type, show, {passive:true});
+  });
+  video.addEventListener("playing", show);
+  video.addEventListener("play", show);
+  video.addEventListener("pause", () => {
+    if (hideTimer) clearTimeout(hideTimer);
+    screen.classList.remove("controls-hidden");
+  });
+  video.addEventListener("ended", () => {
+    if (hideTimer) clearTimeout(hideTimer);
+    screen.classList.remove("controls-hidden");
+  });
+  screen.addEventListener("focusin", show);
+  screen.addEventListener("click", show);
+  show();
+})();
+</script>
+
+
+<style>
+/* SPORTYNOVA Channel Card Design 1 — Premium Glow.
+   CSS-only change: preserve channel rendering, data, player, IDs and playback logic. */
+.channelrow:not(.sportsrow) .channel,
+.channelrow.sportsrow .channel {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid rgba(34,211,238,.22)!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(ellipse at 50% -18%,rgba(34,211,238,.13),transparent 68%),
+    linear-gradient(155deg,rgba(19,34,49,.98),rgba(8,15,25,.99))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 4px 12px rgba(0,0,0,.18);
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease,transform .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.channelrow:not(.sportsrow) .channel::before,
+.channelrow.sportsrow .channel::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(135deg,rgba(34,211,238,.08),transparent 42%,rgba(34,211,238,.025));
+  opacity:.75;
+}
+.channelrow:not(.sportsrow) .channel:active,
+.channelrow.sportsrow .channel:active {
+  transform:scale(.975);
+  border-color:rgba(34,211,238,.85)!important;
+  box-shadow:0 0 0 1px rgba(34,211,238,.18),0 0 18px rgba(34,211,238,.18);
+}
+.channelrow:not(.sportsrow) .channel.active,
+.channelrow.sportsrow .channel.active {
+  border-color:#22d3ee!important;
+  background:
+    radial-gradient(ellipse at 50% -15%,rgba(34,211,238,.23),transparent 72%),
+    linear-gradient(155deg,#102b39,#0a1724)!important;
+  box-shadow:
+    0 0 0 1px rgba(34,211,238,.25),
+    0 0 18px rgba(34,211,238,.19),
+    inset 0 0 16px rgba(34,211,238,.045)!important;
+}
+.channelrow:not(.sportsrow) .channel:focus-visible,
+.channelrow.sportsrow .channel:focus-visible {
+  outline:2px solid #22d3ee;
+  outline-offset:2px;
+}
+.channelrow:not(.sportsrow) .chlogo,
+.channelrow.sportsrow .chlogo {
+  filter:drop-shadow(0 2px 7px rgba(34,211,238,.09));
+}
+.channelrow:not(.sportsrow) .chname,
+.channelrow.sportsrow .chname {
+  color:#f0fbff!important;
+  letter-spacing:.08px;
+}
+.channelrow:not(.sportsrow) .chcat {
+  color:#8ea8b9!important;
+}
+@media (hover:hover) and (pointer:fine) {
+  .channelrow:not(.sportsrow) .channel:hover,
+  .channelrow.sportsrow .channel:hover {
+    transform:translateY(-2px);
+    border-color:rgba(34,211,238,.72)!important;
+    box-shadow:
+      0 0 0 1px rgba(34,211,238,.1),
+      0 0 20px rgba(34,211,238,.16),
+      0 8px 18px rgba(0,0,0,.24);
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .channelrow:not(.sportsrow) .channel,
+  .channelrow.sportsrow .channel {transition:none}
 }
 </style>
 

@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pakistan Vs Srilanka",
+    "name": "India Vs New Zealand",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/PAK%20Vs%20Sri%20Lanka.jpg",
@@ -39,7 +39,7 @@
           "scheme": "clearkey",
           "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         },
-        "show": "no"
+        "show": "yes"
       }
     ],
     "show": "yes",
@@ -48,6 +48,6 @@
     "endTime": "2026-10-13T23:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "TEST"
+    "matchType": "T20"
   }
 }

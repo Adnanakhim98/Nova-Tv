@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 23 October 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDAদTE: 23 October 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -516,6 +516,7 @@ body{
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
+   <div id="mpdPlayerStatus" aria-live="polite">Player Ready</div>
    <div class="swipe-hud" id="swipeHud" aria-live="polite"><span class="swipe-icon" id="swipeIcon">☀️</span><span class="swipe-detail"><span id="swipeValue">100%</span><span class="swipe-label" id="swipeLabel">Brightness</span><span class="swipe-meter"><span id="swipeMeterFill"></span></span></span></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">চ্যানেল সংযোগ করা হচ্ছে…</strong><span id="loadingMessage">Connecting to stream…</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
@@ -729,7 +730,8 @@ function stopEngines(){
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
   if(activeShakaUI){const oldUI=activeShakaUI;activeShakaUI=null;try{oldUI.destroy()}catch(e){}}
   if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
-  if(screenEl)screenEl.classList.remove("shaka-ui-active");
+  if(screenEl)screenEl.classList.remove("shaka-ui-active","mpd-ui-active");
+  const mpdStatus=$("mpdPlayerStatus");if(mpdStatus)mpdStatus.textContent="Player Ready";
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
@@ -827,20 +829,34 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
 
  try{
    if(kind==="mpd"){
-     engine="Shaka / MPEG-DASH";
+     engine="Shaka UI / MPEG-DASH";
      if(!window.shaka)throw new Error("Shaka library unavailable");
      shaka.polyfill.installAll();
      if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
-     activeShaka=new shaka.Player(video);
+
+     // Use the supplied Shaka UI player for DASH, replacing the old custom controls.
+     activeShaka=new shaka.Player();
+     await activeShaka.attach(video);
+     if(requestId!==playRequestId)return;
+     activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
+     activeShakaUI.configure({
+       addBigPlayButton:true,
+       controlPanelElements:[
+         "play_pause",
+         "mute",
+         "time_and_duration",
+         "spacer",
+         "quality",
+         "picture_in_picture",
+         "fullscreen"
+       ]
+     });
      activeShaka.configure({
-       // DASH startup tuning: begin with a conservative bitrate and a small
-       // buffer so the first picture can appear sooner on mobile connections.
        streaming:{
          bufferingGoal:2,
          rebufferingGoal:0.5,
          bufferBehind:5,
          lowLatencyMode:true,
-         startAtSegmentBoundary:false,
          retryParameters:{
            timeout:3000,
            stallTimeout:2000,
@@ -850,55 +866,44 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
            backoffFactor:1.5
          }
        },
-       manifest:{
-         retryParameters:{
-           timeout:3000,
-           maxAttempts:1,
-           baseDelay:150,
-           backoffFactor:1.5
-         }
-       },
-       drm:{
-         retryParameters:{
-           timeout:3000,
-           maxAttempts:1,
-           baseDelay:150,
-           backoffFactor:1.5
-         }
-       },
-       abr:{
-         enabled:true,
-         defaultBandwidthEstimate:500000,
-         bandwidthDowngradeTarget:0.95,
-         bandwidthUpgradeTarget:0.85
-       }
+       manifest:{retryParameters:{timeout:3000,maxAttempts:1,baseDelay:150,backoffFactor:1.5}},
+       drm:{retryParameters:{timeout:3000,maxAttempts:1,baseDelay:150,backoffFactor:1.5}},
+       abr:{enabled:true,defaultBandwidthEstimate:500000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.85}
      });
-     activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
-     // DASH variants may be discovered or updated after the manifest is loaded.
+     activeShaka.addEventListener("error",evt=>{
+       const code=evt.detail?.code||"";
+       const status=$("mpdPlayerStatus");
+       if(status)status.textContent="Playback Error: "+code;
+       fail("Shaka error "+code);
+     });
      activeShaka.addEventListener("trackschanged",()=>setupShakaQualities());
      activeShaka.addEventListener("adaptation",()=>setupShakaQualities());
-     await activeShaka.attach(video);
-     if(requestId!==playRequestId)return;
-     video.preload="auto";
+     video.preload="metadata";
+     video.autoplay=true;
      video.playsInline=true;
      video.setAttribute("playsinline","");
      video.setAttribute("webkit-playsinline","");
-     // Keep the same SPORTYNOVA overlay controls for DASH and HLS.
-     // Do not attach Shaka UI: it hides the inline server buttons and replaces them
-     // with its own controls on some mobile browsers.
      video.controls=false;
-     screenEl.classList.remove("shaka-ui-active");
+     screenEl.classList.add("mpd-ui-active");
+     const status=$("mpdPlayerStatus");
+     if(status)status.textContent="Loading...";
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        const p=parsed.license.split(":");
        if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase();
      }
      if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-     report("MPEG-DASH · দ্রুত সংযোগ করা হচ্ছে…");
+     report("MPEG-DASH · Loading...");
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
      setupShakaQualities();
      video.play().catch(()=>{});
+     video.addEventListener("playing",()=>{
+       if(requestId===playRequestId&&status)status.textContent="Playing";
+     });
+     video.addEventListener("waiting",()=>{
+       if(requestId===playRequestId&&status)status.textContent="Buffering...";
+     });
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({
@@ -1581,4 +1586,17 @@ document.addEventListener("touchend", e => {
 #playerLoading.show{pointer-events:none}
 #playerScreen .playerLoading #retryBtn{pointer-events:auto}
 @media(max-width:420px){#playerScreen #qualitySelect{max-width:78px!important;min-width:62px;font-size:9px;height:28px}}
+
+/* Dedicated Shaka UI for MPEG-DASH, based on the supplied player. */
+#mpdPlayerStatus{display:none;position:absolute;top:12px;right:12px;z-index:40;color:#fff;background:#222d;border-radius:20px;padding:8px 12px;font:12px Arial,sans-serif;pointer-events:none}
+.screen.mpd-ui-active #mpdPlayerStatus{display:block}
+.screen.mpd-ui-active .center-play-pause{display:none!important}
+.screen.mpd-ui-active .nova-controls{display:block!important;position:absolute!important;inset:0!important;z-index:35!important;background:transparent!important;pointer-events:none!important;padding:0!important}
+.screen.mpd-ui-active .nova-controls>*{display:none!important}
+.screen.mpd-ui-active #inlineServerGroup{display:flex!important;position:absolute!important;top:10px!important;left:10px!important;right:auto!important;bottom:auto!important;z-index:45!important;pointer-events:auto!important;gap:5px!important;max-width:calc(100% - 110px);flex-wrap:wrap}
+.screen.mpd-ui-active #inlineServerGroup .nova-control-btn{background:#111d2d!important;color:#fff!important;border:1px solid #ffffff55!important;border-radius:8px!important;min-height:32px!important;padding:6px 10px!important;font-size:11px!important}
+.screen.mpd-ui-active #inlineServerGroup .nova-control-btn.active{border-color:#21d8f4!important;background:#123347!important;color:#b8f7ff!important}
+.screen.mpd-ui-active .shaka-controls-container{z-index:30!important}
+.screen.mpd-ui-active .shaka-controls-button-panel button{color:#fff!important}
+
 </style>

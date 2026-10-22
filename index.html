@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 October 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Octoএber 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -685,29 +685,29 @@ let currentServerChannel=null,currentChannelStreams=[];
 function isSportsChannel(ch){return !!ch && (ch.section==="liveSports" || /live sports|sports/i.test(String(ch.category||"")));}
 function getChannelStreams(ch){
  const count=isSportsChannel(ch)?4:2;
- let streams=Array.isArray(ch.streams)?ch.streams.slice(0,count):[];
- // Accept either streams[] or explicit server1..server4 / server1Url..server4Url fields.
- if(!streams.length){
+ let streams=Array.isArray(ch.streams)?ch.streams.filter(stream=>stream&&isServerShown(stream)&&String(stream.url||stream.src||"").trim()):[];
+ // If streams[] exists, its names and visibility are controlled entirely by JSON.
+ // Legacy server1/server2 fields are supported only when streams[] is absent/empty.
+ if(!streams.length && !Array.isArray(ch.streams)){
   for(let i=1;i<=count;i++){
-   const url=ch["server"+i]||ch["server"+i+"Url"]||ch["server"+i+"URL"]|| (i===1?ch.url:"") || "";
-   streams.push({name:"Server "+i,url,drm:ch["drm"+i]||ch.drm||null});
+   const url=ch["server"+i]||ch["server"+i+"Url"]||ch["server"+i+"URL"]||(i===1?ch.url:"")||"";
+   const legacy={name:ch["server"+i+"Name"]||("Server "+i),url,drm:ch["drm"+i]||ch.drm||null,show:ch["server"+i+"Show"]||"yes"};
+   if(isServerShown(legacy)&&String(url).trim())streams.push(legacy);
   }
  }
- if(streams.length && !streams[0].url && ch.url) streams[0]={...streams[0],url:ch.url,drm:streams[0].drm||ch.drm};
- while(streams.length<count) streams.push({name:"Server "+(streams.length+1),url:""});
- return streams.map((stream,i)=>({...stream,name:stream.name||("Server "+(i+1)),url:String(stream.url||stream.src||"").trim()}));
+ return streams.slice(0,count).map((stream,i)=>({...stream,name:String(stream.name||("Server "+(i+1))),url:String(stream.url||stream.src||"").trim()}));
 }
 function setInlineServers(ch){
  currentServerChannel=ch;currentChannelStreams=getChannelStreams(ch);
  const sports=isSportsChannel(ch);
  [1,2,3,4].forEach((n)=>{
   const b=$("server"+n+"Btn"),stream=currentChannelStreams[n-1]||{},url=String(stream.url||"").trim();
-  // Live TV shows only Server 1/2; Live Sports shows all four.
-  b.style.display=(sports || n<=2)?"inline-flex":"none";
-  const kind=streamKind(url),typeLabel=sports?(n===1||n===3?"HLS":"DASH"):"";
-  b.textContent=sports?("Server "+n+" · "+typeLabel):("Server "+n);
-  b.disabled=!url;b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);
-  b.title=url?(stream.name||("Server "+n)):("এই সার্ভারের URL যোগ করা হয়নি");
+  // Only servers with a visible JSON entry and a usable URL are shown.
+  b.style.display=(url && (sports || n<=2))?"inline-flex":"none";
+  b.textContent=stream.name||("Server "+n);
+  b.disabled=!url;
+  b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);
+  b.title=url?stream.name:"";
  });
 }
 function playChannelDefault(ch){

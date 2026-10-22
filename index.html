@@ -571,7 +571,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন","Please Wait 7 to 10 Seconds.\nঅপেক্ষা করার জন্য ধন্যবাদ",false);
+ setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","৮ সেকেন্ডের মধ্যে না চললে স্বয়ংক্রিয়ভাবে অন্য সার্ভারে চেষ্টা করা হবে।",false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";
@@ -609,7 +609,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.onerror=()=>fail("media error");
  video.onplaying=()=>success(engine);
  // A single startup deadline reports a real failure; it does not start another player.
- timer=setTimeout(()=>fail("startup timeout"),20000);
+ timer=setTimeout(()=>fail("startup timeout after 8 seconds"),8000);
 
  try{
    if(kind==="mpd"){

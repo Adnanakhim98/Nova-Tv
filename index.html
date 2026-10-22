@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 16 October 2026,:06 PM (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 16 October 2026, 12:fg06 PM (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -215,9 +215,9 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .nova-control-row{display:flex;align-items:center;gap:6px;min-width:0}
 .nova-control-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 8px;border:1px solid #ffffff30;border-radius:8px;background:#111a2bd9;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
 .nova-control-btn:active{transform:scale(.95)}
-.inline-server-group{display:flex;align-items:center;gap:4px;flex:1 1 0;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}.inline-server-group::-webkit-scrollbar{display:none}.inline-server-btn{flex:0 0 auto;padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.55;cursor:not-allowed}
-@media(max-width:420px){.inline-server-btn{padding:0 6px;font-size:10px}.inline-server-group{gap:4px;min-width:0}}
-.nova-control-spacer{flex:1}
+.inline-server-group{display:flex;align-items:center;gap:4px;flex:1 1 0;min-width:0;width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}.inline-server-group::-webkit-scrollbar{display:none}.inline-server-btn{flex:0 0 auto;padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:420px){.inline-server-btn{padding:0 7px;font-size:10px;min-width:max-content}.inline-server-group{gap:4px;min-width:0;width:0;flex:1 1 0}.nova-control-row{gap:4px}.nova-control-row>.nova-control-btn{flex:0 0 auto}}
+.nova-control-spacer{flex:0 0 2px}
 .nova-fit-select{max-width:68px;height:30px;border:1px solid #ffffff30;border-radius:8px;background:#111a2b;color:#fff;font-size:10px;padding:0 4px}
 .playercard:fullscreen .nova-controls{padding:44px 18px 14px}
 .playercard:fullscreen .nova-control-btn{height:38px;min-width:40px;font-size:15px}
@@ -271,21 +271,14 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 
 
 <style>
-/* Shaka Player UI replacement for MPEG-DASH playback; HLS/native streams retain SPORTYNOVA controls. */
-.playersticky .screen.shaka-ui-active .nova-controls,
-.playersticky .screen.shaka-ui-active #centerPlayPause{
-  display:none!important;
-}
-.playersticky .screen.shaka-ui-active .shaka-controls-container{
-  z-index:12!important;
-}
-.playersticky .screen.shaka-ui-active .shaka-video-container,
-.playersticky .screen.shaka-ui-active video{
-  background:#000!important;
-}
-.playersticky .screen.shaka-ui-active .shaka-controls-button-panel button{
-  color:#fff!important;
-}
+/* One consistent player UI for HLS and DASH. Never allow Shaka/native controls
+   to cover the SPORTYNOVA server strip or replace the custom controls. */
+.playersticky .screen .nova-controls{display:block!important;z-index:15!important;}
+.playersticky .screen #centerPlayPause{z-index:14!important;}
+.playersticky .screen video{z-index:1!important;}
+.playersticky .screen.shaka-ui-active .shaka-controls-container{display:none!important;}
+.playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
+#video{controls:false;}
 </style>
 <style>
 /* Text-only waiting message shown while the selected stream starts; no spinner. */
@@ -574,6 +567,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.crossOrigin="anonymous";
  video.preload="auto";
  video.autoplay=true;
+ video.controls=false;
 
  let engine="native", settled=false, timer=null;
  const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
@@ -626,16 +620,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
-     // Use Shaka's own controls for MPEG-DASH streams, matching the requested standalone player.
-     try{
-       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
-       activeShakaUI.configure({
-         addBigPlayButton:true,
-         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"],
-         seekBarColors:{base:"#828282",buffered:"#ffc336",played:"#21d8f4"}
-       });
-       screenEl.classList.add("shaka-ui-active");
-     }catch(uiError){console.warn("Shaka UI overlay unavailable; using SPORTYNOVA controls",uiError)}
+     // Keep the same SPORTYNOVA overlay controls for DASH and HLS.
+     // Do not attach Shaka UI: it hides the inline server buttons and replaces them
+     // with its own controls on some mobile browsers.
+     video.controls=false;
+     screenEl.classList.remove("shaka-ui-active");
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        const p=parsed.license.split(":");

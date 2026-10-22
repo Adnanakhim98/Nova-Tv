@@ -28,7 +28,7 @@
         "show": "no"
       },
       {
-        "name": "HLS Server 2",
+        "name": "Tapmad",
         "url": "https://tencent-cdn.tapmad.com/v1/01a14a5b5bd11ea540a81c2b41b75b/01a14a5b94ea15fc600b1e3e9683eb/main.m3u8",
         "show": "yes"
       },

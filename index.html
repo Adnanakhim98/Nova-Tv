@@ -1529,7 +1529,7 @@ document.addEventListener("touchend", e => {
   const timeEl=clock.querySelector('.clock-time');
   const dateEl=clock.querySelector('.clock-date');
   const timeFmt=new Intl.DateTimeFormat('bn-BD',{
-    timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true
   });
   const dateFmt=new Intl.DateTimeFormat('bn-BD',{
     timeZone:'Asia/Dhaka',weekday:'short',day:'numeric',month:'long',year:'numeric'

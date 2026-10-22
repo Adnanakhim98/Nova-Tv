@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 ঊঊOctober 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 23 October 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -276,20 +276,6 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playersticky .screen .nova-controls{display:block!important;z-index:15!important;}
 .playersticky .screen #centerPlayPause{z-index:14!important;}
 .playersticky .screen video{z-index:1!important;}
-
-/* Dedicated Shaka UI for MPEG-DASH/MPD. Server buttons stay inside the player. */
-.playersticky .screen.mpd-player-mode .nova-controls,
-.playersticky .screen.mpd-player-mode #centerPlayPause{display:none!important;}
-.playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
-.mpd-server-dock{display:none;position:absolute;left:10px;right:10px;bottom:56px;z-index:100;align-items:center;gap:7px;min-height:38px;padding:5px 8px;border:1px solid rgba(24,214,243,.55);border-radius:12px;background:rgba(5,12,25,.90);backdrop-filter:blur(9px);pointer-events:auto;}
-.mpd-player-mode .mpd-server-dock{display:flex;}
-.mpd-server-label{flex:0 0 auto;color:#18d6f3;font-size:9px;font-weight:800;letter-spacing:1px;}
-.mpd-server-dock .inline-server-group{width:auto;min-width:0;flex:1 1 auto;display:flex;overflow-x:auto;gap:6px;scrollbar-width:none;}
-.mpd-server-dock .inline-server-group::-webkit-scrollbar{display:none;}
-.mpd-server-dock .inline-server-btn{flex:0 0 auto;border:1px solid rgba(24,214,243,.55);border-radius:8px;background:#132237;color:#f4f7ff;min-height:29px;}
-.mpd-server-dock .inline-server-btn.active{background:#123e50;border-color:#18d6f3;box-shadow:0 0 10px rgba(24,214,243,.2);}
-@media(max-width:420px){.mpd-server-dock{left:6px;right:6px;bottom:50px;gap:5px;padding:4px 6px}.mpd-server-label{font-size:8px}.mpd-server-dock .inline-server-btn{font-size:10px;padding:0 7px;}}
-
 .playersticky .screen.shaka-ui-active .shaka-controls-container{display:none!important;}
 .playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
 #video{controls:false;}
@@ -530,7 +516,6 @@ body{
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
-   <div class="mpd-server-dock" id="mpdServerDock" aria-label="MPD সার্ভার নির্বাচন"><span class="mpd-server-label">SERVER</span></div>
    <div class="swipe-hud" id="swipeHud" aria-live="polite"><span class="swipe-icon" id="swipeIcon">☀️</span><span class="swipe-detail"><span id="swipeValue">100%</span><span class="swipe-label" id="swipeLabel">Brightness</span><span class="swipe-meter"><span id="swipeMeterFill"></span></span></span></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">চ্যানেল সংযোগ করা হচ্ছে…</strong><span id="loadingMessage">Connecting to stream…</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
@@ -542,7 +527,6 @@ body{
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <span class="nova-control-spacer"></span>
       <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
-     <span id="serverGroupHome" style="display:contents"></span>
      <span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><button class="nova-control-btn inline-server-btn" id="server1Btn" type="button">Server 1</button><button class="nova-control-btn inline-server-btn" id="server2Btn" type="button">Server 2</button><button class="nova-control-btn inline-server-btn sports-server-btn" id="server3Btn" type="button" style="display:none">Server 3</button><button class="nova-control-btn inline-server-btn sports-server-btn" id="server4Btn" type="button" style="display:none">Server 4</button></span>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
@@ -564,6 +548,10 @@ body{
 </main>
 </div>
 
+<div id="hlsPlayerOverlay" style="display:none;position:fixed;inset:0;z-index:100000;background:#000">
+  <button id="closeHlsPlayer" type="button" aria-label="Back to channels" style="position:absolute;right:10px;top:10px;z-index:2;border:1px solid #ffffff55;border-radius:9px;background:#111c;color:#fff;padding:9px 12px;font-weight:800">✕ ফিরে যান</button>
+  <iframe id="hlsPlayerFrame" title="HLS / m3u8 player" allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:0;background:#000"></iframe>
+</div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
@@ -737,19 +725,7 @@ function setPlayerLoading(show,title="ভিডিও চালু হচ্ছ�
  panel.style.display=show?"flex":"none";
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
-function setMpdPlayerMode(enabled){
- const screen=$("playerScreen"),dock=$("mpdServerDock"),group=$("inlineServerGroup"),home=$("serverGroupHome");
- if(!screen||!dock||!group||!home)return;
- if(enabled){
-  if(group.parentElement!==dock)dock.appendChild(group);
-  screen.classList.add("mpd-player-mode","shaka-ui-active");
- }else{
-  if(group.parentElement!==home)home.appendChild(group);
-  screen.classList.remove("mpd-player-mode","shaka-ui-active");
- }
-}
 function stopEngines(){
-  setMpdPlayerMode(false);
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
   if(activeShakaUI){const oldUI=activeShakaUI;activeShakaUI=null;try{oldUI.destroy()}catch(e){}}
   if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
@@ -792,6 +768,17 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
+ if(kind==="hls"){
+   const overlay=document.getElementById("hlsPlayerOverlay");
+   const frame=document.getElementById("hlsPlayerFrame");
+   const q=new URLSearchParams({url:parsed.url,name:name||"Live TV",server2:String(fallbackUrl||"")});
+   overlay.style.display="block";
+   frame.src="./hls-player.html?"+q.toString();
+   $("empty").style.display="none";
+   showStatus(name||"Live TV","HLS / m3u8 player চালু");
+   return;
+ }
+
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
  stopEngines();
  if(requestId!==playRequestId)return;
@@ -896,15 +883,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      video.playsInline=true;
      video.setAttribute("playsinline","");
      video.setAttribute("webkit-playsinline","");
-     // MPD/DASH uses its own Shaka control UI. The server strip is moved into
-     // a dedicated dock inside the same player, above Shaka's control bar.
+     // Keep the same SPORTYNOVA overlay controls for DASH and HLS.
+     // Do not attach Shaka UI: it hides the inline server buttons and replaces them
+     // with its own controls on some mobile browsers.
      video.controls=false;
-     activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
-     activeShakaUI.configure({
-       addBigPlayButton:true,
-       controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
-     });
-     setMpdPlayerMode(true);
+     screenEl.classList.remove("shaka-ui-active");
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        const p=parsed.license.split(":");
@@ -1005,6 +988,7 @@ if(serverStrip){
  serverStrip.addEventListener("wheel",e=>{if(serverStrip.scrollWidth>serverStrip.clientWidth){e.preventDefault();serverStrip.scrollLeft+=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;}},{passive:false});
  serverStrip.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){serverStrip.scrollBy({left:100,behavior:"smooth"});e.preventDefault()}else if(e.key==="ArrowLeft"){serverStrip.scrollBy({left:-100,behavior:"smooth"});e.preventDefault()}});
 }
+$("closeHlsPlayer").onclick=()=>{const o=document.getElementById("hlsPlayerOverlay"),f=document.getElementById("hlsPlayerFrame");f.src="about:blank";o.style.display="none";};
 $("customBtn").onclick=()=>openModal();
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};

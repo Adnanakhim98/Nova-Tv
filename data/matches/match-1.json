@@ -1,9 +1,9 @@
 {
   "match": {
-    "name": "Bangladesh VS Afghanistan",
+    "name": "Zimbabwe VS Afghanistan",
     "category": "Live Sports",
     "logo": "▶",
-    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Bangladesh%20Vs%20Afghanistan.jpg",
+    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Zimbabwe%20Vs%20Afghanistan.jpg",
     "fallbackLogo": "▶",
     "tone": "blue",
     "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/v8s736w0hw/out/v1/157d723d80d94a3998a06a8e78ad0686/cenc.mpd|drmScheme=clearkey&drmLicense=09269747be60ae1f8d4283d6d5d01fd2:a46879b547df24d568c8f89ae6c3273c",
@@ -25,11 +25,11 @@
           "scheme": "clearkey",
           "license": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "Ser.3",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a145abfb3a1ea540a81c2b41b751/01a145ae0ac115fc600b1e3e9683da/main.m3u8",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad3/master.m3u8",
         "show": "yes"
       },
       {

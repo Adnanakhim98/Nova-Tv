@@ -8,49 +8,11 @@
     "tone": "gold",
     "url": "https://edgestream2.pro/hls/.m3u8",
     "section": "liveSports",
-    "drm": {
-      "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-    },
     "streams": [
       {
-        "name": "Willow",
-        "url": "https://tvsen7.aynaott.com/rEBp38Ax/index.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "MPD Server 1",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd|drmScheme=clearkey&drmLicense=82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-        },
-        "show": "no"
-      },
-      {
-        "name": "Tapmad",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14a5b5bd11ea540a81c2b41b75b/01a14a5b94ea15fc600b1e3e9683eb/main.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "MPD Server 2",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd|drmScheme=clearkey&drmLicense=82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-        },
-        "show": "no"
-      },
-      {
-        "name": "Auto M3U",
+        "name": "STREAM TV + HD",
         "url": "https://edgestream2.pro/hls/.m3u8",
         "show": "yes"
-      },
-      {
-        "name": "Auto M3U 1",
-        "url": "https://edgestream2.pro/hls/.m3u8",
-        "show": "yes",
-        "source": "Sports_data.m3u"
       }
     ],
     "show": "yes",

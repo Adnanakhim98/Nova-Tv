@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Oc6 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Samim6 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -505,11 +505,12 @@ body{
 </style>
 
 <style id="sports-landscape-server-fix">
-/* Keep server buttons inside the player, over the control bar, including fullscreen. */
+/* Server strip is a touch-triggered popup and auto-hides after 4 seconds. */
 .playercard.sports-player-mode:fullscreen,.playercard.sports-player-mode:-webkit-full-screen,.playercard.sports-player-mode.mobile-rotated{display:flex!important;flex-direction:column!important;overflow:hidden!important}
+.playercard.sports-player-mode .sports-server-row{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(7px);transition:opacity .18s ease,transform .18s ease,visibility .18s!important}
+.playercard.sports-player-mode.servers-visible .sports-server-row{opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:translateY(0)!important}
 .playercard.sports-player-mode:fullscreen .screen,.playercard.sports-player-mode:-webkit-full-screen .screen,.playercard.sports-player-mode.mobile-rotated .screen{position:relative!important;flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;align-self:stretch!important}
 .playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;height:36px!important;min-height:36px!important;max-height:36px!important;z-index:100002!important;background:rgba(7,15,27,.88)!important;pointer-events:auto!important}
-.playercard.sports-player-mode.controls-hidden .sports-server-row{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
 @media(max-width:600px){.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{left:15%!important;right:18%!important;bottom:11px!important;height:32px!important;min-height:32px!important;max-height:32px!important}}
 </style>
 </head>
@@ -521,7 +522,7 @@ body{
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
 </header>
 <section class="playersticky">
- <div class="sectionhead"><button type="button" class="online-sports-open" id="onlineSportsOpen">⚽ অনলাইনে স্পোর্টস</button><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
+ <div class="sectionhead"><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
@@ -800,7 +801,30 @@ function streamKind(url){
  return "unknown";
 }
 const sportsServerRow=$("sportsServerRow"),serverGroupHome=$("serverGroupHome");
+let serverPopupTimer=null;
+function hideSportsServers(){
+ if(serverPopupTimer){clearTimeout(serverPopupTimer);serverPopupTimer=null;}
+ playerCard.classList.remove("servers-visible");
+}
+function showSportsServers(){
+ if(!playerCard.classList.contains("sports-player-mode"))return;
+ playerCard.classList.add("servers-visible");
+ if(serverPopupTimer)clearTimeout(serverPopupTimer);
+ serverPopupTimer=setTimeout(hideSportsServers,4000);
+}
+// A tap on the video/player reveals the server strip for four seconds.
+$("playerScreen").addEventListener("pointerdown",e=>{
+ if(!playerCard.classList.contains("sports-player-mode"))return;
+ if(e.target.closest(".sports-server-row")){
+   showSportsServers();
+   return;
+ }
+ showSportsServers();
+},{passive:true});
+// Keep the popup visible while a server button is being selected; then auto-hide.
+sportsServerRow.addEventListener("click",()=>showSportsServers());
 function setPlayerMode(sportsMode){
+ if(!sportsMode)hideSportsServers();
  playerCard.classList.toggle("sports-player-mode",!!sportsMode);
  const group=$("inlineServerGroup");
  if(!group)return;
@@ -816,6 +840,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
  stopEngines();
  setPlayerMode(sportsMode);
+ if(sportsMode)showSportsServers();
  if(requestId!==playRequestId)return;
  $("empty").style.display="none";
  setLiveBadge(false);
@@ -872,11 +897,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
        streaming:{
-         bufferingGoal:3,rebufferingGoal:1,bufferBehind:8,lowLatencyMode:true,
-         retryParameters:{timeout:4500,stallTimeout:2500,connectionTimeout:2500,maxAttempts:2,baseDelay:200}
+         bufferingGoal:2,rebufferingGoal:0.5,bufferBehind:6,lowLatencyMode:true,
+         retryParameters:{timeout:3000,stallTimeout:1800,connectionTimeout:1800,maxAttempts:2,baseDelay:150}
        },
-       manifest:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
-       drm:{retryParameters:{timeout:4500,maxAttempts:2,baseDelay:200}},
+       manifest:{retryParameters:{timeout:3000,maxAttempts:2,baseDelay:150}},
+       drm:{retryParameters:{timeout:3000,maxAttempts:2,baseDelay:150}},
        abr:{enabled:true,defaultBandwidthEstimate:1200000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
@@ -1566,49 +1591,7 @@ document.addEventListener("touchend", e => {
 </style>
 
 
-<div class="online-sports-modal" id="onlineSportsModal" aria-hidden="true">
- <div class="online-sports-panel" role="dialog" aria-modal="true" aria-labelledby="onlineSportsTitle">
-  <div class="online-sports-head"><h3 id="onlineSportsTitle">⚽ অনলাইনে স্পোর্টস</h3><button type="button" id="onlineSportsClose" aria-label="বন্ধ করুন">✕</button></div>
-  <div id="onlineSportsStatus" class="online-sports-status">স্পোর্টস তালিকা লোড করতে বাটনে চাপ দিন।</div>
-  <div id="onlineSportsList" class="online-sports-list"></div>
-  <div class="online-sports-foot">কোনো stream না চললে সেটি unavailable, CORS/DRM-সীমাবদ্ধ বা মেয়াদোত্তীর্ণ হতে পারে।</div>
- </div>
-</div>
-<style>
-.online-sports-open{border:1px solid #21d8f4;background:linear-gradient(135deg,#123a4b,#101b2b);color:#eafcff;border-radius:10px;padding:9px 13px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 0 14px #21d8f425}
-.online-sports-modal{display:none;position:fixed;inset:0;z-index:99999;background:#020712d9;backdrop-filter:blur(6px);padding:14px;align-items:center;justify-content:center}
-.online-sports-modal.open{display:flex}
-.online-sports-panel{width:min(100%,560px);max-height:85vh;overflow:auto;background:#0d1726;border:1px solid #21d8f455;border-radius:16px;padding:14px;color:#eefaff;box-shadow:0 20px 70px #000a}
-.online-sports-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #ffffff20;padding-bottom:10px}
-.online-sports-head h3{margin:0;font-size:18px}.online-sports-head button{background:#203044;color:white;border:0;border-radius:8px;padding:8px 11px;font-size:16px}
-.online-sports-status{color:#a7c3d8;font-size:13px;padding:12px 2px}.online-sports-list{display:grid;gap:8px}
-.online-sports-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#142337;color:#f4fbff;border:1px solid #ffffff18;border-radius:11px;padding:11px;cursor:pointer}
-.online-sports-item:active{border-color:#21d8f4}.online-sports-num{flex:0 0 30px;height:30px;display:grid;place-items:center;background:#0a4353;color:#67eaff;border-radius:8px;font-weight:800}.online-sports-name{font-weight:700;overflow-wrap:anywhere}.online-sports-url{font-size:11px;color:#9cb3c8;overflow-wrap:anywhere;margin-top:3px}.online-sports-foot{font-size:11px;line-height:1.5;color:#91a5bb;margin-top:12px}
-</style>
-<script>
-(()=>{
- const PLAYLIST_URL='https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/refs/heads/main/Sports_data.m3u';
- const modal=document.getElementById('onlineSportsModal'),list=document.getElementById('onlineSportsList'),status=document.getElementById('onlineSportsStatus');
- let cachedItems=null,loading=false;
- const open=()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');if(!cachedItems&&!loading)loadPlaylist()};
- const close=()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')};
- document.getElementById('onlineSportsOpen').addEventListener('click',open);
- document.getElementById('onlineSportsClose').addEventListener('click',close);
- modal.addEventListener('click',e=>{if(e.target===modal)close()});
- document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
- function parseM3U(text){
-  const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/);const out=[];let pending=null,licenseType='',licenseKey='';
-  for(const raw of lines){const line=raw.trim();if(!line)continue;
-   if(line.startsWith('#EXTINF:')){const title=line.split(',').slice(1).join(',').trim()||'Live Sports';const logo=(line.match(/tvg-logo=["']([^"']*)["']/i)||[])[1]||'';pending={name:title,logo};licenseType='';licenseKey='';continue}
-   if(line.startsWith('#KODIPROP:')){const m=line.match(/license_type\s*=\s*([^\s]+)/i);const k=line.match(/license_key\s*=\s*(.+)$/i);if(m)licenseType=m[1].trim().toLowerCase();if(k)licenseKey=k[1].trim();continue}
-   if(line.startsWith('#'))continue;
-   if(/^https?:\/\//i.test(line)){const drm=(licenseType==='clearkey'&&licenseKey.includes(':'))?{scheme:'clearkey',license:licenseKey}:null;out.push({name:pending?.name||('Sports Channel '+(out.length+1)),logo:pending?.logo||'',url:line,drm});pending=null;licenseType='';licenseKey=''}
-  }return out
- }
- async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস তালিকা লোড হচ্ছে…';list.innerHTML='';try{const response=await fetch(PLAYLIST_URL,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);const text=await response.text();const items=parseM3U(text);if(!items.length)throw new Error('M3U-তে playable URL পাওয়া যায়নি');cachedItems=items;render(items);status.textContent='মোট '+items.length+'টি স্পোর্টস স্ট্রিম';}catch(err){status.textContent='তালিকা লোড করা যায়নি। ইন্টারনেট/playlist URL পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.textContent='↻ আবার চেষ্টা করুন';retry.onclick=()=>{cachedItems=null;loadPlaylist()};list.appendChild(retry);console.error('Online Sports playlist error:',err)}finally{loading=false}}
- function render(items){list.innerHTML='';items.forEach((ch,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='online-sports-item';const num=document.createElement('span');num.className='online-sports-num';num.textContent=String(i+1);const body=document.createElement('span');body.style.minWidth='0';const name=document.createElement('div');name.className='online-sports-name';name.textContent=ch.name;const url=document.createElement('div');url.className='online-sports-url';url.textContent=ch.url;body.append(name,url);btn.append(num,body);btn.addEventListener('click',()=>{if(typeof window.playStream==='function'){close();window.playStream(ch.url,ch.name,'ONLINE SPORTS',ch.drm||null,'')}else{status.textContent='বর্তমান player-এর playStream ফাংশন পাওয়া যায়নি।'}});list.appendChild(btn)})}
-})();
-</script>
+
 
 </body>
 </html>

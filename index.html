@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Oc6 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -489,44 +489,28 @@ body{
 @media(max-width:420px){#inlineServerGroup{gap:4px}#inlineServerGroup .inline-server-btn{padding:0 7px;font-size:9px}}
 </style>
 <style id="sports-shaka-player-mode">
-/* Live Sports gets the supplied standalone Shaka-style player; Live TV keeps the existing SPORTYNOVA player. */
-.sports-server-row{display:none;align-items:center;gap:6px;min-height:0;padding:8px 9px;background:linear-gradient(100deg,#101725,#0b101a);border-top:1px solid #26344a;overflow:hidden}
-.playercard.sports-player-mode .sports-server-row{display:flex}
+/* Live Sports uses Shaka controls; server buttons overlay the bottom control bar. */
 .playercard.sports-player-mode .nova-controls,
 .playercard.sports-player-mode #centerPlayPause{display:none!important}
 .playercard.sports-player-mode .screen .shaka-controls-container{display:flex!important;z-index:15!important}
 .playercard.sports-player-mode .screen .shaka-controls-container .shaka-range-container{accent-color:#21d8f4}
-.playercard.sports-player-mode .sports-server-row #inlineServerGroup{display:flex!important;flex:1 1 auto;width:100%;min-width:0;overflow-x:auto;gap:7px}
-.playercard.sports-player-mode .sports-server-row .inline-server-btn{min-height:34px;padding:0 12px;border-radius:9px;flex:0 0 auto;font-size:11px}
-.playercard.sports-player-mode .sports-server-row .inline-server-btn.active{background:linear-gradient(135deg,#12394a,#102638);border-color:#21d8f4;color:#aaf5ff}
+.playercard.sports-player-mode .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;min-width:0!important;height:36px!important;max-height:36px!important;min-height:36px!important;padding:0 4px!important;align-items:center!important;gap:5px!important;z-index:25!important;background:linear-gradient(90deg,rgba(7,15,27,.92),rgba(7,15,27,.68))!important;border:1px solid #ffffff24!important;border-radius:9px!important;overflow:hidden!important;pointer-events:auto!important}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup{display:flex!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;gap:5px!important;touch-action:pan-x!important;scrollbar-width:none!important}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup::-webkit-scrollbar{display:none!important}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn{height:29px!important;min-height:29px!important;padding:0 9px!important;border-radius:7px!important;flex:0 0 auto!important;font-size:10px!important;white-space:nowrap!important}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn.active{background:linear-gradient(135deg,#12394a,#102638)!important;border-color:#21d8f4!important;color:#aaf5ff!important}
 .playercard.sports-player-mode .screen video{object-fit:contain!important}
-@media(max-width:420px){.playercard.sports-player-mode .sports-server-row{padding:7px 6px}.playercard.sports-player-mode .sports-server-row .inline-server-btn{min-height:32px;padding:0 10px;font-size:10px}}
-.playercard.sports-player-mode:fullscreen .sports-server-row{display:none!important}
+@media(max-width:600px){.playercard.sports-player-mode .sports-server-row{left:15%!important;right:18%!important;bottom:11px!important;height:32px!important;min-height:32px!important;max-height:32px!important;padding:0 3px!important;gap:3px!important}.playercard.sports-player-mode .sports-server-row .inline-server-btn{height:26px!important;min-height:26px!important;padding:0 7px!important;font-size:9px!important}}
+@media(orientation:landscape){.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{left:14%!important;right:18%!important;bottom:13px!important;display:flex!important;z-index:100002!important}}
 </style>
 
 <style id="sports-landscape-server-fix">
-/* Keep Live Sports server buttons visible below the video in landscape/fullscreen. */
-.playercard.sports-player-mode:fullscreen,
-.playercard.sports-player-mode:-webkit-full-screen,
-.playercard.sports-player-mode.mobile-rotated {
-  display:flex!important; flex-direction:column!important; overflow:hidden!important;
-}
-.playercard.sports-player-mode:fullscreen .screen,
-.playercard.sports-player-mode:-webkit-full-screen .screen,
-.playercard.sports-player-mode.mobile-rotated .screen {
-  flex:1 1 auto!important; width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important; align-self:stretch!important;
-}
-.playercard.sports-player-mode:fullscreen .sports-server-row,
-.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
-.playercard.sports-player-mode.mobile-rotated .sports-server-row {
-  display:flex!important; flex:0 0 auto!important; width:100%!important; min-height:48px!important; max-height:58px!important; padding:7px 10px!important; position:relative!important; z-index:100001!important; background:#0b1220!important; border-top:1px solid #26344a!important; overflow:hidden!important;
-}
-.playercard.sports-player-mode:fullscreen .sports-server-row #inlineServerGroup,
-.playercard.sports-player-mode:-webkit-full-screen .sports-server-row #inlineServerGroup,
-.playercard.sports-player-mode.mobile-rotated .sports-server-row #inlineServerGroup {
-  display:flex!important; flex:1 1 auto!important; width:100%!important; min-width:0!important; overflow-x:auto!important; overflow-y:hidden!important; touch-action:pan-x!important;
-}
-.playercard.sports-player-mode.controls-hidden .sports-server-row {opacity:1!important; visibility:visible!important; pointer-events:auto!important;}
+/* Keep server buttons inside the player, over the control bar, including fullscreen. */
+.playercard.sports-player-mode:fullscreen,.playercard.sports-player-mode:-webkit-full-screen,.playercard.sports-player-mode.mobile-rotated{display:flex!important;flex-direction:column!important;overflow:hidden!important}
+.playercard.sports-player-mode:fullscreen .screen,.playercard.sports-player-mode:-webkit-full-screen .screen,.playercard.sports-player-mode.mobile-rotated .screen{position:relative!important;flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;align-self:stretch!important}
+.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;height:36px!important;min-height:36px!important;max-height:36px!important;z-index:100002!important;background:rgba(7,15,27,.88)!important;pointer-events:auto!important}
+.playercard.sports-player-mode.controls-hidden .sports-server-row{opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+@media(max-width:600px){.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{left:15%!important;right:18%!important;bottom:11px!important;height:32px!important;min-height:32px!important;max-height:32px!important}}
 </style>
 </head>
 <body>
@@ -545,6 +529,7 @@ body{
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
+   <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
@@ -558,7 +543,6 @@ body{
     </div>
    </div>
   </div>
-  <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
   <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️

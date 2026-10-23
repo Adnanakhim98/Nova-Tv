@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocerhhjথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocerথতথথথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -988,7 +988,7 @@ async function loadConfig(){
   channels=results.flat();
   // Each live match is maintained in its own JSON file under data/matches/.
   // Example: data/matches/match-1.json contains { "match": { ... } }.
-  const matchFiles=Array.from({length:7},(_,i)=>`./data/matches/match-${i+1}.json`);
+  const matchFiles=Array.from({length:10},(_,i)=>`./data/matches/match-${i+1}.json`);
   const matchResults=await Promise.all(matchFiles.map(async path=>{
    try{
     const r=await fetch(path,{cache:"no-store"});

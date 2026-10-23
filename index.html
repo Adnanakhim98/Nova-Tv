@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocerথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocerhhjথথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -762,10 +762,14 @@ function parseStreamInput(raw, drmFromJson=null){
  };
 }
 function streamKind(url){
- let path=String(url||"").split("|")[0];
- try{path=new URL(path,location.href).pathname.toLowerCase()}catch(e){path=path.split(/[?#]/)[0].toLowerCase()}
- if(/\.mpd$/.test(path))return "mpd";
- if(/\.m3u8?$/.test(path))return "hls";
+ // Detect the manifest extension from the URL path, ignoring query tokens and fragments.
+ // Also accept common manifest hints when providers use extensionless URLs.
+ const raw=String(url||"").split("|")[0].trim();
+ let path="",query="";
+ try{const u=new URL(raw,location.href);path=u.pathname.toLowerCase();query=(u.search+" "+u.hash).toLowerCase()}
+ catch(e){const clean=raw.split("#")[0];path=clean.split("?")[0].toLowerCase();query=clean.slice(path.length).toLowerCase()}
+ if(/\.mpd$/.test(path)||/manifest(?:\.mpd)?/.test(path)&&/dash|mpd/.test(query))return "mpd";
+ if(/\.m3u8?$/.test(path)||/m3u8/.test(query))return "hls";
  if(/\.(mp4|m4v|webm|ogv|mov|mkv|mp3|m4a|aac|wav|ogg)$/.test(path))return "direct";
  if(/\.(ts|m2ts)$/.test(path))return "transport";
  return "unknown";
@@ -781,7 +785,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","৮ সেকেন্ডের মধ্যে না চললে স্বয়ংক্রিয়ভাবে অন্য সার্ভারে চেষ্টা করা হবে।",false);
+ setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","MPD/DASH ও HLS সংযোগ তৈরি হতে কিছু সময় লাগতে পারে; অপেক্ষা করুন।",false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";
@@ -819,7 +823,10 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.onerror=()=>fail("media error");
  video.onplaying=()=>success(engine);
  // A single startup deadline reports a real failure; it does not start another player.
- timer=setTimeout(()=>fail("startup timeout after 8 seconds"),8000);
+ // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
+ // loading state alive long enough for legitimate slower connections to start.
+ const startupLimit=kind==="mpd"?25000:(kind==="hls"?18000:12000);
+ timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
    if(kind==="mpd"){
@@ -850,8 +857,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      screenEl.classList.remove("shaka-ui-active");
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
-       const p=parsed.license.split(":");
-       if(p.length===2)clearKeys[p[0].trim().replace(/-/g,"").toLowerCase()]=p[1].trim().replace(/-/g,"").toLowerCase();
+       // Supports KID:KEY, with optional UUID dashes and whitespace.
+       const p=String(parsed.license).split(":");
+       if(p.length===2){
+         const kid=p[0].trim().replace(/-/g,"").toLowerCase();
+         const key=p[1].trim().replace(/-/g,"").toLowerCase();
+         if(/^[0-9a-f]{32}$/.test(kid)&&/^[0-9a-f]{32}$/.test(key))clearKeys[kid]=key;
+       }
      }
      if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
      report("MPEG-DASH · লিংক লোড হচ্ছে…");

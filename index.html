@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocerথতথথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -502,6 +502,31 @@ body{
 .playercard.sports-player-mode .screen video{object-fit:contain!important}
 @media(max-width:420px){.playercard.sports-player-mode .sports-server-row{padding:7px 6px}.playercard.sports-player-mode .sports-server-row .inline-server-btn{min-height:32px;padding:0 10px;font-size:10px}}
 .playercard.sports-player-mode:fullscreen .sports-server-row{display:none!important}
+</style>
+
+<style id="sports-landscape-server-fix">
+/* Keep Live Sports server buttons visible below the video in landscape/fullscreen. */
+.playercard.sports-player-mode:fullscreen,
+.playercard.sports-player-mode:-webkit-full-screen,
+.playercard.sports-player-mode.mobile-rotated {
+  display:flex!important; flex-direction:column!important; overflow:hidden!important;
+}
+.playercard.sports-player-mode:fullscreen .screen,
+.playercard.sports-player-mode:-webkit-full-screen .screen,
+.playercard.sports-player-mode.mobile-rotated .screen {
+  flex:1 1 auto!important; width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important; align-self:stretch!important;
+}
+.playercard.sports-player-mode:fullscreen .sports-server-row,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row {
+  display:flex!important; flex:0 0 auto!important; width:100%!important; min-height:48px!important; max-height:58px!important; padding:7px 10px!important; position:relative!important; z-index:100001!important; background:#0b1220!important; border-top:1px solid #26344a!important; overflow:hidden!important;
+}
+.playercard.sports-player-mode:fullscreen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row #inlineServerGroup {
+  display:flex!important; flex:1 1 auto!important; width:100%!important; min-width:0!important; overflow-x:auto!important; overflow-y:hidden!important; touch-action:pan-x!important;
+}
+.playercard.sports-player-mode.controls-hidden .sports-server-row {opacity:1!important; visibility:visible!important; pointer-events:auto!important;}
 </style>
 </head>
 <body>

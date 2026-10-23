@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update data/matches/match-2.json streams from a remote M3U playlist.
+"""Update data/matches/match-3.json streams from a remote M3U playlist.
 
 The match name is read from match-1.json -> match -> name.
 If no matching streams are found, the existing JSON is left unchanged.
@@ -12,7 +12,7 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
-JSON_PATH = ROOT / "data" / "matches" / "match-2.json"
+JSON_PATH = ROOT / "data" / "matches" / "match-3.json"
 PLAYLIST_URL = os.environ.get(
     "SPORTS_M3U_URL",
     "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/Sports_data.m3u",

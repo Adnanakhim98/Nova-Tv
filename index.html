@@ -905,10 +905,24 @@ if(serverStrip){
  serverStrip.addEventListener("wheel",e=>{if(serverStrip.scrollWidth>serverStrip.clientWidth){e.preventDefault();serverStrip.scrollLeft+=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;}},{passive:false});
  serverStrip.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){serverStrip.scrollBy({left:100,behavior:"smooth"});e.preventDefault()}else if(e.key==="ArrowLeft"){serverStrip.scrollBy({left:-100,behavior:"smooth"});e.preventDefault()}});
 }
-$("customBtn").onclick=()=>openModal();
+// Fix: the URL button and channels without a stream both call openModal(),
+// but the function was missing, so clicking did nothing.
+function openModal(channelName=""){
+ const modal=$("urlModal");
+ if(!modal) return;
+ const nameField=$("streamName");
+ const urlField=$("streamUrl");
+ if(nameField && channelName) nameField.value=channelName;
+ modal.classList.add("open");
+ if(urlField) setTimeout(()=>urlField.focus(),80);
+}
+$("customBtn").addEventListener("click",()=>openModal());
+
 $("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
+$("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
 $("search").addEventListener("input",()=>render(channels));
 async function loadConfig(){

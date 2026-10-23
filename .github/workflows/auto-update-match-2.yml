@@ -1,5 +1,6 @@
 
-name: Auto Update Match 2
+- name: Update Match 2
+  run: python scripts/update-match-2.py
 
 on:
   schedule:

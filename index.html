@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocerথনতুনতথথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocerথতথথথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -488,6 +488,21 @@ body{
 #inlineServerGroup .inline-server-btn.active{border-color:#22d3ee;background:#123347;color:#b7f7ff}
 @media(max-width:420px){#inlineServerGroup{gap:4px}#inlineServerGroup .inline-server-btn{padding:0 7px;font-size:9px}}
 </style>
+<style id="sports-shaka-player-mode">
+/* Live Sports gets the supplied standalone Shaka-style player; Live TV keeps the existing SPORTYNOVA player. */
+.sports-server-row{display:none;align-items:center;gap:6px;min-height:0;padding:8px 9px;background:linear-gradient(100deg,#101725,#0b101a);border-top:1px solid #26344a;overflow:hidden}
+.playercard.sports-player-mode .sports-server-row{display:flex}
+.playercard.sports-player-mode .nova-controls,
+.playercard.sports-player-mode #centerPlayPause{display:none!important}
+.playercard.sports-player-mode .screen .shaka-controls-container{display:flex!important;z-index:15!important}
+.playercard.sports-player-mode .screen .shaka-controls-container .shaka-range-container{accent-color:#21d8f4}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup{display:flex!important;flex:1 1 auto;width:100%;min-width:0;overflow-x:auto;gap:7px}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn{min-height:34px;padding:0 12px;border-radius:9px;flex:0 0 auto;font-size:11px}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn.active{background:linear-gradient(135deg,#12394a,#102638);border-color:#21d8f4;color:#aaf5ff}
+.playercard.sports-player-mode .screen video{object-fit:contain!important}
+@media(max-width:420px){.playercard.sports-player-mode .sports-server-row{padding:7px 6px}.playercard.sports-player-mode .sports-server-row .inline-server-btn{min-height:32px;padding:0 10px;font-size:10px}}
+.playercard.sports-player-mode:fullscreen .sports-server-row{display:none!important}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -512,12 +527,13 @@ body{
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <span class="nova-control-spacer"></span>
       <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
-     <span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
+     <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
    </div>
   </div>
+  <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
   <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
  </div>
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
@@ -774,13 +790,23 @@ function streamKind(url){
  if(/\.(ts|m2ts)$/.test(path))return "transport";
  return "unknown";
 }
+const sportsServerRow=$("sportsServerRow"),serverGroupHome=$("serverGroupHome");
+function setPlayerMode(sportsMode){
+ playerCard.classList.toggle("sports-player-mode",!!sportsMode);
+ const group=$("inlineServerGroup");
+ if(!group)return;
+ if(sportsMode){sportsServerRow.appendChild(group);}
+ else if(serverGroupHome&&serverGroupHome.parentElement){serverGroupHome.parentElement.insertBefore(group,serverGroupHome.nextSibling);}
+}
 window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
+ const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
  stopEngines();
+ setPlayerMode(sportsMode);
  if(requestId!==playRequestId)return;
  $("empty").style.display="none";
  setLiveBadge(false);
@@ -829,8 +855,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
-   if(kind==="mpd"){
-     engine="Shaka / MPEG-DASH";
+   if(kind==="mpd" || (sportsMode && (kind==="hls" || kind==="unknown"))){
+     engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / Live Sports";
      if(!window.shaka)throw new Error("Shaka library unavailable");
      shaka.polyfill.installAll();
      if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
@@ -850,11 +876,18 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka.addEventListener("adaptation",()=>setupShakaQualities());
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
-     // Keep the same SPORTYNOVA overlay controls for DASH and HLS.
-     // Do not attach Shaka UI: it hides the inline server buttons and replaces them
-     // with its own controls on some mobile browsers.
      video.controls=false;
-     screenEl.classList.remove("shaka-ui-active");
+     if(sportsMode){
+       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
+       activeShakaUI.configure({
+         addBigPlayButton:true,
+         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
+       });
+       screenEl.classList.add("shaka-ui-active");
+     }else{
+       // Live TV continues to use the existing SPORTYNOVA controls.
+       screenEl.classList.remove("shaka-ui-active");
+     }
      const clearKeys={};
      if(parsed.scheme==="clearkey"&&parsed.license){
        // Supports KID:KEY, with optional UUID dashes and whitespace.
@@ -974,7 +1007,7 @@ function openModal(channelName=""){
 }
 $("customBtn").addEventListener("click",()=>openModal());
 
-$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
+$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();setPlayerMode(false);$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
@@ -999,40 +1032,6 @@ async function loadConfig(){
    }catch(e){console.warn("Could not load match file "+path,e);return null;}
   }));
   liveSports=matchResults.filter(Boolean);
-  // Match the embedded M3U playlist streams to the corresponding match JSON by team names.
-  // Existing JSON streams are preserved; duplicate URLs are skipped.
-  try{
-   const playlistItems=typeof window.getSportsM3UItems==="function"?await window.getSportsM3UItems():[];
-   const normMatchText=value=>String(value||"").toLowerCase()
-    .replace(/\b(server|stream|link|backup|backup server|hd|fhd|uhd|4k|720p|1080p|480p|live)\s*[-_#.:]*\s*\d*\b/g," ")
-    .replace(/[^a-z0-9]+/g,"");
-   const teamsOf=value=>{
-    const parts=String(value||"").trim().split(/\s+(?:VS?\.?|versus|v)\s+/i).filter(Boolean);
-    return parts.length>=2?parts.map(x=>normMatchText(x)).filter(x=>x.length>=3):[];
-   };
-   liveSports=liveSports.map(match=>{
-    const teams=teamsOf(match.name);
-    if(teams.length<2)return match;
-    const streams=Array.isArray(match.streams)?match.streams.slice():[];
-    // Preserve legacy single/serverN URLs before adding the playlist streams array.
-    if(!Array.isArray(match.streams)){
-     for(let i=1;i<=50;i++){
-      const legacyUrl=String(match["server"+i]||match["server"+i+"Url"]||match["server"+i+"URL"]||(i===1?match.url:"")||"").trim();
-      if(legacyUrl)streams.push({name:match["server"+i+"Name"]||("Server "+i),url:legacyUrl,drm:match["drm"+i]||match.drm||null,Show:match["server"+i+"Show"]||"Y"});
-     }
-    }
-    const seen=new Set(streams.map(x=>String(x?.url||x?.src||"").trim()).filter(Boolean));
-    playlistItems.forEach(item=>{
-     const title=normMatchText(item.name);
-     // Require both team names in the M3U title to avoid unrelated channel matches.
-     if(teams.every(team=>title.includes(team))&&item.url&&!seen.has(item.url)){
-      streams.push({name:item.name||("M3U Server "+(streams.length+1)),url:item.url,drm:item.drm||null,source:"m3u"});
-      seen.add(item.url);
-     }
-    });
-    return streams.length?{...match,streams}:match;
-   });
-  }catch(e){console.warn("Could not merge M3U streams into match cards",e)}
   // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
   if(!liveSports.length){
    for(const path of ["./data/live-sports.json","./live-sports.json"]){
@@ -1597,18 +1596,7 @@ document.addEventListener("touchend", e => {
    if(/^https?:\/\//i.test(line)){const drm=(licenseType==='clearkey'&&licenseKey.includes(':'))?{scheme:'clearkey',license:licenseKey}:null;out.push({name:pending?.name||('Sports Channel '+(out.length+1)),logo:pending?.logo||'',url:line,drm});pending=null;licenseType='';licenseKey=''}
   }return out
  }
- async function fetchPlaylistItems(){
-  if(cachedItems)return cachedItems;
-  const response=await fetch(PLAYLIST_URL,{cache:'no-store'});
-  if(!response.ok)throw new Error('HTTP '+response.status);
-  const text=await response.text();
-  const items=parseM3U(text);
-  if(!items.length)throw new Error('M3U-তে playable URL পাওয়া যায়নি');
-  cachedItems=items;
-  return items;
- }
- window.getSportsM3UItems=fetchPlaylistItems;
- async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস তালিকা লোড হচ্ছে…';list.innerHTML='';try{const items=await fetchPlaylistItems();render(items);status.textContent='মোট '+items.length+'টি স্পোর্টস স্ট্রিম';}catch(err){status.textContent='তালিকা লোড করা যায়নি। ইন্টারনেট/playlist URL পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.textContent='↻ আবার চেষ্টা করুন';retry.onclick=()=>{cachedItems=null;loadPlaylist()};list.appendChild(retry);console.error('Online Sports playlist error:',err)}finally{loading=false}}
+ async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস তালিকা লোড হচ্ছে…';list.innerHTML='';try{const response=await fetch(PLAYLIST_URL,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);const text=await response.text();const items=parseM3U(text);if(!items.length)throw new Error('M3U-তে playable URL পাওয়া যায়নি');cachedItems=items;render(items);status.textContent='মোট '+items.length+'টি স্পোর্টস স্ট্রিম';}catch(err){status.textContent='তালিকা লোড করা যায়নি। ইন্টারনেট/playlist URL পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.textContent='↻ আবার চেষ্টা করুন';retry.onclick=()=>{cachedItems=null;loadPlaylist()};list.appendChild(retry);console.error('Online Sports playlist error:',err)}finally{loading=false}}
  function render(items){list.innerHTML='';items.forEach((ch,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='online-sports-item';const num=document.createElement('span');num.className='online-sports-num';num.textContent=String(i+1);const body=document.createElement('span');body.style.minWidth='0';const name=document.createElement('div');name.className='online-sports-name';name.textContent=ch.name;const url=document.createElement('div');url.className='online-sports-url';url.textContent=ch.url;body.append(name,url);btn.append(num,body);btn.addEventListener('click',()=>{if(typeof window.playStream==='function'){close();window.playStream(ch.url,ch.name,'ONLINE SPORTS',ch.drm||null,'')}else{status.textContent='বর্তমান player-এর playStream ফাংশন পাওয়া যায়নি।'}});list.appendChild(btn)})}
 })();
 </script>

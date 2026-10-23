@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocer 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocerথথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -471,24 +471,6 @@ body{
 }
 </style>
 
-
-<style>
-.online-sports-btn{border:1px solid #18d6f3;background:linear-gradient(120deg,#12c9e9,#0878b6);color:#04131b;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 0 14px #18d6f322;white-space:nowrap}
-.online-sports-btn:active{transform:scale(.98)}
-#onlineSportsModal{display:none;position:fixed;inset:0;z-index:9999;background:#030712eF;backdrop-filter:blur(7px);padding:14px;align-items:center;justify-content:center}
-#onlineSportsModal.open{display:flex}
-.online-sports-box{width:min(680px,100%);max-height:82vh;display:flex;flex-direction:column;background:linear-gradient(145deg,#151f31,#0b1220);border:1px solid #2c4059;border-radius:16px;overflow:hidden;box-shadow:0 18px 60px #0009}
-.online-sports-head{display:flex;align-items:center;gap:10px;padding:13px;border-bottom:1px solid #26364b}
-.online-sports-head strong{font-size:15px;color:#eaf7ff;flex:1}
-.online-sports-close{border:1px solid #40516a;background:#1a2638;color:#fff;border-radius:9px;padding:7px 11px;font-size:18px;cursor:pointer}
-#onlineSportsStatus{font-size:11px;color:#9db0c9;padding:10px 13px 0}
-#onlineSportsList{overflow:auto;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.online-sports-item{display:flex;align-items:center;gap:9px;min-width:0;text-align:left;border:1px solid #263b52;background:#101a29;color:#edf7ff;border-radius:11px;padding:9px;cursor:pointer}
-.online-sports-item img{width:42px;height:34px;object-fit:contain;flex:0 0 auto}.online-sports-item span{font-size:12px;font-weight:700;overflow-wrap:anywhere}
-.online-sports-item:active{border-color:#21d8f4;background:#123044}
-@media(max-width:420px){.online-sports-btn{padding:9px 10px;font-size:11px}#onlineSportsList{grid-template-columns:1fr}.online-sports-item{padding:8px}}
-</style>
-
 </head>
 <body>
 <div class="wrap">
@@ -498,7 +480,7 @@ body{
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
 </header>
 <section class="playersticky">
- <div class="sectionhead"><button id="onlineSportsBtn" type="button" class="online-sports-btn">⚽ অনলাইনে স্পোর্টস</button><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
+ <div class="sectionhead"><button type="button" class="online-sports-open" id="onlineSportsOpen">⚽ অনলাইনে স্পোর্টস</button><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
@@ -746,6 +728,7 @@ function streamKind(url){
  if(/\.(ts|m2ts)$/.test(path))return "transport";
  return "unknown";
 }
+window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
@@ -1486,60 +1469,47 @@ document.addEventListener("touchend", e => {
 </style>
 
 
-<div id="onlineSportsModal" role="dialog" aria-modal="true" aria-label="অনলাইনে স্পোর্টস প্লেলিস্ট">
- <div class="online-sports-box">
-  <div class="online-sports-head"><strong>⚽ অনলাইনে স্পোর্টস</strong><button type="button" class="online-sports-close" id="onlineSportsClose" aria-label="বন্ধ করুন">×</button></div>
-  <div id="onlineSportsStatus">স্পোর্টস প্লেলিস্ট লোড হচ্ছে…</div>
-  <div id="onlineSportsList"></div>
+<div class="online-sports-modal" id="onlineSportsModal" aria-hidden="true">
+ <div class="online-sports-panel" role="dialog" aria-modal="true" aria-labelledby="onlineSportsTitle">
+  <div class="online-sports-head"><h3 id="onlineSportsTitle">⚽ অনলাইনে স্পোর্টস</h3><button type="button" id="onlineSportsClose" aria-label="বন্ধ করুন">✕</button></div>
+  <div id="onlineSportsStatus" class="online-sports-status">স্পোর্টস তালিকা লোড করতে বাটনে চাপ দিন।</div>
+  <div id="onlineSportsList" class="online-sports-list"></div>
+  <div class="online-sports-foot">কোনো stream না চললে সেটি unavailable, CORS/DRM-সীমাবদ্ধ বা মেয়াদোত্তীর্ণ হতে পারে।</div>
  </div>
 </div>
+<style>
+.online-sports-open{border:1px solid #21d8f4;background:linear-gradient(135deg,#123a4b,#101b2b);color:#eafcff;border-radius:10px;padding:9px 13px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 0 14px #21d8f425}
+.online-sports-modal{display:none;position:fixed;inset:0;z-index:99999;background:#020712d9;backdrop-filter:blur(6px);padding:14px;align-items:center;justify-content:center}
+.online-sports-modal.open{display:flex}
+.online-sports-panel{width:min(100%,560px);max-height:85vh;overflow:auto;background:#0d1726;border:1px solid #21d8f455;border-radius:16px;padding:14px;color:#eefaff;box-shadow:0 20px 70px #000a}
+.online-sports-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #ffffff20;padding-bottom:10px}
+.online-sports-head h3{margin:0;font-size:18px}.online-sports-head button{background:#203044;color:white;border:0;border-radius:8px;padding:8px 11px;font-size:16px}
+.online-sports-status{color:#a7c3d8;font-size:13px;padding:12px 2px}.online-sports-list{display:grid;gap:8px}
+.online-sports-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#142337;color:#f4fbff;border:1px solid #ffffff18;border-radius:11px;padding:11px;cursor:pointer}
+.online-sports-item:active{border-color:#21d8f4}.online-sports-num{flex:0 0 30px;height:30px;display:grid;place-items:center;background:#0a4353;color:#67eaff;border-radius:8px;font-weight:800}.online-sports-name{font-weight:700;overflow-wrap:anywhere}.online-sports-url{font-size:11px;color:#9cb3c8;overflow-wrap:anywhere;margin-top:3px}.online-sports-foot{font-size:11px;line-height:1.5;color:#91a5bb;margin-top:12px}
+</style>
 <script>
 (()=>{
  const PLAYLIST_URL='https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/refs/heads/main/Sports_data.m3u';
  const modal=document.getElementById('onlineSportsModal'),list=document.getElementById('onlineSportsList'),status=document.getElementById('onlineSportsStatus');
- let loaded=false,loading=false,items=[];
- const close=()=>modal.classList.remove('open');
- document.getElementById('onlineSportsBtn').addEventListener('click',()=>{
-  modal.classList.add('open');
-  if(!loaded&&!loading)loadPlaylist();
- });
+ let cachedItems=null,loading=false;
+ const open=()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');if(!cachedItems&&!loading)loadPlaylist()};
+ const close=()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')};
+ document.getElementById('onlineSportsOpen').addEventListener('click',open);
  document.getElementById('onlineSportsClose').addEventListener('click',close);
  modal.addEventListener('click',e=>{if(e.target===modal)close()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
  function parseM3U(text){
-  const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/);let pending=null,out=[];
+  const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/);const out=[];let pending=null,licenseType='',licenseKey='';
   for(const raw of lines){const line=raw.trim();if(!line)continue;
-   if(line.startsWith('#EXTINF')){
-    const comma=line.indexOf(',');const info=comma>=0?line.slice(0,comma):line;const name=(comma>=0?line.slice(comma+1):'').trim()||'Sports Channel';
-    const attr=(key)=>{const m=info.match(new RegExp('(?:^|\\s)'+key+'="([^"]*)"','i'));return m?m[1]:''};
-    pending={name,logo:attr('tvg-logo'),group:attr('group-title')};
-   }else if(line.startsWith('#')){continue}
-   else if(/^https?:\/\//i.test(line)){
-    const rawUrl=line;out.push({name:(pending&&pending.name)||rawUrl,logo:(pending&&pending.logo)||'',category:(pending&&pending.group)||'Online Sports',url:rawUrl});pending=null;
-   }
-  }
-  return out;
+   if(line.startsWith('#EXTINF:')){const title=line.split(',').slice(1).join(',').trim()||'Live Sports';const logo=(line.match(/tvg-logo=["']([^"']*)["']/i)||[])[1]||'';pending={name:title,logo};licenseType='';licenseKey='';continue}
+   if(line.startsWith('#KODIPROP:')){const m=line.match(/license_type\s*=\s*([^\s]+)/i);const k=line.match(/license_key\s*=\s*(.+)$/i);if(m)licenseType=m[1].trim().toLowerCase();if(k)licenseKey=k[1].trim();continue}
+   if(line.startsWith('#'))continue;
+   if(/^https?:\/\//i.test(line)){const drm=(licenseType==='clearkey'&&licenseKey.includes(':'))?{scheme:'clearkey',license:licenseKey}:null;out.push({name:pending?.name||('Sports Channel '+(out.length+1)),logo:pending?.logo||'',url:line,drm});pending=null;licenseType='';licenseKey=''}
+  }return out
  }
- function render(){list.innerHTML='';items.forEach((ch,index)=>{
-  const b=document.createElement('button');b.type='button';b.className='online-sports-item';
-  if(ch.logo&&/^https?:\/\//i.test(ch.logo)){const img=document.createElement('img');img.src=ch.logo;img.alt='';img.loading='lazy';img.referrerPolicy='no-referrer';img.onerror=()=>img.remove();b.appendChild(img)}
-  const label=document.createElement('span');label.textContent=ch.name;b.appendChild(label);
-  b.addEventListener('click',()=>{
-   // Use SPORTYNOVA's existing default player and playback engine.
-   close();
-   if(typeof playStream==='function'){
-    if(typeof setInlineServers==='function')setInlineServers({name:ch.name,url:ch.url,category:'Online Sports',streams:[{name:'Server 1',url:ch.url}]});
-    if(typeof showStatus==='function')showStatus(ch.name,'Online Sports · Connecting…');
-    playStream(ch.url,ch.name,'Online Sports',null,'');
-   }else{status.textContent='ডিফল্ট প্লেয়ার প্রস্তুত নয়। পেজটি রিফ্রেশ করে আবার চেষ্টা করুন।';modal.classList.add('open')}
-  });list.appendChild(b);
- });}
- async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস প্লেলিস্ট লোড হচ্ছে…';list.innerHTML='';
-  try{const response=await fetch(PLAYLIST_URL,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);const text=await response.text();items=parseM3U(text);
-   if(!items.length)throw new Error('No playable entries');loaded=true;status.textContent=items.length+'টি স্পোর্টস চ্যানেল পাওয়া গেছে। চালাতে একটি চ্যানেলে চাপ দিন।';render();
-  }catch(error){console.error('Online Sports playlist error:',error);status.textContent='প্লেলিস্ট লোড করা যায়নি। ইন্টারনেট সংযোগ বা GitHub playlist URL/CORS পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.type='button';retry.textContent='↻ আবার চেষ্টা করুন';retry.addEventListener('click',()=>{loaded=false;loadPlaylist()});list.appendChild(retry)}
-  finally{loading=false}
- }
+ async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস তালিকা লোড হচ্ছে…';list.innerHTML='';try{const response=await fetch(PLAYLIST_URL,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);const text=await response.text();const items=parseM3U(text);if(!items.length)throw new Error('M3U-তে playable URL পাওয়া যায়নি');cachedItems=items;render(items);status.textContent='মোট '+items.length+'টি স্পোর্টস স্ট্রিম';}catch(err){status.textContent='তালিকা লোড করা যায়নি। ইন্টারনেট/playlist URL পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.textContent='↻ আবার চেষ্টা করুন';retry.onclick=()=>{cachedItems=null;loadPlaylist()};list.appendChild(retry);console.error('Online Sports playlist error:',err)}finally{loading=false}}
+ function render(items){list.innerHTML='';items.forEach((ch,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='online-sports-item';const num=document.createElement('span');num.className='online-sports-num';num.textContent=String(i+1);const body=document.createElement('span');body.style.minWidth='0';const name=document.createElement('div');name.className='online-sports-name';name.textContent=ch.name;const url=document.createElement('div');url.className='online-sports-url';url.textContent=ch.url;body.append(name,url);btn.append(num,body);btn.addEventListener('click',()=>{if(typeof window.playStream==='function'){close();window.playStream(ch.url,ch.name,'ONLINE SPORTS',ch.drm||null,'')}else{status.textContent='বর্তমান player-এর playStream ফাংশন পাওয়া যায়নি।'}});list.appendChild(btn)})}
 })();
 </script>
 

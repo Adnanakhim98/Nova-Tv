@@ -1,162 +1,118 @@
+#!/usr/bin/env python3
+"""Update data/matches/match-2.json streams from a remote M3U playlist.
 
+The match name is read from match-1.json -> match -> name.
+If no matching streams are found, the existing JSON is left unchanged.
+"""
 import json
+import os
 import re
 import sys
-import urllib.request
 from pathlib import Path
+from urllib.request import Request, urlopen
 
-SOURCE_URL = (
-    "https://raw.githubusercontent.com/"
-    "sm-monirulislam/Upcoming-and-Live-Sports-Data/"
-    "main/Sports_data.m3u"
+ROOT = Path(__file__).resolve().parents[1]
+JSON_PATH = ROOT / "data" / "matches" / "match-2.json"
+PLAYLIST_URL = os.environ.get(
+    "SPORTS_M3U_URL",
+    "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/Sports_data.m3u",
 )
 
-JSON_FILE = Path("data/matches/match-2.json")
-
-
-def normalize(text):
-    text = str(text or "").lower()
-    text = text.replace("&", " and ")
-    text = re.sub(r"\b(vs?\.?|versus)\b", " vs ", text)
-    text = re.sub(r"[^a-z0-9]+", " ", text)
-    return " ".join(text.split())
-
-
-def split_teams(name):
-    normalized = normalize(name)
-    parts = re.split(r"\bvs\b", normalized, maxsplit=1)
-
-    if len(parts) != 2:
-        return None
-
-    return parts[0].strip(), parts[1].strip()
-
-
-def fetch_m3u():
-    request = urllib.request.Request(
-        SOURCE_URL,
-        headers={"User-Agent": "Nova-TV-Match-2-Updater"}
-    )
-    with urllib.request.urlopen(request, timeout=40) as response:
+def fetch_text(url):
+    req = Request(url, headers={"User-Agent": "Nova-Tv-Match-Updater/1.0"})
+    with urlopen(req, timeout=30) as response:
         return response.read().decode("utf-8", errors="replace")
 
+def norm(text):
+    return re.sub(r"[^a-z0-9]+", "", (text or "").lower())
 
-def parse_m3u(content):
-    results = []
-    current_name = None
+def parse_m3u(text, match_name):
+    wanted = norm(match_name)
+    entries = []
+    current = None
+    license_key = ""
+    license_type = ""
 
-    for line in content.splitlines():
-        line = line.strip()
+    def finish(url):
+        nonlocal current, license_key, license_type
+        if current and url and not url.startswith("#"):
+            display = current.get("display", "")
+            # Require the match name to occur in the EXTINF display title.
+            if wanted and wanted in norm(display):
+                drm = None
+                if license_key and license_type.lower() == "clearkey":
+                    drm = {"scheme": "clearkey", "license": license_key}
+                entries.append({
+                    "name": display.split(" - ", 1)[1].strip()
+                            if " - " in display else display.strip(),
+                    "url": url.strip(),
+                    **({"drm": drm} if drm else {}),
+                    "show": "yes",
+                })
+        current = None
+        license_key = ""
+        license_type = ""
 
-        if line.startswith("#EXTINF"):
-            current_name = line.split(",", 1)[-1].strip()
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith("#EXTINF:"):
+            # Finish should normally have happened on the prior URL line.
+            current = {"display": line.rsplit(",", 1)[-1].strip()}
+            license_key = ""
+            license_type = ""
+        elif line.startswith("#KODIPROP:inputstream.adaptive.license_type="):
+            license_type = line.split("=", 1)[1].strip()
+        elif line.startswith("#KODIPROP:inputstream.adaptive.license_key="):
+            license_key = line.split("=", 1)[1].strip()
+        elif line.startswith("#"):
+            continue
+        else:
+            finish(line)
 
-        elif line and not line.startswith("#") and current_name:
-            results.append({
-                "name": current_name,
-                "url": line
-            })
-            current_name = None
-
-    return results
-
-
-def contains_team(entry_name, team):
-    entry = normalize(entry_name)
-    team = normalize(team)
-
-    # Allow spelling variations such as Al-Ahli / Al Ahli.
-    team_words = team.split()
-    if not team_words:
-        return False
-
-    entry_words = set(entry.split())
-    return all(word in entry_words for word in team_words)
-
+    # Remove duplicate URLs, preserve playlist order.
+    unique = []
+    seen = set()
+    for entry in entries:
+        if entry["url"] not in seen:
+            seen.add(entry["url"])
+            unique.append(entry)
+    return unique
 
 def main():
-    if not JSON_FILE.exists():
-        raise FileNotFoundError(f"Missing file: {JSON_FILE}")
+    if not JSON_PATH.exists():
+        raise SystemExit(f"Missing match JSON: {JSON_PATH}")
+    original = json.loads(JSON_PATH.read_text(encoding="utf-8"))
+    match = original.get("match")
+    if not isinstance(match, dict) or not match.get("name"):
+        raise SystemExit('JSON must contain "match": {"name": "..."}')
 
-    data = json.loads(JSON_FILE.read_text(encoding="utf-8"))
-    match = data.get("match", data)
+    match_name = match["name"]
+    playlist = fetch_text(PLAYLIST_URL)
+    streams = parse_m3u(playlist, match_name)
 
-    if not isinstance(match, dict):
-        raise ValueError("Unexpected match-2.json structure.")
-
-    match_name = str(match.get("name", "")).strip()
-    teams = split_teams(match_name)
-
-    if not teams:
-        raise ValueError(
-            "Match name must contain Vs, e.g. Al-Ahli Vs Al-Khaleej."
-        )
-
-    team_a, team_b = teams
-    print(f"Searching for: {team_a} vs {team_b}")
-
-    entries = parse_m3u(fetch_m3u())
-
-    matched = [
-        item for item in entries
-        if contains_team(item["name"], team_a)
-        and contains_team(item["name"], team_b)
-    ]
-
-    # Remove duplicate URLs.
-    unique = []
-    seen_urls = set()
-
-    for item in matched:
-        if item["url"] not in seen_urls:
-            seen_urls.add(item["url"])
-            unique.append(item)
-
-    if not unique:
-        print("No matching streams found in Sports_data.m3u.")
-        print("Existing JSON links have been preserved.")
+    if not streams:
+        print(f"No M3U streams matched {match_name!r}; leaving JSON unchanged.")
         return
 
-    streams = match.setdefault("streams", [])
+    # Update only stream data and the primary playback URL/DRM fields.
+    match["streams"] = streams
+    match["url"] = streams[0]["url"]
+    if streams[0].get("drm"):
+        match["drm"] = streams[0]["drm"]
+    else:
+        match.pop("drm", None)
 
-    if not isinstance(streams, list):
-        raise ValueError("match.streams must be a JSON array.")
-
-    # Replace only streams created by this updater.
-    streams[:] = [
-        stream for stream in streams
-        if not (
-            isinstance(stream, dict)
-            and stream.get("source") == "Sports_data.m3u"
-        )
-    ]
-
-    for index, item in enumerate(unique, start=1):
-        streams.append({
-            "name": f"Auto M3U {index}",
-            "url": item["url"],
-            "show": "yes",
-            "source": "Sports_data.m3u"
-        })
-
-    # Set primary URL to the first matching stream.
-    match["url"] = unique[0]["url"]
-
-    JSON_FILE.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8"
+    JSON_PATH.write_text(
+        json.dumps(original, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
     )
-
-    print(f"Updated {JSON_FILE}")
-    print(f"Matching streams added: {len(unique)}")
-
-    for item in unique:
-        print(f"- {item['name']}: {item['url']}")
-
+    print(f"Updated {JSON_PATH.name}: {len(streams)} matching streams for {match_name!r}.")
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
-        sys.exit(1)
+        raise

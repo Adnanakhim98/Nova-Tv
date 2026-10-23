@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocথ ফাইন2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -897,12 +897,14 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
        streaming:{
-         bufferingGoal:1.5,rebufferingGoal:0.35,bufferBehind:4,lowLatencyMode:true,
-         retryParameters:{timeout:3000,stallTimeout:1800,connectionTimeout:1800,maxAttempts:2,baseDelay:150}
+         // Favor smooth playback over ultra-low latency. A larger buffer helps
+         // absorb short network/server stalls without delaying initial load.
+         bufferingGoal:12,rebufferingGoal:2,bufferBehind:30,lowLatencyMode:false,
+         retryParameters:{timeout:10000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:4,baseDelay:300,backoffFactor:1.8}
        },
-       manifest:{retryParameters:{timeout:3000,maxAttempts:2,baseDelay:150}},
-       drm:{retryParameters:{timeout:3000,maxAttempts:2,baseDelay:150}},
-       abr:{enabled:true,defaultBandwidthEstimate:1200000,bandwidthDowngradeTarget:0.95,bandwidthUpgradeTarget:0.8}
+       manifest:{retryParameters:{timeout:10000,maxAttempts:4,baseDelay:300,backoffFactor:1.8}},
+       drm:{retryParameters:{timeout:10000,maxAttempts:4,baseDelay:300,backoffFactor:1.8}},
+       abr:{enabled:true,defaultBandwidthEstimate:900000,bandwidthDowngradeTarget:0.9,bandwidthUpgradeTarget:0.75}
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      // DASH variants may be discovered or updated after the manifest is loaded.
@@ -941,13 +943,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({
-       enableWorker:true,lowLatencyMode:true,backBufferLength:10,
-       maxBufferLength:8,maxMaxBufferLength:14,maxBufferSize:20000000,
-       manifestLoadingTimeOut:5000,manifestLoadingMaxRetry:1,manifestLoadingRetryDelay:150,
-       levelLoadingTimeOut:5000,levelLoadingMaxRetry:1,levelLoadingRetryDelay:150,
-       fragLoadingTimeOut:8000,fragLoadingMaxRetry:2,fragLoadingRetryDelay:200,
-       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1200000,
-       abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.8
+       enableWorker:true,lowLatencyMode:false,backBufferLength:20,
+       maxBufferLength:20,maxMaxBufferLength:30,maxBufferSize:40000000,
+       manifestLoadingTimeOut:10000,manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:300,
+       levelLoadingTimeOut:10000,levelLoadingMaxRetry:3,levelLoadingRetryDelay:300,
+       fragLoadingTimeOut:20000,fragLoadingMaxRetry:4,fragLoadingRetryDelay:400,
+       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:900000,
+       abrBandWidthFactor:0.9,abrBandWidthUpFactor:0.75
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
        if(requestId===playRequestId){activeHls.loadSource(url);}
@@ -1614,37 +1616,4 @@ document.addEventListener("touchend", e => {
 #playerLoading.show{pointer-events:none}
 #playerScreen .playerLoading #retryBtn{pointer-events:auto}
 @media(max-width:420px){#playerScreen #qualitySelect{max-width:78px!important;min-width:62px;font-size:9px;height:28px}}
-</style>
-
-
-<style id="sports-server-top-transparent-final">
-/* Final Live Sports overlay: top aligned, transparent, and touch-popup controlled. */
-.playercard.sports-player-mode .sports-server-row{
-  top:10px!important;bottom:auto!important;left:14%!important;right:14%!important;
-  background:transparent!important;background-color:transparent!important;
-  background-image:none!important;border:0!important;box-shadow:none!important;
-  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-  padding:0!important;z-index:100002!important;
-}
-.playercard.sports-player-mode .sports-server-row .inline-server-btn{
-  background:rgba(5,15,26,.22)!important;
-  border-color:rgba(255,255,255,.26)!important;
-  box-shadow:none!important;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
-}
-.playercard.sports-player-mode .sports-server-row .inline-server-btn.active{
-  background:rgba(34,211,238,.18)!important;border-color:rgba(34,211,238,.72)!important;
-}
-.playercard.sports-player-mode:fullscreen .sports-server-row,
-.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
-.playercard.sports-player-mode.mobile-rotated .sports-server-row{
-  top:12px!important;bottom:auto!important;left:14%!important;right:14%!important;
-  background:transparent!important;background-color:transparent!important;
-  background-image:none!important;border:0!important;box-shadow:none!important;
-}
-@media(max-width:600px){
- .playercard.sports-player-mode .sports-server-row{top:8px!important;left:8%!important;right:8%!important;height:32px!important;min-height:32px!important;max-height:32px!important}
- .playercard.sports-player-mode:fullscreen .sports-server-row,
- .playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
- .playercard.sports-player-mode.mobile-rotated .sports-server-row{top:10px!important;left:8%!important;right:8%!important}
-}
 </style>

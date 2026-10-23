@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocerথতথথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocerথনতুনতথথথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -999,6 +999,40 @@ async function loadConfig(){
    }catch(e){console.warn("Could not load match file "+path,e);return null;}
   }));
   liveSports=matchResults.filter(Boolean);
+  // Match the embedded M3U playlist streams to the corresponding match JSON by team names.
+  // Existing JSON streams are preserved; duplicate URLs are skipped.
+  try{
+   const playlistItems=typeof window.getSportsM3UItems==="function"?await window.getSportsM3UItems():[];
+   const normMatchText=value=>String(value||"").toLowerCase()
+    .replace(/\b(server|stream|link|backup|backup server|hd|fhd|uhd|4k|720p|1080p|480p|live)\s*[-_#.:]*\s*\d*\b/g," ")
+    .replace(/[^a-z0-9]+/g,"");
+   const teamsOf=value=>{
+    const parts=String(value||"").trim().split(/\s+(?:VS?\.?|versus|v)\s+/i).filter(Boolean);
+    return parts.length>=2?parts.map(x=>normMatchText(x)).filter(x=>x.length>=3):[];
+   };
+   liveSports=liveSports.map(match=>{
+    const teams=teamsOf(match.name);
+    if(teams.length<2)return match;
+    const streams=Array.isArray(match.streams)?match.streams.slice():[];
+    // Preserve legacy single/serverN URLs before adding the playlist streams array.
+    if(!Array.isArray(match.streams)){
+     for(let i=1;i<=50;i++){
+      const legacyUrl=String(match["server"+i]||match["server"+i+"Url"]||match["server"+i+"URL"]||(i===1?match.url:"")||"").trim();
+      if(legacyUrl)streams.push({name:match["server"+i+"Name"]||("Server "+i),url:legacyUrl,drm:match["drm"+i]||match.drm||null,Show:match["server"+i+"Show"]||"Y"});
+     }
+    }
+    const seen=new Set(streams.map(x=>String(x?.url||x?.src||"").trim()).filter(Boolean));
+    playlistItems.forEach(item=>{
+     const title=normMatchText(item.name);
+     // Require both team names in the M3U title to avoid unrelated channel matches.
+     if(teams.every(team=>title.includes(team))&&item.url&&!seen.has(item.url)){
+      streams.push({name:item.name||("M3U Server "+(streams.length+1)),url:item.url,drm:item.drm||null,source:"m3u"});
+      seen.add(item.url);
+     }
+    });
+    return streams.length?{...match,streams}:match;
+   });
+  }catch(e){console.warn("Could not merge M3U streams into match cards",e)}
   // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
   if(!liveSports.length){
    for(const path of ["./data/live-sports.json","./live-sports.json"]){
@@ -1563,7 +1597,18 @@ document.addEventListener("touchend", e => {
    if(/^https?:\/\//i.test(line)){const drm=(licenseType==='clearkey'&&licenseKey.includes(':'))?{scheme:'clearkey',license:licenseKey}:null;out.push({name:pending?.name||('Sports Channel '+(out.length+1)),logo:pending?.logo||'',url:line,drm});pending=null;licenseType='';licenseKey=''}
   }return out
  }
- async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস তালিকা লোড হচ্ছে…';list.innerHTML='';try{const response=await fetch(PLAYLIST_URL,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);const text=await response.text();const items=parseM3U(text);if(!items.length)throw new Error('M3U-তে playable URL পাওয়া যায়নি');cachedItems=items;render(items);status.textContent='মোট '+items.length+'টি স্পোর্টস স্ট্রিম';}catch(err){status.textContent='তালিকা লোড করা যায়নি। ইন্টারনেট/playlist URL পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.textContent='↻ আবার চেষ্টা করুন';retry.onclick=()=>{cachedItems=null;loadPlaylist()};list.appendChild(retry);console.error('Online Sports playlist error:',err)}finally{loading=false}}
+ async function fetchPlaylistItems(){
+  if(cachedItems)return cachedItems;
+  const response=await fetch(PLAYLIST_URL,{cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const text=await response.text();
+  const items=parseM3U(text);
+  if(!items.length)throw new Error('M3U-তে playable URL পাওয়া যায়নি');
+  cachedItems=items;
+  return items;
+ }
+ window.getSportsM3UItems=fetchPlaylistItems;
+ async function loadPlaylist(){loading=true;status.textContent='স্পোর্টস তালিকা লোড হচ্ছে…';list.innerHTML='';try{const items=await fetchPlaylistItems();render(items);status.textContent='মোট '+items.length+'টি স্পোর্টস স্ট্রিম';}catch(err){status.textContent='তালিকা লোড করা যায়নি। ইন্টারনেট/playlist URL পরীক্ষা করে আবার চেষ্টা করুন।';const retry=document.createElement('button');retry.className='online-sports-item';retry.textContent='↻ আবার চেষ্টা করুন';retry.onclick=()=>{cachedItems=null;loadPlaylist()};list.appendChild(retry);console.error('Online Sports playlist error:',err)}finally{loading=false}}
  function render(items){list.innerHTML='';items.forEach((ch,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='online-sports-item';const num=document.createElement('span');num.className='online-sports-num';num.textContent=String(i+1);const body=document.createElement('span');body.style.minWidth='0';const name=document.createElement('div');name.className='online-sports-name';name.textContent=ch.name;const url=document.createElement('div');url.className='online-sports-url';url.textContent=ch.url;body.append(name,url);btn.append(num,body);btn.addEventListener('click',()=>{if(typeof window.playStream==='function'){close();window.playStream(ch.url,ch.name,'ONLINE SPORTS',ch.drm||null,'')}else{status.textContent='বর্তমান player-এর playStream ফাংশন পাওয়া যায়নি।'}});list.appendChild(btn)})}
 })();
 </script>

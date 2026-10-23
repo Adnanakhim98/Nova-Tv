@@ -1,11 +1,11 @@
 
-- name: Update Match 2
-  run: python scripts/update-match-2.py
+name: Auto Update Match 2
 
 on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: write
@@ -29,10 +29,18 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip
+
       - name: Update Match 2
         run: python scripts/update-match-2.py
 
-      - name: Commit Match 2 changes
+      - name: Check Match 2 changes
+        run: |
+          git status --short
+          git diff -- data/matches/match-2.json
+
+      - name: Commit and push Match 2 changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

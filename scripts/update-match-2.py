@@ -13,153 +13,132 @@ SOURCE_URL = (
 )
 
 JSON_FILE = Path("data/matches/match-2.json")
-MIN_SCORE = 0.78
+MIN_SCORE = 0.72
 
 
-def normalize(text):
-    text = str(text or "").lower()
-    text = re.sub(r"\b(vs?\.?|versus|live|hd|fhd|uhd|4k)\b", " ", text)
-    text = re.sub(r"[^a-z0-9]+", " ", text)
-    return " ".join(text.split())
+def normalize(value):
+    value = str(value or "").lower()
+    value = re.sub(r"\b(vs?\.?|versus|live|hd|fhd|uhd|4k)\b", " ", value)
+    value = re.sub(r"[^a-z0-9]+", " ", value)
+    return " ".join(value.split())
 
 
-def similarity(first, second):
+def match_score(first, second):
     a = normalize(first)
     b = normalize(second)
 
     if not a or not b:
         return 0.0
-
     if a == b:
         return 1.0
 
-    a_words = set(a.split())
-    b_words = set(b.split())
-    common = a_words & b_words
+    aw = set(a.split())
+    bw = set(b.split())
+    common = aw & bw
 
-    # Avoid matching unrelated teams with only one common word.
+    # Require at least two shared words to reduce wrong matches.
     if len(common) < 2:
         return 0.0
 
-    overlap = len(common) / max(len(a_words), len(b_words))
+    overlap = len(common) / max(len(aw), len(bw))
     sequence = SequenceMatcher(None, a, b).ratio()
-
     return max(overlap, sequence)
 
 
 def download_m3u():
     request = urllib.request.Request(
         SOURCE_URL,
-        headers={"User-Agent": "Nova-TV-Auto-Updater"}
+        headers={"User-Agent": "Nova-TV-Match-2-Updater"}
     )
-
     with urllib.request.urlopen(request, timeout=30) as response:
         return response.read().decode("utf-8", errors="replace")
 
 
-def parse_m3u(content):
-    entries = []
-    current_name = None
+def parse_m3u(text):
+    items = []
+    name = None
 
-    for line in content.splitlines():
+    for line in text.splitlines():
         line = line.strip()
 
         if line.startswith("#EXTINF"):
-            current_name = line.split(",", 1)[-1].strip()
+            name = line.split(",", 1)[-1].strip()
 
-        elif line and not line.startswith("#") and current_name:
-            entries.append({
-                "name": current_name,
-                "url": line
-            })
-            current_name = None
+        elif line and not line.startswith("#") and name:
+            items.append({"name": name, "url": line})
+            name = None
 
-    return entries
+    return items
 
 
 def main():
     if not JSON_FILE.exists():
-        raise FileNotFoundError(
-            f"JSON file not found: {JSON_FILE}"
-        )
+        raise FileNotFoundError(f"Missing JSON: {JSON_FILE}")
 
     data = json.loads(JSON_FILE.read_text(encoding="utf-8"))
-
-    # Supports either {"match": {...}} or a root-level match object.
     match = data.get("match", data)
 
     if not isinstance(match, dict):
-        raise ValueError("Unexpected match-2.json structure.")
+        raise ValueError("Unexpected JSON structure.")
 
-    match_name = match.get("name", "").strip()
+    current_name = str(match.get("name", "")).strip()
+    if not current_name:
+        raise ValueError("Match name is missing from JSON.")
 
-    if not match_name:
-        raise ValueError(
-            "Match name not found. Expected name in the match object."
-        )
-
-    print(f"Searching M3U for: {match_name}")
+    print(f"Current match: {current_name}")
 
     entries = parse_m3u(download_m3u())
-
     if not entries:
-        raise RuntimeError("No M3U streams found.")
+        raise RuntimeError("The M3U source has no parsed entries.")
 
+    # Find the closest matching entry.
     ranked = sorted(
-        (
-            (similarity(match_name, item["name"]), item)
-            for item in entries
-        ),
-        key=lambda result: result[0],
+        ((match_score(current_name, item["name"]), item)
+         for item in entries),
+        key=lambda pair: pair[0],
         reverse=True
     )
 
     score, best = ranked[0]
-
-    print(f"Best candidate: {best['name']}")
-    print(f"Match score: {score:.2f}")
+    print(f"Closest M3U match: {best['name']}")
+    print(f"Similarity score: {score:.2f}")
 
     if score < MIN_SCORE:
-        print("No reliable match. Existing links kept unchanged.")
+        print("NO UPDATE: no reliable match found.")
+        print("Available M3U matches:")
+        for item in entries:
+            print(f" - {item['name']}")
         return
 
     new_url = best["url"]
     changed = False
 
-    # Update the main URL.
     if match.get("url") != new_url:
         match["url"] = new_url
         changed = True
 
-    # Update or create the Auto M3U server.
-    streams = match.get("streams")
-
-    if streams is None:
-        streams = []
-        match["streams"] = streams
-
+    streams = match.setdefault("streams", [])
     if not isinstance(streams, list):
-        raise ValueError("'streams' must be a list.")
+        raise ValueError("The JSON 'streams' value must be a list.")
 
-    auto_stream = next(
+    server = next(
         (
-            item for item in streams
-            if isinstance(item, dict)
-            and item.get("name") == "Auto M3U"
+            s for s in streams
+            if isinstance(s, dict) and s.get("name") == "Auto M3U"
         ),
         None
     )
 
-    if auto_stream is None:
+    if server is None:
         streams.append({
             "name": "Auto M3U",
             "url": new_url,
             "show": "yes"
         })
         changed = True
-    elif auto_stream.get("url") != new_url:
-        auto_stream["url"] = new_url
-        auto_stream["show"] = "yes"
+    elif server.get("url") != new_url:
+        server["url"] = new_url
+        server["show"] = "yes"
         changed = True
 
     if changed:
@@ -167,14 +146,15 @@ def main():
             json.dumps(data, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8"
         )
-        print("SUCCESS: match-2.json updated.")
+        print(f"UPDATED: {JSON_FILE}")
+        print(f"Selected match: {best['name']}")
     else:
-        print("No changes needed.")
+        print("NO CHANGE: the selected URL is already current.")
 
 
 if __name__ == "__main__":
     try:
         main()
-    except Exception as error:
-        print(f"ERROR: {error}", file=sys.stderr)
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)

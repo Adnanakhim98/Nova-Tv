@@ -6,7 +6,7 @@
     "logoUrl": "https://i.postimg.cc/fbDPcGMz/20261022-134535.png",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/vkpoljjpkj/out/v1/502bcf68b3514cd28a220e6f0a43816f/cenc.mpd",
+    "url": "https://edgestream2.pro/hls/.m3u8",
     "section": "liveSports",
     "drm": {
       "scheme": "clearkey",
@@ -43,7 +43,7 @@
       },
       {
         "name": "Auto M3U",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/vkpoljjpkj/out/v1/502bcf68b3514cd28a220e6f0a43816f/cenc.mpd",
+        "url": "https://edgestream2.pro/hls/.m3u8",
         "show": "yes"
       }
     ],

@@ -1,4 +1,3 @@
-
 name: Auto Update Match 2
 
 on:
@@ -29,7 +28,6 @@ jobs:
         with:
           python-version: "3.x"
 
-      
       - name: Update matching servers in match-2.json
         run: python scripts/update-match-2.py
 
@@ -38,7 +36,8 @@ jobs:
           if git diff --quiet -- data/matches/match-2.json; then
             echo "No JSON changes to commit."
             exit 0
-fi
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/matches/match-2.json

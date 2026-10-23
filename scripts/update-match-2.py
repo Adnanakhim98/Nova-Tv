@@ -4,7 +4,6 @@ import re
 import sys
 import urllib.request
 from pathlib import Path
-from difflib import SequenceMatcher
 
 SOURCE_URL = (
     "https://raw.githubusercontent.com/"
@@ -13,143 +12,146 @@ SOURCE_URL = (
 )
 
 JSON_FILE = Path("data/matches/match-2.json")
-MIN_SCORE = 0.72
 
 
-def normalize(value):
-    value = str(value or "").lower()
-    value = re.sub(r"\b(vs?\.?|versus|live|hd|fhd|uhd|4k)\b", " ", value)
-    value = re.sub(r"[^a-z0-9]+", " ", value)
-    return " ".join(value.split())
+def normalize(text):
+    text = str(text or "").lower()
+    text = text.replace("&", " and ")
+    text = re.sub(r"\b(vs?\.?|versus)\b", " vs ", text)
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return " ".join(text.split())
 
 
-def match_score(first, second):
-    a = normalize(first)
-    b = normalize(second)
+def split_teams(name):
+    normalized = normalize(name)
+    parts = re.split(r"\bvs\b", normalized, maxsplit=1)
 
-    if not a or not b:
-        return 0.0
-    if a == b:
-        return 1.0
+    if len(parts) != 2:
+        return None
 
-    aw = set(a.split())
-    bw = set(b.split())
-    common = aw & bw
-
-    # Require at least two shared words to reduce wrong matches.
-    if len(common) < 2:
-        return 0.0
-
-    overlap = len(common) / max(len(aw), len(bw))
-    sequence = SequenceMatcher(None, a, b).ratio()
-    return max(overlap, sequence)
+    return parts[0].strip(), parts[1].strip()
 
 
-def download_m3u():
+def fetch_m3u():
     request = urllib.request.Request(
         SOURCE_URL,
         headers={"User-Agent": "Nova-TV-Match-2-Updater"}
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
+    with urllib.request.urlopen(request, timeout=40) as response:
         return response.read().decode("utf-8", errors="replace")
 
 
-def parse_m3u(text):
-    items = []
-    name = None
+def parse_m3u(content):
+    results = []
+    current_name = None
 
-    for line in text.splitlines():
+    for line in content.splitlines():
         line = line.strip()
 
         if line.startswith("#EXTINF"):
-            name = line.split(",", 1)[-1].strip()
+            current_name = line.split(",", 1)[-1].strip()
 
-        elif line and not line.startswith("#") and name:
-            items.append({"name": name, "url": line})
-            name = None
+        elif line and not line.startswith("#") and current_name:
+            results.append({
+                "name": current_name,
+                "url": line
+            })
+            current_name = None
 
-    return items
+    return results
+
+
+def contains_team(entry_name, team):
+    entry = normalize(entry_name)
+    team = normalize(team)
+
+    # Allow spelling variations such as Al-Ahli / Al Ahli.
+    team_words = team.split()
+    if not team_words:
+        return False
+
+    entry_words = set(entry.split())
+    return all(word in entry_words for word in team_words)
 
 
 def main():
     if not JSON_FILE.exists():
-        raise FileNotFoundError(f"Missing JSON: {JSON_FILE}")
+        raise FileNotFoundError(f"Missing file: {JSON_FILE}")
 
     data = json.loads(JSON_FILE.read_text(encoding="utf-8"))
     match = data.get("match", data)
 
     if not isinstance(match, dict):
-        raise ValueError("Unexpected JSON structure.")
+        raise ValueError("Unexpected match-2.json structure.")
 
-    current_name = str(match.get("name", "")).strip()
-    if not current_name:
-        raise ValueError("Match name is missing from JSON.")
+    match_name = str(match.get("name", "")).strip()
+    teams = split_teams(match_name)
 
-    print(f"Current match: {current_name}")
+    if not teams:
+        raise ValueError(
+            "Match name must contain Vs, e.g. Al-Ahli Vs Al-Khaleej."
+        )
 
-    entries = parse_m3u(download_m3u())
-    if not entries:
-        raise RuntimeError("The M3U source has no parsed entries.")
+    team_a, team_b = teams
+    print(f"Searching for: {team_a} vs {team_b}")
 
-    # Find the closest matching entry.
-    ranked = sorted(
-        ((match_score(current_name, item["name"]), item)
-         for item in entries),
-        key=lambda pair: pair[0],
-        reverse=True
-    )
+    entries = parse_m3u(fetch_m3u())
 
-    score, best = ranked[0]
-    print(f"Closest M3U match: {best['name']}")
-    print(f"Similarity score: {score:.2f}")
+    matched = [
+        item for item in entries
+        if contains_team(item["name"], team_a)
+        and contains_team(item["name"], team_b)
+    ]
 
-    if score < MIN_SCORE:
-        print("NO UPDATE: no reliable match found.")
-        print("Available M3U matches:")
-        for item in entries:
-            print(f" - {item['name']}")
+    # Remove duplicate URLs.
+    unique = []
+    seen_urls = set()
+
+    for item in matched:
+        if item["url"] not in seen_urls:
+            seen_urls.add(item["url"])
+            unique.append(item)
+
+    if not unique:
+        print("No matching streams found in Sports_data.m3u.")
+        print("Existing JSON links have been preserved.")
         return
 
-    new_url = best["url"]
-    changed = False
-
-    if match.get("url") != new_url:
-        match["url"] = new_url
-        changed = True
-
     streams = match.setdefault("streams", [])
-    if not isinstance(streams, list):
-        raise ValueError("The JSON 'streams' value must be a list.")
 
-    server = next(
-        (
-            s for s in streams
-            if isinstance(s, dict) and s.get("name") == "Auto M3U"
-        ),
-        None
+    if not isinstance(streams, list):
+        raise ValueError("match.streams must be a JSON array.")
+
+    # Replace only streams created by this updater.
+    streams[:] = [
+        stream for stream in streams
+        if not (
+            isinstance(stream, dict)
+            and stream.get("source") == "Sports_data.m3u"
+        )
+    ]
+
+    for index, item in enumerate(unique, start=1):
+        streams.append({
+            "name": f"Auto M3U {index}",
+            "url": item["url"],
+            "show": "yes",
+            "source": "Sports_data.m3u"
+        })
+
+    # Set primary URL to the first matching stream.
+    match["url"] = unique[0]["url"]
+
+    JSON_FILE.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8"
     )
 
-    if server is None:
-        streams.append({
-            "name": "Auto M3U",
-            "url": new_url,
-            "show": "yes"
-        })
-        changed = True
-    elif server.get("url") != new_url:
-        server["url"] = new_url
-        server["show"] = "yes"
-        changed = True
+    print(f"Updated {JSON_FILE}")
+    print(f"Matching streams added: {len(unique)}")
 
-    if changed:
-        JSON_FILE.write_text(
-            json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8"
-        )
-        print(f"UPDATED: {JSON_FILE}")
-        print(f"Selected match: {best['name']}")
-    else:
-        print("NO CHANGE: the selected URL is already current.")
+    for item in unique:
+        print(f"- {item['name']}: {item['url']}")
 
 
 if __name__ == "__main__":

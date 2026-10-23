@@ -1,4 +1,4 @@
-name: Auto Update Match 2
+name: Auto Update Match 3
 
 on:
   schedule:
@@ -10,11 +10,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: auto-update-match-2
+  group: auto-update-match-3
   cancel-in-progress: false
 
 jobs:
-  update-match-2:
+  update-match-3:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,18 +28,18 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Update matching servers in match-2.json
-        run: python scripts/update-match-2.py
+      - name: Update matching servers in match-3.json
+        run: python scripts/update-match-3.py
 
       - name: Commit JSON only when changed
         run: |
-          if git diff --quiet -- data/matches/match-2.json; then
+          if git diff --quiet -- data/matches/match-3.json; then
             echo "No JSON changes to commit."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/matches/match-2.json
-          git commit -m "Auto-update match 2 servers"
+          git add data/matches/match-3.json
+          git commit -m "Auto-update match 3 servers"
           git push

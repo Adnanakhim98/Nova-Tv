@@ -215,7 +215,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .nova-control-row{display:flex;align-items:center;gap:6px;min-width:0}
 .nova-control-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 8px;border:1px solid #ffffff30;border-radius:8px;background:#111a2bd9;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
 .nova-control-btn:active{transform:scale(.95)}
-.inline-server-group{display:flex;align-items:center;gap:4px;flex:1 1 0;min-width:0;width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}.inline-server-group::-webkit-scrollbar{display:none}.inline-server-btn{flex:0 0 auto;padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.55;cursor:not-allowed}
+.inline-server-group{display:flex;align-items:center;gap:4px;flex:1 1 0;min-width:0;width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}.inline-server-group::-webkit-scrollbar{display:none}.inline-server-btn{flex:0 0 auto;padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.55;cursor:not-allowed}.server-empty-label{font-size:9px;color:#8d9bb1;align-self:center;white-space:nowrap}
 @media(max-width:420px){.inline-server-btn{padding:0 7px;font-size:10px;min-width:max-content}.inline-server-group{gap:4px;min-width:0;width:0;flex:1 1 0}.nova-control-row{gap:4px}.nova-control-row>.nova-control-btn{flex:0 0 auto}}
 .nova-control-spacer{flex:0 0 2px}
 .nova-fit-select{max-width:68px;height:30px;border:1px solid #ffffff30;border-radius:8px;background:#111a2b;color:#fff;font-size:10px;padding:0 4px}
@@ -480,6 +480,14 @@ body{
 }
 </style>
 
+<style>
+/* Dynamic server list: render every visible stream in match JSON and allow horizontal swipe on phones. */
+#inlineServerGroup{display:flex!important;flex:1 1 0;min-width:0;width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;gap:4px;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}
+#inlineServerGroup::-webkit-scrollbar{display:none}
+#inlineServerGroup .inline-server-btn{flex:0 0 auto;min-width:max-content;max-width:none;padding:0 8px;font-size:10px}
+#inlineServerGroup .inline-server-btn.active{border-color:#22d3ee;background:#123347;color:#b7f7ff}
+@media(max-width:420px){#inlineServerGroup{gap:4px}#inlineServerGroup .inline-server-btn{padding:0 7px;font-size:9px}}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -504,7 +512,7 @@ body{
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
      <span class="nova-control-spacer"></span>
       <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
-     <span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><button class="nova-control-btn inline-server-btn" id="server1Btn" type="button">Server 1</button><button class="nova-control-btn inline-server-btn" id="server2Btn" type="button">Server 2</button><button class="nova-control-btn inline-server-btn sports-server-btn" id="server3Btn" type="button" style="display:none">Server 3</button><button class="nova-control-btn inline-server-btn sports-server-btn" id="server4Btn" type="button" style="display:none">Server 4</button></span>
+     <span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
     </div>
@@ -886,30 +894,35 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
 let currentServerChannel=null,currentChannelStreams=[];
 function isSportsChannel(ch){return !!ch && (ch.section==="liveSports" || /live sports|sports/i.test(String(ch.category||"")));}
 function getChannelStreams(ch){
- const count=isSportsChannel(ch)?4:2;
  let streams=Array.isArray(ch.streams)?ch.streams.filter(stream=>stream&&isServerShown(stream)&&String(stream.url||stream.src||"").trim()):[];
- // If streams[] exists, its names and visibility are controlled entirely by JSON.
- // Legacy server1/server2 fields are supported only when streams[] is absent/empty.
+ // Keep every visible, usable stream from the match JSON; do not limit to four.
+ // Legacy server fields remain supported when there is no streams array.
  if(!streams.length && !Array.isArray(ch.streams)){
-  for(let i=1;i<=count;i++){
+  const maxLegacy=isSportsChannel(ch)?50:2;
+  for(let i=1;i<=maxLegacy;i++){
    const url=ch["server"+i]||ch["server"+i+"Url"]||ch["server"+i+"URL"]||(i===1?ch.url:"")||"";
    const legacy={name:ch["server"+i+"Name"]||("Server "+i),url,drm:ch["drm"+i]||ch.drm||null,show:ch["server"+i+"Show"]||"yes"};
    if(isServerShown(legacy)&&String(url).trim())streams.push(legacy);
   }
  }
- return streams.slice(0,count).map((stream,i)=>({...stream,name:String(stream.name||("Server "+(i+1))),url:String(stream.url||stream.src||"").trim()}));
+ return streams.map((stream,i)=>({...stream,name:String(stream.name||("Server "+(i+1))),url:String(stream.url||stream.src||"").trim()}));
 }
 function setInlineServers(ch){
  currentServerChannel=ch;currentChannelStreams=getChannelStreams(ch);
- const sports=isSportsChannel(ch);
- [1,2,3,4].forEach((n)=>{
-  const b=$("server"+n+"Btn"),stream=currentChannelStreams[n-1]||{},url=String(stream.url||"").trim();
-  // Only servers with a visible JSON entry and a usable URL are shown.
-  b.style.display=(url && (sports || n<=2))?"inline-flex":"none";
-  b.textContent=stream.name||("Server "+n);
-  b.disabled=!url;
-  b.classList.toggle("active",!!url&&String(video.dataset.currentUrl||"").trim()===url);
-  b.title=url?stream.name:"";
+ const group=$("inlineServerGroup");
+ if(!group)return;
+ group.replaceChildren();
+ if(!currentChannelStreams.length){
+  const empty=document.createElement("span");empty.className="server-empty-label";empty.textContent="No servers";group.appendChild(empty);return;
+ }
+ currentChannelStreams.forEach((stream,index)=>{
+  const b=document.createElement("button");b.type="button";b.className="nova-control-btn inline-server-btn";
+  b.textContent=stream.name||("Server "+(index+1));
+  b.title=stream.name||("Server "+(index+1));
+  b.setAttribute("aria-label","Play "+b.textContent);
+  b.classList.toggle("active",String(video.dataset.currentUrl||"").trim()===stream.url);
+  b.addEventListener("click",()=>playSelectedServer(index+1));
+  group.appendChild(b);
  });
 }
 function playChannelDefault(ch){
@@ -930,10 +943,6 @@ function playSelectedServer(index){
  showStatus(currentServerChannel.name||"Live TV",(stream.name||("Server "+index))+" · Connecting…");
  playStream(url,currentServerChannel.name||"Live TV",(currentServerChannel.category||"LIVE TV")+" · "+(stream.name||("Server "+index)),stream.drm||currentServerChannel.drm||null,fallback);
 }
-$("server1Btn").onclick=()=>playSelectedServer(1);
-$("server2Btn").onclick=()=>playSelectedServer(2);
-$("server3Btn").onclick=()=>playSelectedServer(3);
-$("server4Btn").onclick=()=>playSelectedServer(4);
 // Keep player utility icons fixed while the server strip can be swiped horizontally.
 const serverStrip=$("inlineServerGroup");
 if(serverStrip){

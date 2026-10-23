@@ -1,4 +1,5 @@
-<!-- LAST UPDATE: 22 Ocথ ফাইন2026 (Bangladesh time, UTC+06:00) -->
+
+<!-- LAST UPDATE: 22 Ocথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -860,10 +861,28 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    if(requestId!==playRequestId||settled)return;
    settled=true;clearStartupTimer();
    console.warn("SPORTYNOVA playback error:",reason||"unknown");
+   // Live Sports: if playback has not started, automatically try the next
+   // available server after the 9-second startup window. Stop after each
+   // server has been tried once to prevent an endless switching loop.
+   if(sportsMode && currentServerChannel && isSportsChannel(currentServerChannel)){
+     const streams=getChannelStreams(currentServerChannel);
+     const currentUrl=String(rawUrl||"").trim();
+     const currentIndex=streams.findIndex(item=>String(item.url||"").trim()===currentUrl);
+     const attempts=Number(window.__sportsAutoSwitchCount||0);
+     if(streams.length>1 && attempts<streams.length-1){
+       const nextIndex=currentIndex<0?0:(currentIndex+1)%streams.length;
+       if(String(streams[nextIndex]?.url||"").trim()!==currentUrl){
+         window.__sportsAutoSwitchCount=attempts+1;
+         showStatus(name,"ভিডিও চালু হয়নি · পরের সার্ভারে স্বয়ংক্রিয়ভাবে চেষ্টা করা হচ্ছে…");
+         playSelectedServer(nextIndex+1);
+         return;
+       }
+     }
+   }
    const backup=String(fallbackUrl||"").trim();
    if(backup && backup!==String(rawUrl||"").trim()){
-     showStatus(name,"Server 1 কাজ করছে না · Server 2-তে স্বয়ংক্রিয়ভাবে চেষ্টা করা হচ্ছে…");
-     playStream(backup,name,category.replace(/Server 1/g,"Server 2"),drm,"");
+     showStatus(name,"বর্তমান সার্ভার কাজ করছে না · অন্য সার্ভারে চেষ্টা করা হচ্ছে…");
+     playStream(backup,name,category,drm,"");
      return;
    }
    // Keep the player surface and inline Server 1 / Server 2 controls visible on failure.
@@ -878,6 +897,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    if(requestId!==playRequestId||settled)return;
    if(video.paused||video.readyState<2)return;
    settled=true;clearStartupTimer();
+   if(sportsMode)window.__sportsAutoSwitchCount=0;
    report(label+" · Playing");
  };
  video.onerror=()=>fail("media error");
@@ -885,7 +905,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  // A single startup deadline reports a real failure; it does not start another player.
  // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
  // loading state alive long enough for legitimate slower connections to start.
- const startupLimit=kind==="mpd"?25000:(kind==="hls"?18000:12000);
+ const startupLimit=sportsMode?9000:(kind==="mpd"?25000:(kind==="hls"?18000:12000));
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
@@ -1002,11 +1022,12 @@ function setInlineServers(ch){
   b.title=stream.name||("Server "+(index+1));
   b.setAttribute("aria-label","Play "+b.textContent);
   b.classList.toggle("active",String(video.dataset.currentUrl||"").trim()===stream.url);
-  b.addEventListener("click",()=>playSelectedServer(index+1));
+  b.addEventListener("click",()=>{window.__sportsAutoSwitchCount=0;playSelectedServer(index+1)});
   group.appendChild(b);
  });
 }
 function playChannelDefault(ch){
+ window.__sportsAutoSwitchCount=0;
  $("empty").style.display="none";
  setPlayerLoading(false);
  setInlineServers(ch);

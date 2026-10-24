@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Aston Villa Vs Manchester City",
+    "name": "Rayo Vallecano Vs Elche",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/England%20%F0%9F%8F%85%20Vs%20West%20Indies%20%F0%9F%8F%85.jpg",
@@ -64,7 +64,7 @@
     "show": "yes",
     "id": 4,
     "startTime": "2026-10-18T19:20:00+06:00",
-    "endTime": "2026-10-24T20:00:00+06:00",
+    "endTime": "2026-10-24T20:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football"

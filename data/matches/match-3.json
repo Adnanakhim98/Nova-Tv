@@ -6,14 +6,9 @@
     "logoUrl": "https://i.postimg.cc/zfwFjvxf/20261022-135825.png",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://cdn.streame.center/hls/377qj1h2727.m3u8",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
     "section": "liveSports",
     "streams": [
-      {
-        "name": "ESPN DEPORTES HD",
-        "url": "https://cdn.streame.center/hls/377qj1h2727.m3u8",
-        "show": "yes"
-      },
       {
         "name": "FANCODE1 FHD",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
@@ -31,20 +26,6 @@
           "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
         "show": "yes"
-      },
-      {
-        "name": "STREAM TV + HD",
-        "url": "https://stream.ottplus.live/live/channel_1_hd_abr/index.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "D SPORTS + FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/z5oyxzsxdk/out/v1/7695a0f64a0e424b973d5b09a2a3eb91/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "f836853d8eac19446ed9535f5fc568b1:b3bc5ef00602b29abac7e482d3d9fbf3"
-        },
-        "show": "yes"
       }
     ],
     "show": "yes",
@@ -53,6 +34,10 @@
     "endTime": "2026-10-24T22:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "ODI"
+    "matchType": "ODI",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+    }
   }
 }

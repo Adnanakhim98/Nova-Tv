@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22থথদদ Ocতথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocথদদমছতথথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -744,10 +744,38 @@ function hideQualitySelector(){
  const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";
 }
 function showQualityOptions(options,mode){
- const sel=$("qualitySelect");sel.innerHTML="";
- const auto=document.createElement("option");auto.value="auto";auto.textContent="Quality: Auto";sel.appendChild(auto);
- options.forEach((item,i)=>{const opt=document.createElement("option");opt.value=String(item.value??i);opt.textContent=item.label;sel.appendChild(opt)});
- sel.style.display=options.length?"inline-block":"none";qualityMode=options.length?mode:"";sel.value="auto";
+ const sel=$("qualitySelect");
+ const previous=sel.value;
+ sel.innerHTML="";
+ const auto=document.createElement("option");
+ auto.value="auto";
+ auto.textContent="Auto (Adaptive)";
+ sel.appendChild(auto);
+ options.forEach((item,i)=>{
+  const opt=document.createElement("option");
+  opt.value=String(item.value??i);
+  opt.textContent=item.label;
+  sel.appendChild(opt);
+ });
+ sel.style.display=options.length?"inline-block":"none";
+ qualityMode=options.length?mode:"";
+ // Show the actual active rendition instead of falsely showing Auto.
+ let activeValue="";
+ if(mode==="shaka"&&activeShaka){
+  try{
+   const active=activeShaka.getVariantTracks().find(t=>t.active&&t.height);
+   if(active)activeValue=String(active.id);
+  }catch(e){}
+ }else if(mode==="hls"&&activeHls&&activeHls.currentLevel>=0){
+  activeValue=String(activeHls.currentLevel);
+ }
+ if(activeValue&&Array.from(sel.options).some(o=>o.value===activeValue)){
+  sel.value=activeValue;
+ }else if(previous&&Array.from(sel.options).some(o=>o.value===previous)){
+  sel.value=previous;
+ }else{
+  sel.value="auto";
+ }
 }
 $("qualitySelect").addEventListener("change",()=>{
  const value=$("qualitySelect").value;
@@ -768,7 +796,7 @@ function setupShakaQualities(){
  if(!activeShaka)return;
  try{
   const tracks=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
-  // Keep one selectable variant per resolution, preferring the higher bitrate.
+  // One option per resolution; visibly mark the currently active rendition.
   const byHeight=new Map();
   tracks.forEach(t=>{
    const height=Number(t.height);
@@ -776,9 +804,18 @@ function setupShakaQualities(){
    const current=byHeight.get(height);
    if(!current || Number(t.bandwidth||0)>Number(current.bandwidth||0))byHeight.set(height,t);
   });
+  const active=tracks.find(t=>t.active);
   const options=[...byHeight.entries()].sort((a,b)=>b[0]-a[0])
-   .map(([height,t])=>({value:String(t.id),label:height+"p"}));
+   .map(([height,t])=>({value:String(t.id),label:height+"p"+(active&&Number(active.height)===height?" ✓":"")}));
   showQualityOptions(options,"shaka");
+  if(active){
+   const sel=$("qualitySelect");
+   if(Array.from(sel.options).some(o=>o.value===String(active.id)))sel.value=String(active.id);
+   else{
+    const sameHeight=[...byHeight.values()].find(t=>Number(t.height)===Number(active.height));
+    if(sameHeight)sel.value=String(sameHeight.id);
+   }
+  }
  }catch(e){
   console.warn("Could not read DASH quality tracks",e);
   hideQualitySelector();
@@ -884,7 +921,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  $("empty").style.display="none";
  setLiveBadge(false);
  hideQualitySelector();
- setPlayerLoading(true,"ভিডিও চালু হচ্ছে…","MPD/DASH ও HLS সংযোগ তৈরি হতে কিছু সময় লাগতে পারে; অপেক্ষা করুন।",false);
+ // Do not cover the video with a loading overlay; start the stream immediately.
+ setPlayerLoading(false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";
@@ -964,12 +1002,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        },
        manifest:{retryParameters:{timeout:12000,maxAttempts:3,baseDelay:300,backoffFactor:1.5}},
        drm:{retryParameters:{timeout:12000,maxAttempts:3,baseDelay:300,backoffFactor:1.5}},
-       abr:{enabled:true,defaultBandwidthEstimate:1800000,bandwidthDowngradeTarget:0.92,bandwidthUpgradeTarget:0.82}
+       abr:{enabled:true,defaultBandwidthEstimate:350000,bandwidthDowngradeTarget:0.90,bandwidthUpgradeTarget:0.85}
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
      // DASH variants may be discovered or updated after the manifest is loaded.
      activeShaka.addEventListener("trackschanged",()=>setupShakaQualities());
      activeShaka.addEventListener("adaptation",()=>setupShakaQualities());
+     activeShaka.addEventListener("variantchanged",()=>setupShakaQualities());
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
      video.controls=false;

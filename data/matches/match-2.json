@@ -1,9 +1,9 @@
 {
   "match": {
-    "name": "Melbourne Victory Vs Melbourne City",
+    "name": "Chelsea Vs Tottenham Hotspur",
     "category": "Live Sports",
     "logo": "⚽",
-    "logoUrl": "https://i.postimg.cc/fbDPcGMz/20261022-134535.png",
+    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
     "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tdijwiga2k/out/v1/f5fde318678f4f7583bf27b7231bde1f/cenc.mpd",
@@ -28,13 +28,13 @@
         "show": "yes"
       }
     ],
-    "show": "no",
+    "show": "yes",
     "id": 2,
-    "startTime": "2026-10-22T13:00:00+06:00",
-    "endTime": "2026-10-24T23:00:00+06:00",
+    "startTime": "2026-10-24T22:20:00+06:00",
+    "endTime": "2026-10-25T03:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "T20",
+    "matchType": "Football",
     "drm": {
       "scheme": "clearkey",
       "license": "fa34fa8c90336dd528c7a23871cad1fe:552a78d1aeb74f1650d68255c5749408"

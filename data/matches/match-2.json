@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Namibia Vs Ireland",
+    "name": "Melbourne Victory Vs Melbourne City",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://i.postimg.cc/fbDPcGMz/20261022-134535.png",
@@ -28,7 +28,7 @@
         "show": "yes"
       }
     ],
-    "show": "no",
+    "show": "yes",
     "id": 2,
     "startTime": "2026-10-22T13:00:00+06:00",
     "endTime": "2026-10-24T23:00:00+06:00",

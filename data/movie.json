@@ -21,14 +21,14 @@
       ]
     },
     {
-      "name": "Jalsha Movie HD",
+      "name": "Jalsha Bangla HD",
       "category": "Movies",
       "logo": "▶",
       "tone": "purple",
-      "url": "http://103.165.93.31:8095/jalshaMovies/index.m3u8",
+      "url": "https://dish.porosh.com.bd/hls/jalshabangla.m3u8",
       "logoUrl": "https://static.wikia.nocookie.net/logopedia/images/0/04/Jalsha_Movies_HD.png",
       "fallbackLogo": "▶",
-      "Show": "No",
+      "Show": "yes",
       "streams": [
         {
           "name": "Server 1",

@@ -6,37 +6,28 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Zimbabwe%20Vs%20Afghanistan.jpg",
     "fallbackLogo": "▶",
     "tone": "blue",
-    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd",
     "section": "liveSports",
     "drm": {
       "scheme": "clearkey",
-      "license": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8"
+      "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
     },
     "streams": [
       {
-        "name": "BeIN2 SPORTS FHD",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
+        "name": "TNT3UK SPORTS FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8"
+          "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
         },
         "show": "yes"
       },
       {
-        "name": "CBS SPORTS FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/5qz8wmdome/out/v1/b9323e853dce427eac214b77bd48a204/cenc.mpd",
+        "name": "WILLOW SPORTS HD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "d9623774ac5c8c351aafe97c5fe70267:5164e6d05164a2d65fa8fcc962aa4861"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "SPORT1 CZ FHD",
-        "url": "https://dash2.antik.sk/stream/nvidia_sport_1/playlist_cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d"
+          "license": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
         },
         "show": "yes"
       }

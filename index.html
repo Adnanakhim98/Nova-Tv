@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 October-sam 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 24 Oথথctober 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1046,26 +1046,27 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
-     // Start on a medium rendition first (prefer 720p when available), then hand
-     // control to ABR only after playback starts. A single server-button tap reaches here.
+     // Start at the lowest available DASH quality, then enable adaptive quality
+     // 30 seconds after playback actually begins to give the stream time to settle.
      const variants=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
      if(variants.length){
-       const heights=[...new Set(variants.map(t=>Number(t.height)).filter(Boolean))].sort((a,b)=>a-b);
-       const targetHeight=heights.includes(720)?720:heights[Math.floor((heights.length-1)/2)];
-       const medium=variants.filter(t=>Number(t.height)===targetHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
-       if(medium){try{activeShaka.selectVariantTrack(medium,false); }catch(e){}}
+       const lowestHeight=Math.min(...variants.map(t=>Number(t.height)).filter(Boolean));
+       const lowest=variants.filter(t=>Number(t.height)===lowestHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
+       if(lowest){try{activeShaka.selectVariantTrack(lowest,false);}catch(e){}}
      }
      setupShakaQualities();
-     video.play().catch(()=>{});
+     let autoQualityTimerStarted=false;
      const enableAutoAfterPlayback=()=>{
-       if(requestId!==playRequestId||!activeShaka)return;
+       if(autoQualityTimerStarted)return;
+       autoQualityTimerStarted=true;
        setTimeout(()=>{
          if(requestId!==playRequestId||!activeShaka||video.paused)return;
          activeShaka.configure({abr:{enabled:true}});
          setupShakaQualities();
-       },5000);
+       },30000);
      };
-     video.addEventListener("playing",enableAutoAfterPlayback,{once:true});
+     video.addEventListener("playing",enableAutoAfterPlayback);
+     video.play().catch(()=>{});
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({
@@ -1074,15 +1075,31 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:200,
        levelLoadingTimeOut:7000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:200,
        fragLoadingTimeOut:12000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:250,
-       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1800000,
+       startLevel:0,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1800000,
        abrBandWidthFactor:0.9,abrBandWidthUpFactor:0.75
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
        if(requestId===playRequestId){activeHls.loadSource(url);}
      });
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
-       if(requestId===playRequestId){setupHlsQualities();video.play().catch(()=>{});}
+       if(requestId!==playRequestId)return;
+       // Begin at the lowest HLS level. Switch to automatic adaptation after 30s of playback.
+       try{activeHls.currentLevel=0;}catch(e){}
+       setupHlsQualities();
+       let autoQualityTimerStarted=false;
+       const enableHlsAutoAfterPlayback=()=>{
+         if(autoQualityTimerStarted)return;
+         autoQualityTimerStarted=true;
+         setTimeout(()=>{
+           if(requestId!==playRequestId||!activeHls||video.paused)return;
+           activeHls.currentLevel=-1;
+           setupHlsQualities();
+         },30000);
+       };
+       video.addEventListener("playing",enableHlsAutoAfterPlayback);
+       video.play().catch(()=>{});
      });
+     activeHls.on(Hls.Events.LEVEL_SWITCHED,()=>setupHlsQualities());
      activeHls.on(Hls.Events.ERROR,(event,data)=>{
        if(requestId!==playRequestId||!data.fatal)return;
        fail("HLS.js "+data.type);
@@ -1748,7 +1765,7 @@ document.addEventListener("touchend", e => {
   #liveSportsChannels .team-logo small{font-size:7px}
   #liveSportsChannels .chname{font-size:clamp(9px,2.6vw,11px)!important;white-space:normal!important;overflow-wrap:anywhere}
 }
-/* Adaptive medium-first playback: retain automatic quality adaptation and avoid forced upscaling. */
+/* Low-quality-first playback; adaptive quality begins after 30 seconds, with the active resolution marked. */
 #playerScreen video{image-rendering:auto}
 </style>
 

@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Deportivo Alavés Vs Málaga CF",
+    "name": "Namibia Vs Ireland",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://i.postimg.cc/zfwFjvxf/20261022-135825.png",
@@ -50,7 +50,7 @@
     "show": "yes",
     "id": 3,
     "startTime": "2026-10-22T14:00:00+06:00",
-    "endTime": "2026-10-23T22:30:00+06:00",
+    "endTime": "2026-10-24T22:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "ODI"

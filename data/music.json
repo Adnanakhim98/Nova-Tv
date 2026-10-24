@@ -7,9 +7,18 @@
       "tone": "red",
       "url": "https://streams.tangotv.in/B4UMUSIC/ORIGIN/index.m3u8",
       "logoUrl": "https://upload.wikimedia.org/wikipedia/en/2/2b/B4U_Music.png",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://streams.tangotv.in/B4UMUSIC/ORIGIN/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
-    
     {
       "name": "Music India",
       "category": "Music",
@@ -17,7 +26,17 @@
       "tone": "red",
       "url": "https://cdn.pishow.tv/ott/live/226/226_2.m3u8",
       "logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://cdn.pishow.tv/ott/live/226/226_2.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "Zoom",
@@ -26,7 +45,17 @@
       "tone": "red",
       "url": "https://pubads.g.doubleclick.net/ssai/event/JCAm25qkRXiKcK1AJMlvKQ/master.m3u8",
       "logoUrl": "https://otapp.store/uploads/tv_image/sm/zoom.png",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://pubads.g.doubleclick.net/ssai/event/JCAm25qkRXiKcK1AJMlvKQ/master.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "Sanggeet Bangla",
@@ -35,7 +64,17 @@
       "tone": "red",
       "url": "https://cdn.pishow.tv/ott/live/1143/master.m3u8",
       "logoUrl": "https://otapp.store/uploads/tv_image/sm/sangeet-bangla.png",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://cdn.pishow.tv/ott/live/1143/master.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "9XM",
@@ -44,7 +83,17 @@
       "tone": "red",
       "url": "https://wiselp.wiseplayout.com/9XM/master.m3u8",
       "logoUrl": "https://upload.wikimedia.org/wikipedia/en/0/0e/9XM_logo.png",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://wiselp.wiseplayout.com/9XM/master.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "9X Tashan",
@@ -53,7 +102,17 @@
       "tone": "red",
       "url": "https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8",
       "logoUrl": "https://upload.wikimedia.org/wikipedia/en/4/4d/9X_Tashan_logo.png",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "8XM",
@@ -62,7 +121,17 @@
       "tone": "red",
       "url": "https://vodzong.mjunoon.tv:8087/streamtest/8XM-131/playlist.m3u8",
       "logoUrl": "",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://vodzong.mjunoon.tv:8087/streamtest/8XM-131/playlist.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "ATN Music",
@@ -71,7 +140,17 @@
       "tone": "red",
       "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/atnmusic.stream/playlist.m3u8",
       "logoUrl": "",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/atnmusic.stream/playlist.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     },
     {
       "name": "Only Music",
@@ -80,7 +159,17 @@
       "tone": "red",
       "url": "http://live.balajibroadband.com:3500/live/903.m3u8",
       "logoUrl": "",
-      "fallbackLogo": "📺"
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "http://live.balajibroadband.com:3500/live/903.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
     }
   ]
 }

@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 22 Ocথদদমছতথথ 2026 (Bangladesh time, UTC+06:00) -->
+<!-- LAST UPDATE: 22 Ocতথhjjbথ 2026 (Bangladesh time, UTC+06:00) -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1037,7 +1037,42 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      report("MPEG-DASH · লিংক লোড হচ্ছে…");
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
+
+     // Explicitly start with the lowest available video rendition.
+     // ABR is temporarily paused so Shaka cannot immediately choose a higher rendition
+     // before playback starts; it is re-enabled as soon as the video begins playing.
+     let lowStartTrack=null;
+     try{
+       const available=activeShaka.getVariantTracks()
+         .filter(t=>t.height && t.type!=="audio" && t.allowedByApplication!==false && t.allowedByKeySystem!==false)
+         .sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0));
+       lowStartTrack=available[0]||null;
+       if(lowStartTrack){
+         activeShaka.configure({abr:{enabled:false}});
+         activeShaka.selectVariantTrack(lowStartTrack,true);
+       }
+     }catch(startQualityError){
+       console.warn("Could not force initial low DASH rendition",startQualityError);
+     }
      setupShakaQualities();
+
+     // Keep the UI synced to the real active rendition as playback adapts.
+     const syncDashQuality=()=>setupShakaQualities();
+     video.addEventListener("playing",function dashFirstPlay(){
+       video.removeEventListener("playing",dashFirstPlay);
+       if(requestId!==playRequestId||!activeShaka)return;
+       // Let the first low-quality frames render, then adapt upward if bandwidth allows.
+       setTimeout(()=>{
+         if(requestId!==playRequestId||!activeShaka)return;
+         activeShaka.configure({abr:{
+           enabled:true,
+           defaultBandwidthEstimate:350000,
+           bandwidthDowngradeTarget:0.90,
+           bandwidthUpgradeTarget:0.85
+         }});
+         syncDashQuality();
+       },1200);
+     },{once:true});
      video.play().catch(()=>{});
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";

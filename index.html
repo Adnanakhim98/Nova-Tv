@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 Octobjjjer 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 24 October-sam 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -261,6 +261,9 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .team-logo small{font-size:8px;color:#d9e8f6;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .team-vs{font-size:10px;font-weight:900;color:#1bd4f2;text-shadow:0 0 8px #1bd4f266}
 
+
+/* FIX: keep Live Sports server buttons visible and tappable with one tap. */
+.playercard.sports-player-mode .sports-server-row{opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:translateY(0)!important}
 </style>
 
 <style>
@@ -806,7 +809,7 @@ function setupShakaQualities(){
   });
   const active=tracks.find(t=>t.active);
   const options=[...byHeight.entries()].sort((a,b)=>b[0]-a[0])
-   .map(([height,t])=>({value:String(t.id),label:height+"p"+(active&&Number(active.height)===height?" ✓":"")}));
+   .map(([height,t])=>({value:String(t.id),label:height+"p"+(active&&Number(active.height)===height?" ✓ চলছে":"")}));
   showQualityOptions(options,"shaka");
   if(active){
    const sel=$("qualitySelect");
@@ -884,9 +887,9 @@ function hideSportsServers(){
 }
 function showSportsServers(){
  if(!playerCard.classList.contains("sports-player-mode"))return;
+ // Keep server buttons visible: a single tap on Server 1 / Server 2 starts playback.
  playerCard.classList.add("servers-visible");
- if(serverPopupTimer)clearTimeout(serverPopupTimer);
- serverPopupTimer=setTimeout(hideSportsServers,4000);
+ if(serverPopupTimer){clearTimeout(serverPopupTimer);serverPopupTimer=null;}
 }
 // A tap on the video/player reveals the server strip for four seconds.
 $("playerScreen").addEventListener("pointerdown",e=>{
@@ -898,7 +901,7 @@ $("playerScreen").addEventListener("pointerdown",e=>{
  showSportsServers();
 },{passive:true});
 // Keep the popup visible while a server button is being selected; then auto-hide.
-sportsServerRow.addEventListener("click",()=>showSportsServers());
+sportsServerRow.addEventListener("click",(e)=>{showSportsServers(); if(e.target.closest(".inline-server-btn")){e.stopPropagation();}});
 function setPlayerMode(sportsMode){
  if(!sportsMode)hideSportsServers();
  playerCard.classList.toggle("sports-player-mode",!!sportsMode);
@@ -996,17 +999,17 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka.configure({
        streaming:{
          // Smooth DASH playback: retain a larger buffer to absorb brief network dips.
-         bufferingGoal:12,rebufferingGoal:4,bufferBehind:30,lowLatencyMode:false,
+         bufferingGoal:20,rebufferingGoal:6,bufferBehind:45,lowLatencyMode:false,
          retryParameters:{timeout:15000,stallTimeout:7000,connectionTimeout:10000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}
        },
        manifest:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}},
        drm:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}},
        abr:{
-         enabled:true,
-         defaultBandwidthEstimate:1200000,
-         bandwidthDowngradeTarget:0.95,
-         bandwidthUpgradeTarget:0.80,
-         switchInterval:8
+         enabled:false,
+         defaultBandwidthEstimate:1800000,
+         bandwidthDowngradeTarget:0.90,
+         bandwidthUpgradeTarget:0.70,
+         switchInterval:15
        }
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
@@ -1043,10 +1046,26 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
-     // Keep adaptive quality enabled from startup. Forcing the lowest rendition
-      // then re-enabling ABR caused a visible quality jump shortly after playback began.
-      setupShakaQualities();
-      video.play().catch(()=>{});
+     // Start on a medium rendition first (prefer 720p when available), then hand
+     // control to ABR only after playback starts. A single server-button tap reaches here.
+     const variants=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
+     if(variants.length){
+       const heights=[...new Set(variants.map(t=>Number(t.height)).filter(Boolean))].sort((a,b)=>a-b);
+       const targetHeight=heights.includes(720)?720:heights[Math.floor((heights.length-1)/2)];
+       const medium=variants.filter(t=>Number(t.height)===targetHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
+       if(medium){try{activeShaka.selectVariantTrack(medium,false); }catch(e){}}
+     }
+     setupShakaQualities();
+     video.play().catch(()=>{});
+     const enableAutoAfterPlayback=()=>{
+       if(requestId!==playRequestId||!activeShaka)return;
+       setTimeout(()=>{
+         if(requestId!==playRequestId||!activeShaka||video.paused)return;
+         activeShaka.configure({abr:{enabled:true}});
+         setupShakaQualities();
+       },5000);
+     };
+     video.addEventListener("playing",enableAutoAfterPlayback,{once:true});
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({

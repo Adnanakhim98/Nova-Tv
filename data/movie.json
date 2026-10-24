@@ -20,7 +20,6 @@
         }
       ]
     },
-    {
       "name": "Jalsha Movie HD",
       "category": "Movies",
       "logo": "▶",
@@ -33,6 +32,26 @@
         {
           "name": "Server 1",
           "url": "http://103.165.93.31:8095/jalshaMovies/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Jalsha Bangla HD",
+      "category": "Movies",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "http://103.165.93.31:8095/jalshaMovies/index.m3u8",
+      "logoUrl": "",
+      "fallbackLogo": "▶",
+      "Show": "No",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://dish.porosh.com.bd/hls/jalshabangla.m3u8"
         },
         {
           "name": "Server 2",

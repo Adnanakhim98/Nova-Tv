@@ -6,12 +6,27 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://edgestream2.pro/hls/b0h5fNwDKH.m3u8",
+    "url": "https://bl.rutube.ru/livestream/e5bacac3b8e730791d4cab20ae81cd8f/index.m3u8?s=LS7CQgVo3LGHyQW5yphz-g&e=2092722172&scheme=https",
     "section": "liveSports",
     "streams": [
       {
+        "name": "SKY SPORTS FHD",
+        "url": "https://bl.rutube.ru/livestream/e5bacac3b8e730791d4cab20ae81cd8f/index.m3u8?s=LS7CQgVo3LGHyQW5yphz-g&e=2092722172&scheme=https",
+        "show": "yes"
+      },
+      {
+        "name": "HD QUALITY ++",
+        "url": "https://chatgpt.hereisman.net/playlist/58509/load-playlist-multi?&.m3u8",
+        "show": "yes"
+      },
+      {
         "name": "STREAMING + HD",
         "url": "https://edgestream2.pro/hls/b0h5fNwDKH.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.50/hls/tytyty.m3u8",
         "show": "yes"
       }
     ],

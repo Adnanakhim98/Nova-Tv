@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 Oথথctober 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 24 October 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -262,8 +262,8 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .team-vs{font-size:10px;font-weight:900;color:#1bd4f2;text-shadow:0 0 8px #1bd4f266}
 
 
-/* FIX: keep Live Sports server buttons visible and tappable with one tap. */
-.playercard.sports-player-mode .sports-server-row{opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:translateY(0)!important}
+/* Server buttons are shown temporarily by the player tap handler, then hidden. */
+.playercard.sports-player-mode .sports-server-row{transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important}
 </style>
 
 <style>
@@ -887,9 +887,13 @@ function hideSportsServers(){
 }
 function showSportsServers(){
  if(!playerCard.classList.contains("sports-player-mode"))return;
- // Keep server buttons visible: a single tap on Server 1 / Server 2 starts playback.
+ // Reveal the server buttons briefly; every tap restarts the four-second timer.
  playerCard.classList.add("servers-visible");
- if(serverPopupTimer){clearTimeout(serverPopupTimer);serverPopupTimer=null;}
+ if(serverPopupTimer)clearTimeout(serverPopupTimer);
+ serverPopupTimer=setTimeout(()=>{
+   serverPopupTimer=null;
+   playerCard.classList.remove("servers-visible");
+ },4000);
 }
 // A tap on the video/player reveals the server strip for four seconds.
 $("playerScreen").addEventListener("pointerdown",e=>{
@@ -900,7 +904,7 @@ $("playerScreen").addEventListener("pointerdown",e=>{
  }
  showSportsServers();
 },{passive:true});
-// Keep the popup visible while a server button is being selected; then auto-hide.
+// Tapping a server starts playback and restarts the four-second auto-hide timer.
 sportsServerRow.addEventListener("click",(e)=>{showSportsServers(); if(e.target.closest(".inline-server-btn")){e.stopPropagation();}});
 function setPlayerMode(sportsMode){
  if(!sportsMode)hideSportsServers();

@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 2তথছ4 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -663,8 +663,7 @@ function splitMatchTeams(name){
  if(parts.length>=2)return [parts[0].trim(),parts.slice(1).join(" ").trim()];
  return [String(name||"Team").trim(),"Opponent"];
 }
-// Team logos can be stored in any of these JSON files. Existing ./data/teams.json
-// continues to work, while tournament-specific files can be kept beside their logo folders.
+// Team logos are loaded from ./data/teams.json. Names and aliases are matched case-insensitively.
 let teamLogoMap = Object.create(null);
 function normalizeTeamName(value){
  const raw=String(value||"").toLowerCase();
@@ -672,49 +671,71 @@ function normalizeTeamName(value){
 }
 async function loadTeamLogos(){
  teamLogoMap=Object.create(null);
- const paths=[
-  "./data/teams.json",
-  "./data/laliga.json",
-  "./logos/laliga/laliga.json",
-  "./laliga.json"
- ];
- let loaded=0;
- for(const path of paths){
-  try{
-   const response=await fetch(path,{cache:"no-cache"});
-   if(!response.ok)continue;
-   const data=await response.json();
-   const teams=Array.isArray(data)?data:(Array.isArray(data.teams)?data.teams:[]);
-   teams.forEach(team=>{
-    if(!team||!team.name||!team.logo)return;
-    const entry={name:String(team.name),logo:String(team.logo)};
-    [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
-     const key=normalizeTeamName(alias);
-     if(key)teamLogoMap[key]=entry;
-    });
+ const repoOwner="Adnanakhim98",repoName="Nova-Tv",branch="main";
+ const rawBase=`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+ const registerTeams=(data,sourceUrl)=>{
+  const teams=Array.isArray(data)?data:(Array.isArray(data?.teams)?data.teams:[]);
+  teams.forEach(team=>{
+   if(!team||!team.name||!team.logo)return;
+   let logo=String(team.logo).trim();
+   try{
+    if(/^https?:\/\//i.test(logo)){
+     // Absolute logo URLs are used as-is.
+    }else if(logo.startsWith("/")){
+     logo=rawBase+logo.replace(/^\/+/,"");
+    }else if(!logo.startsWith("data:")){
+     // Relative logo paths are resolved from the JSON file; root-style paths work too.
+     if(/^(?:\.\.\/)*logos\//i.test(logo)) logo=rawBase+logo.replace(/^(?:\.\.\/)+/,"");
+     else if(logo.startsWith("./logos/")) logo=rawBase+logo.slice(2);
+     else if(sourceUrl) logo=new URL(logo,sourceUrl).href;
+    }
+   }catch(e){}
+   const entry={name:String(team.name),logo};
+   [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
+    const key=normalizeTeamName(alias);
+    if(key)teamLogoMap[key]=entry;
    });
-   loaded+=teams.length;
-  }catch(error){console.warn("Could not load team-logo file:",path,error);}
+  });
+ };
+ // Load a fallback shared list first, if present.
+ try{
+  const url=rawBase+"data/teams.json";
+  const response=await fetch(url,{cache:"force-cache"});
+  if(response.ok)registerTeams(await response.json(),url);
+ }catch(error){console.info("Optional data/teams.json not found.");}
+ // GitHub Pages cannot list folders directly. GitHub's repository tree API lets us
+ // discover every JSON file at any depth inside tournament/ automatically.
+ try{
+  const treeUrl=`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`;
+  const response=await fetch(treeUrl,{headers:{Accept:"application/vnd.github+json"},cache:"force-cache"});
+  if(!response.ok)throw new Error("GitHub tree API HTTP "+response.status);
+  const tree=await response.json();
+  const files=(tree.tree||[]).filter(item=>item.type==="blob"&&/^tournament\/.*\.json$/i.test(item.path));
+  const batches=[];
+  for(let i=0;i<files.length;i+=8)batches.push(files.slice(i,i+8));
+  for(const batch of batches){
+   await Promise.all(batch.map(async file=>{
+    try{
+     const url=rawBase+file.path.split("/").map(encodeURIComponent).join("/");
+     const res=await fetch(url,{cache:"force-cache"});
+     if(res.ok)registerTeams(await res.json(),url);
+    }catch(error){console.info("Skipped tournament JSON:",file.path);}
+   }));
+  }
+  console.info(`Loaded team logo aliases from ${files.length} tournament JSON file(s).`);
+ }catch(error){
+  console.warn("Could not auto-discover tournament JSON files. Trying common locations.",error);
+  for(const path of ["tournament/laliga.json","tournament/teams.json","laliga.json"]){
+   try{const url=rawBase+path;const res=await fetch(url,{cache:"force-cache"});if(res.ok)registerTeams(await res.json(),url);}catch(e){}
+  }
  }
- console.info("SPORTYNOVA team logos loaded:",loaded);
 }
 function teamFlagCode(team){
  const n=normalizeTeamName(team);
  const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
  return codes[n]||null;
 }
-function findTeamLogo(team){
- const key=normalizeTeamName(team);
- if(!key)return null;
- if(teamLogoMap[key])return teamLogoMap[key];
- // Match common broadcast spellings that append "FC"/"CF" or slightly vary the club name.
- const aliases=Object.keys(teamLogoMap);
- const stripped=key.replace(/(fc|cf|club)$/,"");
- for(const alias of aliases){
-  if(alias===stripped || alias.replace(/(fc|cf|club)$/,"")===stripped)return teamLogoMap[alias];
- }
- return null;
-}
+function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
 function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");

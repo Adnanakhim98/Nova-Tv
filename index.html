@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 October 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: ঊ24 October 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -555,6 +555,17 @@ body{
 }
 </style>
 
+<style id="jw-dash-player-skin">
+#playerScreen #jwDashPlayer{display:none;position:absolute;inset:0;width:100%;height:100%;z-index:4;background:#000}
+#playerScreen.jw-dash-active #jwDashPlayer{display:block}
+#playerScreen.jw-dash-active>#video,#playerScreen.jw-dash-active>#centerPlayPause,#playerScreen.jw-dash-active>#novaControls{display:none!important}
+#playerScreen.jw-dash-active .playerLiveBadge{z-index:8}
+#playerScreen.jw-dash-active .sports-server-row{z-index:30!important}
+#jwDashPlayer .jwplayer{width:100%!important;height:100%!important}
+#jwDashPlayer .jw-video{object-fit:contain!important}
+#jwDashPlayer .jw-controlbar{background:linear-gradient(0deg,rgba(0,0,0,.85),transparent)!important}
+#jwDashPlayer .jw-progress,#jwDashPlayer .jw-knob{background:#21d8f4!important}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -568,6 +579,7 @@ body{
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
+   <div id="jwDashPlayer" aria-label="DASH video player"></div>
    <div class="swipe-hud" id="swipeHud" aria-live="polite"><span class="swipe-icon" id="swipeIcon">☀️</span><span class="swipe-detail"><span id="swipeValue">100%</span><span class="swipe-label" id="swipeLabel">Brightness</span><span class="swipe-meter"><span id="swipeMeterFill"></span></span></span></div>
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
@@ -602,11 +614,13 @@ body{
 </div>
 
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<script src="https://content.jwplatform.com/libraries/IDzF9Zmk.js"></script>
+<script>if(window.jwplayer){jwplayer.key="Khpp2dHxlBJHC8MCmLnBuV2jK/DwDnJMniwF6EO9HC/riJ712ZmbHg==";}</script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeJW=null,activeKey=null,playRequestId=0,qualityMode="";
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -994,6 +1008,33 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
+   if(kind==="mpd" && window.jwplayer){
+     engine="JW Player / MPEG-DASH";
+     screenEl.classList.add("jw-dash-active");
+     video.style.display="none";
+     const host=$("jwDashPlayer");
+     host.style.display="block";
+     host.innerHTML="";
+     const jwItem={file:url,type:"dash"};
+     activeJW=jwplayer("jwDashPlayer").setup({
+       playlist:[jwItem],width:"100%",height:"100%",autostart:true,mute:false,
+       preload:"auto",stretching:"uniform",liveTimeout:0,controls:true,
+       displaytitle:false,displaydescription:false,skin:{name:"glow"}
+     });
+     activeJW.on("ready",()=>{if(requestId===playRequestId)report("MPEG-DASH · সংযোগ হচ্ছে…")});
+     activeJW.on("firstFrame",()=>{
+       if(requestId!==playRequestId)return;
+       settled=true;clearStartupTimer();if(sportsMode)window.__sportsAutoSwitchCount=0;
+       setLiveBadge(true);setPlayerLoading(false);report("JW Player · Playing");
+     });
+     activeJW.on("play",()=>{
+       if(requestId!==playRequestId)return;
+       clearStartupTimer();setLiveBadge(true);setPlayerLoading(false);report("JW Player · Playing");
+     });
+     activeJW.on("error",evt=>fail(evt?.message||evt?.code||"JW Player error"));
+     activeJW.on("setupError",evt=>fail(evt?.message||"JW Player setup error"));
+     return;
+   }
    if(kind==="mpd" || (sportsMode && (kind==="hls" || kind==="unknown"))){
      engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / Live Sports";
      if(!window.shaka)throw new Error("Shaka library unavailable");

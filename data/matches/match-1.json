@@ -6,19 +6,19 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Zimbabwe%20Vs%20Afghanistan.jpg",
     "fallbackLogo": "▶",
     "tone": "blue",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/ntomodyqm3/out/v1/cd61ecc8b6694006a1173974fcfa4e9e/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",
     "section": "liveSports",
     "drm": {
       "scheme": "clearkey",
-      "license": "8c80205dcd2490ef9386a322c46aef12:0dba6b2d52b76e5dff92fac577e7ac8d"
+      "license": "53ac5670511d1300366b35b85eb6eadc:e255086091e4638f16985ca3ddd56e2b"
     },
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/ntomodyqm3/out/v1/cd61ecc8b6694006a1173974fcfa4e9e/cenc.mpd",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "8c80205dcd2490ef9386a322c46aef12:0dba6b2d52b76e5dff92fac577e7ac8d"
+          "license": "53ac5670511d1300366b35b85eb6eadc:e255086091e4638f16985ca3ddd56e2b"
         },
         "show": "yes"
       },
@@ -32,21 +32,17 @@
         "show": "yes"
       },
       {
-        "name": "PRIME ENG FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/pm2e3zfxkc/out/v1/1cc24fdea32d4d549612dbe4ebc05d9e/cenc.mpd",
+        "name": "WILLOW ALT",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "01501c3401dabab0e68c1d58b2ed5bde:4c1167220c5d1358d630245281ceba58"
+          "license": "53ac5670511d1300366b35b85eb6eadc:e255086091e4638f16985ca3ddd56e2b"
         },
         "show": "yes"
       },
       {
-        "name": "PRIME HINDI FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/mmvlg151u6/out/v1/ab9d1f193c094ee8a9305f983a716f35/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "18e6af4a0daf2a1fdfbdc5b541520c88:ca0b64b84edb4f20eb1e135ff03db4f7"
-        },
+        "name": "SKY CRICKET FHD",
+        "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=uiXES2ePt7xTpQnbJxn7Dg&e=2074684474&scheme=https",
         "show": "yes"
       },
       {
@@ -59,39 +55,13 @@
         "show": "yes"
       },
       {
-        "name": "WILLOW ALT",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/ntomodyqm3/out/v1/cd61ecc8b6694006a1173974fcfa4e9e/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "8c80205dcd2490ef9386a322c46aef12:0dba6b2d52b76e5dff92fac577e7ac8d"
-        },
+        "name": "WILLOW HD",
+        "url": "http://mag.tivi-one-iptv.net/play/live.php?mac=00:1A:79:F5:CC:FD&stream=809386&extension=m3u8",
         "show": "yes"
       },
       {
-        "name": "SonyLiv (TEL)",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/9n0mgnesec/out/v1/48f6a68ca3a34f2bba34df81e19764d1/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "4e5ac7875b78110f6dec912429209dfa:bbfe716053be1f7d3caa4e4952277a11"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "SonyLiv (TAM)",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/zhaaefajop/out/v1/e5226708737141b2ac370864916708b9/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "fb22851800fb00e16fb1a1dd8ca3997c:0cd9eec4aa66c9b9865dbd7ea5788866"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "SonyLiv (KAN)",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/2ve4p3frvj/out/v1/0a3bdbce62524db4a16a20bf9892b680/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "0008b93634dcf5be9e839816086afdf0:e09d1878e6e7126bd9c2c432fdb11553"
-        },
+        "name": "FOX CRICKET HD",
+        "url": "https://baila-lentoo.pages.dev/all-sp/809389.m3u8",
         "show": "yes"
       }
     ],

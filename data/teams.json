@@ -9,6 +9,15 @@
       "logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg"
     },
     {
+"name": "India",
+"aliases": [
+"IND",
+"Indian Flag",
+"India Flag"
+],
+"logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/refs/heads/main/logos/india.svg"
+    },
+    {
       "name": "Barcelona",
       "aliases": [
         "FC Barcelona",

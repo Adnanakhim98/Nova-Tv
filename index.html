@@ -663,7 +663,8 @@ function splitMatchTeams(name){
  if(parts.length>=2)return [parts[0].trim(),parts.slice(1).join(" ").trim()];
  return [String(name||"Team").trim(),"Opponent"];
 }
-// Team logos are loaded from ./data/teams.json. Names and aliases are matched case-insensitively.
+// Team logos can be stored in any of these JSON files. Existing ./data/teams.json
+// continues to work, while tournament-specific files can be kept beside their logo folders.
 let teamLogoMap = Object.create(null);
 function normalizeTeamName(value){
  const raw=String(value||"").toLowerCase();
@@ -671,27 +672,49 @@ function normalizeTeamName(value){
 }
 async function loadTeamLogos(){
  teamLogoMap=Object.create(null);
- try{
-  const response=await fetch("./data/teams.json",{cache:"no-store"});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const data=await response.json();
-  const teams=Array.isArray(data)?data:(data.teams||[]);
-  teams.forEach(team=>{
-   if(!team||!team.name||!team.logo)return;
-   const entry={name:String(team.name),logo:String(team.logo)};
-   [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
-    const key=normalizeTeamName(alias);
-    if(key)teamLogoMap[key]=entry;
+ const paths=[
+  "./data/teams.json",
+  "./data/laliga.json",
+  "./logos/laliga/laliga.json",
+  "./laliga.json"
+ ];
+ let loaded=0;
+ for(const path of paths){
+  try{
+   const response=await fetch(path,{cache:"no-cache"});
+   if(!response.ok)continue;
+   const data=await response.json();
+   const teams=Array.isArray(data)?data:(Array.isArray(data.teams)?data.teams:[]);
+   teams.forEach(team=>{
+    if(!team||!team.name||!team.logo)return;
+    const entry={name:String(team.name),logo:String(team.logo)};
+    [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
+     const key=normalizeTeamName(alias);
+     if(key)teamLogoMap[key]=entry;
+    });
    });
-  });
- }catch(error){console.warn("Could not load ./data/teams.json; using country flags/initials.",error);}
+   loaded+=teams.length;
+  }catch(error){console.warn("Could not load team-logo file:",path,error);}
+ }
+ console.info("SPORTYNOVA team logos loaded:",loaded);
 }
 function teamFlagCode(team){
  const n=normalizeTeamName(team);
  const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
  return codes[n]||null;
 }
-function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
+function findTeamLogo(team){
+ const key=normalizeTeamName(team);
+ if(!key)return null;
+ if(teamLogoMap[key])return teamLogoMap[key];
+ // Match common broadcast spellings that append "FC"/"CF" or slightly vary the club name.
+ const aliases=Object.keys(teamLogoMap);
+ const stripped=key.replace(/(fc|cf|club)$/,"");
+ for(const alias of aliases){
+  if(alias===stripped || alias.replace(/(fc|cf|club)$/,"")===stripped)return teamLogoMap[alias];
+ }
+ return null;
+}
 function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");

@@ -1,9 +1,9 @@
 {
   "match": {
-    "name": "India Vs Pakistan",
+    "name": "India Vs Pakisthhan",
     "category": "Live Sports",
     "logo": "▶",
-    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Zimbabwe%20Vs%20Afghanistan.jpg",
+    "logoUrl": "",
     "fallbackLogo": "▶",
     "tone": "blue",
     "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",

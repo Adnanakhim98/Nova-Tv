@@ -663,11 +663,35 @@ function splitMatchTeams(name){
  if(parts.length>=2)return [parts[0].trim(),parts.slice(1).join(" ").trim()];
  return [String(name||"Team").trim(),"Opponent"];
 }
+// Team logos are loaded from ./data/teams.json. Names and aliases are matched case-insensitively.
+let teamLogoMap = Object.create(null);
+function normalizeTeamName(value){
+ const raw=String(value||"").toLowerCase();
+ return raw.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+}
+async function loadTeamLogos(){
+ teamLogoMap=Object.create(null);
+ try{
+  const response=await fetch("./data/teams.json",{cache:"no-store"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const data=await response.json();
+  const teams=Array.isArray(data)?data:(data.teams||[]);
+  teams.forEach(team=>{
+   if(!team||!team.name||!team.logo)return;
+   const entry={name:String(team.name),logo:String(team.logo)};
+   [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
+    const key=normalizeTeamName(alias);
+    if(key)teamLogoMap[key]=entry;
+   });
+  });
+ }catch(error){console.warn("Could not load ./data/teams.json; using country flags/initials.",error);}
+}
 function teamFlagCode(team){
- const n=String(team).toLowerCase().replace(/[^a-z]/g,"");
+ const n=normalizeTeamName(team);
  const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
  return codes[n]||null;
 }
+function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
 function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
@@ -680,10 +704,17 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   teams.forEach((team,index)=>{
    if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
    const wrap=document.createElement("div");wrap.className="team-logo";
-   const code=teamFlagCode(team);
-   if(code){const img=document.createElement("img");img.src=`https://flagcdn.com/w80/${code}.png`;img.alt=team+" flag";img.loading="lazy";img.referrerPolicy="no-referrer";img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};wrap.appendChild(img)}
-   else {const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f)}
-   const label=document.createElement("small");label.textContent=team;wrap.appendChild(label);logoBox.appendChild(wrap);
+   const teamEntry=findTeamLogo(team);
+    const code=teamFlagCode(team);
+    const logoUrl=teamEntry&&/^https?:\\/\\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
+    if(logoUrl){
+      const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
+      img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};
+      wrap.appendChild(img);
+    }else{
+      const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f);
+    }
+    const label=document.createElement("small");label.textContent=team;wrap.appendChild(label);logoBox.appendChild(wrap);
   });
  }else{
   const logoValue=String(ch.logoUrl||ch.logo||"▶").trim();
@@ -1280,6 +1311,7 @@ async function loadConfig(){
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
  }catch(e){console.warn("Separate JSON load failed",e)}
+  await loadTeamLogos();
  if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();
 }
 

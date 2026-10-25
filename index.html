@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 25 October 2026 — Smart team logo aliases from ./logos/ -->
+<!-- LAST UPDATE: 24 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -663,39 +663,16 @@ function splitMatchTeams(name){
  if(parts.length>=2)return [parts[0].trim(),parts.slice(1).join(" ").trim()];
  return [String(name||"Team").trim(),"Opponent"];
 }
-// Smart team-logo lookup: short and full names can point to the same file in ./logos/.
+// Team logos are loaded from ./data/teams.json. Names and aliases are matched case-insensitively.
 let teamLogoMap = Object.create(null);
-const builtInTeamAliases = {
- "crystal palace":"crystal-palace-logo-footylogos.svg", "crystal palace fc":"crystal-palace-logo-footylogos.svg", "cpfc":"crystal-palace-logo-footylogos.svg",
- "chelsea":"chelsea.svg", "chelsea fc":"chelsea.svg", "fc chelsea":"chelsea.svg", "chelsea football club":"chelsea.svg", "chelsea women":"chelsea.svg",
- "liverpool":"liverpool-fc-logo-footylogos.svg", "liverpool fc":"liverpool-fc-logo-footylogos.svg",
- "brighton":"brighton-and-hove-albion-logo-footylogos.svg", "brighton and hove albion":"brighton-and-hove-albion-logo-footylogos.svg", "brighton hove albion":"brighton-and-hove-albion-logo-footylogos.svg", "brighton fc":"brighton-and-hove-albion-logo-footylogos.svg",
- "manchester united":"manchester-united-logo-footylogos.svg", "man united":"manchester-united-logo-footylogos.svg", "man utd":"manchester-united-logo-footylogos.svg", "manutd":"manchester-united-logo-footylogos.svg",
- "bournemouth":"afc-bournemouth.svg", "afc bournemouth":"afc-bournemouth.svg", "bournemouth fc":"afc-bournemouth.svg",
- "sc freiburg":"sc-freiburg-logo-footylogos.svg", "freiburg":"sc-freiburg-logo-footylogos.svg", "sport club freiburg":"sc-freiburg-logo-footylogos.svg",
- "bayern":"bayern-munich-logo-footylogos.svg", "bayern munich":"bayern-munich-logo-footylogos.svg", "fc bayern":"bayern-munich-logo-footylogos.svg", "fc bayern munchen":"bayern-munich-logo-footylogos.svg", "bayern munchen":"bayern-munich-logo-footylogos.svg",
- "barcelona":"barcelona.png", "barcelona fc":"barcelona.png", "fc barcelona":"barcelona.png", "barca":"barcelona.png",
- "real madrid":"real-madrid.png", "real madrid cf":"real-madrid.png", "madrid":"real-madrid.png",
- "psg":"paris-saint-germain.png", "paris saint germain":"paris-saint-germain.png",
- "arsenal":"arsenal.png", "arsenal fc":"arsenal.png", "tottenham":"tottenham-hotspur.png", "tottenham hotspur":"tottenham-hotspur.png", "spurs":"tottenham-hotspur.png",
- "manchester city":"manchester-city.png", "man city":"manchester-city.png", "juventus":"juventus.png", "inter":"inter-milan.png", "inter milan":"inter-milan.png", "ac milan":"ac-milan.png", "milan":"ac-milan.png",
- "atletico madrid":"atletico-madrid.png", "atletico":"atletico-madrid.png", "borussia dortmund":"borussia-dortmund.png", "dortmund":"borussia-dortmund.png"
-};
 function normalizeTeamName(value){
- return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]/g,"");
-}
-function teamLogoSlug(team){
- const normalized=normalizeTeamName(team);
- const aliasFile=builtInTeamAliases[normalized] || builtInTeamAliases[String(team||"").toLowerCase().trim()];
- if(aliasFile)return aliasFile;
- return String(team||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+".png";
+ const raw=String(value||"").toLowerCase();
+ return raw.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]/g,"");
 }
 async function loadTeamLogos(){
  teamLogoMap=Object.create(null);
- // Built-in aliases work without a separate teams.json file.
- Object.entries(builtInTeamAliases).forEach(([alias,file])=>{teamLogoMap[normalizeTeamName(alias)]={name:alias,logo:/^https?:\/\//i.test(file)?file:"./logos/"+file};});
  try{
-  const response=await fetch("./data/teams.json");
+  const response=await fetch("./data/teams.json",{cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const data=await response.json();
   const teams=Array.isArray(data)?data:(data.teams||[]);
@@ -707,39 +684,14 @@ async function loadTeamLogos(){
     if(key)teamLogoMap[key]=entry;
    });
   });
- }catch(error){console.info("Optional ./data/teams.json not found; using built-in aliases and ./logos/ files.");}
+ }catch(error){console.warn("Could not load ./data/teams.json; using country flags/initials.",error);}
 }
 function teamFlagCode(team){
- // Detect a country inside longer labels such as "India Women", "India U19",
- // "Women India", "Bangladesh Women A" or "Pakistan XI".
  const n=normalizeTeamName(team);
- const countries=[
-  ["southafrica","za"],["newzealand","nz"],["westindies","jm"],["unitedstates","us"],["hongkong","hk"],
-  ["afghanistan","af"],["bangladesh","bd"],["zimbabwe","zw"],["australia","au"],["netherlands","nl"],
-  ["srilanka","lk"],["ireland","ie"],["scotland","gb"],["england","gb"],["pakistan","pk"],["india","in"],
-  ["nepal","np"],["namibia","na"],["canada","ca"],["oman","om"],["uae","ae"],["usa","us"]
- ];
- for(const [country,code] of countries){
-  if(n===country || n.includes(country)) return code;
- }
- return null;
+ const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
+ return codes[n]||null;
 }
-function findTeamLogo(team){
- const normalized=normalizeTeamName(team);
- if(teamLogoMap[normalized])return teamLogoMap[normalized];
- // Match aliases inside longer labels, e.g. "Chelsea Women U21" or "FC Chelsea".
- const aliasKeys=Object.keys(teamLogoMap).filter(key=>key.length>=5 && normalized.includes(key));
- if(aliasKeys.length){
-  aliasKeys.sort((a,b)=>b.length-a.length);
-  return teamLogoMap[aliasKeys[0]];
- }
- // Prefer flags already uploaded to ./logos/ for national teams.
- const code=teamFlagCode(team);
- const localFlags={in:"india.svg",bd:"bangladesh.svg",pk:"pakistan.svg",au:"australia.svg",gb:"england.svg",za:"south-africa.svg",nz:"new-zealand.svg",af:"afghanistan.svg",zw:"zimbabwe.svg",lk:"sri-lanka.svg",ie:"ireland.svg",np:"nepal.svg",ca:"canada.svg",us:"usa.svg",nl:"netherlands.svg",np:"nepal.svg",na:"namibia.svg",om:"oman.svg",ae:"uae.svg",hk:"hong-kong.svg",jm:"west-indies.svg"};
- if(code && localFlags[code]) return {name:String(team||"Team"),logo:"./logos/"+localFlags[code]};
- if(code)return null;
- return {name:String(team||"Team"),logo:"./logos/"+teamLogoSlug(team).replace(/\.png$/i,".svg")};
-}
+function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
 function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
@@ -754,24 +706,10 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
    const wrap=document.createElement("div");wrap.className="team-logo";
    const teamEntry=findTeamLogo(team);
     const code=teamFlagCode(team);
-    const logoUrl=teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
+    const logoUrl=teamEntry&&/^https?:\/\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
     if(logoUrl){
-      const img=document.createElement("img");img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
-      // Try multiple image formats (SVG, PNG, JPG/JPEG, WEBP, GIF) and common filename variants.
-      const logoCandidates=[];
-      const addLogoCandidates=(path)=>{
-        if(!path)return;
-        if(/^https?:\/\//i.test(path)){logoCandidates.push(path);return;}
-        const clean=String(path).split(/[?#]/)[0];
-        const base=clean.replace(/\.(svg|png|jpe?g|webp|gif)$/i,"");
-        [".svg",".png",".jpg",".jpeg",".webp",".gif"].forEach(ext=>logoCandidates.push(base+ext));
-      };
-      addLogoCandidates(logoUrl);
-      const slug=String(team||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
-      ["./logos/"+slug,"./logos/"+slug.replace(/-fc$|^fc-/,""),"./logos/"+slug.replace(/-women| women|-u19| u19|-u21| u21|-xi| xi/g,"")].forEach(addLogoCandidates);
-      const uniqueCandidates=[...new Set(logoCandidates)];let logoTry=0;
-      const tryNextLogo=()=>{if(logoTry<uniqueCandidates.length){img.src=uniqueCandidates[logoTry++];}else{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)}};
-      img.onerror=tryNextLogo;img.src=uniqueCandidates[logoTry++]||logoUrl;
+      const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
+      img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};
       wrap.appendChild(img);
     }else{
       const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f);
@@ -1350,53 +1288,25 @@ async function loadConfig(){
   channels=results.flat();
   // Apply server-side admin overrides (hide/show and URL changes) without changing the original JSON files.
   try{const adminData=await adminApi("/status");onlineStatusMap=adminData.statuses||{};const overrides=adminData.overrides||{};channels=channels.map((ch,i)=>{const id=channelAdminId(ch),ov=overrides[id]||overrides[ch.name];return ov?{...ch,...(ov.url?{url:ov.url}:{}),Show:ov.hidden?"N":"Y",id}:({...ch,id});}).filter(isChannelShown);}catch(e){channels=channels.map(ch=>({...ch,id:channelAdminId(ch)})).filter(isChannelShown);}
-  // Fast numbered-match loader: locate match-1.json once, then use the same folder.
-  // Stop after 3 consecutive missing numbers so every refresh does not request 800+ URLs.
-  const matchLocations=[
-   {base:"./",names:n=>[`match-${n}.json`,`Match-${n}.json`]},
-   {base:"./data/",names:n=>[`match-${n}.json`,`Match-${n}.json`]},
-   {base:"./matches/",names:n=>[`match-${n}.json`,`Match-${n}.json`]},
-   {base:"./data/matches/",names:n=>[`match-${n}.json`,`Match-${n}.json`]}
-  ];
-  const parseMatchItems=d=>Array.isArray(d)?d:(Array.isArray(d.matches)?d.matches:(Array.isArray(d.liveSports)?d.liveSports:(Array.isArray(d.channels)?d.channels:(d.match?[d.match]:(d.name?[d]:[])))));
-  let matchLocation=null;
-  for(const loc of matchLocations){
-   try{const r=await fetch(loc.base+loc.names(1)[0]);if(r.ok){const d=await r.json();matchLocation=loc;break;}}catch(e){}
-  }
-  liveSports=[];
-  if(matchLocation){
-   let missingInRow=0;
-   for(let n=1;n<=100;n++){
-    let loaded=null;
-    const names=matchLocation.names(n);
-    for(const filename of names){
-     try{const r=await fetch(matchLocation.base+filename);if(!r.ok)continue;const d=await r.json();const item=parseMatchItems(d).find(x=>x&&x.name&&isChannelShown(x));if(item){loaded={...item,section:"liveSports",category:"Live Sports"};break;}}catch(e){}
-    }
-    // If the detected folder contains gaps, check other common folders for this number.
-    if(!loaded){
-     for(const loc of matchLocations){if(loc.base===matchLocation.base)continue;for(const filename of loc.names(n)){
-      try{const r=await fetch(loc.base+filename);if(!r.ok)continue;const d=await r.json();const item=parseMatchItems(d).find(x=>x&&x.name&&isChannelShown(x));if(item){loaded={...item,section:"liveSports",category:"Live Sports"};break;}}catch(e){}
-     }if(loaded)break;}
-    }
-    if(loaded){liveSports.push(loaded);missingInRow=0;}else{missingInRow++;if(n>1&&missingInRow>=6)break;}
-   }
-  }
-
-  // Also support legacy combined files such as match.json and matches.json.
-  // These are merged with numbered files; duplicate match names are not added twice.
-  for(const path of ["./data/match.json","./match.json","./data/matches.json","./matches.json","./data/live-sports.json","./live-sports.json"]){
+  // Each live match is maintained in its own JSON file under data/matches/.
+  // Example: data/matches/match-1.json contains { "match": { ... } }.
+  const matchFiles=Array.from({length:10},(_,i)=>`./data/matches/match-${i+1}.json`);
+  const matchResults=await Promise.all(matchFiles.map(async path=>{
    try{
-    const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;
+    const r=await fetch(path,{cache:"no-store"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
     const d=await r.json();
-    const items=Array.isArray(d)?d:
-     (Array.isArray(d.matches)?d.matches:
-     (Array.isArray(d.liveSports)?d.liveSports:
-     (Array.isArray(d.channels)?d.channels:
-     (d.match?[d.match]:(d.name?[d]:[])))));
-    const normalized=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));
-    const seen=new Set(liveSports.map(c=>String(c.name).trim().toLowerCase()));
-    liveSports.push(...normalized.filter(c=>!seen.has(String(c.name).trim().toLowerCase())));
-   }catch(e){console.warn("Could not load combined match file "+path,e);}
+    const item=d.match||(Array.isArray(d.liveSports)?d.liveSports[0]:null)||(Array.isArray(d.channels)?d.channels[0]:null);
+    return item&&item.name&&isChannelShown(item)?{...item,section:"liveSports",category:"Live Sports"}:null;
+   }catch(e){console.warn("Could not load match file "+path,e);return null;}
+  }));
+  liveSports=matchResults.filter(Boolean);
+  // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
+  if(!liveSports.length){
+   for(const path of ["./data/live-sports.json","./live-sports.json"]){
+    try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;const d=await r.json();const items=(d.liveSports||d.channels||[]);if(Array.isArray(items)){liveSports=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));if(liveSports.length)break;}}
+    catch(e){console.warn("Could not load "+path,e)}
+   }
   }
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
@@ -1946,25 +1856,6 @@ document.addEventListener("touchend", e => {
 }
 /* Low-quality-first playback; adaptive quality begins after 30 seconds, with the active resolution marked. */
 #playerScreen video{image-rendering:auto}
-</style>
-
-
-<style id="larger-sports-team-logos-and-names">
-/* Larger team logos and readable team names on match cards (mobile + desktop). */
-#liveSportsChannels .team-logos{min-height:76px!important;gap:clamp(7px,2.4vw,14px)!important;margin:0 auto 5px!important}
-#liveSportsChannels .team-logo{max-width:45%!important;gap:5px!important}
-#liveSportsChannels .team-logo img,
-#liveSportsChannels .team-logo-fallback{width:clamp(42px,12vw,60px)!important;height:clamp(42px,12vw,60px)!important}
-#liveSportsChannels .team-logo small{font-size:clamp(10px,2.8vw,12px)!important;line-height:1.2!important;font-weight:700!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:center!important}
-#liveSportsChannels .team-vs{font-size:clamp(11px,3vw,14px)!important;font-weight:900!important}
-#liveSportsChannels .chname{font-size:clamp(12px,3.2vw,15px)!important;line-height:1.3!important;font-weight:800!important;white-space:normal!important;overflow-wrap:anywhere!important}
-@media(max-width:420px){
- #liveSportsChannels .team-logos{min-height:68px!important;gap:5px!important}
- #liveSportsChannels .team-logo img,
- #liveSportsChannels .team-logo-fallback{width:clamp(38px,11vw,48px)!important;height:clamp(38px,11vw,48px)!important}
- #liveSportsChannels .team-logo small{font-size:clamp(9px,2.7vw,11px)!important}
- #liveSportsChannels .chname{font-size:clamp(11px,3.1vw,13px)!important}
-}
 </style>
 
 </body>

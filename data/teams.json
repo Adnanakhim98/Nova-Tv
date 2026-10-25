@@ -1,0 +1,21 @@
+{
+  "teams": [
+    {
+      "name": "Real Madrid",
+      "aliases": [
+        "Real Madrid CF",
+        "Real"
+      ],
+      "logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg"
+    },
+    {
+      "name": "Barcelona",
+      "aliases": [
+        "FC Barcelona",
+        "Barca",
+        "Barça"
+      ],
+      "logo": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg"
+    }
+  ]
+}

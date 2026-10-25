@@ -706,7 +706,7 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
    const wrap=document.createElement("div");wrap.className="team-logo";
    const teamEntry=findTeamLogo(team);
     const code=teamFlagCode(team);
-    const logoUrl=teamEntry&&/^https?:\\/\\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
+    const logoUrl=teamEntry&&/^https?:\/\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
     if(logoUrl){
       const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
       img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};

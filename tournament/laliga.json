@@ -1,1 +1,25 @@
 
+{
+  "teams": [
+    {
+      "name": "Athletic Club Bilbao",
+      "aliases": [
+        "Athletic Bilbao",
+        "Athletic Club",
+        "Bilbao",
+        "Athletic Club de Bilbao"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/refs/heads/main/logos/laliga/athletic-club-bilbao-logo-footylogos.svg"
+    },
+    {
+      "name": "Atletico Madrid",
+      "aliases": [
+        "Atlético Madrid",
+        "Atletico",
+        "Atleti",
+        "Club Atletico de Madrid"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/refs/heads/main/logos/laliga/atletico-madrid-logo-footylogos.svg"
+    }
+  ]
+}

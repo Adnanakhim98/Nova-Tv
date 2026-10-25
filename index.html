@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 25 October 2026 — Smart team logo aliases from ./logos/ -->
+<!-- LAST UPDATE: 25 Oথctober 2026 — Smart team logo aliases from ./logos/ -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -695,7 +695,7 @@ async function loadTeamLogos(){
  // Built-in aliases work without a separate teams.json file.
  Object.entries(builtInTeamAliases).forEach(([alias,file])=>{teamLogoMap[normalizeTeamName(alias)]={name:alias,logo:/^https?:\/\//i.test(file)?file:"./logos/"+file};});
  try{
-  const response=await fetch("./data/teams.json",{cache:"no-store"});
+  const response=await fetch("./data/teams.json");
   if(!response.ok)throw new Error("HTTP "+response.status);
   const data=await response.json();
   const teams=Array.isArray(data)?data:(data.teams||[]);
@@ -1350,38 +1350,37 @@ async function loadConfig(){
   channels=results.flat();
   // Apply server-side admin overrides (hide/show and URL changes) without changing the original JSON files.
   try{const adminData=await adminApi("/status");onlineStatusMap=adminData.statuses||{};const overrides=adminData.overrides||{};channels=channels.map((ch,i)=>{const id=channelAdminId(ch),ov=overrides[id]||overrides[ch.name];return ov?{...ch,...(ov.url?{url:ov.url}:{}),Show:ov.hidden?"N":"Y",id}:({...ch,id});}).filter(isChannelShown);}catch(e){channels=channels.map(ch=>({...ch,id:channelAdminId(ch)})).filter(isChannelShown);}
-  // Load numbered match JSON files from common project locations.
-  // Add new files as match-1.json, match-2.json, ... (up to match-100.json).
-  // Supported locations: data/matches/, data/, matches/, or repository root.
-  const matchIndexes=Array.from({length:100},(_,i)=>i+1);
-  const matchResults=await Promise.all(matchIndexes.map(async n=>{
-   const paths=[
-    `./data/matches/match-${n}.json`,
-    `./data/matches/Match-${n}.json`,
-    `./data/match-${n}.json`,
-    `./data/Match-${n}.json`,
-    `./matches/match-${n}.json`,
-    `./matches/Match-${n}.json`,
-    `./match-${n}.json`,
-    `./Match-${n}.json`
-   ];
-   for(const path of paths){
-    try{
-     const r=await fetch(path,{cache:"no-store"});
-     if(!r.ok)continue;
-     const d=await r.json();
-     const items=Array.isArray(d)?d:
-      (Array.isArray(d.matches)?d.matches:
-      (Array.isArray(d.liveSports)?d.liveSports:
-      (Array.isArray(d.channels)?d.channels:
-      (d.match?[d.match]:(d.name?[d]:[])))));
-     const item=items.find(x=>x&&x.name&&isChannelShown(x));
-     if(item)return {...item,section:"liveSports",category:"Live Sports"};
-    }catch(e){console.warn("Could not load match file "+path,e);}
+  // Fast numbered-match loader: locate match-1.json once, then use the same folder.
+  // Stop after 3 consecutive missing numbers so every refresh does not request 800+ URLs.
+  const matchLocations=[
+   {base:"./",names:n=>[`match-${n}.json`,`Match-${n}.json`]},
+   {base:"./data/",names:n=>[`match-${n}.json`,`Match-${n}.json`]},
+   {base:"./matches/",names:n=>[`match-${n}.json`,`Match-${n}.json`]},
+   {base:"./data/matches/",names:n=>[`match-${n}.json`,`Match-${n}.json`]}
+  ];
+  const parseMatchItems=d=>Array.isArray(d)?d:(Array.isArray(d.matches)?d.matches:(Array.isArray(d.liveSports)?d.liveSports:(Array.isArray(d.channels)?d.channels:(d.match?[d.match]:(d.name?[d]:[])))));
+  let matchLocation=null;
+  for(const loc of matchLocations){
+   try{const r=await fetch(loc.base+loc.names(1)[0]);if(r.ok){const d=await r.json();matchLocation=loc;break;}}catch(e){}
+  }
+  liveSports=[];
+  if(matchLocation){
+   let missingInRow=0;
+   for(let n=1;n<=100;n++){
+    let loaded=null;
+    const names=matchLocation.names(n);
+    for(const filename of names){
+     try{const r=await fetch(matchLocation.base+filename);if(!r.ok)continue;const d=await r.json();const item=parseMatchItems(d).find(x=>x&&x.name&&isChannelShown(x));if(item){loaded={...item,section:"liveSports",category:"Live Sports"};break;}}catch(e){}
+    }
+    // If the detected folder contains gaps, check other common folders for this number.
+    if(!loaded){
+     for(const loc of matchLocations){if(loc.base===matchLocation.base)continue;for(const filename of loc.names(n)){
+      try{const r=await fetch(loc.base+filename);if(!r.ok)continue;const d=await r.json();const item=parseMatchItems(d).find(x=>x&&x.name&&isChannelShown(x));if(item){loaded={...item,section:"liveSports",category:"Live Sports"};break;}}catch(e){}
+     }if(loaded)break;}
+    }
+    if(loaded){liveSports.push(loaded);missingInRow=0;}else{missingInRow++;if(n>1&&missingInRow>=3)break;}
    }
-   return null;
-  }));
-  liveSports=matchResults.filter(Boolean);
+  }
 
   // Also support legacy combined files such as match.json and matches.json.
   // These are merged with numbered files; duplicate match names are not added twice.

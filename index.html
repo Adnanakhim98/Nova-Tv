@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 25 October 2026 — Smart team logo aliases from ./logos/ -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -663,14 +663,37 @@ function splitMatchTeams(name){
  if(parts.length>=2)return [parts[0].trim(),parts.slice(1).join(" ").trim()];
  return [String(name||"Team").trim(),"Opponent"];
 }
-// Team logos are loaded from ./data/teams.json. Names and aliases are matched case-insensitively.
+// Smart team-logo lookup: short and full names can point to the same file in ./logos/.
 let teamLogoMap = Object.create(null);
+const builtInTeamAliases = {
+ "crystal palace":"crystal-palace.png", "crystal palace fc":"crystal-palace.png", "cpfc":"crystal-palace.png",
+ "chelsea":"chelsea.png", "chelsea fc":"chelsea.png",
+ "liverpool":"liverpool.png", "liverpool fc":"liverpool.png",
+ "brighton":"brighton.png", "brighton and hove albion":"brighton.png", "brighton hove albion":"brighton.png", "brighton fc":"brighton.png",
+ "manchester united":"manchester-united.png", "man united":"manchester-united.png", "man utd":"manchester-united.png", "manutd":"manchester-united.png",
+ "bournemouth":"bournemouth.png", "afc bournemouth":"bournemouth.png", "bournemouth fc":"bournemouth.png",
+ "sc freiburg":"sc-freiburg.png", "freiburg":"sc-freiburg.png", "sport club freiburg":"sc-freiburg.png",
+ "bayern":"bayern-munich.png", "bayern munich":"bayern-munich.png", "fc bayern":"bayern-munich.png", "fc bayern munchen":"bayern-munich.png", "bayern munchen":"bayern-munich.png",
+ "barcelona":"barcelona.png", "barcelona fc":"barcelona.png", "fc barcelona":"barcelona.png", "barca":"barcelona.png",
+ "real madrid":"real-madrid.png", "real madrid cf":"real-madrid.png", "madrid":"real-madrid.png",
+ "psg":"paris-saint-germain.png", "paris saint germain":"paris-saint-germain.png",
+ "arsenal":"arsenal.png", "arsenal fc":"arsenal.png", "tottenham":"tottenham-hotspur.png", "tottenham hotspur":"tottenham-hotspur.png", "spurs":"tottenham-hotspur.png",
+ "manchester city":"manchester-city.png", "man city":"manchester-city.png", "juventus":"juventus.png", "inter":"inter-milan.png", "inter milan":"inter-milan.png", "ac milan":"ac-milan.png", "milan":"ac-milan.png",
+ "atletico madrid":"atletico-madrid.png", "atletico":"atletico-madrid.png", "borussia dortmund":"borussia-dortmund.png", "dortmund":"borussia-dortmund.png"
+};
 function normalizeTeamName(value){
- const raw=String(value||"").toLowerCase();
- return raw.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+ return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]/g,"");
+}
+function teamLogoSlug(team){
+ const normalized=normalizeTeamName(team);
+ const aliasFile=builtInTeamAliases[normalized] || builtInTeamAliases[String(team||"").toLowerCase().trim()];
+ if(aliasFile)return aliasFile;
+ return String(team||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")+".png";
 }
 async function loadTeamLogos(){
  teamLogoMap=Object.create(null);
+ // Built-in aliases work without a separate teams.json file.
+ Object.entries(builtInTeamAliases).forEach(([alias,file])=>{teamLogoMap[normalizeTeamName(alias)]={name:alias,logo:"./logos/"+file};});
  try{
   const response=await fetch("./data/teams.json",{cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
@@ -684,14 +707,20 @@ async function loadTeamLogos(){
     if(key)teamLogoMap[key]=entry;
    });
   });
- }catch(error){console.warn("Could not load ./data/teams.json; using country flags/initials.",error);}
+ }catch(error){console.info("Optional ./data/teams.json not found; using built-in aliases and ./logos/ files.");}
 }
 function teamFlagCode(team){
  const n=normalizeTeamName(team);
  const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
  return codes[n]||null;
 }
-function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
+function findTeamLogo(team){
+ const normalized=normalizeTeamName(team);
+ if(teamLogoMap[normalized])return teamLogoMap[normalized];
+ // Keep country flags for national teams; infer a club-logo filename for other names.
+ if(teamFlagCode(team))return null;
+ return {name:String(team||"Team"),logo:"./logos/"+teamLogoSlug(team)};
+}
 function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
@@ -706,7 +735,7 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
    const wrap=document.createElement("div");wrap.className="team-logo";
    const teamEntry=findTeamLogo(team);
     const code=teamFlagCode(team);
-    const logoUrl=teamEntry&&/^https?:\/\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
+    const logoUrl=teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
     if(logoUrl){
       const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
       img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};

@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Namibia Vs Ireland",
+    "name": "Barcelona Vs Ireland",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://i.postimg.cc/zfwFjvxf/20261022-135825.png",
@@ -30,8 +30,8 @@
     ],
     "show": "yes",
     "id": 3,
-    "startTime": "2026-10-22T14:00:00+06:00",
-    "endTime": "2026-10-24T22:30:00+06:00",
+    "startTime": "2026-10-25T17:50:00+06:00",
+    "endTime": "2026-10-25T20:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "ODI",

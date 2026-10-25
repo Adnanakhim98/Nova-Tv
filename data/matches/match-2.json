@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Chelsea Vs Tottenham Hotspur",
+    "name": "India Women Vs Zimbabwe Women",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
@@ -32,10 +32,10 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-10-24T22:20:00+06:00",
-    "endTime": "2026-10-25T03:00:00+06:00",
+    "startTime": "2026-10-25T14:20:00+06:00",
+    "endTime": "2026-10-26T03:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football"
+    "matchType": "CRICKETS"
   }
 }

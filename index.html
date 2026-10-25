@@ -710,9 +710,19 @@ async function loadTeamLogos(){
  }catch(error){console.info("Optional ./data/teams.json not found; using built-in aliases and ./logos/ files.");}
 }
 function teamFlagCode(team){
+ // Detect a country inside longer labels such as "India Women", "India U19",
+ // "Women India", "Bangladesh Women A" or "Pakistan XI".
  const n=normalizeTeamName(team);
- const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
- return codes[n]||null;
+ const countries=[
+  ["southafrica","za"],["newzealand","nz"],["westindies","jm"],["unitedstates","us"],["hongkong","hk"],
+  ["afghanistan","af"],["bangladesh","bd"],["zimbabwe","zw"],["australia","au"],["netherlands","nl"],
+  ["srilanka","lk"],["ireland","ie"],["scotland","gb"],["england","gb"],["pakistan","pk"],["india","in"],
+  ["nepal","np"],["namibia","na"],["canada","ca"],["oman","om"],["uae","ae"],["usa","us"]
+ ];
+ for(const [country,code] of countries){
+  if(n===country || n.includes(country)) return code;
+ }
+ return null;
 }
 function findTeamLogo(team){
  const normalized=normalizeTeamName(team);
@@ -1317,25 +1327,54 @@ async function loadConfig(){
   channels=results.flat();
   // Apply server-side admin overrides (hide/show and URL changes) without changing the original JSON files.
   try{const adminData=await adminApi("/status");onlineStatusMap=adminData.statuses||{};const overrides=adminData.overrides||{};channels=channels.map((ch,i)=>{const id=channelAdminId(ch),ov=overrides[id]||overrides[ch.name];return ov?{...ch,...(ov.url?{url:ov.url}:{}),Show:ov.hidden?"N":"Y",id}:({...ch,id});}).filter(isChannelShown);}catch(e){channels=channels.map(ch=>({...ch,id:channelAdminId(ch)})).filter(isChannelShown);}
-  // Each live match is maintained in its own JSON file under data/matches/.
-  // Example: data/matches/match-1.json contains { "match": { ... } }.
-  const matchFiles=Array.from({length:10},(_,i)=>`./data/matches/match-${i+1}.json`);
-  const matchResults=await Promise.all(matchFiles.map(async path=>{
-   try{
-    const r=await fetch(path,{cache:"no-store"});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const d=await r.json();
-    const item=d.match||(Array.isArray(d.liveSports)?d.liveSports[0]:null)||(Array.isArray(d.channels)?d.channels[0]:null);
-    return item&&item.name&&isChannelShown(item)?{...item,section:"liveSports",category:"Live Sports"}:null;
-   }catch(e){console.warn("Could not load match file "+path,e);return null;}
+  // Load numbered match JSON files from common project locations.
+  // Add new files as match-1.json, match-2.json, ... (up to match-100.json).
+  // Supported locations: data/matches/, data/, matches/, or repository root.
+  const matchIndexes=Array.from({length:100},(_,i)=>i+1);
+  const matchResults=await Promise.all(matchIndexes.map(async n=>{
+   const paths=[
+    `./data/matches/match-${n}.json`,
+    `./data/matches/Match-${n}.json`,
+    `./data/match-${n}.json`,
+    `./data/Match-${n}.json`,
+    `./matches/match-${n}.json`,
+    `./matches/Match-${n}.json`,
+    `./match-${n}.json`,
+    `./Match-${n}.json`
+   ];
+   for(const path of paths){
+    try{
+     const r=await fetch(path,{cache:"no-store"});
+     if(!r.ok)continue;
+     const d=await r.json();
+     const items=Array.isArray(d)?d:
+      (Array.isArray(d.matches)?d.matches:
+      (Array.isArray(d.liveSports)?d.liveSports:
+      (Array.isArray(d.channels)?d.channels:
+      (d.match?[d.match]:(d.name?[d]:[])))));
+     const item=items.find(x=>x&&x.name&&isChannelShown(x));
+     if(item)return {...item,section:"liveSports",category:"Live Sports"};
+    }catch(e){console.warn("Could not load match file "+path,e);}
+   }
+   return null;
   }));
   liveSports=matchResults.filter(Boolean);
-  // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
-  if(!liveSports.length){
-   for(const path of ["./data/live-sports.json","./live-sports.json"]){
-    try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;const d=await r.json();const items=(d.liveSports||d.channels||[]);if(Array.isArray(items)){liveSports=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));if(liveSports.length)break;}}
-    catch(e){console.warn("Could not load "+path,e)}
-   }
+
+  // Also support legacy combined files such as match.json and matches.json.
+  // These are merged with numbered files; duplicate match names are not added twice.
+  for(const path of ["./data/match.json","./match.json","./data/matches.json","./matches.json","./data/live-sports.json","./live-sports.json"]){
+   try{
+    const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;
+    const d=await r.json();
+    const items=Array.isArray(d)?d:
+     (Array.isArray(d.matches)?d.matches:
+     (Array.isArray(d.liveSports)?d.liveSports:
+     (Array.isArray(d.channels)?d.channels:
+     (d.match?[d.match]:(d.name?[d]:[])))));
+    const normalized=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));
+    const seen=new Set(liveSports.map(c=>String(c.name).trim().toLowerCase()));
+    liveSports.push(...normalized.filter(c=>!seen.has(String(c.name).trim().toLowerCase())));
+   }catch(e){console.warn("Could not load combined match file "+path,e);}
   }
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}

@@ -6,62 +6,12 @@
     "logoUrl": "",
     "fallbackLogo": "▶",
     "tone": "blue",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",
+    "url": "http://193.47.62.44/hls/EJJJAAAAA.m3u8",
     "section": "liveSports",
-    "drm": {
-      "scheme": "clearkey",
-      "license": "53ac5670511d1300366b35b85eb6eadc:e255086091e4638f16985ca3ddd56e2b"
-    },
     "streams": [
       {
-        "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "53ac5670511d1300366b35b85eb6eadc:e255086091e4638f16985ca3ddd56e2b"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "TNT3UK SPORTS FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW ALT",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/etttcyodrm/out/v1/2e476a75a79741c0bc7c9586e59a5f0e/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "53ac5670511d1300366b35b85eb6eadc:e255086091e4638f16985ca3ddd56e2b"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "SKY CRICKET FHD",
-        "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=uiXES2ePt7xTpQnbJxn7Dg&e=2074684474&scheme=https",
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW SPORTS HD",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW HD",
-        "url": "http://mag.tivi-one-iptv.net/play/live.php?mac=00:1A:79:F5:CC:FD&stream=809386&extension=m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "FOX CRICKET HD",
-        "url": "https://baila-lentoo.pages.dev/all-sp/809389.m3u8",
+        "name": "STREAM TV + HD",
+        "url": "http://193.47.62.44/hls/EJJJAAAAA.m3u8",
         "show": "yes"
       }
     ],

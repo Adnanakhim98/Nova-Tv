@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 2তথছ4 Octoতথজঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 2তথছ4 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -592,7 +592,12 @@ body{
 ।</span></div></div>
 </section>
 <main class="channelarea" id="channelArea">
- <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="liveSportsCount">0 CHANNELS</span></div>
+ <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="liveSportsCount">0 MATCHES</span></div>
+ <div class="match-filter-bar" id="matchFilterBar" aria-label="ম্যাচ ফিল্টার">
+  <button type="button" class="match-filter active" data-match-filter="ALL">সব ম্যাচ <b id="allMatchCount">0</b></button>
+  <button type="button" class="match-filter" data-match-filter="LIVE">🔴 লাইভ <b id="liveMatchCount">0</b></button>
+  <button type="button" class="match-filter" data-match-filter="UPCOMING">⏰ আপকামিং <b id="upcomingMatchCount">0</b></button>
+ </div>
  <div class="channelrow sportsrow" id="liveSportsChannels"></div>
  <div class="sectionhead"><h2>📺 Live TV Channels</h2><span class="section-count" id="channelCount">0 CHANNELS</span></div>
  <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Channel categories"></div>
@@ -607,7 +612,7 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false;
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL";
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -826,11 +831,21 @@ function render(list=channels){
  tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
  const query=$("search").value.trim().toLowerCase();
  const now=Date.now();
- const liveEvents=sortLiveMatches(liveSports).filter(ch=>
-  !query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query)
+ // Automatically hide matches as soon as their status/end time marks them ENDED.
+ // render() runs every 30 seconds, so the card disappears without a page refresh.
+ const availableMatches=sortLiveMatches(liveSports).filter(ch=>matchStatus(ch,now)!=="ENDED");
+ const liveCount=availableMatches.filter(ch=>matchStatus(ch,now)==="LIVE").length;
+ const upcomingCount=availableMatches.filter(ch=>matchStatus(ch,now)==="UPCOMING").length;
+ $("allMatchCount").textContent=availableMatches.length;
+ $("liveMatchCount").textContent=liveCount;
+ $("upcomingMatchCount").textContent=upcomingCount;
+ document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.matchFilter===selectedMatchFilter));
+ const liveEvents=availableMatches.filter(ch=>
+  (selectedMatchFilter==="ALL"||matchStatus(ch,now)===selectedMatchFilter) &&
+  (!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query))
  );
  liveEvents.forEach(ch=>makeChannelCard(ch,sportsRoot,"Live Sports",true));
- $("liveSportsCount").textContent=liveEvents.length+" CHANNELS";
+ $("liveSportsCount").textContent=liveEvents.length+" MATCHES";
  const filtered=list.filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
  const counts={};filtered.forEach(ch=>{const cat=categoryFor(ch);counts[cat]=(counts[cat]||0)+1});
  Object.keys(categoryInfo).sort((a,b)=>categoryInfo[a].order-categoryInfo[b].order).forEach(cat=>{
@@ -1305,6 +1320,7 @@ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".m
 $("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
+document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedMatchFilter=btn.dataset.matchFilter||"ALL";render(channels)}));
 $("search").addEventListener("input",()=>render(channels));
 // Admin API must point to the separately deployed Cloudflare Worker; never put the admin password in this HTML.
 const ADMIN_API_BASE = ""; // Set to your admin/status Worker URL, e.g. https://your-admin-worker.workers.dev
@@ -2040,4 +2056,11 @@ document.addEventListener("touchend", e => {
 .admin-channel-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.admin-channel-actions .btn{padding:6px 8px;font-size:10px}
 .admin-hidden-label{font-size:10px;color:#ffc46b;margin-left:5px}
 @media(max-width:420px){.sectionhead{gap:5px}.channel-section-tools{gap:4px}.online-pill{font-size:10px;padding:5px 7px}.admin-open-btn{font-size:10px;padding:6px 7px}.admin-channel-item{grid-template-columns:minmax(0,1fr)}.admin-channel-actions{justify-content:flex-start}}
+
+.match-filter-bar{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 9px;margin-top:-1px}
+.match-filter-bar::-webkit-scrollbar{display:none}
+.match-filter{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 11px;border:1px solid #2a354a;border-radius:11px;background:linear-gradient(145deg,#151d2b,#0d121e);color:#c3cee0;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}
+.match-filter b{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#27354a;color:#f2fbff;font-size:10px}
+.match-filter.active{border-color:#19c9e8;background:linear-gradient(120deg,#12bfe3,#0878b6);color:#04131b;box-shadow:0 4px 14px #12bfe333}
+.match-filter.active b{background:#061e2a;color:#fff}
 </style>

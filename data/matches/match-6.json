@@ -42,10 +42,10 @@
         "show": "yes"
       }
     ],
-    "show": "no",
+    "show": "yes",
     "id": 6,
     "startTime": "2026-10-15T18:00:00+06:00",
-    "endTime": "2026-10-15T20:30:00+06:00",
+    "endTime": "2026-10-28T20:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "FOOTBALL"

@@ -788,14 +788,46 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  });
  root.appendChild(b);
 }
+function matchDateValue(ch){
+ const direct=[ch.startTime,ch.start_time,ch.kickoff,ch.kickoffTime,ch.matchDateTime,ch.datetime,ch.dateTime,ch.start,ch.date];
+ for(const value of direct){if(value===undefined||value===null||value==="")continue;const parsed=Date.parse(String(value));if(Number.isFinite(parsed))return parsed;}
+ const date=ch.matchDate||ch.match_date||ch.date||ch.gameDate||ch.game_date;
+ const time=ch.matchTime||ch.match_time||ch.time||ch.kickoff_time||ch.start_time;
+ if(date){const parsed=Date.parse(String(date)+(time&&!String(date).includes("T")?" "+String(time):""));if(Number.isFinite(parsed))return parsed;}
+ return Number.POSITIVE_INFINITY;
+}
+function matchStatus(ch,now=Date.now()){
+ const start=matchDateValue(ch),endValues=[ch.endTime,ch.end_time,ch.endDateTime,ch.end];
+ let end=Number.POSITIVE_INFINITY;for(const value of endValues){const parsed=Date.parse(String(value||""));if(Number.isFinite(parsed)){end=parsed;break;}}
+ const declared=String(ch.status||ch.matchStatus||ch.state||"").toLowerCase();
+ if(/live|playing|in.?progress|1st half|2nd half|innings/.test(declared))return "LIVE";
+ if(/ended|finished|complete|full.?time|ft|result/.test(declared))return "ENDED";
+ if(Number.isFinite(end)&&now>=end)return "ENDED";
+ if(Number.isFinite(start)&&now>=start)return "LIVE";
+ return "UPCOMING";
+}
+function sortLiveMatches(items){
+ const now=Date.now();
+ const today=new Date(now);today.setHours(0,0,0,0);const tomorrow=today.getTime()+86400000;
+ return [...items].sort((a,b)=>{
+  const sa=matchStatus(a,now),sb=matchStatus(b,now);
+  const rank={LIVE:0,UPCOMING:1,ENDED:2};
+  if(rank[sa]!==rank[sb])return rank[sa]-rank[sb];
+  const da=matchDateValue(a),db=matchDateValue(b);
+  if(sa==="UPCOMING"){
+   const ba=da>=today.getTime()&&da<tomorrow?0:1,bb=db>=today.getTime()&&db<tomorrow?0:1;
+   if(ba!==bb)return ba-bb;
+  }
+  return da-db||String(a.name||"").localeCompare(String(b.name||""));
+ });
+}
 function render(list=channels){
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
  tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
  const query=$("search").value.trim().toLowerCase();
  const now=Date.now();
- const liveEvents=liveSports.filter(ch=>{
-  const end=Date.parse(ch.endTime||"");
-  if(Number.isFinite(end)&&now>=end)return false;
+ const liveEvents=sortLiveMatches(liveSports).filter(ch=>{
+  if(matchStatus(ch,now)==="ENDED")return false;
   return !query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query);
  });
  liveEvents.forEach(ch=>makeChannelCard(ch,sportsRoot,"Live Sports",true));
@@ -1332,19 +1364,43 @@ async function loadConfig(){
   channels=results.flat();
   // Apply server-side admin overrides (hide/show and URL changes) without changing the original JSON files.
   try{const adminData=await adminApi("/status");onlineStatusMap=adminData.statuses||{};const overrides=adminData.overrides||{};channels=channels.map((ch,i)=>{const id=channelAdminId(ch),ov=overrides[id]||overrides[ch.name];return ov?{...ch,...(ov.url?{url:ov.url}:{}),Show:ov.hidden?"N":"Y",id}:({...ch,id});}).filter(isChannelShown);}catch(e){channels=channels.map(ch=>({...ch,id:channelAdminId(ch)})).filter(isChannelShown);}
-  // Each live match is maintained in its own JSON file under data/matches/.
-  // Example: data/matches/match-1.json contains { "match": { ... } }.
-  const matchFiles=Array.from({length:10},(_,i)=>`./data/matches/match-${i+1}.json`);
-  const matchResults=await Promise.all(matchFiles.map(async path=>{
-   try{
-    const r=await fetch(path,{cache:"no-store"});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const d=await r.json();
-    const item=d.match||(Array.isArray(d.liveSports)?d.liveSports[0]:null)||(Array.isArray(d.channels)?d.channels[0]:null);
-    return item&&item.name&&isChannelShown(item)?{...item,section:"liveSports",category:"Live Sports"}:null;
-   }catch(e){console.warn("Could not load match file "+path,e);return null;}
-  }));
-  liveSports=matchResults.filter(Boolean);
+  // Automatically discover match JSON files in data/matches/ and tournament/ at any depth.
+  // GitHub Pages cannot list folders, so use the repository tree API instead of fixed match-1..10 names.
+  const repoOwner="Adnanakhim98",repoName="Nova-Tv",branch="main";
+  const rawBase=`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+  const matchCandidates=[];
+  try{
+   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`,{headers:{Accept:"application/vnd.github+json"},cache:"force-cache"});
+   if(!treeResponse.ok)throw new Error("GitHub tree API HTTP "+treeResponse.status);
+   const tree=await treeResponse.json();
+   (tree.tree||[]).filter(item=>item.type==="blob"&&/\.json$/i.test(item.path)&&(/^(?:data\/matches|tournament)\//i.test(item.path))).forEach(item=>matchCandidates.push({path:item.path,url:rawBase+item.path.split("/").map(encodeURIComponent).join("/")}));
+  }catch(error){
+   console.warn("Could not discover all match JSON files via GitHub API; trying numbered match files.",error);
+   for(let i=1;i<=100;i++){const path=`data/matches/match-${i}.json`;matchCandidates.push({path,url:rawBase+path});}
+  }
+  const extractMatches=(data)=>{
+   const out=[];const add=item=>{if(item&&typeof item==="object"&&!Array.isArray(item)&&item.name&&(item.url||item.streamUrl||item.stream_url||item.link||item.streams||item.servers||item.source))out.push(item)};
+   if(!data||typeof data!=="object")return out;
+   add(data.match);
+   if(Array.isArray(data.matches))data.matches.forEach(add);
+   if(Array.isArray(data.liveSports))data.liveSports.forEach(add);
+   if(Array.isArray(data.channels))data.channels.forEach(add);
+   if(Array.isArray(data.events))data.events.forEach(add);
+   add(data);
+   return out;
+  };
+  const loadedMatches=[];
+  for(let i=0;i<matchCandidates.length;i+=8){
+   const batch=matchCandidates.slice(i,i+8);
+   const results=await Promise.all(batch.map(async file=>{
+    try{const r=await fetch(file.url,{cache:"force-cache"});if(!r.ok)return [];const d=await r.json();return extractMatches(d).map(item=>({...item,__sourceFile:file.path,section:"liveSports",category:"Live Sports"})).filter(item=>isChannelShown(item));}
+    catch(e){return [];}
+   }));
+   results.forEach(items=>loadedMatches.push(...items));
+  }
+  // Remove duplicates caused by a match appearing in more than one JSON file.
+  const seenMatches=new Set();
+  liveSports=sortLiveMatches(loadedMatches).filter(item=>{const key=[normalizeTeamName(item.name),matchDateValue(item),item.url||item.streamUrl||item.link||""].join("|");if(seenMatches.has(key))return false;seenMatches.add(key);return true;});
   // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
   if(!liveSports.length){
    for(const path of ["./data/live-sports.json","./live-sports.json"]){

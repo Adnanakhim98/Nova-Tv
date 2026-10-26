@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "India Vs chelsea",
+    "name": "Santa Clara Vs Benfica",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
@@ -21,11 +21,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-10-25T14:20:00+06:00",
-    "endTime": "2026-10-26T03:00:00+06:00",
+    "startTime": "2026-10-27T12:35:00+06:00",
+    "endTime": "2026-10-27T03:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS",
+    "matchType": "Football",
     "drm": {
       "scheme": "clearkey",
       "license": "fa34fa8c90336dd528c7a23871cad1fe:552a78d1aeb74f1650d68255c5749408"

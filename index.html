@@ -592,12 +592,7 @@ body{
 ।</span></div></div>
 </section>
 <main class="channelarea" id="channelArea">
- <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="liveSportsCount">0 MATCHES</span></div>
- <div class="match-filter-bar" id="matchFilterBar" aria-label="ম্যাচ ফিল্টার">
-  <button type="button" class="match-filter active" data-match-filter="ALL">সব ম্যাচ <b id="allMatchCount">0</b></button>
-  <button type="button" class="match-filter" data-match-filter="LIVE">🔴 লাইভ <b id="liveMatchCount">0</b></button>
-  <button type="button" class="match-filter" data-match-filter="UPCOMING">⏰ আপকামিং <b id="upcomingMatchCount">0</b></button>
- </div>
+ <div class="sectionhead sports-sectionhead"><h2>⚽ Live Sports</h2><div class="sports-head-actions"><button type="button" class="match-filter active" data-match-filter="ALL" aria-label="Show all matches">ALL <b id="allMatchCount">0</b></button><button type="button" class="match-filter" data-match-filter="LIVE" aria-label="Show live matches">LIVE <b id="liveMatchCount">0</b></button><button type="button" class="match-filter" data-match-filter="UPCOMING" aria-label="Show upcoming matches">UPCOMING <b id="upcomingMatchCount">0</b></button></div></div>
  <div class="channelrow sportsrow" id="liveSportsChannels"></div>
  <div class="sectionhead"><h2>📺 Live TV Channels</h2><span class="section-count" id="channelCount">0 CHANNELS</span></div>
  <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Channel categories"></div>
@@ -1320,7 +1315,7 @@ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".m
 $("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
-document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedMatchFilter=btn.dataset.matchFilter||"ALL";render(channels)}));
+document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.addEventListener("click",()=>{const requested=btn.dataset.matchFilter||"ALL";selectedMatchFilter=(requested!=="ALL"&&selectedMatchFilter===requested)?"ALL":requested;render(channels)}));
 $("search").addEventListener("input",()=>render(channels));
 // Admin API must point to the separately deployed Cloudflare Worker; never put the admin password in this HTML.
 const ADMIN_API_BASE = ""; // Set to your admin/status Worker URL, e.g. https://your-admin-worker.workers.dev
@@ -2063,4 +2058,14 @@ document.addEventListener("touchend", e => {
 .match-filter b{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#27354a;color:#f2fbff;font-size:10px}
 .match-filter.active{border-color:#19c9e8;background:linear-gradient(120deg,#12bfe3,#0878b6);color:#04131b;box-shadow:0 4px 14px #12bfe333}
 .match-filter.active b{background:#061e2a;color:#fff}
+</style>
+
+<style>
+/* Compact English match filters placed in the highlighted Live Sports header area. */
+.sports-sectionhead{display:flex!important;align-items:center!important;gap:6px!important;min-width:0}
+.sports-sectionhead h2{flex:0 0 auto;white-space:nowrap}
+.sports-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex:1;min-width:0}
+.sports-head-actions .match-filter{flex:0 1 auto;min-width:0;min-height:30px;padding:5px 7px;gap:4px;border-radius:8px;font-size:9px;letter-spacing:.2px}
+.sports-head-actions .match-filter b{min-width:17px;height:17px;padding:0 4px;font-size:9px}
+@media(max-width:420px){.sports-sectionhead{padding:8px 9px!important}.sports-sectionhead h2{font-size:12px!important}.sports-head-actions{gap:4px}.sports-head-actions .match-filter{font-size:8px;padding:5px 5px;gap:3px}.sports-head-actions .match-filter b{min-width:15px;height:15px;font-size:8px}}
 </style>

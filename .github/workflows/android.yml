@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - 'package.json'
-      - 'package-lock.json'
       - 'capacitor.config.json'
       - 'scripts/**'
       - 'www/**'
@@ -40,6 +39,59 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
+
+      - name: Enable Android screen rotation
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          path = "android/app/src/main/AndroidManifest.xml"
+          tree = ET.parse(path)
+          root = tree.getroot()
+
+          ns = "{http://schemas.android.com/apk/res/android}"
+          app = root.find("application")
+
+          if app is None:
+              raise SystemExit("Android application element not found")
+
+          activities = app.findall("activity")
+          main = None
+
+          for activity in activities:
+              intent = activity.find("intent-filter")
+              if intent is None:
+                  continue
+
+              actions = [
+                  x.get(ns + "name")
+                  for x in intent.findall("action")
+              ]
+              categories = [
+                  x.get(ns + "name")
+                  for x in intent.findall("category")
+              ]
+
+              if (
+                  "android.intent.action.MAIN" in actions
+                  and "android.intent.category.LAUNCHER" in categories
+              ):
+                  main = activity
+                  break
+
+          if main is None:
+              raise SystemExit("Main Android activity not found")
+
+          main.set(ns + "screenOrientation", "fullSensor")
+
+          tree.write(
+              path,
+              encoding="utf-8",
+              xml_declaration=True
+          )
+
+          print("Screen rotation enabled.")
+          PY
 
       - name: Setup Java
         uses: actions/setup-java@v4

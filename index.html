@@ -555,6 +555,15 @@ body{
 }
 </style>
 
+
+<style id="match-start-time-channel-tag">
+/* Match card labels requested; no existing match/player logic changed. */
+#liveSportsChannels .channel{position:relative!important;padding-top:24px!important;padding-bottom:24px!important}
+#liveSportsChannels .match-start-label{position:absolute;top:5px;left:50%;transform:translateX(-50%);max-width:calc(100% - 18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(8px,2.1vw,10px);font-weight:800;letter-spacing:.2px;color:#ffd7a1;background:rgba(255,116,65,.12);border:1px solid rgba(255,126,75,.8);padding:3px 7px;line-height:1.15;z-index:2;border-radius:2px}
+#liveSportsChannels .match-channel-tag{position:absolute;left:7px;bottom:6px;z-index:2;font-size:9px;font-weight:900;letter-spacing:.4px;color:#bdf8ff;background:rgba(8,26,39,.92);border:1px solid #20cbe8;border-radius:4px;padding:3px 6px;line-height:1}
+@media(max-width:420px){#liveSportsChannels .channel{padding-top:24px!important;padding-bottom:23px!important}#liveSportsChannels .match-start-label{font-size:8px;padding:3px 5px}#liveSportsChannels .match-channel-tag{left:5px;bottom:5px;font-size:8px;padding:3px 5px}}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -776,6 +785,17 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   }else logoBox.textContent=logoValue;
  }
  if(isLiveEvent){
+  // Show the same label on every individual match JSON card.
+  const startLabel=document.createElement("div");startLabel.className="match-start-label";
+  startLabel.textContent="Match Start Time";
+  const sourcePath=String(ch.__sourceFile||ch.sourceFile||ch.file||"");
+  const fileMatch=sourcePath.match(/match-(\d+)\.json/i);
+  const channelNumber=fileMatch?fileMatch[1]:"";
+  if(channelNumber){
+   const channelTag=document.createElement("span");channelTag.className="match-channel-tag";
+   channelTag.textContent="CH-"+channelNumber;b.appendChild(channelTag);
+  }
+  b.appendChild(startLabel);
   const badgeRow=document.createElement("div");badgeRow.className="sports-badge-row";
   const status=document.createElement("span");status.className="sports-status";
   const now=Date.now(),start=Date.parse(ch.startTime||""),end=Date.parse(ch.endTime||"");

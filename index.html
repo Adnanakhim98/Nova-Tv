@@ -722,6 +722,81 @@ body{
 }
 </style>
 
+
+<style id="sportynova-match-card-compact-v3">
+/* Compact match cards: smaller team names, tighter vertical spacing, blinking green channel light. */
+#liveSportsChannels .channelrow.sportsrow .channel.match-card{
+  padding:7px 9px 8px!important;
+}
+#liveSportsChannels .match-card .match-start-label{
+  display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+  justify-content:space-between!important;align-items:center!important;
+  gap:5px 8px!important;margin:0 0 5px!important;padding:4px 6px!important;
+  min-height:0!important;
+}
+#liveSportsChannels .match-start-text{
+  flex:1 1 auto!important;min-width:0!important;text-align:left!important;
+  overflow-wrap:anywhere!important;
+}
+#liveSportsChannels .match-channel-group{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 auto!important;gap:5px!important;white-space:nowrap!important;
+}
+#liveSportsChannels .match-channel-text{
+  display:inline-block!important;font-weight:900!important;white-space:nowrap!important;
+}
+#liveSportsChannels .match-online-lamp{
+  display:inline-block!important;flex:0 0 8px!important;width:8px!important;height:8px!important;
+  border-radius:50%!important;background:#25f477!important;
+  box-shadow:0 0 5px rgba(37,244,119,.9),0 0 10px rgba(37,244,119,.55)!important;
+  animation:sportynovaGreenBlink 1s ease-in-out infinite!important;
+}
+@keyframes sportynovaGreenBlink{
+  0%,100%{opacity:1;box-shadow:0 0 5px rgba(37,244,119,.95),0 0 10px rgba(37,244,119,.6)}
+  50%{opacity:.28;box-shadow:0 0 1px rgba(37,244,119,.3)}
+}
+#liveSportsChannels .match-card .team-logos{
+  min-height:0!important;height:auto!important;margin:0 0 5px!important;
+  gap:clamp(7px,2.4vw,13px)!important;
+}
+#liveSportsChannels .match-card .team-logo{
+  gap:3px!important;
+}
+#liveSportsChannels .match-card .team-logo img,
+#liveSportsChannels .match-card .team-logo-fallback{
+  width:clamp(38px,10.5vw,52px)!important;height:clamp(38px,10.5vw,52px)!important;
+}
+#liveSportsChannels .match-card .team-logo small{
+  font-size:10px!important;line-height:1.15!important;font-weight:700!important;
+}
+#liveSportsChannels .match-card .team-vs{
+  margin-top:11px!important;font-size:11px!important;
+}
+#liveSportsChannels .match-card .sports-badge-row{
+  padding-top:5px!important;gap:4px!important;
+}
+#liveSportsChannels .match-card .sports-status,
+#liveSportsChannels .match-card .sports-type{
+  padding:4px 7px!important;font-size:9px!important;
+}
+@media(max-width:420px){
+ #liveSportsChannels .channelrow.sportsrow .channel.match-card{padding:6px 7px 7px!important}
+ #liveSportsChannels .match-card .match-start-label{margin-bottom:4px!important;padding:4px 5px!important;gap:4px 6px!important}
+ #liveSportsChannels .match-start-text{font-size:9px!important}
+ #liveSportsChannels .match-channel-text{font-size:9px!important}
+ #liveSportsChannels .match-online-lamp{width:7px!important;height:7px!important;flex-basis:7px!important}
+ #liveSportsChannels .match-card .team-logos{margin-bottom:4px!important;gap:4px!important}
+ #liveSportsChannels .match-card .team-logo img,
+ #liveSportsChannels .match-card .team-logo-fallback{width:clamp(35px,9.5vw,45px)!important;height:clamp(35px,9.5vw,45px)!important}
+ #liveSportsChannels .match-card .team-logo small{font-size:9px!important;line-height:1.15!important}
+ #liveSportsChannels .match-card .team-vs{margin-top:10px!important;font-size:10px!important}
+ #liveSportsChannels .match-card .sports-badge-row{padding-top:4px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #liveSportsChannels .match-online-lamp{animation:none!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -951,8 +1026,18 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   const startLabel=document.createElement("div");
   startLabel.className="match-start-label";
   const startTimeText=formatMatchStartTime(ch);
-  startLabel.textContent=channelNumber ? (startTimeText+"  |  CH-"+channelNumber) : startTimeText;
-  if(channelNumber) startLabel.title="Channel "+channelNumber;
+  startLabel.replaceChildren();
+  const startText=document.createElement("span");
+  startText.className="match-start-text";
+  startText.textContent=startTimeText;
+  startLabel.appendChild(startText);
+  if(channelNumber){
+   const channelGroup=document.createElement("span");channelGroup.className="match-channel-group";
+   const lamp=document.createElement("span");lamp.className="match-online-lamp";lamp.setAttribute("aria-label","Online indicator");
+   const channelText=document.createElement("span");channelText.className="match-channel-text";channelText.textContent="CH-"+channelNumber;
+   channelGroup.append(lamp,channelText);startLabel.appendChild(channelGroup);
+   startLabel.title="Channel "+channelNumber;
+  }
 
   const badgeRow=document.createElement("div");badgeRow.className="sports-badge-row";
   const status=document.createElement("span");status.className="sports-status";

@@ -6,12 +6,35 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
+    "url": "https://ss-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/eieh0ekrzy/out/v1/2587259ec56e439086e501951f31ccf7/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "Tapmad",
-        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad2/master.m3u8",
+        "name": "WILLOW FHD",
+        "url": "https://ss-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/eieh0ekrzy/out/v1/2587259ec56e439086e501951f31ccf7/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "85e95a4fae22e02459252a03faaf3166:29334fa5e1d5708ed994f8bf74687933"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "SPORTSCAST",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.44/hls/XAXAXAXW.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "T SPORTS HD",
+        "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
         "show": "yes"
       },
       {
@@ -26,6 +49,10 @@
     "endTime": "2026-10-28T03:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS"
+    "matchType": "CRICKETS",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "85e95a4fae22e02459252a03faaf3166:29334fa5e1d5708ed994f8bf74687933"
+    }
   }
 }

@@ -6,30 +6,17 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/z5oyxzsxdk/out/v1/7695a0f64a0e424b973d5b09a2a3eb91/cenc.mpd",
+    "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
     "section": "liveSports",
     "streams": [
       {
-        "name": "D SPORTS + FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/z5oyxzsxdk/out/v1/7695a0f64a0e424b973d5b09a2a3eb91/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "f836853d8eac19446ed9535f5fc568b1:b3bc5ef00602b29abac7e482d3d9fbf3"
-        },
+        "name": "T SPORTS HD",
+        "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
         "show": "yes"
       },
       {
-        "name": "SportDigital Fussball",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ssdefyhkkr/out/v1/cf01290cb7f64525bdf861580a016ca8/cenc.mpd?",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "0ad4080cdff8c60b1233b22087f0b340:285f129c5eca01dd08a5d5a14ad801c8"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "TV QUALITY",
-        "url": "http://162.251.160.53:8089/prime_us_b0hn5k93f9/index.m3u8",
+        "name": "STAR SPORTS HD",
+        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
         "show": "yes"
       }
     ],
@@ -39,10 +26,6 @@
     "endTime": "2026-10-28T03:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS",
-    "drm": {
-      "scheme": "clearkey",
-      "license": "f836853d8eac19446ed9535f5fc568b1:b3bc5ef00602b29abac7e482d3d9fbf3"
-    }
+    "matchType": "CRICKETS"
   }
 }

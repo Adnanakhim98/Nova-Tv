@@ -644,6 +644,84 @@ body{
 }
 </style>
 
+
+<style id="sportynova-match-card-final-v2">
+#liveSportsChannels .channelrow.sportsrow .channel.match-card{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:flex-start!important;gap:0!important;min-width:0!important;
+  height:auto!important;min-height:0!important;padding:10px 10px 11px!important;
+  overflow:hidden!important;border-radius:18px!important;
+  background:radial-gradient(ellipse at 50% 0%,rgba(31,196,226,.15),transparent 60%),linear-gradient(145deg,#142437,#0a111d 78%)!important;
+  border:1px solid rgba(69,190,220,.30)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.035)!important;
+}
+#liveSportsChannels .match-card .match-start-label{
+  position:static!important;transform:none!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;text-align:center!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;margin:0 0 12px!important;padding:6px 5px!important;
+  border:1px solid rgba(255,183,99,.42)!important;border-radius:9px!important;
+  background:linear-gradient(90deg,rgba(255,147,66,.13),rgba(255,204,121,.07))!important;
+  color:#ffdda9!important;font-size:clamp(9px,2.5vw,11px)!important;
+  font-weight:900!important;line-height:1.35!important;letter-spacing:.15px!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#liveSportsChannels .match-card .team-logos{
+  display:flex!important;align-items:flex-start!important;justify-content:center!important;
+  gap:clamp(8px,3vw,16px)!important;width:100%!important;min-width:0!important;
+  min-height:100px!important;height:auto!important;margin:0 0 10px!important;
+}
+#liveSportsChannels .match-card .team-logo{
+  display:flex!important;flex:1 1 0!important;flex-direction:column!important;
+  align-items:center!important;justify-content:flex-start!important;gap:6px!important;
+  min-width:0!important;max-width:44%!important;text-align:center!important;
+}
+#liveSportsChannels .match-card .team-logo img,
+#liveSportsChannels .match-card .team-logo-fallback{
+  width:clamp(44px,12vw,60px)!important;height:clamp(44px,12vw,60px)!important;
+  flex:0 0 auto!important;object-fit:contain!important;
+}
+#liveSportsChannels .match-card .team-logo small{
+  display:block!important;width:100%!important;max-width:100%!important;
+  overflow:visible!important;text-overflow:clip!important;white-space:normal!important;
+  overflow-wrap:anywhere!important;word-break:normal!important;text-align:center!important;
+  color:#eaf6ff!important;font-size:clamp(10px,2.9vw,13px)!important;
+  font-weight:800!important;line-height:1.25!important;
+}
+#liveSportsChannels .match-card .team-vs{
+  flex:0 0 auto!important;align-self:center!important;margin-top:15px!important;
+  font-size:clamp(11px,3vw,14px)!important;font-weight:1000!important;
+}
+#liveSportsChannels .match-card .sports-badge-row{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-wrap:wrap!important;gap:6px!important;width:100%!important;min-width:0!important;
+  margin:0!important;padding-top:9px!important;border-top:1px solid rgba(126,168,202,.16)!important;
+}
+#liveSportsChannels .match-card .sports-status,
+#liveSportsChannels .match-card .sports-type{
+  max-width:100%!important;white-space:normal!important;text-align:center!important;
+  overflow-wrap:anywhere!important;line-height:1.25!important;
+}
+#liveSportsChannels .match-card .sports-status.is-ended{
+  color:#c4ccda!important;background:#252c3b!important;border-color:#505c72!important;
+}
+/* The old bottom channel/name row is no longer used. */
+#liveSportsChannels .match-card-footer,
+#liveSportsChannels .match-card-name{display:none!important}
+@media(max-width:420px){
+ #liveSportsChannels .channelrow.sportsrow .channel.match-card{padding:9px 7px 10px!important;border-radius:16px!important}
+ #liveSportsChannels .match-card .match-start-label{margin-bottom:10px!important;padding:6px 4px!important;font-size:9px!important}
+ #liveSportsChannels .match-card .team-logos{gap:5px!important;min-height:91px!important;margin-bottom:8px!important}
+ #liveSportsChannels .match-card .team-logo{max-width:46%!important;gap:5px!important}
+ #liveSportsChannels .match-card .team-logo img,
+ #liveSportsChannels .match-card .team-logo-fallback{width:clamp(39px,11vw,50px)!important;height:clamp(39px,11vw,50px)!important}
+ #liveSportsChannels .match-card .team-logo small{font-size:clamp(10px,2.8vw,12px)!important;line-height:1.25!important}
+ #liveSportsChannels .match-card .team-vs{font-size:11px!important;margin-top:13px!important}
+ #liveSportsChannels .match-card .sports-status,
+ #liveSportsChannels .match-card .sports-type{font-size:9px!important;padding:4px 7px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -869,10 +947,12 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   const fileMatch=sourcePath.match(/match-(\d+)\.json/i);
   const channelNumber=fileMatch?fileMatch[1]:"";
 
-  // Show the real start time supplied by this match's JSON.
+  // Match start date/time and JSON channel number share one clean top row.
   const startLabel=document.createElement("div");
   startLabel.className="match-start-label";
-  startLabel.textContent=formatMatchStartTime(ch);
+  const startTimeText=formatMatchStartTime(ch);
+  startLabel.textContent=channelNumber ? (startTimeText+"  |  CH-"+channelNumber) : startTimeText;
+  if(channelNumber) startLabel.title="Channel "+channelNumber;
 
   const badgeRow=document.createElement("div");badgeRow.className="sports-badge-row";
   const status=document.createElement("span");status.className="sports-status";
@@ -884,15 +964,9 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   if(type.textContent==="FOOTBALL")type.classList.add("is-football");
   badgeRow.append(status,type);
 
-  const matchFooter=document.createElement("div");matchFooter.className="match-card-footer";
-  if(channelNumber){
-   const channelTag=document.createElement("span");channelTag.className="match-channel-tag";
-   channelTag.textContent="CH-"+channelNumber;matchFooter.appendChild(channelTag);
-  }
-  name.classList.add("match-card-name");
-  matchFooter.appendChild(name);
+  // Keep only the individual team names shown directly under their logos.
   b.classList.add("match-card");
-  b.append(startLabel,logoBox,badgeRow,matchFooter);
+  b.append(startLabel,logoBox,badgeRow);
  }else{
   const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
   b.append(logoBox,name,category);
@@ -910,7 +984,7 @@ function formatMatchStartTime(ch){
   ch.startTime,ch.start_time,ch.kickoff,ch.kickoffTime,ch.matchDateTime,
   ch.datetime,ch.dateTime,ch.start,ch.matchDateTimeLocal,
   (dateValue&&timeValue)?(String(dateValue).includes("T")?String(dateValue):String(dateValue)+" "+String(timeValue)):null,
-  dateValue,timeValue
+  timeValue,dateValue
  ];
  for(const value of candidates){
   if(value===undefined||value===null||String(value).trim()==="")continue;
@@ -918,11 +992,11 @@ function formatMatchStartTime(ch){
   const parsed=Date.parse(raw);
   if(Number.isFinite(parsed)){
    const d=new Date(parsed);
-   const datePart=new Intl.DateTimeFormat("en-GB",{day:"2-digit",month:"short",year:"numeric",timeZone:"Asia/Dhaka"}).format(d);
-   const timePart=new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",hour12:true,timeZone:"Asia/Dhaka"}).format(d);
-   return "Match Start • "+datePart+" · "+timePart+" BD";
+   const datePart=new Intl.DateTimeFormat("en-GB",{day:"2-digit",month:"short",timeZone:"Asia/Dhaka"}).format(d).replace(/\s+/g,"-");
+   const timePart=new Intl.DateTimeFormat("en-US",{hour:"2-digit",minute:"2-digit",hour12:true,timeZone:"Asia/Dhaka"}).format(d).replace(/\s+/g," ").toUpperCase();
+   return datePart+". "+timePart;
   }
-  if(/^\\d{1,2}:\\d{2}(\\s?(am|pm))?$/i.test(raw))return "Match Start • "+raw;
+  if(/^\d{1,2}:\d{2}(\s?(am|pm))?$/i.test(raw))return raw.replace(/\s+/g," ").toUpperCase();
  }
  return "Match Start Time: TBA";
 }

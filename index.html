@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 24 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 2তথথদররছ4 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -592,7 +592,15 @@ body{
 ।</span></div></div>
 </section>
 <main class="channelarea" id="channelArea">
- <div class="sectionhead"><h2>⚽ Live Sports</h2><span class="section-count" id="liveSportsCount">0 CHANNELS</span></div>
+ <div class="sectionhead sports-sectionhead">
+  <h2>⚽ Live Sports</h2>
+  <div class="match-filter-bar" id="matchFilterBar" aria-label="Match filters">
+   <button type="button" class="match-filter active" data-match-filter="ALL">All Matches <b id="allMatchCount">0</b></button>
+   <button type="button" class="match-filter" data-match-filter="LIVE"><span class="filter-live-dot"></span> Live <b id="liveMatchCount">0</b></button>
+   <button type="button" class="match-filter" data-match-filter="UPCOMING">⏱ Upcoming <b id="upcomingMatchCount">0</b></button>
+  </div>
+  <span class="section-count" id="liveSportsCount">0 MATCHES</span>
+ </div>
  <div class="channelrow sportsrow" id="liveSportsChannels"></div>
  <div class="sectionhead"><h2>📺 Live TV Channels</h2><span class="section-count" id="channelCount">0 CHANNELS</span></div>
  <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Channel categories"></div>
@@ -607,7 +615,7 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="";
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL";
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -671,20 +679,64 @@ function normalizeTeamName(value){
 }
 async function loadTeamLogos(){
  teamLogoMap=Object.create(null);
- try{
-  const response=await fetch("./data/teams.json",{cache:"no-store"});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const data=await response.json();
-  const teams=Array.isArray(data)?data:(data.teams||[]);
+ const repoOwner="Adnanakhim98",repoName="Nova-Tv",branch="main";
+ const rawBase=`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+ const registerTeams=(data,sourceUrl)=>{
+  const teams=Array.isArray(data)?data:(Array.isArray(data?.teams)?data.teams:[]);
   teams.forEach(team=>{
    if(!team||!team.name||!team.logo)return;
-   const entry={name:String(team.name),logo:String(team.logo)};
+   let logo=String(team.logo).trim();
+   try{
+    if(/^https?:\/\//i.test(logo)){
+     // Absolute logo URLs are used as-is.
+    }else if(logo.startsWith("/")){
+     logo=rawBase+logo.replace(/^\/+/,"");
+    }else if(!logo.startsWith("data:")){
+     // Relative logo paths are resolved from the JSON file; root-style paths work too.
+     if(/^(?:\.\.\/)*logos\//i.test(logo)) logo=rawBase+logo.replace(/^(?:\.\.\/)+/,"");
+     else if(logo.startsWith("./logos/")) logo=rawBase+logo.slice(2);
+     else if(sourceUrl) logo=new URL(logo,sourceUrl).href;
+    }
+   }catch(e){}
+   const entry={name:String(team.name),logo};
    [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
     const key=normalizeTeamName(alias);
     if(key)teamLogoMap[key]=entry;
    });
   });
- }catch(error){console.warn("Could not load ./data/teams.json; using country flags/initials.",error);}
+ };
+ // Load a fallback shared list first, if present.
+ try{
+  const url=rawBase+"data/teams.json";
+  const response=await fetch(url,{cache:"force-cache"});
+  if(response.ok)registerTeams(await response.json(),url);
+ }catch(error){console.info("Optional data/teams.json not found.");}
+ // GitHub Pages cannot list folders directly. GitHub's repository tree API lets us
+ // discover every JSON file at any depth inside tournament/ automatically.
+ try{
+  const treeUrl=`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`;
+  const response=await fetch(treeUrl,{headers:{Accept:"application/vnd.github+json"},cache:"force-cache"});
+  if(!response.ok)throw new Error("GitHub tree API HTTP "+response.status);
+  const tree=await response.json();
+  const files=(tree.tree||[]).filter(item=>item.type==="blob"&&/^tournament\/.*\.json$/i.test(item.path));
+  const batches=[];
+  for(let i=0;i<files.length;i+=8)batches.push(files.slice(i,i+8));
+  for(const batch of batches){
+   await Promise.all(batch.map(async file=>{
+    try{
+     const url=rawBase+file.path.split("/").map(encodeURIComponent).join("/");
+     const res=await fetch(url,{cache:"force-cache"});
+     if(res.ok)registerTeams(await res.json(),url);
+    }catch(error){console.info("Skipped tournament JSON:",file.path);}
+   }));
+  }
+  console.info(`Loaded team logo aliases from ${files.length} tournament JSON file(s).`);
+ }catch(error){
+  console.warn("Could not auto-discover tournament JSON files. Trying common locations.",error);
+  for(const path of ["tournament/laliga.json","tournament/teams.json","laliga.json"]){
+   try{const url=rawBase+path;const res=await fetch(url,{cache:"force-cache"});if(res.ok)registerTeams(await res.json(),url);}catch(e){}
+  }
+ }
 }
 function teamFlagCode(team){
  const n=normalizeTeamName(team);
@@ -744,18 +796,59 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  });
  root.appendChild(b);
 }
+function matchDateValue(ch){
+ const direct=[ch.startTime,ch.start_time,ch.kickoff,ch.kickoffTime,ch.matchDateTime,ch.datetime,ch.dateTime,ch.start,ch.date];
+ for(const value of direct){if(value===undefined||value===null||value==="")continue;const parsed=Date.parse(String(value));if(Number.isFinite(parsed))return parsed;}
+ const date=ch.matchDate||ch.match_date||ch.date||ch.gameDate||ch.game_date;
+ const time=ch.matchTime||ch.match_time||ch.time||ch.kickoff_time||ch.start_time;
+ if(date){const parsed=Date.parse(String(date)+(time&&!String(date).includes("T")?" "+String(time):""));if(Number.isFinite(parsed))return parsed;}
+ return Number.POSITIVE_INFINITY;
+}
+function matchStatus(ch,now=Date.now()){
+ const start=matchDateValue(ch),endValues=[ch.endTime,ch.end_time,ch.endDateTime,ch.end];
+ let end=Number.POSITIVE_INFINITY;for(const value of endValues){const parsed=Date.parse(String(value||""));if(Number.isFinite(parsed)){end=parsed;break;}}
+ const declared=String(ch.status||ch.matchStatus||ch.state||"").toLowerCase();
+ if(/live|playing|in.?progress|1st half|2nd half|innings/.test(declared))return "LIVE";
+ if(/ended|finished|complete|full.?time|ft|result/.test(declared))return "ENDED";
+ if(Number.isFinite(end)&&now>=end)return "ENDED";
+ if(Number.isFinite(start)&&now>=start)return "LIVE";
+ return "UPCOMING";
+}
+function sortLiveMatches(items){
+ const now=Date.now();
+ const today=new Date(now);today.setHours(0,0,0,0);const tomorrow=today.getTime()+86400000;
+ return [...items].sort((a,b)=>{
+  const sa=matchStatus(a,now),sb=matchStatus(b,now);
+  const rank={LIVE:0,UPCOMING:1,ENDED:2};
+  if(rank[sa]!==rank[sb])return rank[sa]-rank[sb];
+  const da=matchDateValue(a),db=matchDateValue(b);
+  if(sa==="UPCOMING"){
+   const ba=da>=today.getTime()&&da<tomorrow?0:1,bb=db>=today.getTime()&&db<tomorrow?0:1;
+   if(ba!==bb)return ba-bb;
+  }
+  return da-db||String(a.name||"").localeCompare(String(b.name||""));
+ });
+}
 function render(list=channels){
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
  tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
  const query=$("search").value.trim().toLowerCase();
  const now=Date.now();
- const liveEvents=liveSports.filter(ch=>{
-  const end=Date.parse(ch.endTime||"");
-  if(Number.isFinite(end)&&now>=end)return false;
-  return !query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query);
- });
+ // Automatically hide matches as soon as their status/end time marks them ENDED.
+ // render() runs every 30 seconds, so the card disappears without a page refresh.
+ const availableMatches=sortLiveMatches(liveSports).filter(ch=>matchStatus(ch,now)!=="ENDED");
+ const liveCount=availableMatches.filter(ch=>matchStatus(ch,now)==="LIVE").length;
+ const upcomingCount=availableMatches.filter(ch=>matchStatus(ch,now)==="UPCOMING").length;
+ $("allMatchCount").textContent=availableMatches.length;
+ $("liveMatchCount").textContent=liveCount;
+ $("upcomingMatchCount").textContent=upcomingCount;
+ document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.matchFilter===selectedMatchFilter));
+ const liveEvents=availableMatches.filter(ch=>
+  (selectedMatchFilter==="ALL"||matchStatus(ch,now)===selectedMatchFilter) &&
+  (!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query))
+ );
  liveEvents.forEach(ch=>makeChannelCard(ch,sportsRoot,"Live Sports",true));
- $("liveSportsCount").textContent=liveEvents.length+" CHANNELS";
+ $("liveSportsCount").textContent=liveEvents.length+" MATCHES";
  const filtered=list.filter(ch=>!query||(String(ch.name||"")+" "+String(ch.category||"")).toLowerCase().includes(query));
  const counts={};filtered.forEach(ch=>{const cat=categoryFor(ch);counts[cat]=(counts[cat]||0)+1});
  Object.keys(categoryInfo).sort((a,b)=>categoryInfo[a].order-categoryInfo[b].order).forEach(cat=>{
@@ -1230,6 +1323,7 @@ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".m
 $("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
 $("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
+document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedMatchFilter=btn.dataset.matchFilter||"ALL";render(channels)}));
 $("search").addEventListener("input",()=>render(channels));
 // Admin API must point to the separately deployed Cloudflare Worker; never put the admin password in this HTML.
 const ADMIN_API_BASE = ""; // Set to your admin/status Worker URL, e.g. https://your-admin-worker.workers.dev
@@ -1282,25 +1376,81 @@ function renderAdminRows(){
 $("adminLoginBtn").addEventListener("click",adminLogin);$("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")adminLogin()});$("adminClose").addEventListener("click",closeAdminPanel);$("adminModal").addEventListener("click",e=>{if(e.target===$("adminModal"))closeAdminPanel()});$("adminRefresh").addEventListener("click",loadAdminDashboard);$("adminSearch").addEventListener("input",renderAdminRows);$("adminLogout").addEventListener("click",()=>{adminPasswordInMemory="";closeAdminPanel()});
 
 async function loadConfig(){
+ if(configLoadInProgress)return;
+ configLoadInProgress=true;
  const files={Bangla:"./data/bangla.json",Indian:"./data/india.json",Sports:"./data/sports.json",News:"./data/news.json",Music:"./data/music.json",Entertainment:"./data/entertainment.json",Movie:"./data/movie.json",Cartoon:"./data/cartoon.json",Religion:"./data/religion.json",Documentary:"./data/documentary.json"};
  try{
   const results=await Promise.all(Object.entries(files).map(async([category,path])=>{try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();return (d.channels||d.liveTvChannels||[]).filter(c=>c&&c.name).map(c=>({...c,section:"tv",category:category}));}catch(e){console.warn("Could not load "+path,e);return [];}}));
   channels=results.flat();
   // Apply server-side admin overrides (hide/show and URL changes) without changing the original JSON files.
   try{const adminData=await adminApi("/status");onlineStatusMap=adminData.statuses||{};const overrides=adminData.overrides||{};channels=channels.map((ch,i)=>{const id=channelAdminId(ch),ov=overrides[id]||overrides[ch.name];return ov?{...ch,...(ov.url?{url:ov.url}:{}),Show:ov.hidden?"N":"Y",id}:({...ch,id});}).filter(isChannelShown);}catch(e){channels=channels.map(ch=>({...ch,id:channelAdminId(ch)})).filter(isChannelShown);}
-  // Each live match is maintained in its own JSON file under data/matches/.
-  // Example: data/matches/match-1.json contains { "match": { ... } }.
-  const matchFiles=Array.from({length:10},(_,i)=>`./data/matches/match-${i+1}.json`);
-  const matchResults=await Promise.all(matchFiles.map(async path=>{
-   try{
-    const r=await fetch(path,{cache:"no-store"});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const d=await r.json();
-    const item=d.match||(Array.isArray(d.liveSports)?d.liveSports[0]:null)||(Array.isArray(d.channels)?d.channels[0]:null);
-    return item&&item.name&&isChannelShown(item)?{...item,section:"liveSports",category:"Live Sports"}:null;
-   }catch(e){console.warn("Could not load match file "+path,e);return null;}
-  }));
-  liveSports=matchResults.filter(Boolean);
+  // Discover match JSONs from every tournament subfolder, data/matches/, and
+  // any other folder where a file is named match-*.json. No 1..10 limit.
+  const repoOwner="Adnanakhim98",repoName="Nova-Tv",branch="main";
+  const rawBase=`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+  const matchCandidates=[];
+  const candidatePaths=new Set();
+  const addCandidate=path=>{
+   if(!path||candidatePaths.has(path))return;
+   candidatePaths.add(path);
+   matchCandidates.push({path,url:rawBase+path.split("/").map(encodeURIComponent).join("/")+"?v="+Date.now()});
+  };
+  try{
+   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1&v=${Date.now()}`,{headers:{Accept:"application/vnd.github+json"},cache:"no-store"});
+   if(!treeResponse.ok)throw new Error("GitHub tree API HTTP "+treeResponse.status);
+   const tree=await treeResponse.json();
+   (tree.tree||[]).filter(item=>item.type==="blob"&&/\.json$/i.test(item.path)&&(
+      /^(?:data\/matches|tournament)\//i.test(item.path) ||
+      /(?:^|\/)match[-_ ]?\d*\.json$/i.test(item.path) ||
+      /(?:^|\/)(?:live[-_ ]?sports|sports[-_ ]?matches)\.json$/i.test(item.path)
+   )).forEach(item=>addCandidate(item.path));
+   if(tree.truncated)console.warn("GitHub tree was truncated; numbered-file fallback will also be tried.");
+   if(tree.truncated)for(let i=1;i<=100;i++){addCandidate(`data/matches/match-${i}.json`);addCandidate(`tournament/match-${i}.json`);addCandidate(`match-${i}.json`);}
+  }catch(error){
+   console.warn("Could not discover match JSON files via GitHub API; trying numbered files in common locations.",error);
+   for(let i=1;i<=100;i++){addCandidate(`data/matches/match-${i}.json`);addCandidate(`tournament/match-${i}.json`);addCandidate(`match-${i}.json`);}
+  }
+  const extractMatches=(data)=>{
+   const out=[],seenObjects=new Set();
+   const add=item=>{
+    if(!item||typeof item!=="object"||Array.isArray(item)||seenObjects.has(item))return;
+    seenObjects.add(item);
+    const hasSource=!!(item.url||item.streamUrl||item.stream_url||item.link||item.streams||item.servers||item.source);
+    const identity=!!(item.name||item.title||item.matchName||item.match_name);
+    const matchMeta=!!(item.startTime||item.start_time||item.kickoff||item.kickoffTime||item.matchDate||item.match_date||item.matchTime||item.match_time||item.matchType||item.match_type||/live\s*sports|football|cricket|basketball|tennis/i.test(String(item.category||item.section||"")));
+    if(identity&&hasSource&&matchMeta)out.push(item);
+   };
+   const walk=(value,depth=0)=>{
+    if(!value||typeof value!=="object"||depth>8)return;
+    if(Array.isArray(value)){value.forEach(v=>walk(v,depth+1));return;}
+    add(value);
+    Object.values(value).forEach(v=>{if(v&&typeof v==="object")walk(v,depth+1);});
+   };
+   walk(data);
+   return out;
+  };
+  const loadedMatches=[];
+  for(let i=0;i<matchCandidates.length;i+=8){
+   const batch=matchCandidates.slice(i,i+8);
+   const results=await Promise.all(batch.map(async file=>{
+    try{
+     const r=await fetch(file.url,{cache:"no-store"});
+     if(!r.ok)return [];
+     const d=await r.json();
+     return extractMatches(d).map(item=>({...item,name:item.name||item.title||item.matchName||item.match_name,__sourceFile:file.path,section:"liveSports",category:item.category||"Live Sports"})).filter(item=>isChannelShown(item));
+    }catch(e){return [];}
+   }));
+   results.forEach(items=>loadedMatches.push(...items));
+  }
+  // Keep every enabled/visible match, including ended ones, and sort LIVE first,
+  // then today's upcoming, future matches, and ended matches at the bottom.
+  const seenMatches=new Set();
+  liveSports=sortLiveMatches(loadedMatches).filter(item=>{
+   const key=[normalizeTeamName(item.name),matchDateValue(item)].join("|");
+   if(seenMatches.has(key))return false;
+   seenMatches.add(key);
+   return true;
+  });
   // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
   if(!liveSports.length){
    for(const path of ["./data/live-sports.json","./live-sports.json"]){
@@ -1313,6 +1463,7 @@ async function loadConfig(){
  }catch(e){console.warn("Separate JSON load failed",e)}
   await loadTeamLogos();
  if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();
+ configLoadInProgress=false;
 }
 
 // Standalone-style player controls connected to the existing HLS/Shaka engine.
@@ -1476,8 +1627,10 @@ const requestedName=pageParams.get("name")||"SPORTYNOVA Live";
 if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
 else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
 loadConfig();
-// Refresh match status and hide ended matches automatically.
+// Re-scan GitHub JSON periodically so newly added/edited match files appear without
+// requiring an HTML edit; render status/sort between full data refreshes.
 setInterval(()=>render(channels),30000);
+setInterval(()=>{if(!configLoadInProgress)loadConfig();},180000);
 // Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
 document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
 document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});
@@ -1906,4 +2059,27 @@ document.addEventListener("touchend", e => {
 .admin-channel-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.admin-channel-actions .btn{padding:6px 8px;font-size:10px}
 .admin-hidden-label{font-size:10px;color:#ffc46b;margin-left:5px}
 @media(max-width:420px){.sectionhead{gap:5px}.channel-section-tools{gap:4px}.online-pill{font-size:10px;padding:5px 7px}.admin-open-btn{font-size:10px;padding:6px 7px}.admin-channel-item{grid-template-columns:minmax(0,1fr)}.admin-channel-actions{justify-content:flex-start}}
+
+.match-filter-bar{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 9px;margin-top:-1px}
+.match-filter-bar::-webkit-scrollbar{display:none}
+.match-filter{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 11px;border:1px solid #2a354a;border-radius:11px;background:linear-gradient(145deg,#151d2b,#0d121e);color:#c3cee0;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}
+.match-filter b{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#27354a;color:#f2fbff;font-size:10px}
+.match-filter.active{border-color:#19c9e8;background:linear-gradient(120deg,#12bfe3,#0878b6);color:#04131b;box-shadow:0 4px 14px #12bfe333}
+.match-filter.active b{background:#061e2a;color:#fff}
+</style>
+
+
+<style id="sportynova-inline-match-filters">
+/* Match filters moved beside the Live Sports heading; playback and data logic preserved. */
+.channelarea > .sports-sectionhead{display:flex!important;align-items:center!important;gap:7px!important;justify-content:space-between!important;flex-wrap:nowrap!important}
+.sports-sectionhead h2{flex:0 0 auto!important;white-space:nowrap!important}
+.sports-sectionhead .match-filter-bar{display:flex!important;align-items:center!important;gap:5px!important;flex:1 1 auto!important;min-width:0!important;overflow:visible!important;padding:0!important;margin:0!important;scrollbar-width:none!important}
+.sports-sectionhead .match-filter{flex:1 1 0!important;min-width:0!important;min-height:31px!important;padding:5px 7px!important;gap:4px!important;border-radius:999px!important;font-size:clamp(8px,2.3vw,10px)!important;letter-spacing:0!important;border:1px solid rgba(111,157,194,.35)!important;background:linear-gradient(145deg,#19283b,#101725)!important;color:#c7d8eb!important;box-shadow:inset 0 1px rgba(255,255,255,.04),0 3px 8px #0003!important;transition:transform .16s,border-color .16s,background .16s!important}
+.sports-sectionhead .match-filter b{min-width:17px!important;height:17px!important;padding:0 4px!important;background:#2a3b52!important;color:#eaf7ff!important;font-size:9px!important}
+.sports-sectionhead .match-filter.active{background:linear-gradient(125deg,#48e8f5,#138ecb)!important;border-color:#68f1ff!important;color:#03131c!important;box-shadow:0 3px 12px #16cde63b,inset 0 1px #ffffff55!important}
+.sports-sectionhead .match-filter.active b{background:#062b3a!important;color:#fff!important}
+.sports-sectionhead .match-filter:active{transform:scale(.96)}
+.filter-live-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#ff4264;box-shadow:0 0 7px #ff4264aa}
+.sports-sectionhead .section-count{display:none!important}
+@media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
 </style>

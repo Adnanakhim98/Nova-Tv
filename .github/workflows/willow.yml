@@ -1,0 +1,52 @@
+
+name: Update Willow JSON
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Fetch and convert JSON
+        env:
+          SOURCE_URL: https://raw.githubusercontent.com/srhady/willow-event/main/live_sports.json
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+          from pathlib import Path
+
+          url = os.environ["SOURCE_URL"]
+
+          req = urllib.request.Request(
+              url, headers={"User-Agent": "Willow-Updater"}
+          )
+          with urllib.request.urlopen(req, timeout=30) as response:
+              source = json.load(response)
+
+          # Do not overwrite the output if the source is invalid.
+          if not isinstance(source, (dict, list)):
+              raise ValueError("Unexpected source JSON")
+
+          print("Source JSON fetched successfully.")
+          print("Root type:", type(source).__name__)
+
+          # TODO: Map source fields to your willow.json schema
+          # only after confirming the actual source structure.
+          PY

@@ -1,35 +1,58 @@
 {
-"match": {
-"name": "Bangladesh Vs West Indies",
-"category": "Live Sports",
-"logo": "▶",
-"logoUrl": "",
-"fallbackLogo": "▶",
-"tone": "blue",
-"url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/ojpgrthnnt/out/v1/52619efcaa3e473295a6fd19dd6e9437/cenc.mpd",
-"section": "liveSports",
-"streams": [
-{
-"name": "Tapmad",
-"url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad2/master.m3u8",
-"show": "yes"
-},
-{
-"name": "(Tapmad 2)",
-"url": "https://tencent-cdn.tapmad.com/v1/01a1456f124d15fc600b1e3e9683d7/01a145990eba15fc60e91e1786b054/main.m3u8",
-"show": "yes"
-}
-],
-"show": "yes",
-"id": 1,
-"startTime": "2026-10-28T09:30:00+06:00",
-"endTime": "2026-10-28T17:50:00+06:00",
-"enabled": true,
-"status": "auto",
-"matchType": "CRICKETS",
-"drm": {
-"scheme": "clearkey",
-"license": "b1ee06e6e306aa92e9a4658f739a1596:b993e1f264c6a637cd28427242f5f967"
-}
-}
+  "match": {
+    "name": "Bangladesh Vs West indies",
+    "category": "Live Sports",
+    "logo": "⚽",
+    "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
+    "fallbackLogo": "⚽",
+    "tone": "gold",
+    "url": "https://ss-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/eieh0ekrzy/out/v1/2587259ec56e439086e501951f31ccf7/cenc.mpd",
+    "section": "liveSports",
+    "streams": [
+      {
+        "name": "WILLOW FHD",
+        "url": "https://ss-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/eieh0ekrzy/out/v1/2587259ec56e439086e501951f31ccf7/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "85e95a4fae22e02459252a03faaf3166:29334fa5e1d5708ed994f8bf74687933"
+        },
+        "show": "no"
+      },
+      {
+        "name": "SPORTSCAST",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
+        },
+        "show": "no"
+      },
+      {
+        "name": "Tapmad",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad2/master.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "Tapmad-2",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a1456f124d15fc600b1e3e9683d7/01a145990eba15fc60e91e1786b054/main.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "STAR SPORTS HD",
+        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
+        "show": "no"
+      }
+    ],
+    "show": "yes",
+    "id": 2,
+    "startTime": "2026-10-28T09:20:00+06:00",
+    "endTime": "2026-10-28T17:50:00+06:00",
+    "enabled": true,
+    "status": "auto",
+    "matchType": "CRICKETS",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "85e95a4fae22e02459252a03faaf3166:29334fa5e1d5708ed994f8bf74687933"
+    }
+  }
 }

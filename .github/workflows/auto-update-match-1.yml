@@ -20,16 +20,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-
-      - name: Validate Python updater
-        run: python -m py_compile scripts/update-match-1.py
 
       - name: Update matching servers in match-1.json
         run: python scripts/update-match-1.py
@@ -37,7 +32,7 @@ jobs:
       - name: Commit JSON only when changed
         run: |
           if git diff --quiet -- data/matches/match-1.json; then
-            echo "No JSON changes: matching streams are already up to date."
+            echo "No JSON changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"

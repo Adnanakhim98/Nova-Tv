@@ -1,3 +1,135 @@
-{
-  "channels": []
-}
+[
+  {
+    "name": "Khushboo Bangla",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "https://cdn-4.pishow.tv/live/1473/master.m3u8",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/en/2/2b/B4U_Music.png",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "https://cdn-4.pishow.tv/live/1473/master.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  },
+  {
+    "name": "Pogo",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "https://stream.ottplus.live/live/pogo_sd_abr/index.m3u8",
+    "logoUrl": "",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "https://stream.ottplus.live/live/pogo_sd_abr/index.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  },
+  {
+    "name": "Nick Bangla",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "http://103.135.253.32:8080/NICK/index.m3u8",
+    "logoUrl": "",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "http://103.135.253.32:8080/NICK/index.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  },
+  {
+    "name": "Discovery Kids",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "https://stream.ottplus.live/live/discovery_kids_abr/live/discovery_kids/chunks.m3u8",
+    "logoUrl": "",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "https://stream.ottplus.live/live/discovery_kids_abr/live/discovery_kids/chunks.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  },
+  {
+    "name": "Disney Cartoon",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "https://tvsen7.aynaott.com/disney/index.m3u8",
+    "logoUrl": "",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "https://tvsen7.aynaott.com/disney/index.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  },
+  {
+    "name": "Disney Jr.",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "https://tvsen7.aynaott.com/disney/index.m3u8",
+    "logoUrl": "",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "https://tvsen7.aynaott.com/disney/index.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  },
+  {
+    "name": "Rongeen TV",
+    "category": "Kids",
+    "logo": "📺",
+    "tone": "red",
+    "url": "https://server.thelegitpro.in/rongeentv/rongeentv/index.m3u8",
+    "logoUrl": "",
+    "fallbackLogo": "📺",
+    "streams": [
+      {
+        "name": "Server 1",
+        "url": "https://server.thelegitpro.in/rongeentv/rongeentv/index.m3u8"
+      },
+      {
+        "name": "Server 2",
+        "url": ""
+      }
+    ]
+  }
+]

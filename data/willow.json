@@ -1,1 +1,44 @@
 
+{
+  "match": {
+    "name": "Paris Saint-Germain Vs Olympique Lyonnais",
+    "category": "Live Sports",
+    "logo": "⚽",
+    "logoUrl": "https://i.postimg.cc/zfwFjvxf/20261022-135825.png",
+    "fallbackLogo": "⚽",
+    "tone": "gold",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "section": "liveSports",
+    "streams": [
+      {
+        "name": "FANCODE1 FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "FANCODE2 FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
+        },
+        "show": "yes"
+      }
+    ],
+    "show": "yes",
+    "id": 3,
+    "startTime": "2026-10-27T01:20:00+06:00",
+    "endTime": "2026-10-27T03:30:00+06:00",
+    "enabled": true,
+    "status": "auto",
+    "matchType": "Football",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+    }
+  }
+}

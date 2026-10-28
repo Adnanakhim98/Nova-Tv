@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "New Zealand Vs India",
+    "name": "Bangladesh Vs West Indies",
     "category": "Live Sports",
     "logo": "▶",
     "logoUrl": "",
@@ -109,8 +109,8 @@
     ],
     "show": "yes",
     "id": 1,
-    "startTime": "2026-10-27T12:50:00+06:00",
-    "endTime": "2026-10-27T15:50:00+06:00",
+    "startTime": "2026-10-28T09:30:00+06:00",
+    "endTime": "2026-10-28T17:50:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "CRICKETS",

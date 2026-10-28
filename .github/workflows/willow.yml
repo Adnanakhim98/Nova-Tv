@@ -1,52 +1,74 @@
 
-name: Update Willow JSON
-
-on:
-  schedule:
-    - cron: "*/15 * * * *"
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Fetch and convert JSON
-        env:
-          SOURCE_URL: https://raw.githubusercontent.com/srhady/willow-event/main/live_sports.json
+      - name: Convert source JSON to Willow format
         run: |
           python - <<'PY'
           import json
-          import os
           import urllib.request
           from pathlib import Path
 
-          url = os.environ["SOURCE_URL"]
+          url = "https://raw.githubusercontent.com/srhady/willow-event/main/live_sports.json"
 
           req = urllib.request.Request(
-              url, headers={"User-Agent": "Willow-Updater"}
+              url, headers={"User-Agent": "Nova-Tv-Updater"}
           )
+
           with urllib.request.urlopen(req, timeout=30) as response:
               source = json.load(response)
 
-          # Do not overwrite the output if the source is invalid.
-          if not isinstance(source, (dict, list)):
-              raise ValueError("Unexpected source JSON")
+          # Find matches in the source JSON
+          if isinstance(source, list):
+              events = source
+          elif isinstance(source, dict):
+              events = None
+              for key in ("matches", "Matches", "events", "live_sports"):
+                  if isinstance(source.get(key), list):
+                      events = source[key]
+                      break
+              if events is None and isinstance(source.get("data"), list):
+                  events = source["data"]
+              if events is None:
+                  events = [source]
+          else:
+              raise ValueError("Unknown source JSON structure")
 
-          print("Source JSON fetched successfully.")
-          print("Root type:", type(source).__name__)
+          output = []
+          for i, event in enumerate(events, start=1):
+              if not isinstance(event, dict):
+                  continue
 
-          # TODO: Map source fields to your willow.json schema
-          # only after confirming the actual source structure.
+              name = event.get("name") or event.get("title")
+              if not name:
+                  continue
+
+              match = {
+                  "name": name,
+                  "category": event.get("category", "Live Sports"),
+                  "logo": event.get("logo", "⚽"),
+                  "logoUrl": (
+                      event.get("logoUrl")
+                      or event.get("logo_url")
+                      or event.get("cover_image")
+                      or ""
+                  ),
+                  "fallbackLogo": "⚽",
+                  "tone": event.get("tone", "gold"),
+                  "section": "liveSports",
+                  "show": event.get("show", "yes"),
+                  "id": event.get("id", i),
+                  "enabled": event.get("enabled", True),
+                  "status": event.get("status", "auto"),
+                  "matchType": event.get("matchType", "Football")
+              }
+              output.append({"match": match})
+
+          if not output:
+              raise ValueError("No matches found in source JSON")
+
+          Path("data").mkdir(exist_ok=True)
+          Path("data/willow.json").write_text(
+              json.dumps(output[0] if len(output) == 1 else output,
+                         ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8"
+          )
+          print(f"Converted {len(output)} match(es)")
           PY

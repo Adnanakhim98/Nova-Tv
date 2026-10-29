@@ -1,54 +1,53 @@
 {
   "match": {
-    "name": "Afghanistan Vs Zimbabwe",
+    "name": "Bangladesh Vs West indies",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://ss-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/eieh0ekrzy/out/v1/2587259ec56e439086e501951f31ccf7/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "Tapmad ",
-        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8"
-        "show": "yes"
-      },
-      {
-        "name": "SPORTSCAST",
+        "name": "FANCODE FHD",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
           "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
-        "show": "no"
-      },
-      {
-        "name": "Tapmad ",
-        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8",
         "show": "yes"
       },
       {
         "name": "T SPORTS HD",
-        "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
-        "show": "no"
+        "url": "https://s1.itcnbd.live/T-Sports-HD/tracks-v1a1/mono.m3u8",
+        "show": "yes"
       },
       {
-        "name": "STAR SPORTS HD",
-        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
-        "show": "no"
+        "name": "FANCODE HD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash-sd/enc/eayjamsonn/out/v1/6c25cddab58043a6ace0ac64d97983f0/cenc-sd.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "5318e462b9e0677487cb87837f0bbdb1:4fa0fb973b95738306005f2e8591bf8e"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "RABBITHOLE FHD",
+        "url": "https://hpc5-nmc-mnc.mydex.tv/_tkn_st=1793163608~exp=1793192468~acl=/bpk-tv/202/default/*~eti=fa5c4cfd542424a6997eeb9a23402d68~sid=bd517d501743ba42~imax=2~hmac=a93e35b6ba5cd2b8f875372fdddac209b26195fd898d8aacdb59621bf0359000/bpk-tv/202/default/index.m3u8",
+        "show": "yes"
       }
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-10-29T20:20:00+06:00",
-    "endTime": "2026-10-30T03:00:00+06:00",
+    "startTime": "2026-10-29T09:20:00+06:00",
+    "endTime": "2026-10-29T17:50:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "CRICKETS",
     "drm": {
       "scheme": "clearkey",
-      "license": "85e95a4fae22e02459252a03faaf3166:29334fa5e1d5708ed994f8bf74687933"
+      "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
     }
   }
 }

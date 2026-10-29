@@ -10,13 +10,13 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "T SPORTS HD",
-        "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
+        "name": "Tapmad",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8",
         "show": "yes"
       },
       {
-        "name": "STAR SPORTS HD",
-        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
+        "name": "Tapmad-2",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8",
         "show": "yes"
       }
     ],

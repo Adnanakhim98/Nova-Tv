@@ -1,4 +1,4 @@
-i{
+{
   "match": {
     "name": "Afghanistan Vs Zimbabwe",
     "category": "Live Sports",
@@ -26,7 +26,7 @@ i{
       {
         "name": "Tapmad ",
         "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8",
-        "show": "no"
+        "show": "yes"
       },
       {
         "name": "T SPORTS HD",

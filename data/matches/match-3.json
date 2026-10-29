@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Paris Saint-Germain Vs Olympique Lyonnais",
+    "name": "Afghanistan Vs Zimbabwe",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://i.postimg.cc/zfwFjvxf/20261022-135825.png",
@@ -30,11 +30,11 @@
     ],
     "show": "yes",
     "id": 3,
-    "startTime": "2026-10-27T01:20:00+06:00",
-    "endTime": "2026-10-27T03:30:00+06:00",
+    "startTime": "2026-10-29T03:20:00+06:00",
+    "endTime": "2026-10-30T03:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football",
+    "matchType": "CRICKETS",
     "drm": {
       "scheme": "clearkey",
       "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"

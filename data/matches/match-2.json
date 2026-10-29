@@ -10,12 +10,8 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "WILLOW FHD",
-        "url": "https://ss-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/eieh0ekrzy/out/v1/2587259ec56e439086e501951f31ccf7/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "85e95a4fae22e02459252a03faaf3166:29334fa5e1d5708ed994f8bf74687933"
-        },
+        "name": "Tapmad ",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8"
         "show": "yes"
       },
       {

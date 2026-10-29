@@ -1,4 +1,4 @@
-{
+i{
   "match": {
     "name": "Afghanistan Vs Zimbabwe",
     "category": "Live Sports",
@@ -21,22 +21,22 @@
           "scheme": "clearkey",
           "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
-        "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.44/hls/XAXAXAXW.m3u8",
-        "show": "yes"
+        "name": "Tapmad ",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad5/master.m3u8",
+        "show": "no"
       },
       {
         "name": "T SPORTS HD",
         "url": "http://103.151.60.162:2122/play/a030/index.m3u8?hls",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "STAR SPORTS HD",
         "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",

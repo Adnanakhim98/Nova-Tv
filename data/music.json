@@ -1,175 +1,365 @@
 {
-  "channels": [
-    {
-      "name": "B4U Music",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://streams.tangotv.in/B4UMUSIC/ORIGIN/index.m3u8",
-      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/2/2b/B4U_Music.png",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://streams.tangotv.in/B4UMUSIC/ORIGIN/index.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "Music India",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://cdn.pishow.tv/ott/live/226/226_2.m3u8",
-      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://cdn.pishow.tv/ott/live/226/226_2.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "Zoom",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://pubads.g.doubleclick.net/ssai/event/JCAm25qkRXiKcK1AJMlvKQ/master.m3u8",
-      "logoUrl": "https://otapp.store/uploads/tv_image/sm/zoom.png",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://pubads.g.doubleclick.net/ssai/event/JCAm25qkRXiKcK1AJMlvKQ/master.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "Sanggeet Bangla",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://cdn.pishow.tv/ott/live/1143/master.m3u8",
-      "logoUrl": "https://otapp.store/uploads/tv_image/sm/sangeet-bangla.png",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://cdn.pishow.tv/ott/live/1143/master.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "9XM",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://wiselp.wiseplayout.com/9XM/master.m3u8",
-      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/0/0e/9XM_logo.png",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://wiselp.wiseplayout.com/9XM/master.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "9X Tashan",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8",
-      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/4/4d/9X_Tashan_logo.png",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "8XM",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://vodzong.mjunoon.tv:8087/streamtest/8XM-131/playlist.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://vodzong.mjunoon.tv:8087/streamtest/8XM-131/playlist.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "ATN Music",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/atnmusic.stream/playlist.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/atnmusic.stream/playlist.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    },
-    {
-      "name": "Only Music",
-      "category": "Music",
-      "logo": "📺",
-      "tone": "red",
-      "url": "http://live.balajibroadband.com:3500/live/903.m3u8",
-      "logoUrl": "",
-      "fallbackLogo": "📺",
-      "streams": [
-        {
-          "name": "Server 1",
-          "url": "http://live.balajibroadband.com:3500/live/903.m3u8"
-        },
-        {
-          "name": "Server 2",
-          "url": ""
-        }
-      ]
-    }
-  ]
+"channels": [
+{
+"name": "9XM",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://cc-706183qeo55ez.akamaized.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-706183qeo55ez/cec0b236-257e-4311-86b2-822426330b78/2.m3u8",
+"logoUrl": "https://upload.wikimedia.org/wikipedia/en/0/0e/9XM_logo.png",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://cc-706183qeo55ez.akamaized.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-706183qeo55ez/cec0b236-257e-4311-86b2-822426330b78/2.m3u8"
+},
+{
+"name": "Server 2",
+"url": "https://wiselp.wiseplayout.com/9XM/master.m3u8"
+}
+]
+},
+{
+"name": "B4U Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://amg00877-b4unew-amg00877c3-xiaomi-in-5474.playouts.now.amagi.tv/720p/index.m3u8",
+"logoUrl": "https://upload.wikimedia.org/wikipedia/en/2/2b/B4U_Music.png",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://amg00877-b4unew-amg00877c3-xiaomi-in-5474.playouts.now.amagi.tv/720p/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": "https://streams.tangotv.in/B4UMUSIC/ORIGIN/index.m3u8"
+}
+]
+},
+{
+"name": "7 Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://cdn.pishow.tv/ott/live/1257/1257_2.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://cdn.pishow.tv/ott/live/1257/1257_2.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "8 Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://cdn4.mjunoon.tv:8087/streamtest/131M/chunks.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://cdn4.mjunoon.tv:8087/streamtest/131M/chunks.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "9X Jalwa",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://wiselp.wiseplayout.com/9X_Jalwa/master.m3u8",
+"logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://wiselp.wiseplayout.com/9X_Jalwa/master.m3u8"
+},
+{
+"name": "Server 2",
+"url": "https://d3kdywbtdfbp9z.cloudfront.net/v1/manifest/93ce20f0f52760bf38be911ff4c91ed02aa2fd92/dff423e0-3c82-46d6-9ecb-3baa96b5694a/70fca4d1-156e-4c03-baa4-9a4b602e33d5/0.m3u8"
+}
+]
+},
+{
+"name": "Channel 16",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Dhool",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://d1msejlow1t3l4.cloudfront.net/fta/subhartitv/chunks.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://d1msejlow1t3l4.cloudfront.net/fta/subhartitv/chunks.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Dhoom Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://cdn.pishow.tv/ott/live/1456/master.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://cdn.pishow.tv/ott/live/1456/master.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Epic Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://mumt04.tangotv.in/m18aqlK4EPICMUSIC/index.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://mumt04.tangotv.in/m18aqlK4EPICMUSIC/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "HINDIHITS",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://samitaorigin.tangotv.in/HINDIHITS/SAMITAORIGIN/index.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://samitaorigin.tangotv.in/HINDIHITS/SAMITAORIGIN/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Joomusic",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://livecdn.live247stream.com/joomusic/tv/joomusic/stream/chunks.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://livecdn.live247stream.com/joomusic/tv/joomusic/stream/chunks.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "MastiMusic",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://mumbai-edge.smartplaytv.in/MastiMusic/index.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://mumbai-edge.smartplaytv.in/MastiMusic/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Music India",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://streams.tangotv.in/MUSICINDIA/ORIGIN/index.m3u8",
+"logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://streams.tangotv.in/MUSICINDIA/ORIGIN/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": "https://cdn.pishow.tv/ott/live/226/master.m3u8"
+}
+]
+},
+{
+"name": "PTC Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://d2lk5u59tns74c.cloudfront.net/out/v1/f913cf893c594f73b114216e74a2efbc/index_2.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://d2lk5u59tns74c.cloudfront.net/out/v1/f913cf893c594f73b114216e74a2efbc/index_2.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Sanggeet Bhojpuri",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://mumt01.tangotv.in/O5aw8Zn3SANGEETBHOJPURI/index.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://mumt01.tangotv.in/O5aw8Zn3SANGEETBHOJPURI/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": "https://mumt01.tangotv.in/O5aw8Zn3SANGEETBHOJPURI/tracks-v1a1/index.m3u8"
+}
+]
+},
+{
+"name": "Sanggeet Marathi",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://cdn.pishow.tv/ott/live/1229/master.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://cdn.pishow.tv/ott/live/1229/master.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "9X Jhakaas",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://wiselp.wiseplayout.com//master.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://wiselp.wiseplayout.com//master.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "Discovery SD",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://drk6xq0vhn.gpcdn.net/live/discovery_sd_abr/live/discovery_sd_480/chunks.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://drk6xq0vhn.gpcdn.net/live/discovery_sd_abr/live/discovery_sd_480/chunks.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+},
+{
+"name": "E24 Music",
+"category": "Music",
+"logo": "📺",
+"tone": "red",
+"url": "https://mumt04.tangotv.in/m18aqlK4E24/index.m3u8",
+"logoUrl": "",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://mumt04.tangotv.in/m18aqlK4E24/index.m3u8"
+},
+{
+"name": "Server 2",
+"url": ""
+}
+]
+}
+]
 }

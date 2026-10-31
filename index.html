@@ -820,6 +820,7 @@ body{
     <div class="nova-control-row">
      <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause">▶</button>
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
+      <button class="nova-control-btn" id="playerSwitchBtn" type="button" aria-label="Switch video player" title="অন্য Player">P2</button>
      <span class="nova-control-spacer"></span>
       <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
      <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
@@ -858,6 +859,7 @@ body{
 <script>
 const $=id=>document.getElementById(id), video=$("video");
 let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL";
+let playerEnginePreference="auto"; // auto = default engine; alternate = try another compatible engine
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -1408,7 +1410,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
-   if(kind==="mpd" || (sportsMode && (kind==="hls" || kind==="unknown"))){
+   if((kind==="mpd" && playerEnginePreference!=="alternate") || (sportsMode && (kind==="hls" || kind==="unknown")) || (playerEnginePreference==="alternate" && kind==="hls" && !sportsMode)){
      engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / Live Sports";
      if(!window.shaka)throw new Error("Shaka library unavailable");
      shaka.polyfill.installAll();
@@ -1485,7 +1487,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      };
      video.addEventListener("playing",enableAutoAfterPlayback);
      video.play().catch(()=>{});
-   }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
+   }else if(kind==="hls"&&window.Hls&&Hls.isSupported()&&playerEnginePreference!=="alternate"){
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:false,backBufferLength:20,
@@ -1786,6 +1788,30 @@ if(centerPlayPauseBtn){
 video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
 video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
 $("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
+// Switch engine and retry the currently selected stream.
+const playerSwitchBtn=$("playerSwitchBtn");
+function updatePlayerSwitchButton(){
+ if(!playerSwitchBtn)return;
+ const alternate=playerEnginePreference==="alternate";
+ playerSwitchBtn.textContent=alternate?"P1":"P2";
+ playerSwitchBtn.classList.toggle("is-alternate",alternate);
+ playerSwitchBtn.title=alternate?"Default Player-এ ফিরুন":"অন্য Player-এ চেষ্টা করুন";
+ playerSwitchBtn.setAttribute("aria-label",alternate?"Switch to default player":"Switch to alternate player");
+}
+if(playerSwitchBtn){
+ updatePlayerSwitchButton();
+ playerSwitchBtn.addEventListener("click",()=>{
+  if(!lastStreamRequest||!lastStreamRequest.rawUrl){
+   showStatus("SPORTYNOVA","আগে একটি চ্যানেল বা ম্যাচ চালু করুন");return;
+  }
+  playerEnginePreference=playerEnginePreference==="auto"?"alternate":"auto";
+  updatePlayerSwitchButton();
+  const req={...lastStreamRequest};
+  showStatus(req.name||"Video","অন্য Player-এ চালু করার চেষ্টা হচ্ছে…");
+  playStream(req.rawUrl,req.name,req.category,req.drm,req.fallbackUrl||"");
+ });
+}
+
 video.addEventListener("volumechange",()=>{$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
 video.addEventListener("timeupdate",()=>{
  const duration=video.duration;
@@ -2321,6 +2347,12 @@ document.addEventListener("touchend", e => {
 #categorySections .channelrow>.channel{animation:tvTileAppear .18s ease-out both}
 @keyframes tvTileAppear{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 </style>
+
+<style id="alternate-player-switch-style">
+#playerScreen #playerSwitchBtn{flex:0 0 auto;min-width:36px;padding:0 8px;border-color:rgba(33,216,244,.55);background:linear-gradient(135deg,#12394a,#111a2b);color:#baf7ff;font-weight:900}
+#playerScreen #playerSwitchBtn.is-alternate{border-color:#ffd166;background:linear-gradient(135deg,#57431a,#211b12);color:#ffe6a3}
+@media(max-width:420px){#playerScreen #playerSwitchBtn{min-width:31px;padding:0 5px;font-size:10px}}
+</style>
 </body>
 </html>
 
@@ -2393,5 +2425,4 @@ document.addEventListener("touchend", e => {
 .sports-sectionhead .section-count{display:none!important}
 @media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
 </style>
-
 

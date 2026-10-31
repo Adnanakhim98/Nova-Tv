@@ -797,6 +797,58 @@ body{
 }
 </style>
 
+
+<style id="sportynova-smart-premium-ui">
+/* Smart Premium UI refresh — visual layer only; existing IDs, player logic and data loaders remain unchanged. */
+:root{--nova-aqua:#43e9f8;--nova-blue:#168bd2;--nova-violet:#9275ff;--nova-glass:rgba(16,25,42,.88)}
+body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transparent 31%),radial-gradient(ellipse at 92% 24%,rgba(125,92,255,.12),transparent 28%),#070912!important}
+.wrap{max-width:1240px!important;padding-top:8px!important;gap:9px!important}
+.update-stamp{display:flex;align-items:center;justify-content:center;gap:7px;padding:3px 4px 2px!important;color:#a9bad2!important;letter-spacing:.55px!important}
+.update-stamp:before{content:"✦";color:var(--nova-aqua);text-shadow:0 0 12px #21d8f4}
+.topbar{position:relative;overflow:hidden;border-radius:20px!important;border:1px solid rgba(107,167,210,.28)!important;background:linear-gradient(115deg,rgba(19,34,55,.97),rgba(10,15,27,.97))!important;box-shadow:0 10px 30px #0005,inset 0 1px #ffffff0c!important}
+.topbar:after{content:"";position:absolute;right:-48px;top:-75px;width:180px;height:150px;border-radius:50%;background:#20d9f40d;filter:blur(5px);pointer-events:none}
+.brandicon{background:linear-gradient(145deg,#74f4ff,#087cb8)!important;color:#04131b!important;border:1px solid #9bf8ff88!important;box-shadow:0 0 22px #18d6f333!important}
+.brandname{font-weight:900!important;letter-spacing:.8px!important}
+.search{position:relative;border-radius:14px!important;background:rgba(4,10,20,.8)!important;border:1px solid #35445f!important;min-height:38px;box-shadow:inset 0 1px 4px #0005!important}
+.search:focus{border-color:#43e9f8!important;box-shadow:0 0 0 3px #21d8f41c,0 0 20px #21d8f412!important}
+.playercard{border-radius:20px!important;border:1px solid rgba(99,157,200,.32)!important;box-shadow:0 15px 38px #0006,0 0 0 1px #ffffff05!important}
+.playersticky .sectionhead{padding:5px 2px!important}
+.playerfoot{background:linear-gradient(100deg,#121e31,#0a101c)!important}
+.noticebar{border-radius:11px!important;border-color:#2a4b61!important}
+.channelarea{scroll-padding-top:8px}
+.channelarea>.sectionhead:not(.sports-sectionhead){position:relative;overflow:hidden;border-radius:15px!important;background:linear-gradient(105deg,rgba(20,37,58,.98),rgba(12,18,31,.98))!important;border:1px solid rgba(105,153,194,.23)!important;box-shadow:0 7px 20px #0002!important}
+.channelarea>.sectionhead:not(.sports-sectionhead) h2{display:flex;align-items:center;gap:7px;font-weight:800!important}
+.channelarea>.sectionhead:not(.sports-sectionhead) .section-count{border:1px solid #2a5267;background:#10283a;color:#9defff!important;padding:5px 9px;border-radius:999px;font-weight:800}
+.category-tabs{gap:7px!important;padding:5px 1px 11px!important}
+.category-tab{position:relative;isolation:isolate;min-height:36px!important;border-radius:12px!important;border:1px solid #2b3d56!important;background:linear-gradient(145deg,#18263a,#101725)!important;color:#c3d3e8!important;font-weight:800!important;letter-spacing:.05px;box-shadow:0 4px 10px #0002!important;transition:transform .18s,border-color .18s,filter .18s!important}
+.category-tab:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,#ffffff0a,transparent 55%);z-index:-1}
+.category-tab:hover{border-color:#4a9cb8!important;filter:brightness(1.12);transform:translateY(-1px)}
+.category-tab.active{background:linear-gradient(125deg,#51edf7,#168ed1)!important;color:#04131b!important;border-color:#8cf7ff!important;box-shadow:0 5px 17px #12bfe344,inset 0 1px #ffffff7a!important}
+.channelrow{gap:9px!important}
+.channel{border-radius:16px!important;border:1px solid rgba(112,147,190,.22)!important;background:linear-gradient(150deg,rgba(24,34,52,.98),rgba(11,16,27,.98))!important;box-shadow:0 7px 17px #0003,inset 0 1px #ffffff06!important;transition:transform .18s,border-color .18s,box-shadow .18s!important}
+.channel:before{background:linear-gradient(135deg,#ffffff09,transparent 48%)!important}
+.channel:hover{transform:translateY(-2px)!important;border-color:#3d819b!important;box-shadow:0 12px 23px #0004,0 0 0 1px #21d8f410!important}
+.channel.active{border-color:#43e9f8!important;background:linear-gradient(145deg,#123449,#0c1725)!important;box-shadow:0 0 0 1px #21d8f438,0 8px 23px #08b9d31b!important}
+.chlogo img{filter:drop-shadow(0 3px 6px #0005)!important}
+.chname{font-weight:800!important;letter-spacing:.05px}
+.sports-sectionhead{border:1px solid rgba(105,153,194,.24)!important}
+.match-filter{border-radius:999px!important}
+.footer{color:#7187a5!important}
+.btn,.contactlink,.admin-open-btn{transition:transform .16s,filter .16s,border-color .16s!important}
+.btn:hover,.contactlink:hover,.admin-open-btn:hover{filter:brightness(1.13)}
+.btn:active,.contactlink:active,.admin-open-btn:active{transform:scale(.97)}
+@media(max-width:420px){
+ .wrap{padding-top:5px!important;gap:6px!important}
+ .topbar{border-radius:16px!important}
+ .brandname{letter-spacing:.35px!important}
+ .category-tabs{gap:5px!important;padding-bottom:8px!important}
+ .category-tab{min-height:34px!important;border-radius:10px!important;padding:7px 3px!important}
+ .channelrow{gap:6px!important}
+ .channel{border-radius:13px!important}
+}
+@media(prefers-reduced-motion:reduce){.channel,.category-tab,.btn,.contactlink{transition:none!important}}
+</style>
+
 </head>
 <body>
 <div class="wrap">

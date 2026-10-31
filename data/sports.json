@@ -27,6 +27,17 @@
     "logoUrl": "https://i.postimg.cc/Qt9Pcqt2/900.png",
     "fallbackLogo": "▶️"
   },
+
+    {
+    "name": "Unite8 Sports 1",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://sm-monirul.xyz/@monirul_Islam_SM/live.php?id=UNITI.SP.1&sm=.m3u8",
+
+    "logoUrl": "https://i.postimg.cc/Qt9Pcqt2/900.png",
+    "fallbackLogo": "▶️"
+  },
   {
     "name": "beIN Sports 1",
     "category": "Sports",

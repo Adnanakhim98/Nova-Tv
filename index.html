@@ -981,11 +981,42 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 
 <div class="modal" id="adminModal" aria-hidden="true"><div class="modalbox adminbox"><div class="modalhead"><h3>🔐 SPORTYNOVA Admin</h3><button class="xbtn" id="adminClose" type="button">✕</button></div><div id="adminLoginView"><p class="hint">অ্যাডমিন প্যানেলে প্রবেশের পাসওয়ার্ড দিন।</p><label class="fieldlabel" for="adminPassword">Admin password</label><input class="field" id="adminPassword" type="password" autocomplete="current-password" placeholder="Admin password"><div class="modalbuttons"><button class="btn primary" id="adminLoginBtn" type="button">Login</button></div><p class="hint" id="adminLoginMessage" role="status"></p></div><div id="adminDashboard" hidden><div class="admin-stats"><div><small>মোট চ্যানেল</small><strong id="adminTotal">0</strong></div><div><small>অনলাইন</small><strong id="adminOnline">0</strong></div><div><small>অফলাইন</small><strong id="adminOffline">0</strong></div></div><div class="admin-toolbar"><input class="field" id="adminSearch" placeholder="চ্যানেল খুঁজুন…"><button class="btn" id="adminRefresh" type="button">↻ Refresh</button></div><div id="adminChannelList" class="admin-channel-list"></div><p class="hint" id="adminMessage" role="status"></p><button class="btn" id="adminLogout" type="button">Logout</button></div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">একই প্লেয়ারে HLS/M3U8 (.m3u8) এবং MPEG-DASH/MPD (.mpd) চালানো যাবে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.compiled.js"></script>
+<script>
+/* Shaka Player CDN fallback loader. Playback waits until a working copy is available. */
+window.__sportyShakaPromise = null;
+window.ensureSportyShaka = function () {
+  if (window.shaka && window.shaka.Player) return Promise.resolve(true);
+  if (window.__sportyShakaPromise) return window.__sportyShakaPromise;
+  const sources = [
+    "https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.compiled.js",
+    "https://unpkg.com/shaka-player@4.16.2/dist/shaka-player.compiled.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.16.2/shaka-player.compiled.js"
+  ];
+  window.__sportyShakaPromise = new Promise((resolve, reject) => {
+    let i = 0;
+    function next() {
+      if (window.shaka && window.shaka.Player) { resolve(true); return; }
+      if (i >= sources.length) {
+        window.__sportyShakaPromise = null;
+        reject(new Error("ভিডিও প্লেয়ার লাইব্রেরি লোড হয়নি। নেটওয়ার্ক বা CDN ব্লক থাকলে অন্য নেটওয়ার্কে চেষ্টা করুন।"));
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = sources[i++];
+      script.async = true;
+      script.onload = () => (window.shaka && window.shaka.Player) ? resolve(true) : next();
+      script.onerror = next;
+      document.head.appendChild(script);
+    }
+    next();
+  });
+  return window.__sportyShakaPromise;
+};
+</script>
 
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL";
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL",adaptiveQualityTimer=null;
 video.preload="auto";
 video.autoplay=true;
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
@@ -1390,6 +1421,7 @@ function setPlayerLoading(show,title="ভিডিও চালু হচ্ছ�
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 async function stopEngines(){
+  if(adaptiveQualityTimer){clearTimeout(adaptiveQualityTimer);adaptiveQualityTimer=null;}
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
   if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}
   video.style.display="";
@@ -1546,6 +1578,16 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      console.info("SPORTYNOVA Zee TV media state",{muted:video.muted,volume:video.volume,audioTracks:video.audioTracks?.length||0,readyState:video.readyState});
    }
    success(engine);
+   // Keep SD for the first few seconds, then let Shaka ABR select quality
+   // according to measured throughput and buffering on both HLS and DASH.
+   if(activeShaka && requestId===playRequestId && !adaptiveQualityTimer){
+     const playerForAdaptive=activeShaka;
+     adaptiveQualityTimer=setTimeout(()=>{
+       adaptiveQualityTimer=null;
+       if(requestId!==playRequestId || activeShaka!==playerForAdaptive || video.paused)return;
+       try{playerForAdaptive.configure({abr:{enabled:true}});}catch(e){console.warn("Adaptive quality enable failed",e)}
+     },8000);
+   }
  };
  // A single startup deadline reports a real failure; it does not start another player.
  // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
@@ -1558,16 +1600,19 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    // This avoids switching engines when the user selects a different channel.
    if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ারে HLS/M3U8 অথবা MPEG-DASH/MPD লিংক দিন।");
    if(kind!=="hls"&&kind!=="mpd"&&kind!=="unknown") throw new Error("সমর্থিত স্ট্রিম হলো HLS/M3U8 ও MPEG-DASH/MPD।");
-   if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।");
+   if(!window.shaka || !shaka.Player) await window.ensureSportyShaka();
+   if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লাইব্রেরি পাওয়া যায়নি।");
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে HLS/DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
    engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
    activeShaka=new shaka.Player(video);
    const player=activeShaka;
+   // Start at SD first to get the first frame quickly, then turn on adaptive
+   // bitrate after playback has started so quality can rise/fall with the network.
    player.configure({
-     streaming:{bufferingGoal:12,rebufferingGoal:3,bufferBehind:20,retryParameters:{maxAttempts:3,baseDelay:300,backoffFactor:1.5,timeout:12000}},
-     abr:{enabled:true,defaultBandwidthEstimate:1000000,bandwidthUpgradeTarget:0.85,bandwidthDowngradeTarget:0.95},
-     manifest:{retryParameters:{maxAttempts:3,baseDelay:300,backoffFactor:1.5,timeout:12000}}
+     streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}},
+     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.85,bandwidthDowngradeTarget:0.95,switchInterval:4},
+     manifest:{retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}}
    });
    // Optional ClearKey support from the existing JSON URL format: |drmScheme=clearkey&drmLicense=KID:KEY
    if(parsed.scheme==="clearkey"&&parsed.license){
@@ -1588,6 +1633,20 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
    await player.load(url);
    if(requestId!==playRequestId)return;
+   // Prefer the highest SD rendition (up to 480p); if the stream has no SD
+   // rendition, start with its lowest available video rendition instead.
+   const variants=player.getVariantTracks().filter(t=>t.height && t.type!=="audio");
+   if(variants.length){
+     const sdVariants=variants.filter(t=>Number(t.height)<=480);
+     const startTrack=(sdVariants.length?sdVariants:variants).sort((a,b)=>{
+       const heightDiff=Number(b.height||0)-Number(a.height||0);
+       return heightDiff || Number(a.bandwidth||0)-Number(b.bandwidth||0);
+     })[0];
+     if(startTrack){
+       player.configure({abr:{enabled:false}});
+       player.selectVariantTrack(startTrack,true);
+     }
+   }
    setupShakaQualities();
    video.play().catch(()=>{});
  }catch(err){fail(err?.message||"player exception")}
@@ -2426,7 +2485,7 @@ document.addEventListener("touchend", e => {
   #liveSportsChannels .team-logo small{font-size:7px}
   #liveSportsChannels .chname{font-size:clamp(9px,2.6vw,11px)!important;white-space:normal!important;overflow-wrap:anywhere}
 }
-/* Low-quality-first playback; adaptive quality begins after 30 seconds, with the active resolution marked. */
+/* Low-quality-first playback; adaptive quality is enabled shortly after playback starts. */
 #playerScreen video{image-rendering:auto}
 </style>
 

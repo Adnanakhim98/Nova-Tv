@@ -1495,6 +1495,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.preload="auto";
  video.autoplay=true;
  video.controls=false;
+ // Restore audible playback when switching from a muted stream/player state.
+ if(url.includes("/YuppTV/ZeeTVHDAPAC.m3u8")){video.muted=false;video.volume=1;}
 
  let engine="native", settled=false, timer=null;
  const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
@@ -1545,7 +1547,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    report(label+" · Playing");
  };
  video.onerror=()=>fail("media error");
- video.onplaying=()=>success(engine);
+ video.onplaying=()=>{
+   if(url.includes("/YuppTV/ZeeTVHDAPAC.m3u8")){
+     video.muted=false;
+     console.info("SPORTYNOVA Zee TV media state",{muted:video.muted,volume:video.volume,audioTracks:video.audioTracks?.length||0,readyState:video.readyState});
+   }
+   success(engine);
+ };
  // A single startup deadline reports a real failure; it does not start another player.
  // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
  // loading state alive long enough for legitimate slower connections to start.
@@ -1553,13 +1561,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
-   // This Zee TV HD playlist has a video master with separate variant playlists.
-   // Route it through Shaka's HLS parser/MediaSource pipeline, which can handle
-   // audio rendition/codec selection more reliably on browsers where HLS.js is silent.
-   const useShakaHls = kind==="hls" &&
+   // Zee TV HD is handled by HLS.js (rather than Shaka HLS) so its
+   // multiplexed audio/video variant is parsed through the same HLS pipeline
+   // as the other working M3U8 channels.
+   const isZeeTvHd = kind==="hls" &&
      url.includes("raw.githubusercontent.com/amazeyourself/adaptive-streams/") && url.includes("/YuppTV/ZeeTVHDAPAC.m3u8");
-   if(kind==="mpd" || useShakaHls || (sportsMode && (kind==="hls" || kind==="unknown"))){
-     engine=kind==="mpd"?"Shaka / MPEG-DASH":(useShakaHls?"Shaka / HLS":"Shaka / Live Sports");
+   if(kind==="mpd" || (sportsMode && (kind==="hls" || kind==="unknown"))){
+     engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / Live Sports";
      if(!window.shaka)throw new Error("Shaka library unavailable");
      shaka.polyfill.installAll();
      if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
@@ -1616,7 +1624,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        }
      }
      if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-     report(kind==="mpd"?"MPEG-DASH · লিংক লোড হচ্ছে…":(useShakaHls?"HLS · অডিও/ভিডিও ট্র্যাক লোড হচ্ছে…":"Live Sports · লিংক লোড হচ্ছে…"));
+     report(kind==="mpd"?"MPEG-DASH · লিংক লোড হচ্ছে…":"Live Sports · লিংক লোড হচ্ছে…");
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
@@ -1629,6 +1637,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:false,backBufferLength:20,
+       enableAudioTracks:true, startFragPrefetch:true,
        // Moderate buffer targets help the first frame arrive sooner without starving playback.
        maxBufferLength:16,maxMaxBufferLength:32,maxBufferSize:40000000,
        manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:250,
@@ -1658,7 +1667,12 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        let selected=tracks.findIndex(track=>track.default||track.defaultTrack);
        if(selected<0)selected=tracks.findIndex(track=>track.autoselect);
        if(selected<0)selected=0;
-       try{activeHls.audioTrack=selected;}catch(e){console.warn("HLS audio track selection:",e);}
+       try{activeHls.audioTrack=selected;console.info("SPORTYNOVA selected HLS audio track",selected,tracks[selected]);}catch(e){console.warn("HLS audio track selection:",e);}
+     });
+     activeHls.on(Hls.Events.LEVEL_LOADED,(_event,data)=>{
+       if(requestId!==playRequestId)return;
+       const details=data?.details;
+       console.info("SPORTYNOVA HLS level details",{audioTracks:activeHls.audioTracks?.length||0,levels:activeHls.levels?.map(level=>({height:level.height,codecs:level.attrs?.CODECS,audioGroup:level.audioGroup})),audioOnly:details?.audioOnly});
      });
      activeHls.on(Hls.Events.ERROR,(event,data)=>{
        if(requestId!==playRequestId||!data.fatal)return;

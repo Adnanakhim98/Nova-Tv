@@ -908,6 +908,16 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+<style id="requested-player-controls-update">
+/* Requested controls cleanup: keep play/pause, remove volume/mute UI and Live Zone header. */
+.livezone-topbar{display:none!important}
+#muteBtn,#volumeSlider,.livezone-volume{display:none!important}
+#qualitySelect{width:48px!important;min-width:0!important;max-width:48px!important;padding:0 2px!important;font-size:9px!important}
+#playerScreen #qualitySelect{width:48px!important;min-width:0!important;max-width:48px!important;padding:0 2px!important;font-size:9px!important}
+@media(max-width:420px){
+ #qualitySelect,#playerScreen #qualitySelect{width:44px!important;min-width:0!important;max-width:44px!important;padding:0 1px!important;font-size:8px!important}
+}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -926,18 +936,10 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
-   <div class="livezone-topbar" id="livezoneTopbar">
-    <button class="nova-control-btn" id="menuChannelBtn" type="button" title="চ্যানেল তালিকা">☰</button>
-    <div class="livezone-brand">LIVE<span>ZONE</span></div>
-    <span class="livezone-top-spacer"></span>
-    <button class="nova-control-btn" id="closePlayerBtn" type="button" title="Stop playback">✕</button>
-   </div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
      <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play/Pause">▶</button>
-     <button class="nova-control-btn" id="muteBtn" aria-label="Mute/unmute" title="Mute/unmute">🔊</button>
-     <input class="livezone-volume" id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" title="Volume">
      <button class="nova-control-btn" id="prevChannelBtn" type="button" title="Previous channel" aria-label="Previous channel">⏮</button>
      <button class="nova-control-btn" id="nextChannelBtn" type="button" title="Next channel" aria-label="Next channel">⏭</button>
      <button class="nova-control-btn" id="fitBtn" type="button" title="Change fit mode" aria-label="Change fit mode">▣</button>
@@ -1576,7 +1578,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
        activeShakaUI.configure({
          addBigPlayButton:true,
-         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
+         controlPanelElements:["play_pause","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
        });
        screenEl.classList.add("shaka-ui-active");
      }else{
@@ -1953,8 +1955,6 @@ if(centerPlayPauseBtn){
 
 video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
 video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
-$("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
-video.addEventListener("volumechange",()=>{$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
 video.addEventListener("timeupdate",()=>{
  const duration=video.duration;
  if(Number.isFinite(duration)&&duration>0){
@@ -1995,14 +1995,6 @@ $("menuChannelBtn").addEventListener("click",()=>{
  if(list)list.scrollIntoView({behavior:"smooth",block:"start"});
 });
 $("closePlayerBtn").addEventListener("click",()=>{$("stopBtn").click()});
-$("volumeSlider").addEventListener("input",e=>{
- video.volume=Number(e.target.value);
- video.muted=video.volume===0;
-});
-video.addEventListener("volumechange",()=>{
- const slider=$("volumeSlider");
- if(slider)slider.value=String(video.muted?0:video.volume);
-});
 $("fitBtn").addEventListener("click",()=>{
  livezoneFitIndex=(livezoneFitIndex+1)%livezoneFitModes.length;
  applyVideoFit(livezoneFitModes[livezoneFitIndex]);

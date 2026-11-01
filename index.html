@@ -1553,8 +1553,13 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
-   if(kind==="mpd" || (sportsMode && (kind==="hls" || kind==="unknown"))){
-     engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / Live Sports";
+   // This Zee TV HD playlist has a video master with separate variant playlists.
+   // Route it through Shaka's HLS parser/MediaSource pipeline, which can handle
+   // audio rendition/codec selection more reliably on browsers where HLS.js is silent.
+   const useShakaHls = kind==="hls" &&
+     url.includes("raw.githubusercontent.com/amazeyourself/adaptive-streams/") && url.includes("/YuppTV/ZeeTVHDAPAC.m3u8");
+   if(kind==="mpd" || useShakaHls || (sportsMode && (kind==="hls" || kind==="unknown"))){
+     engine=kind==="mpd"?"Shaka / MPEG-DASH":(useShakaHls?"Shaka / HLS":"Shaka / Live Sports");
      if(!window.shaka)throw new Error("Shaka library unavailable");
      shaka.polyfill.installAll();
      if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
@@ -1611,7 +1616,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        }
      }
      if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-     report("MPEG-DASH · লিংক লোড হচ্ছে…");
+     report(kind==="mpd"?"MPEG-DASH · লিংক লোড হচ্ছে…":(useShakaHls?"HLS · অডিও/ভিডিও ট্র্যাক লোড হচ্ছে…":"Live Sports · লিংক লোড হচ্ছে…"));
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
@@ -1644,6 +1649,17 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        video.play().catch(()=>{});
      });
      activeHls.on(Hls.Events.LEVEL_SWITCHED,()=>setupHlsQualities());
+     // Keep HLS audio renditions enabled. Some manifests expose audio separately
+     // from the video variants; explicitly select the default/first available track.
+     activeHls.on(Hls.Events.AUDIO_TRACKS_UPDATED,(_event,data)=>{
+       if(requestId!==playRequestId)return;
+       const tracks=data?.audioTracks||activeHls.audioTracks||[];
+       if(!tracks.length)return;
+       let selected=tracks.findIndex(track=>track.default||track.defaultTrack);
+       if(selected<0)selected=tracks.findIndex(track=>track.autoselect);
+       if(selected<0)selected=0;
+       try{activeHls.audioTrack=selected;}catch(e){console.warn("HLS audio track selection:",e);}
+     });
      activeHls.on(Hls.Events.ERROR,(event,data)=>{
        if(requestId!==playRequestId||!data.fatal)return;
        fail("HLS.js "+data.type);

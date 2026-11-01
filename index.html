@@ -849,6 +849,69 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 @media(prefers-reduced-motion:reduce){.channel,.category-tab,.btn,.contactlink{transition:none!important}}
 </style>
 
+<style>
+
+/* LIVEZONE player skin integration — existing channel/server/quality logic is preserved. */
+.playersticky .playercard{background:#07070a!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:14px!important;overflow:hidden!important}
+.playersticky #playerScreen{background:#000!important;isolation:isolate!important}
+.playersticky #playerScreen>video{object-fit:contain!important;background:#000!important}
+.playersticky #novaControls{
+ position:absolute!important;inset:0!important;bottom:auto!important;z-index:15!important;
+ display:flex!important;flex-direction:column!important;justify-content:flex-end!important;
+ gap:0!important;padding:58px 12px 12px!important;
+ background:linear-gradient(180deg,rgba(0,0,0,.78),transparent 28%,transparent 58%,rgba(0,0,0,.88))!important;
+ opacity:1;transition:opacity .25s ease!important;pointer-events:none!important
+}
+.playersticky #novaControls:before{
+ content:"LIVEZONE  PLAYER";position:absolute;top:12px;left:14px;
+ color:#fff;font-size:12px;font-weight:900;letter-spacing:.16em;
+ text-shadow:0 2px 8px #000;pointer-events:none
+}
+.playersticky #novaControls .nova-progress-row,
+.playersticky #novaControls .nova-control-row{pointer-events:auto!important}
+.playersticky #novaControls .nova-progress-row{
+ order:1;display:flex!important;align-items:center!important;gap:9px!important;
+ margin:0 0 9px!important;padding:0!important;color:#fff!important;font-size:11px!important
+}
+.playersticky #novaControls .nova-progress-row input{height:4px!important;accent-color:#ff2e3f!important}
+.playersticky #novaControls .nova-control-row{
+ order:2;display:flex!important;align-items:center!important;gap:7px!important;
+ min-width:0!important;padding:0!important
+}
+.playersticky #novaControls .nova-control-btn{
+ height:38px!important;min-width:38px!important;padding:0 9px!important;
+ border:1px solid rgba(255,255,255,.2)!important;border-radius:10px!important;
+ background:rgba(255,255,255,.09)!important;color:#fff!important;font-size:14px!important
+}
+.playersticky #novaControls #playPauseBtn{background:#ff2e3f!important;border-color:#ff2e3f!important}
+.playersticky #novaControls #qualitySelect{
+ display:none;max-width:112px!important;height:36px!important;
+ padding:0 7px!important;border:1px solid rgba(255,255,255,.2)!important;
+ border-radius:10px!important;background:#17171e!important;color:#fff!important;font-size:11px!important
+}
+.playersticky #novaControls .inline-server-group{gap:5px!important}
+.playersticky #novaControls .inline-server-btn{
+ min-height:34px!important;border-radius:9px!important;
+ border:1px solid rgba(255,255,255,.2)!important;background:rgba(255,255,255,.09)!important;
+ color:#fff!important
+}
+.playersticky #novaControls .inline-server-btn.active{background:rgba(255,46,63,.2)!important;border-color:#ff2e3f!important}
+.playersticky #sportsServerRow{z-index:16!important}
+.playersticky #centerPlayPause{z-index:14!important}
+.playersticky #playerScreen.controls-hidden #novaControls{opacity:0!important;pointer-events:none!important}
+.playersticky .playerfoot{background:#101016!important;border-top:1px solid rgba(255,255,255,.13)!important}
+@media(max-width:560px){
+ .playersticky #novaControls{padding:48px 7px 8px!important}
+ .playersticky #novaControls:before{top:9px;left:10px;font-size:10px}
+ .playersticky #novaControls .nova-control-row{gap:4px!important}
+ .playersticky #novaControls .nova-control-btn{height:32px!important;min-width:31px!important;padding:0 6px!important;font-size:12px!important}
+ .playersticky #novaControls #qualitySelect{height:31px!important;max-width:75px!important;padding:0 3px!important;font-size:9px!important}
+ .playersticky #novaControls .inline-server-group{gap:3px!important}
+ .playersticky #novaControls .inline-server-btn{min-height:29px!important;padding:0 6px!important;font-size:9px!important}
+}
+.playercard:fullscreen #novaControls,.playercard:-webkit-full-screen #novaControls{padding:64px 18px 16px!important}
+
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -2477,4 +2540,3 @@ document.addEventListener("touchend", e => {
 .sports-sectionhead .section-count{display:none!important}
 @media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
 </style>
-

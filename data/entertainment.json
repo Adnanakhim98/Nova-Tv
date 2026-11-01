@@ -9,6 +9,16 @@
       "logoUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/9X_Jalwa.png",
       "fallbackLogo": "▶"
     },
+
+    {
+      "name": "Sony Aath",
+      "category": "Entertainment",
+      "logo": "▶",
+      "tone": "purple",
+      "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Zeetv/default/manifest.mpd|drmScheme=clearkey&drmLicense=ed068cf84f0640ccbc7c0e395c0a272e:bb722190f2bb446391020411a7d0828b",
+      "logoUrl": "https://sonypicturesnetworks.com/images/logos/SONY%20AATH.png",
+      "fallbackLogo": "▶"
+    },
     {
       "name": "Enter 10 Bangla",
       "category": "Entertainment",

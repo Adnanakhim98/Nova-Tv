@@ -1,4 +1,4 @@
-<!-- SPORTYNOVA: Single HLS.js player for all channels — 01 Nov 2026 -->
+<!-- SPORTYNOVA: Unified Shaka player for HLS/M3U8 + MPEG-DASH/MPD — 01 Nov 2026 -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -980,8 +980,8 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 </div>
 
 <div class="modal" id="adminModal" aria-hidden="true"><div class="modalbox adminbox"><div class="modalhead"><h3>🔐 SPORTYNOVA Admin</h3><button class="xbtn" id="adminClose" type="button">✕</button></div><div id="adminLoginView"><p class="hint">অ্যাডমিন প্যানেলে প্রবেশের পাসওয়ার্ড দিন।</p><label class="fieldlabel" for="adminPassword">Admin password</label><input class="field" id="adminPassword" type="password" autocomplete="current-password" placeholder="Admin password"><div class="modalbuttons"><button class="btn primary" id="adminLoginBtn" type="button">Login</button></div><p class="hint" id="adminLoginMessage" role="status"></p></div><div id="adminDashboard" hidden><div class="admin-stats"><div><small>মোট চ্যানেল</small><strong id="adminTotal">0</strong></div><div><small>অনলাইন</small><strong id="adminOnline">0</strong></div><div><small>অফলাইন</small><strong id="adminOffline">0</strong></div></div><div class="admin-toolbar"><input class="field" id="adminSearch" placeholder="চ্যানেল খুঁজুন…"><button class="btn" id="adminRefresh" type="button">↻ Refresh</button></div><div id="adminChannelList" class="admin-channel-list"></div><p class="hint" id="adminMessage" role="status"></p><button class="btn" id="adminLogout" type="button">Logout</button></div></div></div>
-<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">শুধু HLS/M3U8 (.m3u8) স্ট্রিম সাপোর্ট করে। MPD/DASH বা MP4 লিংক চলবে না। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">একই প্লেয়ারে HLS/M3U8 (.m3u8) এবং MPEG-DASH/MPD (.mpd) চালানো যাবে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.compiled.js"></script>
 
 <script>
 const $=id=>document.getElementById(id), video=$("video");
@@ -1322,6 +1322,10 @@ function showQualityOptions(options,mode){
  if(mode==="hls"&&activeHls&&activeHls.currentLevel>=0){
   activeValue=String(activeHls.currentLevel);
  }
+ if(mode==="shaka"&&activeShaka){
+  const track=activeShaka.getVariantTracks().find(t=>t.active);
+  if(track)activeValue=String(track.id);
+ }
  if(activeValue&&Array.from(sel.options).some(o=>o.value===activeValue)){
   sel.value=activeValue;
  }else if(previous&&Array.from(sel.options).some(o=>o.value===previous)){
@@ -1333,7 +1337,10 @@ function showQualityOptions(options,mode){
 $("qualitySelect").addEventListener("change",()=>{
  const value=$("qualitySelect").value;
  try{
-  if(qualityMode==="hls"&&activeHls) activeHls.currentLevel=value==="auto"?-1:Number(value);
+  if(qualityMode==="shaka"&&activeShaka){
+   if(value==="auto"){activeShaka.configure({abr:{enabled:true}})}
+   else{const track=activeShaka.getVariantTracks().find(t=>String(t.id)===String(value));if(track){activeShaka.configure({abr:{enabled:false}});activeShaka.selectVariantTrack(track,true)}}
+  }
  }catch(e){console.warn("Quality switch failed",e)}
 });
 function setupHlsQualities(){
@@ -1382,9 +1389,9 @@ function setPlayerLoading(show,title="ভিডিও চালু হচ্ছ�
  panel.style.display=show?"flex":"none";
 }
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
-function stopEngines(){
+async function stopEngines(){
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
-  // Shaka/DASH player removed: HLS.js is the only streaming engine.
+  if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
@@ -1465,7 +1472,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
- stopEngines();
+ await stopEngines();
+ if(requestId!==playRequestId)return;
  setPlayerMode(sportsMode);
  if(sportsMode)showSportsServers();
  if(requestId!==playRequestId)return;
@@ -1546,53 +1554,42 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
-   // One player only: HLS.js for every channel, including Live Sports.
-   // MPEG-DASH (.mpd) is intentionally not routed to a second player.
-   if(kind==="mpd") throw new Error("এই প্লেয়ার শুধু HLS/M3U8 চালায়। JSON-এ এই চ্যানেলের M3U8 লিংক দিন।");
-   if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ার শুধু HLS/M3U8 লিংক চালায়।");
-   if(window.Hls && Hls.isSupported()){
-     engine="HLS.js";
-     activeHls=new Hls({
-       enableWorker:true,lowLatencyMode:false,backBufferLength:20,
-       enableAudioTracks:true,startFragPrefetch:true,
-       maxBufferLength:16,maxMaxBufferLength:32,maxBufferSize:40000000,
-       manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:250,
-       levelLoadingTimeOut:7000,levelLoadingMaxRetry:3,levelLoadingRetryDelay:250,
-       fragLoadingTimeOut:12000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:250,
-       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1400000,
-       abrBandWidthFactor:0.85,abrBandWidthUpFactor:0.70
-     });
-     activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
-       if(requestId===playRequestId) activeHls.loadSource(url);
-     });
-     activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
-       if(requestId!==playRequestId)return;
-       try{activeHls.currentLevel=-1}catch(e){}
-       setupHlsQualities();
-       video.play().catch(()=>{});
-     });
-     activeHls.on(Hls.Events.LEVEL_SWITCHED,()=>setupHlsQualities());
-     activeHls.on(Hls.Events.AUDIO_TRACKS_UPDATED,(_event,data)=>{
-       if(requestId!==playRequestId)return;
-       const tracks=data?.audioTracks||activeHls.audioTracks||[];
-       if(!tracks.length)return;
-       let selected=tracks.findIndex(track=>track.default||track.defaultTrack);
-       if(selected<0)selected=tracks.findIndex(track=>track.autoselect);
-       if(selected<0)selected=0;
-       try{activeHls.audioTrack=selected}catch(e){console.warn("HLS audio track selection:",e)}
-     });
-     activeHls.on(Hls.Events.ERROR,(_event,data)=>{
-       if(requestId!==playRequestId||!data.fatal)return;
-       fail("HLS.js "+data.type);
-     });
-     activeHls.attachMedia(video);
-   }else if(kind==="hls" && video.canPlayType("application/vnd.apple.mpegurl")){
-     // Native HLS fallback for browsers where HLS.js MediaSource is unavailable.
-     engine="Native HLS";
-     video.src=url;video.load();video.play().catch(()=>{});
-   }else{
-     throw new Error("HLS/M3U8 লিংক বা HLS.js সমর্থন পাওয়া যায়নি।");
+   // One unified playback engine (Shaka Player) handles both HLS/M3U8 and MPEG-DASH/MPD.
+   // This avoids switching engines when the user selects a different channel.
+   if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ারে HLS/M3U8 অথবা MPEG-DASH/MPD লিংক দিন।");
+   if(kind!=="hls"&&kind!=="mpd"&&kind!=="unknown") throw new Error("সমর্থিত স্ট্রিম হলো HLS/M3U8 ও MPEG-DASH/MPD।");
+   if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।");
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে HLS/DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
+   engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
+   activeShaka=new shaka.Player(video);
+   const player=activeShaka;
+   player.configure({
+     streaming:{bufferingGoal:12,rebufferingGoal:3,bufferBehind:20,retryParameters:{maxAttempts:3,baseDelay:300,backoffFactor:1.5,timeout:12000}},
+     abr:{enabled:true,defaultBandwidthEstimate:1000000,bandwidthUpgradeTarget:0.85,bandwidthDowngradeTarget:0.95},
+     manifest:{retryParameters:{maxAttempts:3,baseDelay:300,backoffFactor:1.5,timeout:12000}}
+   });
+   // Optional ClearKey support from the existing JSON URL format: |drmScheme=clearkey&drmLicense=KID:KEY
+   if(parsed.scheme==="clearkey"&&parsed.license){
+     const pair=parsed.license.split(":");
+     if(pair.length>=2){
+       const cleanHex=v=>String(v||"").replace(/[^0-9a-f]/gi,"").toLowerCase();
+       const kid=cleanHex(pair[0]),key=cleanHex(pair.slice(1).join(":"));
+       if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
+     }
    }
+   player.addEventListener("error",event=>{
+     if(requestId!==playRequestId)return;
+     const detail=event.detail||{};
+     console.warn("SPORTYNOVA Shaka error",detail.code,detail);
+     if(detail.severity===shaka.util.Error.Severity.CRITICAL)fail("Shaka error "+(detail.code||"playback"));
+   });
+   player.addEventListener("adaptation",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   await player.load(url);
+   if(requestId!==playRequestId)return;
+   setupShakaQualities();
+   video.play().catch(()=>{});
  }catch(err){fail(err?.message||"player exception")}
  render();
 }

@@ -1,4 +1,4 @@
-<!-- SPORTYNOVA: NS Player-style fast-start HLS/DASH update — 01 Nov 2026 -->
+<!-- SPORTYNOVA: Single HLS.js player for all channels — 01 Nov 2026 -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
+
 <meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
 <title>SPORTYNOVA 1.0 — Live TV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -284,7 +284,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 
 
 <style>
-/* One consistent player UI for HLS and DASH. Never allow Shaka/native controls
+/* One consistent HLS player UI. Never allow native controls
    to cover the SPORTYNOVA server strip or replace the custom controls. */
 .playersticky .screen .nova-controls{display:block!important;z-index:15!important;}
 .playersticky .screen #centerPlayPause{z-index:14!important;}
@@ -319,7 +319,7 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 
 
 <style id="sportynova-ui-polish">
-/* UI polish only — existing player, stream logic, IDs and controls are preserved. */
+/* UI polish for the single HLS player. */
 :root{
   --ui-glass:rgba(15,22,36,.88);
   --ui-border:rgba(142,174,214,.18);
@@ -493,11 +493,7 @@ body{
 @media(max-width:420px){#inlineServerGroup{gap:4px}#inlineServerGroup .inline-server-btn{padding:0 7px;font-size:9px}}
 </style>
 <style id="sports-shaka-player-mode">
-/* Live Sports uses Shaka controls; server buttons overlay the bottom control bar. */
-.playercard.sports-player-mode .nova-controls,
-.playercard.sports-player-mode #centerPlayPause{display:none!important}
-.playercard.sports-player-mode .screen .shaka-controls-container{display:flex!important;z-index:15!important}
-.playercard.sports-player-mode .screen .shaka-controls-container .shaka-range-container{accent-color:#21d8f4}
+/* Legacy style rules retained harmlessly; Shaka player library and playback branch are removed. */
 .playercard.sports-player-mode .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;min-width:0!important;height:36px!important;max-height:36px!important;min-height:36px!important;padding:0 4px!important;align-items:center!important;gap:5px!important;z-index:25!important;background:linear-gradient(90deg,rgba(7,15,27,.92),rgba(7,15,27,.68))!important;border:1px solid #ffffff24!important;border-radius:9px!important;overflow:hidden!important;pointer-events:auto!important}
 .playercard.sports-player-mode .sports-server-row #inlineServerGroup{display:flex!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;gap:5px!important;touch-action:pan-x!important;scrollbar-width:none!important}
 .playercard.sports-player-mode .sports-server-row #inlineServerGroup::-webkit-scrollbar{display:none!important}
@@ -984,9 +980,9 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 </div>
 
 <div class="modal" id="adminModal" aria-hidden="true"><div class="modalbox adminbox"><div class="modalhead"><h3>🔐 SPORTYNOVA Admin</h3><button class="xbtn" id="adminClose" type="button">✕</button></div><div id="adminLoginView"><p class="hint">অ্যাডমিন প্যানেলে প্রবেশের পাসওয়ার্ড দিন।</p><label class="fieldlabel" for="adminPassword">Admin password</label><input class="field" id="adminPassword" type="password" autocomplete="current-password" placeholder="Admin password"><div class="modalbuttons"><button class="btn primary" id="adminLoginBtn" type="button">Login</button></div><p class="hint" id="adminLoginMessage" role="status"></p></div><div id="adminDashboard" hidden><div class="admin-stats"><div><small>মোট চ্যানেল</small><strong id="adminTotal">0</strong></div><div><small>অনলাইন</small><strong id="adminOnline">0</strong></div><div><small>অফলাইন</small><strong id="adminOffline">0</strong></div></div><div class="admin-toolbar"><input class="field" id="adminSearch" placeholder="চ্যানেল খুঁজুন…"><button class="btn" id="adminRefresh" type="button">↻ Refresh</button></div><div id="adminChannelList" class="admin-channel-list"></div><p class="hint" id="adminMessage" role="status"></p><button class="btn" id="adminLogout" type="button">Logout</button></div></div></div>
-<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">HLS (.m3u8), MPEG-DASH (.mpd), MP4/WebM এবং browser-supported direct media সাপোর্ট করে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">শুধু HLS/M3U8 (.m3u8) স্ট্রিম সাপোর্ট করে। MPD/DASH বা MP4 লিংক চলবে না। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
+
 <script>
 const $=id=>document.getElementById(id), video=$("video");
 let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL";
@@ -1323,12 +1319,7 @@ function showQualityOptions(options,mode){
  qualityMode=options.length?mode:"";
  // Show the actual active rendition instead of falsely showing Auto.
  let activeValue="";
- if(mode==="shaka"&&activeShaka){
-  try{
-   const active=activeShaka.getVariantTracks().find(t=>t.active&&t.height);
-   if(active)activeValue=String(active.id);
-  }catch(e){}
- }else if(mode==="hls"&&activeHls&&activeHls.currentLevel>=0){
+ if(mode==="hls"&&activeHls&&activeHls.currentLevel>=0){
   activeValue=String(activeHls.currentLevel);
  }
  if(activeValue&&Array.from(sel.options).some(o=>o.value===activeValue)){
@@ -1343,10 +1334,6 @@ $("qualitySelect").addEventListener("change",()=>{
  const value=$("qualitySelect").value;
  try{
   if(qualityMode==="hls"&&activeHls) activeHls.currentLevel=value==="auto"?-1:Number(value);
-  else if(qualityMode==="shaka"&&activeShaka){
-   if(value==="auto")activeShaka.configure({abr:{enabled:true}});
-   else {activeShaka.configure({abr:{enabled:false}});const track=activeShaka.getVariantTracks().find(t=>String(t.id)===value);if(track)activeShaka.selectVariantTrack(track,true)}
-  }
  }catch(e){console.warn("Quality switch failed",e)}
 });
 function setupHlsQualities(){
@@ -1397,9 +1384,7 @@ function setPlayerLoading(show,title="ভিডিও চালু হচ্ছ�
 function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
 function stopEngines(){
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
-  if(activeShakaUI){const oldUI=activeShakaUI;activeShakaUI=null;try{oldUI.destroy()}catch(e){}}
-  if(activeShaka){const old=activeShaka;activeShaka=null;try{old.destroy()}catch(e){}}
-  if(screenEl)screenEl.classList.remove("shaka-ui-active");
+  // Shaka/DASH player removed: HLS.js is the only streaming engine.
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
@@ -1561,84 +1546,15 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
-   // Zee TV HD is handled by HLS.js (rather than Shaka HLS) so its
-   // multiplexed audio/video variant is parsed through the same HLS pipeline
-   // as the other working M3U8 channels.
-   const isZeeTvHd = kind==="hls" &&
-     url.includes("raw.githubusercontent.com/amazeyourself/adaptive-streams/") && url.includes("/YuppTV/ZeeTVHDAPAC.m3u8");
-   if(kind==="mpd" || (sportsMode && (kind==="hls" || kind==="unknown"))){
-     engine=kind==="mpd"?"Shaka / MPEG-DASH":"Shaka / Live Sports";
-     if(!window.shaka)throw new Error("Shaka library unavailable");
-     shaka.polyfill.installAll();
-     if(!shaka.Player.isBrowserSupported())throw new Error("browser unsupported");
-     activeShaka=new shaka.Player(video);
-     activeShaka.configure({
-       streaming:{
-         // Fast first-frame startup: use a small initial buffer, then adapt while playing.
-         bufferingGoal:5,rebufferingGoal:1,bufferBehind:12,lowLatencyMode:true,
-         startAtSegmentBoundary:false,
-         retryParameters:{timeout:6000,stallTimeout:3500,connectionTimeout:5000,maxAttempts:2,baseDelay:200,backoffFactor:1.4}
-       },
-       manifest:{
-         // Do not wait for a long MPD minBufferTime before starting the first frame.
-         dash:{ignoreMinBufferTime:true},
-         retryParameters:{timeout:7000,maxAttempts:2,baseDelay:200,backoffFactor:1.4}
-       },
-       drm:{retryParameters:{timeout:7000,maxAttempts:2,baseDelay:200,backoffFactor:1.4}},
-       abr:{
-         // Enable adaptive bitrate immediately; start with a conservative estimate to avoid early stalls.
-         enabled:true,
-         defaultBandwidthEstimate:1400000,
-         bandwidthDowngradeTarget:0.85,
-         bandwidthUpgradeTarget:0.70,
-         switchInterval:8
-       }
-     });
-     activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
-     // DASH variants may be discovered or updated after the manifest is loaded.
-     activeShaka.addEventListener("trackschanged",()=>setupShakaQualities());
-     activeShaka.addEventListener("adaptation",()=>setupShakaQualities());
-     activeShaka.addEventListener("variantchanged",()=>setupShakaQualities());
-     await activeShaka.attach(video);
-     if(requestId!==playRequestId)return;
-     video.controls=false;
-     if(sportsMode){
-       activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
-       activeShakaUI.configure({
-         addBigPlayButton:true,
-         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
-       });
-       screenEl.classList.add("shaka-ui-active");
-     }else{
-       // Live TV continues to use the existing SPORTYNOVA controls.
-       screenEl.classList.remove("shaka-ui-active");
-     }
-     const clearKeys={};
-     if(parsed.scheme==="clearkey"&&parsed.license){
-       // Supports KID:KEY, with optional UUID dashes and whitespace.
-       const p=String(parsed.license).split(":");
-       if(p.length===2){
-         const kid=p[0].trim().replace(/-/g,"").toLowerCase();
-         const key=p[1].trim().replace(/-/g,"").toLowerCase();
-         if(/^[0-9a-f]{32}$/.test(kid)&&/^[0-9a-f]{32}$/.test(key))clearKeys[kid]=key;
-       }
-     }
-     if(Object.keys(clearKeys).length)activeShaka.configure({drm:{clearKeys}});
-     report(kind==="mpd"?"MPEG-DASH · লিংক লোড হচ্ছে…":"Live Sports · লিংক লোড হচ্ছে…");
-     await activeShaka.load(url);
-     if(requestId!==playRequestId)return;
-
-     // Begin playback immediately after the MPD has been parsed; do not wait for extra UI work.
-     // ABR stays enabled from the first frame and adjusts quality as bandwidth measurements arrive.
-     const firstPlay = video.play().catch(()=>{});
-     setupShakaQualities();
-     await firstPlay;
-   }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
+   // One player only: HLS.js for every channel, including Live Sports.
+   // MPEG-DASH (.mpd) is intentionally not routed to a second player.
+   if(kind==="mpd") throw new Error("এই প্লেয়ার শুধু HLS/M3U8 চালায়। JSON-এ এই চ্যানেলের M3U8 লিংক দিন।");
+   if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ার শুধু HLS/M3U8 লিংক চালায়।");
+   if(window.Hls && Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:false,backBufferLength:20,
-       enableAudioTracks:true, startFragPrefetch:true,
-       // Moderate buffer targets help the first frame arrive sooner without starving playback.
+       enableAudioTracks:true,startFragPrefetch:true,
        maxBufferLength:16,maxMaxBufferLength:32,maxBufferSize:40000000,
        manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:250,
        levelLoadingTimeOut:7000,levelLoadingMaxRetry:3,levelLoadingRetryDelay:250,
@@ -1647,19 +1563,15 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        abrBandWidthFactor:0.85,abrBandWidthUpFactor:0.70
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
-       if(requestId===playRequestId){activeHls.loadSource(url);}
+       if(requestId===playRequestId) activeHls.loadSource(url);
      });
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
        if(requestId!==playRequestId)return;
-       // Start with HLS.js automatic level selection immediately; it can pick a suitable
-       // rendition from measured bandwidth instead of waiting 30 seconds to enable ABR.
-       try{activeHls.currentLevel=-1;}catch(e){}
+       try{activeHls.currentLevel=-1}catch(e){}
        setupHlsQualities();
        video.play().catch(()=>{});
      });
      activeHls.on(Hls.Events.LEVEL_SWITCHED,()=>setupHlsQualities());
-     // Keep HLS audio renditions enabled. Some manifests expose audio separately
-     // from the video variants; explicitly select the default/first available track.
      activeHls.on(Hls.Events.AUDIO_TRACKS_UPDATED,(_event,data)=>{
        if(requestId!==playRequestId)return;
        const tracks=data?.audioTracks||activeHls.audioTracks||[];
@@ -1667,24 +1579,19 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        let selected=tracks.findIndex(track=>track.default||track.defaultTrack);
        if(selected<0)selected=tracks.findIndex(track=>track.autoselect);
        if(selected<0)selected=0;
-       try{activeHls.audioTrack=selected;console.info("SPORTYNOVA selected HLS audio track",selected,tracks[selected]);}catch(e){console.warn("HLS audio track selection:",e);}
+       try{activeHls.audioTrack=selected}catch(e){console.warn("HLS audio track selection:",e)}
      });
-     activeHls.on(Hls.Events.LEVEL_LOADED,(_event,data)=>{
-       if(requestId!==playRequestId)return;
-       const details=data?.details;
-       console.info("SPORTYNOVA HLS level details",{audioTracks:activeHls.audioTracks?.length||0,levels:activeHls.levels?.map(level=>({height:level.height,codecs:level.attrs?.CODECS,audioGroup:level.audioGroup})),audioOnly:details?.audioOnly});
-     });
-     activeHls.on(Hls.Events.ERROR,(event,data)=>{
+     activeHls.on(Hls.Events.ERROR,(_event,data)=>{
        if(requestId!==playRequestId||!data.fatal)return;
        fail("HLS.js "+data.type);
      });
      activeHls.attachMedia(video);
+   }else if(kind==="hls" && video.canPlayType("application/vnd.apple.mpegurl")){
+     // Native HLS fallback for browsers where HLS.js MediaSource is unavailable.
+     engine="Native HLS";
+     video.src=url;video.load();video.play().catch(()=>{});
    }else{
-     // Native playback for direct files, transport streams, and browsers with native HLS.
-     engine=kind==="hls"?"Native HLS":"Native media";
-     video.src=url;
-     video.load();
-     video.play().catch(()=>{});
+     throw new Error("HLS/M3U8 লিংক বা HLS.js সমর্থন পাওয়া যায়নি।");
    }
  }catch(err){fail(err?.message||"player exception")}
  render();
@@ -1947,7 +1854,7 @@ async function loadConfig(){
  configLoadInProgress=false;
 }
 
-// Standalone-style player controls connected to the existing HLS/Shaka engine.
+// SPORTYNOVA controls connected only to the HLS.js engine.
 const playerCard=document.querySelector(".playersticky .playercard");
 const screenEl=$("playerScreen"),seekBar=$("seekBar");
 const formatClock=seconds=>{

@@ -948,8 +948,8 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
     <div class="nova-control-row">
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute/unmute" title="Mute/unmute">🔊</button>
      <input class="livezone-volume" id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" title="Volume">
-     <button class="nova-control-btn" id="prevChannelBtn" type="button" title="Previous channel" aria-label="Previous channel">⏮</button>
      <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play/Pause">▶</button>
+     <button class="nova-control-btn" id="prevChannelBtn" type="button" title="Previous channel" aria-label="Previous channel">⏮</button>
      <button class="nova-control-btn" id="nextChannelBtn" type="button" title="Next channel" aria-label="Next channel">⏭</button>
      <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen">⛶</button>
      <button class="nova-control-btn" id="fitBtn" type="button" title="Change fit mode" aria-label="Change fit mode">▣</button>
@@ -2523,6 +2523,29 @@ document.addEventListener("touchend", e => {
 #categorySections .channelrow>.channel{animation:tvTileAppear .18s ease-out both}
 @keyframes tvTileAppear{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 </style>
+
+<style id="sportynova-requested-control-layout">
+/* Requested adjustments: transparent channel title, play/pause before previous, fullscreen at the far-right control slot. */
+.channel-title-overlay{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  padding:8px 12px!important;
+  text-shadow:0 2px 5px rgba(0,0,0,.9)!important;
+}
+.nova-control-row{position:relative!important}
+#playPauseBtn{order:1!important}
+#prevChannelBtn{order:2!important}
+#nextChannelBtn{order:3!important}
+#fullscreenBtn{order:99!important;margin-left:auto!important;flex:0 0 34px!important;min-width:34px!important}
+@media(max-width:600px){
+ .channel-title-overlay{padding:5px 8px!important}
+ #fullscreenBtn{flex-basis:30px!important;min-width:30px!important}
+}
+</style>
+
 </body>
 </html>
 

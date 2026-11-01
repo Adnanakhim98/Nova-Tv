@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Bangladesh Vs West indies",
+    "name": "Afghanistan Vs Zimbabwe",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
@@ -16,11 +16,11 @@
           "scheme": "clearkey",
           "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
-        "name": "T SPORTS HD",
-        "url": "https://s1.itcnbd.live/T-Sports-HD/tracks-v1a1/mono.m3u8",
+        "name": "Tapmad",
+        "url": "https://d8j84o343a5m2.cloudfront.net/live/testtapmad3/master.m3u8",
         "show": "yes"
       },
       {
@@ -30,7 +30,7 @@
           "scheme": "clearkey",
           "license": "5318e462b9e0677487cb87837f0bbdb1:4fa0fb973b95738306005f2e8591bf8e"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "RABBITHOLE FHD",
@@ -40,8 +40,8 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-10-31T09:20:00+06:00",
-    "endTime": "2026-10-31T17:50:00+06:00",
+    "startTime": "2026-11-01T09:20:00+06:00",
+    "endTime": "2026-11-02T01:50:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "CRICKETS",

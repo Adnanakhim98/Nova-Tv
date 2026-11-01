@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 2তথথদররছ4 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- SPORTYNOVA: Balanced fast-start HLS/DASH ABR update — 01 Nov 2026 -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#070912">
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
 <meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
@@ -908,16 +909,16 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
 <style id="requested-player-controls-update">
-/* Requested controls cleanup: keep play/pause, remove volume/mute UI and Live Zone header. */
+/* Hide requested UI without deleting elements used by existing JavaScript. */
 .livezone-topbar{display:none!important}
 #muteBtn,#volumeSlider,.livezone-volume{display:none!important}
 #qualitySelect{width:48px!important;min-width:0!important;max-width:48px!important;padding:0 2px!important;font-size:9px!important}
 #playerScreen #qualitySelect{width:48px!important;min-width:0!important;max-width:48px!important;padding:0 2px!important;font-size:9px!important}
-@media(max-width:420px){
- #qualitySelect,#playerScreen #qualitySelect{width:44px!important;min-width:0!important;max-width:44px!important;padding:0 1px!important;font-size:8px!important}
-}
+@media(max-width:420px){#qualitySelect,#playerScreen #qualitySelect{width:44px!important;min-width:0!important;max-width:44px!important;padding:0 1px!important;font-size:8px!important}}
 </style>
+
 </head>
 <body>
 <div class="wrap">
@@ -936,10 +937,18 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
+   <div class="livezone-topbar" id="livezoneTopbar">
+    <button class="nova-control-btn" id="menuChannelBtn" type="button" title="চ্যানেল তালিকা">☰</button>
+    <div class="livezone-brand">LIVE<span>ZONE</span></div>
+    <span class="livezone-top-spacer"></span>
+    <button class="nova-control-btn" id="closePlayerBtn" type="button" title="Stop playback">✕</button>
+   </div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
      <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play/Pause">▶</button>
+     <button class="nova-control-btn" id="muteBtn" aria-label="Mute/unmute" title="Mute/unmute">🔊</button>
+     <input class="livezone-volume" id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" title="Volume">
      <button class="nova-control-btn" id="prevChannelBtn" type="button" title="Previous channel" aria-label="Previous channel">⏮</button>
      <button class="nova-control-btn" id="nextChannelBtn" type="button" title="Next channel" aria-label="Next channel">⏭</button>
      <button class="nova-control-btn" id="fitBtn" type="button" title="Change fit mode" aria-label="Change fit mode">▣</button>
@@ -1552,18 +1561,19 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
        streaming:{
-         // Smooth DASH playback: retain a larger buffer to absorb brief network dips.
-         bufferingGoal:20,rebufferingGoal:6,bufferBehind:45,lowLatencyMode:false,
-         retryParameters:{timeout:15000,stallTimeout:7000,connectionTimeout:10000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}
+         // Balanced start: build a modest buffer quickly, then keep enough reserve for short network dips.
+         bufferingGoal:14,rebufferingGoal:4,bufferBehind:30,lowLatencyMode:false,
+         retryParameters:{timeout:12000,stallTimeout:6000,connectionTimeout:8000,maxAttempts:4,baseDelay:300,backoffFactor:1.6}
        },
-       manifest:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}},
-       drm:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}},
+       manifest:{retryParameters:{timeout:12000,maxAttempts:4,baseDelay:300,backoffFactor:1.6}},
+       drm:{retryParameters:{timeout:12000,maxAttempts:4,baseDelay:300,backoffFactor:1.6}},
        abr:{
-         enabled:false,
-         defaultBandwidthEstimate:1800000,
-         bandwidthDowngradeTarget:0.90,
+         // Enable adaptive bitrate immediately; start with a conservative estimate to avoid early stalls.
+         enabled:true,
+         defaultBandwidthEstimate:1400000,
+         bandwidthDowngradeTarget:0.85,
          bandwidthUpgradeTarget:0.70,
-         switchInterval:15
+         switchInterval:8
        }
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
@@ -1578,7 +1588,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
        activeShakaUI.configure({
          addBigPlayButton:true,
-         controlPanelElements:["play_pause","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
+         controlPanelElements:["play_pause","mute","time_and_duration","spacer","quality","picture_in_picture","fullscreen"]
        });
        screenEl.classList.add("shaka-ui-active");
      }else{
@@ -1600,57 +1610,31 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
-     // Start at the lowest available DASH quality, then enable adaptive quality
-     // 30 seconds after playback actually begins to give the stream time to settle.
-     const variants=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
-     if(variants.length){
-       const lowestHeight=Math.min(...variants.map(t=>Number(t.height)).filter(Boolean));
-       const lowest=variants.filter(t=>Number(t.height)===lowestHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
-       if(lowest){try{activeShaka.selectVariantTrack(lowest,false);}catch(e){}}
-     }
+     // Keep ABR enabled from the start. Shaka chooses a rendition from its bandwidth estimate
+     // and adapts as real throughput becomes available, avoiding a fixed low-quality delay.
      setupShakaQualities();
-     let autoQualityTimerStarted=false;
-     const enableAutoAfterPlayback=()=>{
-       if(autoQualityTimerStarted)return;
-       autoQualityTimerStarted=true;
-       setTimeout(()=>{
-         if(requestId!==playRequestId||!activeShaka||video.paused)return;
-         activeShaka.configure({abr:{enabled:true}});
-         setupShakaQualities();
-       },30000);
-     };
-     video.addEventListener("playing",enableAutoAfterPlayback);
      video.play().catch(()=>{});
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:false,backBufferLength:20,
-       maxBufferLength:20,maxMaxBufferLength:30,maxBufferSize:40000000,
-       manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:200,
-       levelLoadingTimeOut:7000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:200,
+       // Moderate buffer targets help the first frame arrive sooner without starving playback.
+       maxBufferLength:16,maxMaxBufferLength:32,maxBufferSize:40000000,
+       manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:3,manifestLoadingRetryDelay:250,
+       levelLoadingTimeOut:7000,levelLoadingMaxRetry:3,levelLoadingRetryDelay:250,
        fragLoadingTimeOut:12000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:250,
-       startLevel:0,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1800000,
-       abrBandWidthFactor:0.9,abrBandWidthUpFactor:0.75
+       startLevel:-1,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1400000,
+       abrBandWidthFactor:0.85,abrBandWidthUpFactor:0.70
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
        if(requestId===playRequestId){activeHls.loadSource(url);}
      });
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
        if(requestId!==playRequestId)return;
-       // Begin at the lowest HLS level. Switch to automatic adaptation after 30s of playback.
-       try{activeHls.currentLevel=0;}catch(e){}
+       // Start with HLS.js automatic level selection immediately; it can pick a suitable
+       // rendition from measured bandwidth instead of waiting 30 seconds to enable ABR.
+       try{activeHls.currentLevel=-1;}catch(e){}
        setupHlsQualities();
-       let autoQualityTimerStarted=false;
-       const enableHlsAutoAfterPlayback=()=>{
-         if(autoQualityTimerStarted)return;
-         autoQualityTimerStarted=true;
-         setTimeout(()=>{
-           if(requestId!==playRequestId||!activeHls||video.paused)return;
-           activeHls.currentLevel=-1;
-           setupHlsQualities();
-         },30000);
-       };
-       video.addEventListener("playing",enableHlsAutoAfterPlayback);
        video.play().catch(()=>{});
      });
      activeHls.on(Hls.Events.LEVEL_SWITCHED,()=>setupHlsQualities());
@@ -1955,6 +1939,8 @@ if(centerPlayPauseBtn){
 
 video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
 video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
+$("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
+video.addEventListener("volumechange",()=>{$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
 video.addEventListener("timeupdate",()=>{
  const duration=video.duration;
  if(Number.isFinite(duration)&&duration>0){
@@ -1990,6 +1976,19 @@ let livezoneFitIndex=0;
 const livezoneFitModes=["fill","cover","zoom"];
 $("prevChannelBtn").addEventListener("click",()=>stepChannel(-1));
 $("nextChannelBtn").addEventListener("click",()=>stepChannel(1));
+$("menuChannelBtn").addEventListener("click",()=>{
+ const list=document.querySelector(".channelarea");
+ if(list)list.scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("closePlayerBtn").addEventListener("click",()=>{$("stopBtn").click()});
+$("volumeSlider").addEventListener("input",e=>{
+ video.volume=Number(e.target.value);
+ video.muted=video.volume===0;
+});
+video.addEventListener("volumechange",()=>{
+ const slider=$("volumeSlider");
+ if(slider)slider.value=String(video.muted?0:video.volume);
+});
 $("fitBtn").addEventListener("click",()=>{
  livezoneFitIndex=(livezoneFitIndex+1)%livezoneFitModes.length;
  applyVideoFit(livezoneFitModes[livezoneFitIndex]);

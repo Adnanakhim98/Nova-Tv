@@ -210,6 +210,9 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 .playersticky .screen>video{z-index:1}
 .playersticky .empty{z-index:2}
 .playersticky .playerLoading{z-index:8}
+.channel-title-overlay{position:absolute;left:12px;right:12px;top:10px;z-index:16;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:8px 12px;border:1px solid #ffffff35;border-radius:10px;background:rgba(4,10,20,.68);backdrop-filter:blur(6px);color:#fff;font-size:clamp(12px,3.4vw,17px);font-weight:800;line-height:1.25;pointer-events:none;opacity:1;transition:opacity .25s ease}
+.playercard.controls-hidden .channel-title-overlay{opacity:0}
+.playercard:fullscreen .channel-title-overlay,.playercard:-webkit-full-screen .channel-title-overlay,.playercard.mobile-rotated .channel-title-overlay{top:calc(10px + env(safe-area-inset-top,0px));left:16px;right:16px;max-width:calc(100% - 32px);font-size:clamp(14px,2vw,20px)}
 .nova-controls{position:absolute;left:0;right:0;bottom:0;z-index:7;padding:30px 10px 8px;background:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,0));opacity:1;transition:opacity .25s}
 .nova-progress-row{display:flex;align-items:center;gap:8px;color:#f4f7ff;font-size:10px;font-weight:700;margin-bottom:7px}
 .nova-progress-row input{flex:1;min-width:0;height:4px;accent-color:#21d8f4;cursor:pointer}
@@ -933,6 +936,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
    <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
+   <div class="channel-title-overlay" id="channelTitleOverlay" aria-live="polite">SPORTYNOVA LIVE TV</div>
    <div class="livezone-topbar" id="livezoneTopbar">
     <button class="nova-control-btn" id="menuChannelBtn" type="button" title="চ্যানেল তালিকা">☰</button>
     <div class="livezone-brand">LIVE<span>ZONE</span></div>
@@ -942,17 +946,17 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
-     <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play/Pause">▶</button>
      <button class="nova-control-btn" id="muteBtn" aria-label="Mute/unmute" title="Mute/unmute">🔊</button>
      <input class="livezone-volume" id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" title="Volume">
      <button class="nova-control-btn" id="prevChannelBtn" type="button" title="Previous channel" aria-label="Previous channel">⏮</button>
+     <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play/Pause">▶</button>
      <button class="nova-control-btn" id="nextChannelBtn" type="button" title="Next channel" aria-label="Next channel">⏭</button>
+     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen">⛶</button>
      <button class="nova-control-btn" id="fitBtn" type="button" title="Change fit mode" aria-label="Change fit mode">▣</button>
      <button class="nova-control-btn" id="rotateBtn" type="button" title="Lock landscape" aria-label="Lock landscape">↻</button>
      <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
      <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
      <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture" title="Picture in Picture">▣</button>
-     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen">⛶</button>
     </div>
    </div>
   </div>
@@ -1434,7 +1438,17 @@ async function stopEngines(){
   delete video.dataset.currentUrl;
   activeKey=null;
 }
-function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else{setLiveBadge(false);/* Never cover the video surface or inline server controls with an error overlay. */setPlayerLoading(false);}}
+function syncChannelTitleOverlay(){
+ const title=$("nowTitle")?.textContent?.trim();
+ const overlay=$("channelTitleOverlay");
+ if(overlay)overlay.textContent=title || "SPORTYNOVA LIVE TV";
+}
+if($("nowTitle")){
+ const titleObserver=new MutationObserver(syncChannelTitleOverlay);
+ titleObserver.observe($("nowTitle"),{childList:true,characterData:true,subtree:true});
+}
+syncChannelTitleOverlay();
+function showStatus(title,meta){$("nowTitle").textContent=title;syncChannelTitleOverlay();$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else{setLiveBadge(false);/* Never cover the video surface or inline server controls with an error overlay. */setPlayerLoading(false);}}
 function parseStreamInput(raw, drmFromJson=null){
  const text=String(raw||"").trim();
  // Only the pipe-delimited suffix is player metadata. Preserve signed/query URLs intact.
@@ -1561,6 +1575,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    setLiveBadge(false);
    setPlayerLoading(false);
    $("nowTitle").textContent=name;
+   syncChannelTitleOverlay();
    $("nowMeta").textContent="Stream চালু হয়নি · প্লেয়ারের Server 1 / Server 2 বাটন চাপুন";
    setInlineServers(currentServerChannel || {name:name,url:rawUrl,category:category});
  };
@@ -1611,7 +1626,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    // bitrate after playback has started so quality can rise/fall with the network.
    player.configure({
      streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}},
-     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.85,bandwidthDowngradeTarget:0.95,switchInterval:4},
+     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.95,bandwidthDowngradeTarget:0.85,switchInterval:12},
      manifest:{retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}}
    });
    // Optional ClearKey support from the existing JSON URL format: |drmScheme=clearkey&drmLicense=KID:KEY
@@ -1633,11 +1648,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
    await player.load(url);
    if(requestId!==playRequestId)return;
-   // Prefer the highest SD rendition (up to 480p); if the stream has no SD
-   // rendition, start with its lowest available video rendition instead.
+   // Prefer a low/medium rendition up to 640p (e.g. 480p/540p/640p);
+   // if unavailable, start with the lowest available video rendition instead.
    const variants=player.getVariantTracks().filter(t=>t.height && t.type!=="audio");
    if(variants.length){
-     const sdVariants=variants.filter(t=>Number(t.height)<=480);
+     const sdVariants=variants.filter(t=>Number(t.height)<=640);
      const startTrack=(sdVariants.length?sdVariants:variants).sort((a,b)=>{
        const heightDiff=Number(b.height||0)-Number(a.height||0);
        return heightDiff || Number(a.bandwidth||0)-Number(b.bandwidth||0);
@@ -2579,4 +2594,20 @@ document.addEventListener("touchend", e => {
 .filter-live-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#ff4264;box-shadow:0 0 7px #ff4264aa}
 .sports-sectionhead .section-count{display:none!important}
 @media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
+</style>
+
+<style id="sportynova-stable-quality-title-controls">
+.nova-control-row{flex-wrap:nowrap!important}
+#prevChannelBtn,#playPauseBtn,#nextChannelBtn,#fullscreenBtn{flex:0 0 auto!important;min-width:30px!important}
+#prevChannelBtn,#nextChannelBtn{font-size:13px!important}
+#playPauseBtn{border-color:#25cce8!important;background:#123447!important}
+#fullscreenBtn{border-color:#25cce8!important}
+@media (orientation:landscape) and (max-height:600px){
+ .channel-title-overlay{top:6px!important;padding:5px 10px!important;font-size:13px!important}
+ .nova-controls{padding-top:22px!important;padding-bottom:calc(5px + env(safe-area-inset-bottom,0px))!important}
+ .nova-progress-row{margin-bottom:4px!important}
+ .nova-control-row{gap:4px!important}
+ .nova-control-row>.nova-control-btn{height:29px!important;min-width:29px!important;padding:0 5px!important}
+ #qualitySelect{max-width:76px!important;min-width:58px!important}
+}
 </style>

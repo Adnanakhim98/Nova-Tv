@@ -1,4 +1,4 @@
-<!-- SPORTYNOVA: Balanced fast-start HLS/DASH ABR update — 01 Nov 2026 -->
+<!-- SPORTYNOVA: NS Player-style fast-start HLS/DASH update — 01 Nov 2026 -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1549,7 +1549,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  // A single startup deadline reports a real failure; it does not start another player.
  // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
  // loading state alive long enough for legitimate slower connections to start.
- const startupLimit=kind==="mpd"?35000:(sportsMode?15000:(kind==="hls"?20000:15000));
+ const startupLimit=kind==="mpd"?18000:(sportsMode?12000:(kind==="hls"?16000:12000));
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
@@ -1561,12 +1561,17 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka=new shaka.Player(video);
      activeShaka.configure({
        streaming:{
-         // Balanced start: build a modest buffer quickly, then keep enough reserve for short network dips.
-         bufferingGoal:14,rebufferingGoal:4,bufferBehind:30,lowLatencyMode:false,
-         retryParameters:{timeout:12000,stallTimeout:6000,connectionTimeout:8000,maxAttempts:4,baseDelay:300,backoffFactor:1.6}
+         // Fast first-frame startup: use a small initial buffer, then adapt while playing.
+         bufferingGoal:5,rebufferingGoal:1,bufferBehind:12,lowLatencyMode:true,
+         startAtSegmentBoundary:false,
+         retryParameters:{timeout:6000,stallTimeout:3500,connectionTimeout:5000,maxAttempts:2,baseDelay:200,backoffFactor:1.4}
        },
-       manifest:{retryParameters:{timeout:12000,maxAttempts:4,baseDelay:300,backoffFactor:1.6}},
-       drm:{retryParameters:{timeout:12000,maxAttempts:4,baseDelay:300,backoffFactor:1.6}},
+       manifest:{
+         // Do not wait for a long MPD minBufferTime before starting the first frame.
+         dash:{ignoreMinBufferTime:true},
+         retryParameters:{timeout:7000,maxAttempts:2,baseDelay:200,backoffFactor:1.4}
+       },
+       drm:{retryParameters:{timeout:7000,maxAttempts:2,baseDelay:200,backoffFactor:1.4}},
        abr:{
          // Enable adaptive bitrate immediately; start with a conservative estimate to avoid early stalls.
          enabled:true,
@@ -1610,10 +1615,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
-     // Keep ABR enabled from the start. Shaka chooses a rendition from its bandwidth estimate
-     // and adapts as real throughput becomes available, avoiding a fixed low-quality delay.
+     // Begin playback immediately after the MPD has been parsed; do not wait for extra UI work.
+     // ABR stays enabled from the first frame and adjusts quality as bandwidth measurements arrive.
+     const firstPlay = video.play().catch(()=>{});
      setupShakaQualities();
-     video.play().catch(()=>{});
+     await firstPlay;
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
      activeHls=new Hls({

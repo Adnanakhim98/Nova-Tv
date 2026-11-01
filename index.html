@@ -1990,11 +1990,6 @@ let livezoneFitIndex=0;
 const livezoneFitModes=["fill","cover","zoom"];
 $("prevChannelBtn").addEventListener("click",()=>stepChannel(-1));
 $("nextChannelBtn").addEventListener("click",()=>stepChannel(1));
-$("menuChannelBtn").addEventListener("click",()=>{
- const list=document.querySelector(".channelarea");
- if(list)list.scrollIntoView({behavior:"smooth",block:"start"});
-});
-$("closePlayerBtn").addEventListener("click",()=>{$("stopBtn").click()});
 $("fitBtn").addEventListener("click",()=>{
  livezoneFitIndex=(livezoneFitIndex+1)%livezoneFitModes.length;
  applyVideoFit(livezoneFitModes[livezoneFitIndex]);

@@ -1596,16 +1596,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      console.info("SPORTYNOVA Zee TV media state",{muted:video.muted,volume:video.volume,audioTracks:video.audioTracks?.length||0,readyState:video.readyState});
    }
    success(engine);
-   // Keep SD for the first few seconds, then let Shaka ABR select quality
-   // according to measured throughput and buffering on both HLS and DASH.
-   if(activeShaka && requestId===playRequestId && !adaptiveQualityTimer){
-     const playerForAdaptive=activeShaka;
-     adaptiveQualityTimer=setTimeout(()=>{
-       adaptiveQualityTimer=null;
-       if(requestId!==playRequestId || activeShaka!==playerForAdaptive || video.paused)return;
-       try{playerForAdaptive.configure({abr:{enabled:true}});}catch(e){console.warn("Adaptive quality enable failed",e)}
-     },8000);
-   }
+   // Keep the selected rendition stable after startup; do not re-enable ABR automatically.
  };
  // A single startup deadline reports a real failure; it does not start another player.
  // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
@@ -1625,11 +1616,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
    activeShaka=new shaka.Player(video);
    const player=activeShaka;
-   // Start at SD first to get the first frame quickly, then turn on adaptive
-   // bitrate after playback has started so quality can rise/fall with the network.
+   // Start at a stable SD/medium rendition for faster startup. Keep adaptive
+   // bitrate disabled unless the user explicitly chooses Auto, avoiding frequent quality jumps.
    player.configure({
      streaming:{bufferingGoal:5,rebufferingGoal:1,bufferBehind:15,retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}},
-     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.95,bandwidthDowngradeTarget:0.85,switchInterval:12},
+     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.95,bandwidthDowngradeTarget:0.85,switchInterval:30},
      manifest:{retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}}
    });
    // Optional ClearKey support from the existing JSON URL format: |drmScheme=clearkey&drmLicense=KID:KEY
@@ -2571,7 +2562,7 @@ document.addEventListener("touchend", e => {
 /* Live TV server names sit just under the transparent channel title, like the reference image. */
 .playercard:not(.sports-player-mode) #inlineServerGroup{
   position:absolute!important;
-  top:52px!important;
+  top:72px!important;
   left:16px!important;
   right:auto!important;
   bottom:auto!important;
@@ -2610,11 +2601,26 @@ document.addEventListener("touchend", e => {
 }
 .playercard:not(.sports-player-mode) #inlineServerGroup .server-empty-label{display:none!important}
 @media(max-width:600px){
-  .playercard:not(.sports-player-mode) #inlineServerGroup{top:45px!important;left:10px!important;max-width:calc(100% - 20px)!important;gap:4px!important}
+  .playercard:not(.sports-player-mode) #inlineServerGroup{top:66px!important;left:10px!important;max-width:calc(100% - 20px)!important;gap:4px!important}
   .playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 9px!important;font-size:10px!important}
   #playerScreen #playPauseBtn{width:30px!important;min-width:30px!important;flex-basis:30px!important}
 }
 </style>
+
+<style id="sportynova-server-below-title-stable-quality-fix">
+/* Keep server buttons visibly BELOW the channel title, never overlapping it. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  top:72px!important; left:12px!important; right:12px!important; bottom:auto!important;
+  width:max-content!important; max-width:calc(100% - 24px)!important;
+  z-index:22!important; display:flex!important; flex-wrap:nowrap!important;
+  overflow-x:auto!important; overflow-y:hidden!important; background:transparent!important;
+}
+@media(max-width:600px){
+  .playercard:not(.sports-player-mode) #inlineServerGroup{top:66px!important;left:10px!important;right:10px!important;max-width:calc(100% - 20px)!important}
+}
+/* Quality stays on the chosen rendition; Auto remains available as an explicit user choice. */
+</style>
+
 </body>
 </html>
 
@@ -2703,3 +2709,54 @@ document.addEventListener("touchend", e => {
  #qualitySelect{max-width:76px!important;min-width:58px!important}
 }
 </style>
+
+
+<style id="sportynova-live-server-popup-autohide">
+/* Live TV server buttons are a temporary popup: hidden by default, revealed by tapping the player. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transform:translateY(-5px)!important;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important;
+}
+.playercard:not(.sports-player-mode).live-servers-visible #inlineServerGroup{
+  opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+  transform:translateY(0)!important;
+}
+</style>
+<script id="sportynova-live-server-popup-autohide-script">
+(()=>{
+ const card=document.querySelector('.playercard');
+ const screen=document.getElementById('playerScreen');
+ const group=document.getElementById('inlineServerGroup');
+ if(!card||!screen||!group)return;
+ let timer=null;
+ function hide(){
+   if(timer){clearTimeout(timer);timer=null;}
+   card.classList.remove('live-servers-visible');
+ }
+ function show(){
+   if(card.classList.contains('sports-player-mode'))return;
+   card.classList.add('live-servers-visible');
+   if(timer)clearTimeout(timer);
+   timer=setTimeout(()=>{timer=null;card.classList.remove('live-servers-visible');},4000);
+ }
+ // Tap the video/player to open the server popup; it automatically closes after 4 seconds.
+ screen.addEventListener('pointerdown',e=>{
+   if(card.classList.contains('sports-player-mode'))return;
+   if(e.target.closest('#inlineServerGroup')){show();return;}
+   show();
+ },{passive:true});
+ // Selecting a server keeps the popup briefly visible, then it auto-hides.
+ group.addEventListener('click',e=>{
+   if(card.classList.contains('sports-player-mode'))return;
+   show();
+   if(e.target.closest('.inline-server-btn')){
+     if(timer)clearTimeout(timer);
+     timer=setTimeout(()=>{timer=null;card.classList.remove('live-servers-visible');},4000);
+   }
+ });
+ document.addEventListener('fullscreenchange',()=>{if(!card.classList.contains('sports-player-mode'))hide();});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});
+ hide();
+})();
+</script>

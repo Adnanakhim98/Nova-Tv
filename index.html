@@ -559,6 +559,7 @@ body{
 <style id="match-start-time-channel-tag">
 /* Match card labels requested; no existing match/player logic changed. */
 #liveSportsChannels .channel{position:relative!important;padding-top:24px!important;padding-bottom:24px!important}
+#liveSportsChannels .match-start-label.is-live-row{justify-content:flex-end;min-height:0;padding-top:3px;padding-bottom:3px}
 #liveSportsChannels .match-start-label{position:absolute;top:5px;left:50%;transform:translateX(-50%);max-width:calc(100% - 18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(8px,2.1vw,10px);font-weight:800;letter-spacing:.2px;color:#ffd7a1;background:rgba(255,116,65,.12);border:1px solid rgba(255,126,75,.8);padding:3px 7px;line-height:1.15;z-index:2;border-radius:2px}
 #liveSportsChannels .match-channel-tag{position:absolute;left:7px;bottom:6px;z-index:2;font-size:9px;font-weight:900;letter-spacing:.4px;color:#bdf8ff;background:rgba(8,26,39,.92);border:1px solid #20cbe8;border-radius:4px;padding:3px 6px;line-height:1}
 @media(max-width:420px){#liveSportsChannels .channel{padding-top:24px!important;padding-bottom:23px!important}#liveSportsChannels .match-start-label{font-size:8px;padding:3px 5px}#liveSportsChannels .match-channel-tag{left:5px;bottom:5px;font-size:8px;padding:3px 5px}}
@@ -1185,15 +1186,19 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   const fileMatch=sourcePath.match(/match-(\d+)\.json/i);
   const channelNumber=fileMatch?fileMatch[1]:"";
 
-  // Match start date/time and JSON channel number share one clean top row.
+  // Upcoming matches show the start time; once LIVE, hide the start time
+  // and keep only the channel indicator on the top row.
+  const state=matchStatus(ch);
   const startLabel=document.createElement("div");
   startLabel.className="match-start-label";
-  const startTimeText=formatMatchStartTime(ch);
-  startLabel.replaceChildren();
-  const startText=document.createElement("span");
-  startText.className="match-start-text";
-  startText.textContent=startTimeText;
-  startLabel.appendChild(startText);
+  if(state!=="LIVE"){
+   const startText=document.createElement("span");
+   startText.className="match-start-text";
+   startText.textContent=formatMatchStartTime(ch);
+   startLabel.appendChild(startText);
+  }else{
+   startLabel.classList.add("is-live-row");
+  }
   if(channelNumber){
    const channelGroup=document.createElement("span");channelGroup.className="match-channel-group";
    const lamp=document.createElement("span");lamp.className="match-online-lamp";lamp.setAttribute("aria-label","Online indicator");
@@ -1204,7 +1209,6 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
 
   const badgeRow=document.createElement("div");badgeRow.className="sports-badge-row";
   const status=document.createElement("span");status.className="sports-status";
-  const state=matchStatus(ch);
   status.textContent=state; if(state==="LIVE")status.classList.add("is-live");
   if(state==="ENDED")status.classList.add("is-ended");
   const type=document.createElement("span");type.className="sports-type";

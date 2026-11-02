@@ -6,22 +6,13 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/England%20%F0%9F%8F%85%20Vs%20West%20Indies%20%F0%9F%8F%85.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/bzm4u6axk0/out/v1/d59d1f211470430daf1bd0acb013e9b6/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
     "section": "liveSports",
     "drm": {
       "scheme": "clearkey",
-      "license": "a0ea22119ca851e441c56df67e33f6fd:179bbc5d1bec825eaa1b712872f12eda"
+      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
     },
     "streams": [
-      {
-        "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/bzm4u6axk0/out/v1/d59d1f211470430daf1bd0acb013e9b6/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "a0ea22119ca851e441c56df67e33f6fd:179bbc5d1bec825eaa1b712872f12eda"
-        },
-        "show": "yes"
-      },
       {
         "name": "FANCODE FHD",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
@@ -32,31 +23,36 @@
         "show": "yes"
       },
       {
-        "name": "WILLOW ALT",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/bzm4u6axk0/out/v1/d59d1f211470430daf1bd0acb013e9b6/cenc.mpd",
+        "name": "SD SERVER",
+        "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "FANCODE SD",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash-sd/enc/iwpchve3wl/out/v1/946019f85dc64ae99ff9ce64a9727a62/cenc-sd.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "a0ea22119ca851e441c56df67e33f6fd:179bbc5d1bec825eaa1b712872f12eda"
+          "license": "286eb7dc538143790fa9913639531920:e3f5cb08d14d9e9c08438c673819540f"
         },
         "show": "yes"
       },
       {
-        "name": "SKY CRICKET FHD",
-        "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=uiXES2ePt7xTpQnbJxn7Dg&e=2074684474&scheme=https",
-        "show": "yes"
-      },
-      {
-        "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.44/hls/XAXAXAAX.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW SPORTS HD",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd",
+        "name": "FANCODE2 FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
+          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
+        "show": "yes"
+      },
+      {
+        "name": "STAR SPORTS HD",
+        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "FANCODE (IND)",
+        "url": "https://dai-fancode.pages.dev/mumbai/4250355_english_hls_7b5a55758122143_1ta-di_h264/index.m3u8",
         "show": "yes"
       }
     ],

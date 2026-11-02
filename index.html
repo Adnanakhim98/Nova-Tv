@@ -1,0 +1,2852 @@
+<!-- SPORTYNOVA: Unified Shaka player for HLS/M3U8 + MPEG-DASH/MPD — 01 Nov 2026 -->
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070912">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+<meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
+<title>SPORTYNOVA 1.0 — Live TV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080a12;--panel:#111521;--panel2:#171d2b;--line:#242c3e;--cyan:#18d6f3;--red:#ff3157;--muted:#8d98ad;--text:#f4f7ff}
+*{box-sizing:border-box}html,body{touch-action:pan-y;margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Inter,"Hind Siliguri",sans-serif;overflow:hidden;overscroll-behavior:none}
+.wrap{height:100dvh;max-width:1100px;margin:auto;padding:9px 9px 0;display:flex;flex-direction:column;min-height:0}
+.topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(16,21,34,.98);border:1px solid #253047;border-radius:17px;padding:10px;z-index:10}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}.brandicon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#1cdbf6,#087eae);color:#03121b;font-size:21px;font-weight:900}.brandname{font-size:clamp(15px,3.6vw,22px);font-weight:800;letter-spacing:.4px;white-space:nowrap}.nova{color:#ff3d55}.version{font-size:10px;color:#9aa7bd;vertical-align:top;margin-left:4px}.tagline{font-size:9px;letter-spacing:1.1px;color:#8491a8;margin-top:2px}.search{width:min(220px,42vw);min-width:95px;border:1px solid #2b354a;background:#0b101b;border-radius:22px;padding:10px 12px;color:#fff;outline:none;font-size:12px}
+.playersticky{flex:0 0 auto;position:relative;z-index:2;background:var(--bg);padding-bottom:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 2px 9px}.sectionhead h2{font-size:15px;margin:0;font-weight:700}.livepill{font-size:10px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--red);padding:6px 9px;border-radius:7px;white-space:nowrap}.contactbox{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;min-width:0}.contacttext{font-size:9px;line-height:1.25;color:#aebbd0;text-align:right;max-width:120px}.contactlink{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:10px;font-weight:800;color:#fff;padding:7px 9px;border-radius:7px;white-space:nowrap;border:1px solid #2b3850;background:#182133}.contactlink.telegram{background:#168bc3;border-color:#168bc3}.contactlink.whatsapp{background:#168b55;border-color:#168b55}.searchhint{font-size:11px;color:#9aa7bd;margin:0 2px 8px}.playercard{background:#0d111c;border:1px solid #242d40;border-radius:16px;overflow:hidden}.screen{position:relative;background:#03050a;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#020307}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,#182237 0,#080a12 72%);z-index:1}.tvicon{font-size:34px}.empty strong{font-size:14px;margin-top:9px}.empty span{font-size:11px;color:#8793aa;margin-top:5px}.playerfoot{padding:8px 11px;border-top:1px solid #1c2536;display:flex;align-items:center;justify-content:space-between;gap:8px}.noticebar{height:34px;margin-top:7px;display:flex;align-items:center;gap:9px;overflow:hidden;border:1px solid #26364b;border-radius:9px;background:linear-gradient(90deg,#111b2a,#0b1220);white-space:nowrap}.notice-label{height:100%;display:flex;align-items:center;flex:0 0 auto;padding:0 10px;background:linear-gradient(120deg,#13c9e9,#0879b5);color:#04131b;font-size:10px;font-weight:900;letter-spacing:.5px}.notice-window{position:relative;flex:1;min-width:0;overflow:hidden;height:100%;display:flex;align-items:center}.notice-text{display:inline-block;flex:0 0 auto;padding-left:0;font-size:11px;font-weight:600;color:#eaf7ff;animation:noticeMove 32s linear infinite}@keyframes noticeMove{from{transform:translateX(100%)}to{transform:translateX(-100%)}}.noticebar:hover .notice-text{animation-play-state:paused}.nowtitle{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nowmeta{font-size:10px;color:var(--muted);margin-top:3px}.playeractions{display:flex;gap:6px;flex:0 0 auto}.btn{border:1px solid #2b3850;background:#182133;color:#eaf5ff;padding:8px 10px;border-radius:9px;font-size:10px;font-weight:700;cursor:pointer}
+.channelarea{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 0 20px;scrollbar-width:thin;scrollbar-color:#344057 transparent}.channelarea .sectionhead{margin:8px 2px 9px;padding:11px 12px;background:linear-gradient(100deg,#111b2a,#0d111c);border:1px solid #243149;border-radius:12px}.section-count{font-size:10px;color:#8190a7;white-space:nowrap}.channelrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.channelrow.sportsrow{grid-template-columns:repeat(2,minmax(0,1fr))}.channelrow.sportsrow .channel{min-height:118px;padding:12px 6px}.channelrow.sportsrow .chlogo{height:48px;margin-bottom:9px}.channelrow.sportsrow .chlogo img{max-width:100%;height:46px}.channel{cursor:pointer;min-width:0;border:1px solid #252e42;background:linear-gradient(150deg,#171d2b,#0e121c);border-radius:15px;padding:10px 4px;text-align:center;color:#fff;min-height:105px}.channel.active{border-color:var(--cyan);box-shadow:0 0 0 1px #18d6f344,0 0 18px #18d6f31b;background:#10212c}.chlogo{height:34px;display:grid;place-items:center;margin-bottom:7px;font-size:18px;font-weight:900}.chlogo img{display:block;width:100%;max-width:76px;height:34px;object-fit:contain;border-radius:5px}.chlogo .logo-fallback{font-size:18px;line-height:1}.chlogo.red{color:#ff334d}.chlogo.blue{color:#39bdf7}.chlogo.gold{color:#f9ca52}.chlogo.purple{color:#d6a3ff}.chlogo.green{color:#40e0a0}.chname{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chcat{font-size:9px;color:#7f8ba1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sportsrow{grid-template-columns:repeat(2,minmax(0,1fr))!important}.sportsrow .channel{min-height:118px;padding:12px 6px}.sportsrow .chlogo{height:48px;margin-bottom:9px}.sportsrow .chlogo img{max-width:100%;height:46px}.category-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(34px,auto);gap:7px;padding:2px 1px 10px;margin:0 0 8px;overflow:visible}.category-tab{min-width:0;width:100%;border:1px solid #2a354a;background:#121927;color:#b8c4d8;border-radius:12px;padding:8px 3px;font-size:10px;font-weight:700;line-height:1.2;white-space:normal;overflow-wrap:anywhere;cursor:pointer}.category-tab.active{background:linear-gradient(120deg,#12bfe3,#0878b6);border-color:#18d6f3;color:#04131b;box-shadow:0 0 12px #18d6f322}.footer{text-align:center;color:#657187;font-size:10px;padding:18px 0 10px}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modalbox{width:min(480px,100%);background:#111725;border:1px solid #34405a;border-radius:16px;padding:17px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalhead h3{font-size:15px;margin:0}.xbtn{background:#252e40;border:0;color:#fff;border-radius:8px;padding:7px 10px}.fieldlabel{display:block;font-size:11px;color:#9eabc0;margin:11px 0 6px}.field{width:100%;border:1px solid #303b50;background:#090e18;color:white;border-radius:9px;padding:11px;font-size:12px;outline:none}.hint{font-size:10px;color:#7d8ba1;line-height:1.6;margin-top:10px}.modalbuttons{display:flex;gap:8px;margin-top:13px}.modalbuttons .btn{flex:1}.primary{background:linear-gradient(120deg,#12bfe3,#0878b6);border:0;color:#03121b}
+
+.serverchoices{display:grid;gap:9px}.serverchoice{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:1px solid #2d3a52;background:linear-gradient(120deg,#182438,#101725);color:#f4f7ff;padding:13px;border-radius:11px;text-align:left;cursor:pointer}.serverchoice:disabled{opacity:.48;cursor:not-allowed}.serverchoice strong{font-size:12px}.serverchoice span{font-size:10px;color:#8d9bb1}.serverchoice.ready{border-color:#18a9c5}
+@media(max-width:420px){.contactbox{gap:4px}.contacttext{font-size:8px;max-width:76px}.contactlink{font-size:9px;padding:6px 7px}.sectionhead h2{font-size:13px}.category-tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.category-tab{font-size:9px;padding:8px 2px;border-radius:10px}.wrap{padding:9px 9px 0}.topbar{padding:9px}.brandicon{width:33px;height:33px;flex-basis:33px}.tagline{font-size:8px;letter-spacing:.8px}.screen{aspect-ratio:16/9}.playerfoot{padding:7px 9px}.playeractions .btn{padding:7px 8px}.channelrow{gap:6px}.channel{padding:9px 3px;min-height:102px}.chlogo{height:30px;font-size:16px}.chlogo img{height:30px;max-width:68px}.chname{font-size:9px}.chcat{font-size:8px}.channelrow.sportsrow .channel{min-height:112px;padding:10px 5px}.channelrow.sportsrow .chlogo{height:42px}.channelrow.sportsrow .chlogo img{height:40px;max-width:100%}}
+
+/* SPORTYNOVA premium refresh */
+:root{--bg:#070912;--panel:#101624;--panel2:#151e2e;--line:#28354b;--cyan:#21d8f4;--red:#ff4264;--muted:#98a5bb;--text:#f5f8ff;--gold:#ffd166}
+body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),var(--bg)}
+.wrap{max-width:1180px;padding-left:12px;padding-right:12px}
+.topbar{background:linear-gradient(120deg,rgba(18,25,41,.98),rgba(10,14,25,.98));border-color:#2b3850;border-radius:22px;box-shadow:0 8px 28px #0003}
+.brandicon{box-shadow:0 0 22px #18d6f344;border:1px solid #45e7ff55;transform:rotate(-3deg)}
+.brandname{letter-spacing:.65px}.tagline{font-size:9px;letter-spacing:1.35px}
+.search{transition:border-color .2s,box-shadow .2s;background:#090e19}.search:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #18d6f31b}
+.playercard{border-radius:22px;border-color:#2a354a;box-shadow:0 14px 35px #0004}
+.screen{background:radial-gradient(ellipse at center,#152237 0,#05070d 75%)}
+.screen:after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #ffffff08;border-radius:inherit;z-index:3}
+.empty{background:radial-gradient(ellipse at center,#1a2a43 0,#0b101b 65%,#070912 100%)}
+.tvicon{filter:drop-shadow(0 0 15px #18d6f344);font-size:42px}.empty strong{font-size:clamp(15px,3.5vw,21px);letter-spacing:.25px}.empty span{font-size:clamp(11px,2.7vw,14px)}
+.playerfoot{background:linear-gradient(100deg,#101725,#0b101a);padding:11px 13px}.nowtitle{font-size:13px}.nowmeta{line-height:1.5}
+.btn{transition:transform .16s,border-color .16s,background .16s}.btn:active,.contactlink:active,.category-tab:active,.channel:active{transform:scale(.97)}
+.noticebar{height:38px;border-radius:12px;box-shadow:0 5px 18px #0002}.notice-label{font-size:11px;padding:0 13px}
+.channelarea .sectionhead{border-radius:15px;padding:13px 14px;box-shadow:0 5px 18px #0002}.channelarea .sectionhead h2{font-size:clamp(14px,3.4vw,18px)}
+.channel{position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(145deg,#171f30 0%,#0d121e 100%);border-color:#28334a;box-shadow:0 7px 18px #0002;transition:transform .18s,border-color .18s,box-shadow .18s;min-height:112px}
+.channel:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#ffffff08,transparent 45%);pointer-events:none}
+.channel:hover{transform:translateY(-2px);border-color:#3c6176;box-shadow:0 10px 24px #0004}.channel.active{border-color:var(--cyan);box-shadow:0 0 0 1px #18d6f344,0 0 24px #18d6f322}
+.chlogo{filter:drop-shadow(0 3px 8px #0005)}.chname{font-size:clamp(10px,2.5vw,12px);line-height:1.35}.chcat{font-size:10px}
+.category-tabs{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;padding:2px 1px 12px;scrollbar-width:none;scroll-snap-type:x proximity}.category-tabs::-webkit-scrollbar{display:none}.category-tab{flex:0 0 auto;width:auto;min-width:78px;padding:10px 12px;border-radius:999px;white-space:nowrap;scroll-snap-align:start;font-size:10px;transition:all .18s}.category-tab.active{box-shadow:0 4px 16px #12bfe333}
+.contactlink{border-radius:10px;padding:8px 11px}.livepill{box-shadow:0 0 14px #ff315733}
+.footer{padding:22px 0 16px;letter-spacing:.25px}
+.modalbox{box-shadow:0 22px 70px #0009;backdrop-filter:blur(18px)}
+.serverchoice{transition:border-color .18s,transform .18s}.serverchoice:active{transform:scale(.99)}
+@media(min-width:700px){.channelrow{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.channelrow.sportsrow{grid-template-columns:repeat(2,minmax(0,1fr))}.channelrow.sportsrow .channel{min-height:145px}.channelrow.sportsrow .chlogo{height:58px}.channelrow.sportsrow .chlogo img{height:56px}.screen{aspect-ratio:16/8.5}.topbar{padding:13px 16px}.brandicon{width:44px;height:44px;flex-basis:44px}}
+@media(max-width:420px){.wrap{padding-left:8px;padding-right:8px}.topbar{border-radius:18px}.playercard{border-radius:18px}.channel{border-radius:15px}.category-tab{min-width:72px;padding:9px 10px}.channelrow.sportsrow .chname{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Premium player controls and connection states */
+.screen{isolation:isolate;min-height:190px}
+.playerLiveBadge{display:none;position:absolute;left:12px;top:12px;z-index:6;padding:6px 9px;border-radius:7px;background:#f23656;color:#fff;font-size:10px;font-weight:900;letter-spacing:.8px;box-shadow:0 0 20px #ff315744}
+.playerLiveBadge i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;margin-right:5px;animation:livePulse 1.3s infinite}
+@keyframes livePulse{50%{opacity:.35;box-shadow:0 0 0 5px #ffffff22}}
+.playerLoading{display:none;position:absolute;inset:0;z-index:5;align-items:center;justify-content:center;flex-direction:column;gap:9px;text-align:center;padding:22px;background:#050914eF;backdrop-filter:blur(5px)}
+.playerLoading.show{display:flex}
+.playerLoading strong{font-size:14px;color:#f5f8ff}.playerLoading span{font-size:11px;color:#a6b4ca;max-width:280px;line-height:1.5}
+.loaderRing{width:36px;height:36px;border-radius:50%;border:3px solid #26384b;border-top-color:var(--cyan);border-right-color:var(--cyan);animation:spinNova .8s linear infinite;box-shadow:0 0 18px #21d8f42a}
+@keyframes spinNova{to{transform:rotate(360deg)}}
+.retryOverlay{margin-top:5px;background:linear-gradient(120deg,#21d8f4,#0878b6);color:#03121b;border:0;padding:10px 15px}
+.screenFullBtn{position:absolute;right:11px;top:11px;z-index:7;width:36px;height:34px;border:1px solid #ffffff30;border-radius:10px;background:#080d19c9;color:#fff;font-size:23px;line-height:1;cursor:pointer;backdrop-filter:blur(8px)}
+.playeractions{flex-wrap:wrap;justify-content:flex-end}.playeractions .btn{min-height:34px}
+.playercard:fullscreen{width:100%;height:100%;border:0;border-radius:0;background:#000;display:flex;flex-direction:column}.playercard:fullscreen .screen{flex:1;aspect-ratio:auto;min-height:0}.playercard:fullscreen .playerfoot{flex:0 0 auto}
+@media(max-width:420px){.playerfoot{align-items:flex-start;flex-wrap:wrap}.playerfoot>div:first-child{width:100%}.playeractions{width:100%;justify-content:flex-end}.playeractions .btn{flex:0 0 auto}.screenFullBtn{width:33px;height:31px}.playerLoading strong{font-size:13px}}
+
+
+/* Compact player info panel: keep all existing actions on one row on mobile. */
+.playerfoot{padding:7px 10px;min-height:0;gap:7px;align-items:center}
+.playerfoot>div:first-child{min-width:0;flex:1 1 auto;width:auto}
+.nowtitle{font-size:12px;line-height:1.25}
+.nowmeta{font-size:10px;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.playeractions{width:auto;flex:0 0 auto;flex-wrap:nowrap;gap:5px;justify-content:flex-end}
+.playeractions .btn{min-height:30px;padding:6px 8px;font-size:10px}
+#qualitySelect{max-width:78px!important;width:72px}
+@media(max-width:420px){
+ .playerfoot{padding:6px 7px;flex-wrap:nowrap;align-items:center}
+ .playerfoot>div:first-child{width:auto;flex:1 1 0;min-width:0}
+ .nowtitle{font-size:11px;max-width:100%}
+ .nowmeta{font-size:9px;max-width:100%}
+ .playeractions{width:auto;flex:0 0 auto;flex-wrap:nowrap;gap:4px}
+ .playeractions .btn{min-height:29px;padding:5px 7px;font-size:9px}
+ #qualitySelect{width:65px;max-width:65px!important;padding:5px 2px!important}
+}
+
+/* SPORTYNOVA requested update: branded wait screen, two-row categories, shorter live player */
+.screen{aspect-ratio:16/7.8;min-height:145px;max-height:280px}
+@media(max-width:420px){.screen{aspect-ratio:16/8.2;min-height:135px;max-height:205px}}
+@media(min-width:700px){.screen{aspect-ratio:16/7.5;min-height:220px;max-height:440px}}
+.category-tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(31px,auto));grid-auto-flow:row;gap:6px;overflow:visible!important;padding:2px 1px 8px;margin-bottom:6px;scroll-snap-type:none}
+.category-tab{min-width:0!important;width:100%!important;max-width:100%;padding:7px 3px!important;border-radius:10px!important;white-space:normal!important;overflow-wrap:anywhere;font-size:clamp(8px,2.25vw,10px)!important;line-height:1.15;display:flex;align-items:center;justify-content:center;text-align:center}
+.playerLoading{background:linear-gradient(145deg,rgba(5,9,20,.96),rgba(10,18,32,.94));gap:8px}
+.playerLoading strong{font-size:clamp(15px,4vw,21px);font-weight:900;letter-spacing:.35px;color:#f5fbff;text-shadow:0 0 18px #21d8f455}
+.playerLoading span{font-size:12px;color:#b8c7dc}
+.playerLoading .loaderRing{width:32px;height:32px}
+/* The requested waiting overlay is shown only during stream startup/fallback. */
+
+/* Compact channel cards: reduce height only; keep existing features and layout */
+.channel{min-height:82px!important;padding:7px 4px!important}
+.chlogo{height:25px!important;margin-bottom:4px!important;font-size:16px!important}
+.chlogo img{height:25px!important;max-height:25px!important;max-width:76px!important}
+.chname{line-height:1.2!important}
+.chcat{margin-top:3px!important;line-height:1.15!important}
+.channelrow.sportsrow .channel,.sportsrow .channel{min-height:90px!important;padding:7px 5px!important}
+.channelrow.sportsrow .chlogo,.sportsrow .chlogo{height:29px!important;margin-bottom:4px!important}
+.channelrow.sportsrow .chlogo img,.sportsrow .chlogo img{height:29px!important;max-height:29px!important}
+@media(max-width:420px){
+ .channel{min-height:78px!important;padding:6px 3px!important}
+ .chlogo{height:23px!important;margin-bottom:3px!important}
+ .chlogo img{height:23px!important;max-height:23px!important}
+ .channelrow.sportsrow .channel,.sportsrow .channel{min-height:84px!important;padding:6px 4px!important}
+ .channelrow.sportsrow .chlogo,.sportsrow .chlogo{height:26px!important;margin-bottom:3px!important}
+ .channelrow.sportsrow .chlogo img,.sportsrow .chlogo img{height:26px!important;max-height:26px!important}
+}
+
+/* User-requested layout adjustment: compact top branding + Live Sports heading, taller video */
+.topbar{
+  padding:5px 8px !important;
+  gap:8px !important;
+  min-height:0 !important;
+}
+.topbar .brand{gap:7px !important}
+.topbar .brandicon{
+  width:32px !important;height:32px !important;flex-basis:32px !important;
+  border-radius:10px !important;font-size:18px !important;
+}
+.topbar .brandname{font-size:clamp(14px,3.4vw,20px) !important}
+.topbar .tagline{font-size:7.5px !important;letter-spacing:1px !important;line-height:1.15 !important}
+.topbar .search{padding:7px 10px !important;font-size:11px !important}
+.channelarea > .sectionhead{
+  margin:4px 2px 6px !important;
+  padding:6px 10px !important;
+  min-height:0 !important;
+  border-radius:10px !important;
+}
+.channelarea > .sectionhead h2{font-size:clamp(12px,3.4vw,16px) !important;line-height:1.2 !important}
+.channelarea > .sectionhead .section-count{font-size:9px !important}
+.playersticky .screen{aspect-ratio:16/10 !important}
+@media(max-width:420px){
+  .topbar{padding:5px 7px !important}
+  .topbar .brandicon{width:30px !important;height:30px !important;flex-basis:30px !important}
+  .topbar .search{width:min(190px,40vw) !important;min-width:88px !important;padding:7px 9px !important}
+  .playersticky .screen{aspect-ratio:16/10 !important}
+}
+
+
+/* Final player-fit fix: keep every supported player aligned to the full responsive screen. */
+.playersticky .playercard{width:100%;min-width:0}
+.playersticky .screen{
+  position:relative!important;display:block!important;width:100%!important;height:auto!important;
+  aspect-ratio:16/9!important;min-height:0!important;max-height:none!important;flex:none!important;
+  overflow:hidden!important;background:#000!important;isolation:isolate
+}
+.playersticky .screen>video{
+  position:absolute!important;inset:0!important;display:block!important;
+  width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;
+  max-width:none!important;max-height:none!important;object-fit:contain!important;
+  object-position:center center!important;background:#000!important;margin:0!important;padding:0!important
+}
+
+
+@media(max-width:420px){.playersticky .screen{aspect-ratio:16/9!important;min-height:0!important;max-height:none!important}}
+
+
+
+/* Compact spacing + shorter notice bar update */
+.playersticky{padding-bottom:3px!important}
+.playersticky .sectionhead{margin-top:5px!important;margin-bottom:5px!important}
+.playersticky .noticebar{height:30px!important;min-height:30px!important;margin-top:4px!important;margin-bottom:0!important;gap:7px!important}
+.playersticky .notice-label{padding-left:9px!important;padding-right:9px!important;font-size:10px!important}
+.channelarea .sectionhead{margin-top:5px!important;margin-bottom:5px!important;padding:9px 11px!important}
+.category-tabs{margin-top:0!important}
+@media(max-width:420px){.playersticky{padding-bottom:2px!important}.playersticky .sectionhead{margin-top:4px!important;margin-bottom:4px!important}.playersticky .noticebar{height:29px!important;min-height:29px!important;margin-top:3px!important}.channelarea .sectionhead{margin-top:4px!important;margin-bottom:5px!important;padding:8px 10px!important}}
+
+/* Sports card polish: larger logos, keep the three-column cards compact. */
+.channelrow.sportsrow .channel{min-height:132px!important;padding:10px 5px!important;}
+.channelrow.sportsrow .chlogo{height:62px!important;margin-bottom:6px!important;font-size:30px!important;}
+.channelrow.sportsrow .chlogo img{height:60px!important;max-height:60px!important;width:100%!important;max-width:100%!important;object-fit:contain!important;}
+.channelrow.sportsrow .chname{font-size:clamp(10px,2.7vw,12px)!important;line-height:1.25!important;}
+.channelrow.sportsrow .chcat{display:none!important;}
+.sports-status{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 5px;padding:3px 9px;border:1px solid #2796b9;border-radius:999px;background:#12394b;color:#83e4ff;font-size:9px;font-weight:900;letter-spacing:.5px;line-height:1.2;}
+.sports-status.is-live{border-color:#f04d70;background:#491a2b;color:#ff9caf;}
+.sports-badge-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:nowrap;width:100%;margin:0 auto 4px;flex:0 0 auto;white-space:nowrap}
+.sports-badge-row .sports-status{margin:0!important;flex:0 0 auto;white-space:nowrap}
+.sports-type{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;padding:3px 7px;border:1px solid #65728a;border-radius:999px;background:#202a3b;color:#dbe7ff;font-size:9px;font-weight:900;letter-spacing:.35px;line-height:1.2;white-space:nowrap}
+.sports-type.is-football{border-color:#278c63;background:#123a2b;color:#8cf0bc}
+
+@media(max-width:420px){.channelrow.sportsrow .channel{min-height:0!important;height:auto!important;padding:4px 4px 5px!important;gap:0!important}.channelrow.sportsrow .chlogo{height:58px!important;margin:0 0 3px!important;padding:0!important}.channelrow.sportsrow .chlogo img{height:56px!important;max-height:56px!important;width:100%!important;max-width:100%!important;object-fit:contain!important}.sports-badge-row{gap:3px;margin:0 auto 3px!important}.sports-status{font-size:8px;padding:3px 6px;margin:0!important}.sports-type{font-size:8px;padding:3px 5px}.sports-badge-row{gap:3px!important;flex-wrap:nowrap!important}.channelrow.sportsrow .chname{margin:0!important;padding:0!important;line-height:1.2!important}}
+/* Final match-card spacing: logo starts near card top; team name sits close under status, without extra blank padding. */
+.channelrow.sportsrow .channel{min-height:0!important;height:auto!important;padding:5px 5px 6px!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:0!important}
+.channelrow.sportsrow .chlogo{margin:0 0 4px!important;padding:0!important;flex:0 0 auto!important}
+.channelrow.sportsrow .chlogo img{display:block!important;margin:0 auto!important}
+.channelrow.sportsrow .sports-status{margin:0 auto 4px!important;flex:0 0 auto!important}
+.channelrow.sportsrow .chname{margin:0!important;padding:0!important;flex:0 0 auto!important;line-height:1.2!important}
+@media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
+
+
+/* Replacement standalone-style video player controls */
+.playersticky .screen{position:relative!important}
+.playersticky .screen>video{z-index:1}
+.playersticky .empty{z-index:2}
+.playersticky .playerLoading{z-index:8}
+.channel-title-overlay{position:absolute;left:12px;right:12px;top:10px;z-index:16;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:8px 12px;border:1px solid #ffffff35;border-radius:10px;background:rgba(4,10,20,.68);backdrop-filter:blur(6px);color:#fff;font-size:clamp(12px,3.4vw,17px);font-weight:800;line-height:1.25;pointer-events:none;opacity:1;transition:opacity .25s ease}
+.playercard.controls-hidden .channel-title-overlay{opacity:0}
+.playercard:fullscreen .channel-title-overlay,.playercard:-webkit-full-screen .channel-title-overlay,.playercard.mobile-rotated .channel-title-overlay{top:calc(10px + env(safe-area-inset-top,0px));left:16px;right:16px;max-width:calc(100% - 32px);font-size:clamp(14px,2vw,20px)}
+.nova-controls{position:absolute;left:0;right:0;bottom:0;z-index:7;padding:30px 10px 8px;background:linear-gradient(0deg,rgba(0,0,0,.94),rgba(0,0,0,0));opacity:1;transition:opacity .25s}
+.nova-progress-row{display:flex;align-items:center;gap:8px;color:#f4f7ff;font-size:10px;font-weight:700;margin-bottom:7px}
+.nova-progress-row input{flex:1;min-width:0;height:4px;accent-color:#21d8f4;cursor:pointer}
+.nova-control-row{display:flex;align-items:center;gap:6px;min-width:0}
+.nova-control-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 8px;border:1px solid #ffffff30;border-radius:8px;background:#111a2bd9;color:#fff;font-size:12px;font-weight:800;cursor:pointer}
+.nova-control-btn:active{transform:scale(.95)}
+.inline-server-group{display:flex;align-items:center;gap:4px;flex:1 1 0;min-width:0;width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}.inline-server-group::-webkit-scrollbar{display:none}.inline-server-btn{flex:0 0 auto;padding:0 7px;white-space:nowrap}.inline-server-btn.active{border-color:#20c6dc;background:#123347}.inline-server-btn:disabled{opacity:.55;cursor:not-allowed}.server-empty-label{font-size:9px;color:#8d9bb1;align-self:center;white-space:nowrap}
+@media(max-width:420px){.inline-server-btn{padding:0 7px;font-size:10px;min-width:max-content}.inline-server-group{gap:4px;min-width:0;width:0;flex:1 1 0}.nova-control-row{gap:4px}.nova-control-row>.nova-control-btn{flex:0 0 auto}}
+.nova-control-spacer{flex:0 0 2px}
+.nova-fit-select{max-width:68px;height:30px;border:1px solid #ffffff30;border-radius:8px;background:#111a2b;color:#fff;font-size:10px;padding:0 4px}
+.playercard:fullscreen .nova-controls{padding:44px 18px 14px}
+.playercard:fullscreen .nova-control-btn{height:38px;min-width:40px;font-size:15px}
+.playercard:fullscreen .nova-progress-row{font-size:12px}
+@media(max-width:420px){.nova-controls{padding:25px 6px 6px}.nova-control-row{gap:4px}.nova-control-btn{height:28px;min-width:28px;padding:0 6px;font-size:11px}.nova-fit-select{height:28px;max-width:56px;font-size:9px}.nova-progress-row{gap:5px;font-size:9px}}
+@media(hover:hover){.nova-controls{opacity:.35}.playersticky .screen:hover .nova-controls,.nova-controls:focus-within{opacity:1}}
+.playercard.mobile-rotated{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;border:0!important;border-radius:0!important;background:#000!important;display:flex!important;flex-direction:column!important}
+.playercard.mobile-rotated .screen{flex:1!important;width:100%!important;height:auto!important;aspect-ratio:auto!important;min-height:0!important}
+.playercard.mobile-rotated .playerfoot{display:none!important}
+/* Landscape: use the full safe viewport and let video credits remain visible. */
+.playercard:fullscreen,.playercard:-webkit-full-screen{width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;box-sizing:border-box!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}
+.playercard:fullscreen .screen,.playercard:-webkit-full-screen .screen{flex:1 1 auto!important;min-height:0!important;width:100%!important;aspect-ratio:auto!important}
+.playercard:fullscreen .screen video,.playercard:-webkit-full-screen .screen video{object-fit:contain!important}
+.playercard.mobile-rotated{height:100vh!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;box-sizing:border-box!important}
+.playercard.mobile-rotated .nova-controls{padding:24px 12px calc(10px + env(safe-area-inset-bottom,0px))!important}
+.playercard.controls-hidden .nova-controls{opacity:0!important;pointer-events:none!important}
+.playercard.controls-hidden .screenFullBtn{opacity:0!important;pointer-events:none!important}
+.playercard:fullscreen.controls-hidden .nova-controls,.playercard.mobile-rotated.controls-hidden .nova-controls{opacity:0!important}
+.playercard.mobile-rotated .nova-controls{padding:34px 12px 10px}
+
+/* Touch-swipe brightness/volume/seek HUD */
+.swipe-hud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9;display:none;align-items:center;gap:9px;min-width:112px;justify-content:center;padding:12px 16px;border:1px solid #ffffff30;border-radius:14px;background:rgba(5,10,20,.86);color:#fff;font-size:13px;font-weight:800;pointer-events:none;backdrop-filter:blur(8px)}
+.swipe-hud.visible{display:flex}.swipe-hud .swipe-icon{font-size:20px}.swipe-hud .swipe-detail{display:flex;flex-direction:column;gap:4px}.swipe-hud .swipe-label{font-size:10px;color:#c9d6e8;font-weight:600}.swipe-hud .swipe-meter{height:3px;width:74px;border-radius:5px;background:#ffffff35;overflow:hidden}.swipe-hud .swipe-meter span{display:block;height:100%;width:50%;background:#21d8f4;border-radius:5px}
+
+
+.update-stamp{flex:0 0 auto;text-align:center;color:#9eacc2;font-size:10px;line-height:1.3;padding:0 4px 5px;letter-spacing:.15px}
+.center-play-pause{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9;width:54px;height:54px;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff70;border-radius:50%;background:#07111dcc;color:#fff;font-size:24px;box-shadow:0 4px 24px #0008;backdrop-filter:blur(5px);cursor:pointer}
+.center-play-pause:active{transform:translate(-50%,-50%) scale(.94)}
+.center-play-pause.is-playing{opacity:0;transition:opacity .2s}
+.playersticky .screen{aspect-ratio:16/10!important;min-height:0!important}
+.playersticky .screen>video{object-fit:cover!important;object-position:center center!important}
+.playercard:fullscreen .screen>video,.playercard:-webkit-full-screen .screen>video,.playercard.mobile-rotated .screen>video{object-fit:contain!important}
+@media(max-width:420px){.update-stamp{font-size:9px;padding-bottom:4px}.center-play-pause{width:50px;height:50px;font-size:22px}}
+
+
+/* Automatic two-team identity badges for Live Sports match cards */
+.team-logos{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,18px);width:100%;height:100%;min-height:58px;margin:0 auto 4px}
+.team-logo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;max-width:42%}
+.team-logo img{width:clamp(34px,10vw,52px);height:clamp(34px,10vw,52px);object-fit:contain;border-radius:0;background:transparent;padding:0;box-shadow:none}
+.team-logo-fallback{display:grid;place-items:center;width:clamp(34px,10vw,52px);height:clamp(34px,10vw,52px);border-radius:50%;font-size:13px;font-weight:900;color:#eafaff;background:linear-gradient(135deg,#126b91,#162c49);border:1px solid #2dcdf0}
+.team-logo small{font-size:8px;color:#d9e8f6;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.team-vs{font-size:10px;font-weight:900;color:#1bd4f2;text-shadow:0 0 8px #1bd4f266}
+
+
+/* Server buttons are shown temporarily by the player tap handler, then hidden. */
+.playercard.sports-player-mode .sports-server-row{transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important}
+</style>
+
+<style>
+/* Landscape player height reduced by 10% as requested. */
+@media (orientation: landscape) {
+  .playercard:fullscreen .screen,
+  .playercard:-webkit-full-screen .screen,
+  .playercard.mobile-rotated .screen {
+    flex: 0 0 90% !important;
+    height: 90% !important;
+    max-height: 90% !important;
+    align-self: center !important;
+  }
+}
+</style>
+
+
+
+<style>
+/* One consistent HLS player UI. Never allow native controls
+   to cover the SPORTYNOVA server strip or replace the custom controls. */
+.playersticky .screen .nova-controls{display:block!important;z-index:15!important;}
+.playersticky .screen #centerPlayPause{z-index:14!important;}
+.playersticky .screen video{z-index:1!important;}
+.playersticky .screen.shaka-ui-active .shaka-controls-container{display:none!important;}
+.playersticky .screen.shaka-ui-active .shaka-video-container{background:#000!important;}
+#video{controls:false;}
+</style>
+<style>
+/* Text-only waiting message shown while the selected stream starts; no spinner. */
+#playerLoading{display:none;visibility:visible;pointer-events:none;z-index:8;background:rgba(5,9,20,.92);backdrop-filter:blur(3px);gap:10px;text-align:center;padding:18px}
+#playerLoading.show{display:flex!important}
+#playerLoading .loaderRing{display:none!important}
+#playerLoading strong{font-family:Inter,"Hind Siliguri",sans-serif;font-size:clamp(14px,3.8vw,19px);line-height:1.5;color:#f5fbff}
+#playerLoading span{font-family:Inter,"Hind Siliguri",sans-serif;font-size:clamp(11px,2.8vw,14px);line-height:1.7;color:#b8c7dc}
+</style>
+
+<style>
+/* Landscape fullscreen: hide the bottom channel/action bar and give the video the full screen. */
+@media (orientation: landscape) {
+  .playercard:fullscreen .playerfoot,
+  .playercard:-webkit-full-screen .playerfoot,
+  .playercard.mobile-rotated .playerfoot { display:none!important; }
+  .playercard:fullscreen,
+  .playercard:-webkit-full-screen,
+  .playercard.mobile-rotated { width:100vw!important; height:100vh!important; height:100dvh!important; max-height:100dvh!important; padding:0!important; border:0!important; border-radius:0!important; }
+  .playercard:fullscreen .screen,
+  .playercard:-webkit-full-screen .screen,
+  .playercard.mobile-rotated .screen { flex:1 1 100%!important; width:100%!important; height:100%!important; max-height:none!important; min-height:0!important; aspect-ratio:auto!important; align-self:stretch!important; }
+}
+</style>
+
+
+<style id="sportynova-ui-polish">
+/* UI polish for the single HLS player. */
+:root{
+  --ui-glass:rgba(15,22,36,.88);
+  --ui-border:rgba(142,174,214,.18);
+  --ui-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+html,body{background-color:#070912}
+body{
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(20,157,193,.12),transparent 34%),
+    radial-gradient(ellipse at 95% 18%,rgba(94,73,180,.10),transparent 30%),
+    #070912!important;
+}
+.wrap{gap:8px!important}
+.update-stamp{
+  color:#91a4bf!important;
+  font-size:9px!important;
+  letter-spacing:.35px!important;
+  text-shadow:0 1px 8px #000;
+}
+.topbar{
+  background:linear-gradient(115deg,rgba(20,31,50,.97),rgba(10,15,27,.96))!important;
+  border:1px solid rgba(106,151,192,.28)!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.035)!important;
+  backdrop-filter:blur(14px);
+}
+.brandicon{
+  background:linear-gradient(145deg,#53efff,#0a8fc1)!important;
+  box-shadow:0 0 20px rgba(33,216,244,.2)!important;
+}
+.brandname{ text-shadow:0 2px 12px rgba(0,0,0,.3) }
+.tagline{color:#a1b2c9!important}
+.search{
+  border-color:#35435b!important;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.25);
+}
+.search::placeholder{color:#8190a8}
+.playersticky .sectionhead{
+  align-items:center;
+}
+.playersticky .sectionhead h2{
+  letter-spacing:.1px;
+  text-shadow:0 1px 12px rgba(33,216,244,.08);
+}
+.contacttext{color:#b7c4d8!important}
+.contactlink{
+  box-shadow:0 3px 10px rgba(0,0,0,.14);
+  transition:filter .18s,transform .18s;
+}
+.contactlink:hover{filter:brightness(1.12)}
+.playercard{
+  border:1px solid rgba(118,157,201,.28)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.015)!important;
+  background:#050811!important;
+}
+.playersticky .screen{
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.playerfoot{
+  background:linear-gradient(100deg,#121b2b,#0a101c)!important;
+  border-top:1px solid rgba(130,160,200,.16)!important;
+}
+.nowtitle{color:#f7fbff!important}
+.nowmeta{color:#93a5bf!important}
+.playeractions .btn{
+  border-color:#34445e!important;
+  background:linear-gradient(180deg,#202c40,#151e2d)!important;
+}
+.playeractions #stopBtn{
+  border-color:rgba(255,80,110,.38)!important;
+  color:#ffb2c0!important;
+}
+.nova-controls{
+  background:linear-gradient(0deg,rgba(2,5,11,.97) 0%,rgba(3,7,14,.72) 55%,transparent 100%)!important;
+}
+.nova-control-btn{
+  border-color:rgba(188,211,241,.26)!important;
+  background:rgba(17,27,44,.91)!important;
+  box-shadow:0 2px 7px rgba(0,0,0,.18);
+  transition:background .16s,border-color .16s,transform .16s;
+}
+.nova-control-btn:hover{
+  background:#1b3447!important;
+  border-color:rgba(33,216,244,.65)!important;
+}
+.nova-control-btn:focus-visible,.btn:focus-visible,.category-tab:focus-visible,.channel:focus-visible{
+  outline:2px solid #35e4ff!important;
+  outline-offset:2px;
+}
+.nova-control-btn.active,.inline-server-btn.active{
+  background:linear-gradient(135deg,#12394a,#102638)!important;
+  border-color:#21d8f4!important;
+  color:#aaf5ff!important;
+}
+.nova-progress-row input{accent-color:#21d8f4}
+.noticebar{
+  border-color:rgba(88,157,190,.28)!important;
+  background:linear-gradient(100deg,rgba(16,29,46,.98),rgba(9,16,29,.98))!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.16)!important;
+}
+.notice-label{
+  background:linear-gradient(120deg,#52e8f7,#0a8fc4)!important;
+}
+.channelarea{
+  scrollbar-color:#3b536f transparent!important;
+}
+.channelarea .sectionhead{
+  background:linear-gradient(105deg,rgba(21,34,53,.96),rgba(11,17,29,.96))!important;
+  border-color:rgba(116,154,198,.2)!important;
+}
+.section-count{
+  padding:4px 8px;
+  border:1px solid rgba(137,162,198,.16);
+  border-radius:999px;
+  background:rgba(255,255,255,.025);
+  color:#a8bad2!important;
+  font-variant-numeric:tabular-nums;
+}
+.category-tab{
+  background:linear-gradient(180deg,#172235,#101725)!important;
+  border-color:#2d3d56!important;
+  color:#bdcbe0!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.12);
+}
+.category-tab.active{
+  background:linear-gradient(120deg,#39e4f4,#128fca)!important;
+  border-color:#5beafa!important;
+  color:#04121b!important;
+  box-shadow:0 5px 16px rgba(18,191,227,.22)!important;
+}
+.channel{
+  border-color:rgba(115,147,190,.2)!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.18)!important;
+}
+.channel.active{
+  border-color:#38e2f5!important;
+  background:linear-gradient(145deg,#123044,#0c1724)!important;
+  box-shadow:0 0 0 1px rgba(33,216,244,.22),0 7px 22px rgba(10,178,210,.12)!important;
+}
+.chlogo img{
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.25));
+}
+.chname{color:#f4f7ff!important}
+.chcat{color:#91a0b8!important}
+.hint{color:#a6b5ca!important}
+.footer{color:#75859e!important}
+.modal{backdrop-filter:blur(7px)}
+.modalbox{
+  border-color:rgba(127,164,207,.3)!important;
+  background:linear-gradient(145deg,#151f31,#0d1320)!important;
+}
+.field:focus{border-color:#21d8f4;box-shadow:0 0 0 3px rgba(33,216,244,.10)}
+@media(max-width:420px){
+  .wrap{gap:6px!important}
+  .topbar{box-shadow:0 5px 16px rgba(0,0,0,.22)!important}
+  .playersticky .sectionhead h2{font-size:12px!important}
+  .contactlink{padding:6px 7px!important}
+  .channel{box-shadow:0 4px 11px rgba(0,0,0,.16)!important}
+  .category-tab{box-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .contactlink,.nova-control-btn{transition:none!important}
+}
+</style>
+
+<style>
+/* Dynamic server list: render every visible stream in match JSON and allow horizontal swipe on phones. */
+#inlineServerGroup{display:flex!important;flex:1 1 0;min-width:0;width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;gap:4px;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}
+#inlineServerGroup::-webkit-scrollbar{display:none}
+#inlineServerGroup .inline-server-btn{flex:0 0 auto;min-width:max-content;max-width:none;padding:0 8px;font-size:10px}
+#inlineServerGroup .inline-server-btn.active{border-color:#22d3ee;background:#123347;color:#b7f7ff}
+@media(max-width:420px){#inlineServerGroup{gap:4px}#inlineServerGroup .inline-server-btn{padding:0 7px;font-size:9px}}
+</style>
+<style id="sports-shaka-player-mode">
+/* Legacy style rules retained harmlessly; Shaka player library and playback branch are removed. */
+.playercard.sports-player-mode .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;min-width:0!important;height:36px!important;max-height:36px!important;min-height:36px!important;padding:0 4px!important;align-items:center!important;gap:5px!important;z-index:25!important;background:linear-gradient(90deg,rgba(7,15,27,.92),rgba(7,15,27,.68))!important;border:1px solid #ffffff24!important;border-radius:9px!important;overflow:hidden!important;pointer-events:auto!important}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup{display:flex!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;gap:5px!important;touch-action:pan-x!important;scrollbar-width:none!important}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup::-webkit-scrollbar{display:none!important}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn{height:29px!important;min-height:29px!important;padding:0 9px!important;border-radius:7px!important;flex:0 0 auto!important;font-size:10px!important;white-space:nowrap!important}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn.active{background:linear-gradient(135deg,#12394a,#102638)!important;border-color:#21d8f4!important;color:#aaf5ff!important}
+.playercard.sports-player-mode .screen video{object-fit:contain!important}
+@media(max-width:600px){.playercard.sports-player-mode .sports-server-row{left:15%!important;right:18%!important;bottom:11px!important;height:32px!important;min-height:32px!important;max-height:32px!important;padding:0 3px!important;gap:3px!important}.playercard.sports-player-mode .sports-server-row .inline-server-btn{height:26px!important;min-height:26px!important;padding:0 7px!important;font-size:9px!important}}
+@media(orientation:landscape){.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{left:14%!important;right:18%!important;bottom:13px!important;display:flex!important;z-index:100002!important}}
+</style>
+
+<style id="sports-landscape-server-fix">
+/* Server strip is a touch-triggered popup and auto-hides after 4 seconds. */
+.playercard.sports-player-mode:fullscreen,.playercard.sports-player-mode:-webkit-full-screen,.playercard.sports-player-mode.mobile-rotated{display:flex!important;flex-direction:column!important;overflow:hidden!important}
+.playercard.sports-player-mode .sports-server-row{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(7px);transition:opacity .18s ease,transform .18s ease,visibility .18s!important}
+.playercard.sports-player-mode.servers-visible .sports-server-row{opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:translateY(0)!important}
+.playercard.sports-player-mode:fullscreen .screen,.playercard.sports-player-mode:-webkit-full-screen .screen,.playercard.sports-player-mode.mobile-rotated .screen{position:relative!important;flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;align-self:stretch!important}
+.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;height:36px!important;min-height:36px!important;max-height:36px!important;z-index:100002!important;background:rgba(7,15,27,.88)!important;pointer-events:auto!important}
+@media(max-width:600px){.playercard.sports-player-mode:fullscreen .sports-server-row,.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,.playercard.sports-player-mode.mobile-rotated .sports-server-row{left:15%!important;right:18%!important;bottom:11px!important;height:32px!important;min-height:32px!important;max-height:32px!important}}
+</style>
+
+<style id="sports-server-top-transparent-speed">
+/* Server buttons stay inside the player, at the top, with a transparent background. */
+.playercard.sports-player-mode .sports-server-row,
+.playercard.sports-player-mode:fullscreen .sports-server-row,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row{
+  top:10px!important;bottom:auto!important;left:10px!important;right:10px!important;
+  width:auto!important;height:34px!important;min-height:34px!important;max-height:34px!important;
+  padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;z-index:100002!important;overflow:visible!important;
+}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:fullscreen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row #inlineServerGroup{
+  background:transparent!important;gap:5px!important;overflow-x:auto!important;
+}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode:fullscreen .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row .inline-server-btn{
+  background:rgba(0,0,0,.18)!important;border:1px solid rgba(255,255,255,.48)!important;
+  color:#fff!important;text-shadow:0 1px 3px #000!important;backdrop-filter:none!important;
+}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn.active,
+.playercard.sports-player-mode:fullscreen .sports-server-row .inline-server-btn.active,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row .inline-server-btn.active,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row .inline-server-btn.active{
+  background:rgba(0,190,220,.22)!important;border-color:#20d8f4!important;color:#d8fbff!important;
+}
+@media(max-width:600px){
+ .playercard.sports-player-mode .sports-server-row,
+ .playercard.sports-player-mode:fullscreen .sports-server-row,
+ .playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+ .playercard.sports-player-mode.mobile-rotated .sports-server-row{top:7px!important;left:7px!important;right:7px!important;height:30px!important;min-height:30px!important;max-height:30px!important}
+}
+</style>
+
+
+<style id="match-start-time-channel-tag">
+/* Match card labels requested; no existing match/player logic changed. */
+#liveSportsChannels .channel{position:relative!important;padding-top:24px!important;padding-bottom:24px!important}
+#liveSportsChannels .match-start-label.is-live-row{justify-content:flex-end;min-height:0;padding:0!important;margin:0 0 12px!important;border:0!important;background:transparent!important;box-shadow:none!important;min-height:0!important}
+#liveSportsChannels .match-start-label{position:absolute;top:5px;left:50%;transform:translateX(-50%);max-width:calc(100% - 18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(8px,2.1vw,10px);font-weight:800;letter-spacing:.2px;color:#ffd7a1;background:rgba(255,116,65,.12);border:1px solid rgba(255,126,75,.8);padding:3px 7px;line-height:1.15;z-index:2;border-radius:2px}
+#liveSportsChannels .match-channel-tag{position:absolute;left:7px;bottom:6px;z-index:2;font-size:9px;font-weight:900;letter-spacing:.4px;color:#bdf8ff;background:rgba(8,26,39,.92);border:1px solid #20cbe8;border-radius:4px;padding:3px 6px;line-height:1}
+@media(max-width:420px){#liveSportsChannels .channel{padding-top:24px!important;padding-bottom:23px!important}#liveSportsChannels .match-start-label{font-size:8px;padding:3px 5px}#liveSportsChannels .match-channel-tag{left:5px;bottom:5px;font-size:8px;padding:3px 5px}}
+</style>
+
+
+<style id="sportynova-match-card-final">
+/* Clean, responsive match cards: no overlapping labels and long names wrap safely. */
+#liveSportsChannels .channelrow.sportsrow .channel.match-card{
+  position:relative!important;display:flex!important;flex-direction:column!important;
+  align-items:stretch!important;justify-content:flex-start!important;gap:0!important;
+  min-width:0!important;min-height:0!important;height:auto!important;
+  padding:10px 10px 9px!important;overflow:hidden!important;
+  border-radius:18px!important;
+  background:radial-gradient(ellipse at 50% 0%,rgba(31,196,226,.13),transparent 58%),linear-gradient(145deg,#142437,#0a111d 78%)!important;
+  border:1px solid rgba(69,190,220,.28)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.035)!important;
+}
+#liveSportsChannels .match-start-label{
+  position:static!important;transform:none!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;text-align:center!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0 0 8px!important;padding:5px 7px!important;
+  border:1px solid rgba(255,183,99,.42)!important;border-radius:8px!important;
+  background:linear-gradient(90deg,rgba(255,147,66,.12),rgba(255,204,121,.07))!important;
+  color:#ffdda9!important;font-size:clamp(9px,2.5vw,11px)!important;
+  font-weight:800!important;line-height:1.35!important;letter-spacing:.1px!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#liveSportsChannels .channelrow.sportsrow .match-card .chlogo,
+#liveSportsChannels .match-card .team-logos{
+  flex:0 0 auto!important;width:100%!important;min-width:0!important;
+  min-height:56px!important;height:auto!important;margin:0 0 7px!important;
+}
+#liveSportsChannels .match-card .sports-badge-row{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-wrap:wrap!important;gap:5px!important;width:100%!important;
+  min-width:0!important;margin:0 0 8px!important;white-space:normal!important;
+}
+#liveSportsChannels .match-card .sports-status,
+#liveSportsChannels .match-card .sports-type{
+  max-width:100%!important;white-space:normal!important;text-align:center!important;
+  overflow-wrap:anywhere!important;line-height:1.25!important;
+}
+#liveSportsChannels .match-card-footer{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  gap:7px!important;width:100%!important;min-width:0!important;
+  padding-top:8px!important;border-top:1px solid rgba(126,168,202,.16)!important;
+  margin-top:auto!important;
+}
+#liveSportsChannels .match-channel-tag{
+  position:static!important;display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;flex:0 0 auto!important;max-width:100%!important;
+  min-height:25px!important;padding:4px 7px!important;border-radius:8px!important;
+  font-size:10px!important;font-weight:900!important;line-height:1!important;
+  white-space:nowrap!important;background:rgba(11,199,224,.11)!important;
+  border:1px solid rgba(32,203,232,.62)!important;color:#bdf8ff!important;
+}
+#liveSportsChannels .match-card .match-card-name{
+  display:block!important;flex:1 1 auto!important;min-width:0!important;width:auto!important;
+  margin:0!important;padding:0!important;text-align:left!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+  overflow-wrap:anywhere!important;word-break:normal!important;
+  font-size:clamp(10px,2.8vw,12px)!important;font-weight:700!important;
+  line-height:1.35!important;color:#f4f8ff!important;
+}
+#liveSportsChannels .match-card .sports-status.is-ended{
+  color:#c4ccda!important;background:#252c3b!important;border-color:#505c72!important;
+}
+@media(max-width:420px){
+ #liveSportsChannels .channelrow.sportsrow .channel.match-card{padding:8px 7px 8px!important;border-radius:15px!important}
+ #liveSportsChannels .match-start-label{margin-bottom:7px!important;padding:5px 5px!important;font-size:9px!important}
+ #liveSportsChannels .match-card .team-logos{gap:6px!important;min-height:52px!important}
+ #liveSportsChannels .match-card .team-logo{max-width:44%!important}
+ #liveSportsChannels .match-card .team-logo img,
+ #liveSportsChannels .match-card .team-logo-fallback{width:clamp(30px,9vw,42px)!important;height:clamp(30px,9vw,42px)!important}
+ #liveSportsChannels .match-card .sports-badge-row{gap:4px!important;margin-bottom:7px!important}
+ #liveSportsChannels .match-card .sports-status,
+ #liveSportsChannels .match-card .sports-type{font-size:8px!important;padding:4px 6px!important}
+ #liveSportsChannels .match-card-footer{gap:5px!important;padding-top:7px!important}
+ #liveSportsChannels .match-channel-tag{font-size:9px!important;min-height:23px!important;padding:4px 6px!important}
+ #liveSportsChannels .match-card .match-card-name{font-size:10px!important;line-height:1.3!important}
+}
+</style>
+
+
+<style id="sportynova-match-card-final-v2">
+#liveSportsChannels .channelrow.sportsrow .channel.match-card{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:flex-start!important;gap:0!important;min-width:0!important;
+  height:auto!important;min-height:0!important;padding:10px 10px 11px!important;
+  overflow:hidden!important;border-radius:18px!important;
+  background:radial-gradient(ellipse at 50% 0%,rgba(31,196,226,.15),transparent 60%),linear-gradient(145deg,#142437,#0a111d 78%)!important;
+  border:1px solid rgba(69,190,220,.30)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.035)!important;
+}
+#liveSportsChannels .match-card .match-start-label{
+  position:static!important;transform:none!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;text-align:center!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;margin:0 0 12px!important;padding:6px 5px!important;
+  border:1px solid rgba(255,183,99,.42)!important;border-radius:9px!important;
+  background:linear-gradient(90deg,rgba(255,147,66,.13),rgba(255,204,121,.07))!important;
+  color:#ffdda9!important;font-size:clamp(9px,2.5vw,11px)!important;
+  font-weight:900!important;line-height:1.35!important;letter-spacing:.15px!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#liveSportsChannels .match-card .team-logos{
+  display:flex!important;align-items:flex-start!important;justify-content:center!important;
+  gap:clamp(8px,3vw,16px)!important;width:100%!important;min-width:0!important;
+  min-height:100px!important;height:auto!important;margin:0 0 10px!important;
+}
+#liveSportsChannels .match-card .team-logo{
+  display:flex!important;flex:1 1 0!important;flex-direction:column!important;
+  align-items:center!important;justify-content:flex-start!important;gap:6px!important;
+  min-width:0!important;max-width:44%!important;text-align:center!important;
+}
+#liveSportsChannels .match-card .team-logo img,
+#liveSportsChannels .match-card .team-logo-fallback{
+  width:clamp(44px,12vw,60px)!important;height:clamp(44px,12vw,60px)!important;
+  flex:0 0 auto!important;object-fit:contain!important;
+}
+#liveSportsChannels .match-card .team-logo small{
+  display:block!important;width:100%!important;max-width:100%!important;
+  overflow:visible!important;text-overflow:clip!important;white-space:normal!important;
+  overflow-wrap:anywhere!important;word-break:normal!important;text-align:center!important;
+  color:#eaf6ff!important;font-size:clamp(10px,2.9vw,13px)!important;
+  font-weight:800!important;line-height:1.25!important;
+}
+#liveSportsChannels .match-card .team-vs{
+  flex:0 0 auto!important;align-self:center!important;margin-top:15px!important;
+  font-size:clamp(11px,3vw,14px)!important;font-weight:1000!important;
+}
+#liveSportsChannels .match-card .sports-badge-row{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-wrap:wrap!important;gap:6px!important;width:100%!important;min-width:0!important;
+  margin:0!important;padding-top:9px!important;border-top:1px solid rgba(126,168,202,.16)!important;
+}
+#liveSportsChannels .match-card .sports-status,
+#liveSportsChannels .match-card .sports-type{
+  max-width:100%!important;white-space:normal!important;text-align:center!important;
+  overflow-wrap:anywhere!important;line-height:1.25!important;
+}
+#liveSportsChannels .match-card .sports-status.is-ended{
+  color:#c4ccda!important;background:#252c3b!important;border-color:#505c72!important;
+}
+/* The old bottom channel/name row is no longer used. */
+#liveSportsChannels .match-card-footer,
+#liveSportsChannels .match-card-name{display:none!important}
+@media(max-width:420px){
+ #liveSportsChannels .channelrow.sportsrow .channel.match-card{padding:9px 7px 10px!important;border-radius:16px!important}
+ #liveSportsChannels .match-card .match-start-label{margin-bottom:10px!important;padding:6px 4px!important;font-size:9px!important}
+ #liveSportsChannels .match-card .team-logos{gap:5px!important;min-height:91px!important;margin-bottom:8px!important}
+ #liveSportsChannels .match-card .team-logo{max-width:46%!important;gap:5px!important}
+ #liveSportsChannels .match-card .team-logo img,
+ #liveSportsChannels .match-card .team-logo-fallback{width:clamp(39px,11vw,50px)!important;height:clamp(39px,11vw,50px)!important}
+ #liveSportsChannels .match-card .team-logo small{font-size:clamp(10px,2.8vw,12px)!important;line-height:1.25!important}
+ #liveSportsChannels .match-card .team-vs{font-size:11px!important;margin-top:13px!important}
+ #liveSportsChannels .match-card .sports-status,
+ #liveSportsChannels .match-card .sports-type{font-size:9px!important;padding:4px 7px!important}
+}
+</style>
+
+
+<style id="sportynova-match-card-compact-v3">
+/* Compact match cards: smaller team names, tighter vertical spacing, blinking green channel light. */
+#liveSportsChannels .channelrow.sportsrow .channel.match-card{
+  padding:7px 9px 8px!important;
+}
+#liveSportsChannels .match-card .match-start-label{
+  display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;
+  justify-content:space-between!important;align-items:center!important;
+  gap:5px 8px!important;margin:0 0 5px!important;padding:4px 6px!important;
+  min-height:0!important;
+}
+#liveSportsChannels .match-start-text{
+  flex:1 1 auto!important;min-width:0!important;text-align:left!important;
+  overflow-wrap:anywhere!important;
+}
+#liveSportsChannels .match-channel-group{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 auto!important;gap:5px!important;white-space:nowrap!important;
+}
+#liveSportsChannels .match-channel-text{
+  display:inline-block!important;font-weight:900!important;white-space:nowrap!important;
+}
+#liveSportsChannels .match-online-lamp{
+  display:inline-block!important;flex:0 0 8px!important;width:8px!important;height:8px!important;
+  border-radius:50%!important;background:#25f477!important;
+  box-shadow:0 0 5px rgba(37,244,119,.9),0 0 10px rgba(37,244,119,.55)!important;
+  animation:sportynovaGreenBlink 1s ease-in-out infinite!important;
+}
+@keyframes sportynovaGreenBlink{
+  0%,100%{opacity:1;box-shadow:0 0 5px rgba(37,244,119,.95),0 0 10px rgba(37,244,119,.6)}
+  50%{opacity:.28;box-shadow:0 0 1px rgba(37,244,119,.3)}
+}
+#liveSportsChannels .match-card .team-logos{
+  min-height:0!important;height:auto!important;margin:0 0 5px!important;
+  gap:clamp(7px,2.4vw,13px)!important;
+}
+#liveSportsChannels .match-card .team-logo{
+  gap:3px!important;
+}
+#liveSportsChannels .match-card .team-logo img,
+#liveSportsChannels .match-card .team-logo-fallback{
+  width:clamp(38px,10.5vw,52px)!important;height:clamp(38px,10.5vw,52px)!important;
+}
+#liveSportsChannels .match-card .team-logo small{
+  font-size:10px!important;line-height:1.15!important;font-weight:700!important;
+}
+#liveSportsChannels .match-card .team-vs{
+  margin-top:11px!important;font-size:11px!important;
+}
+#liveSportsChannels .match-card .sports-badge-row{
+  padding-top:5px!important;gap:4px!important;
+}
+#liveSportsChannels .match-card .sports-status,
+#liveSportsChannels .match-card .sports-type{
+  padding:4px 7px!important;font-size:9px!important;
+}
+@media(max-width:420px){
+ #liveSportsChannels .channelrow.sportsrow .channel.match-card{padding:6px 7px 7px!important}
+ #liveSportsChannels .match-card .match-start-label{margin-bottom:4px!important;padding:4px 5px!important;gap:4px 6px!important}
+ #liveSportsChannels .match-start-text{font-size:9px!important}
+ #liveSportsChannels .match-channel-text{font-size:9px!important}
+ #liveSportsChannels .match-online-lamp{width:7px!important;height:7px!important;flex-basis:7px!important}
+ #liveSportsChannels .match-card .team-logos{margin-bottom:4px!important;gap:4px!important}
+ #liveSportsChannels .match-card .team-logo img,
+ #liveSportsChannels .match-card .team-logo-fallback{width:clamp(35px,9.5vw,45px)!important;height:clamp(35px,9.5vw,45px)!important}
+ #liveSportsChannels .match-card .team-logo small{font-size:9px!important;line-height:1.15!important}
+ #liveSportsChannels .match-card .team-vs{margin-top:10px!important;font-size:10px!important}
+ #liveSportsChannels .match-card .sports-badge-row{padding-top:4px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #liveSportsChannels .match-online-lamp{animation:none!important}
+}
+</style>
+
+
+<style id="sportynova-smart-premium-ui">
+/* Smart Premium UI refresh — visual layer only; existing IDs, player logic and data loaders remain unchanged. */
+:root{--nova-aqua:#43e9f8;--nova-blue:#168bd2;--nova-violet:#9275ff;--nova-glass:rgba(16,25,42,.88)}
+body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transparent 31%),radial-gradient(ellipse at 92% 24%,rgba(125,92,255,.12),transparent 28%),#070912!important}
+.wrap{max-width:1240px!important;padding-top:8px!important;gap:9px!important}
+.update-stamp{display:flex;align-items:center;justify-content:center;gap:7px;padding:3px 4px 2px!important;color:#a9bad2!important;letter-spacing:.55px!important}
+.update-stamp:before{content:"✦";color:var(--nova-aqua);text-shadow:0 0 12px #21d8f4}
+.topbar{position:relative;overflow:hidden;border-radius:20px!important;border:1px solid rgba(107,167,210,.28)!important;background:linear-gradient(115deg,rgba(19,34,55,.97),rgba(10,15,27,.97))!important;box-shadow:0 10px 30px #0005,inset 0 1px #ffffff0c!important}
+.topbar:after{content:"";position:absolute;right:-48px;top:-75px;width:180px;height:150px;border-radius:50%;background:#20d9f40d;filter:blur(5px);pointer-events:none}
+.brandicon{background:linear-gradient(145deg,#74f4ff,#087cb8)!important;color:#04131b!important;border:1px solid #9bf8ff88!important;box-shadow:0 0 22px #18d6f333!important}
+.brandname{font-weight:900!important;letter-spacing:.8px!important}
+.search{position:relative;border-radius:14px!important;background:rgba(4,10,20,.8)!important;border:1px solid #35445f!important;min-height:38px;box-shadow:inset 0 1px 4px #0005!important}
+.search:focus{border-color:#43e9f8!important;box-shadow:0 0 0 3px #21d8f41c,0 0 20px #21d8f412!important}
+.playercard{border-radius:20px!important;border:1px solid rgba(99,157,200,.32)!important;box-shadow:0 15px 38px #0006,0 0 0 1px #ffffff05!important}
+.playersticky .sectionhead{padding:5px 2px!important}
+.playerfoot{background:linear-gradient(100deg,#121e31,#0a101c)!important}
+.noticebar{border-radius:11px!important;border-color:#2a4b61!important}
+.channelarea{scroll-padding-top:8px}
+.channelarea>.sectionhead:not(.sports-sectionhead){position:relative;overflow:hidden;border-radius:15px!important;background:linear-gradient(105deg,rgba(20,37,58,.98),rgba(12,18,31,.98))!important;border:1px solid rgba(105,153,194,.23)!important;box-shadow:0 7px 20px #0002!important}
+.channelarea>.sectionhead:not(.sports-sectionhead) h2{display:flex;align-items:center;gap:7px;font-weight:800!important}
+.channelarea>.sectionhead:not(.sports-sectionhead) .section-count{border:1px solid #2a5267;background:#10283a;color:#9defff!important;padding:5px 9px;border-radius:999px;font-weight:800}
+.category-tabs{gap:7px!important;padding:5px 1px 11px!important}
+.category-tab{position:relative;isolation:isolate;min-height:36px!important;border-radius:12px!important;border:1px solid #2b3d56!important;background:linear-gradient(145deg,#18263a,#101725)!important;color:#c3d3e8!important;font-weight:800!important;letter-spacing:.05px;box-shadow:0 4px 10px #0002!important;transition:transform .18s,border-color .18s,filter .18s!important}
+.category-tab:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,#ffffff0a,transparent 55%);z-index:-1}
+.category-tab:hover{border-color:#4a9cb8!important;filter:brightness(1.12);transform:translateY(-1px)}
+.category-tab.active{background:linear-gradient(125deg,#51edf7,#168ed1)!important;color:#04131b!important;border-color:#8cf7ff!important;box-shadow:0 5px 17px #12bfe344,inset 0 1px #ffffff7a!important}
+.channelrow{gap:9px!important}
+.channel{border-radius:16px!important;border:1px solid rgba(112,147,190,.22)!important;background:linear-gradient(150deg,rgba(24,34,52,.98),rgba(11,16,27,.98))!important;box-shadow:0 7px 17px #0003,inset 0 1px #ffffff06!important;transition:transform .18s,border-color .18s,box-shadow .18s!important}
+.channel:before{background:linear-gradient(135deg,#ffffff09,transparent 48%)!important}
+.channel:hover{transform:translateY(-2px)!important;border-color:#3d819b!important;box-shadow:0 12px 23px #0004,0 0 0 1px #21d8f410!important}
+.channel.active{border-color:#43e9f8!important;background:linear-gradient(145deg,#123449,#0c1725)!important;box-shadow:0 0 0 1px #21d8f438,0 8px 23px #08b9d31b!important}
+.chlogo img{filter:drop-shadow(0 3px 6px #0005)!important}
+.chname{font-weight:800!important;letter-spacing:.05px}
+.sports-sectionhead{border:1px solid rgba(105,153,194,.24)!important}
+.match-filter{border-radius:999px!important}
+.footer{color:#7187a5!important}
+.btn,.contactlink,.admin-open-btn{transition:transform .16s,filter .16s,border-color .16s!important}
+.btn:hover,.contactlink:hover,.admin-open-btn:hover{filter:brightness(1.13)}
+.btn:active,.contactlink:active,.admin-open-btn:active{transform:scale(.97)}
+@media(max-width:420px){
+ .wrap{padding-top:5px!important;gap:6px!important}
+ .topbar{border-radius:16px!important}
+ .brandname{letter-spacing:.35px!important}
+ .category-tabs{gap:5px!important;padding-bottom:8px!important}
+ .category-tab{min-height:34px!important;border-radius:10px!important;padding:7px 3px!important}
+ .channelrow{gap:6px!important}
+ .channel{border-radius:13px!important}
+}
+@media(prefers-reduced-motion:reduce){.channel,.category-tab,.btn,.contactlink{transition:none!important}}
+</style>
+
+
+<style id="livezone-player-integration">
+/* Livezone player controls integrated with SPORTYNOVA's existing stream engine. */
+.playersticky .screen{position:relative!important}
+.livezone-topbar{
+ position:absolute;left:0;right:0;top:0;z-index:16;display:flex;align-items:center;gap:9px;
+ padding:9px 10px;background:linear-gradient(180deg,rgba(0,0,0,.82),rgba(0,0,0,0));
+}
+.livezone-brand{font-size:12px;font-weight:950;letter-spacing:2px;color:#fff;text-shadow:0 1px 5px #000}
+.livezone-brand span{color:#ff3048}
+.livezone-top-spacer{flex:1}
+.livezone-topbar .nova-control-btn{width:34px;min-width:34px;height:32px;padding:0;font-size:15px}
+.nova-controls{
+ z-index:17!important;padding:36px 9px 8px!important;
+ background:linear-gradient(0deg,rgba(0,0,0,.96),rgba(0,0,0,.76) 58%,transparent)!important;
+}
+.nova-progress-row{gap:8px!important;margin-bottom:8px!important;font-size:10px!important;font-variant-numeric:tabular-nums}
+.nova-progress-row input{accent-color:#ff3048!important}
+.nova-control-row{
+ display:flex!important;align-items:center!important;gap:5px!important;
+ overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;
+ scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
+}
+.nova-control-row::-webkit-scrollbar{display:none}
+.nova-control-row>.nova-control-btn{flex:0 0 auto!important;min-width:32px!important;height:32px!important;padding:0 7px!important;border-radius:9px!important;font-size:13px!important}
+.livezone-volume{flex:0 0 58px!important;width:58px!important;min-width:48px!important;height:4px!important;accent-color:#ff3048!important}
+#qualitySelect{flex:0 0 auto!important;height:31px!important;max-width:100px!important;border:1px solid rgba(255,255,255,.3)!important;border-radius:8px!important;background:#151922!important;color:#fff!important;font-size:10px!important}
+#inlineServerGroup{flex:0 0 auto!important;width:auto!important;max-width:42vw!important;min-width:0!important}
+#inlineServerGroup .inline-server-btn{height:30px!important;min-height:30px!important;border-radius:8px!important}
+.playercard:fullscreen .livezone-topbar,.playercard:-webkit-full-screen .livezone-topbar{padding:14px 16px}
+.playercard:fullscreen .nova-controls,.playercard:-webkit-full-screen .nova-controls{padding:44px 16px 14px!important}
+.playercard:fullscreen .nova-control-row>.nova-control-btn,.playercard:-webkit-full-screen .nova-control-row>.nova-control-btn{height:40px!important;min-width:40px!important;font-size:16px!important}
+@media(max-width:600px){
+ .livezone-topbar{padding:7px}
+ .livezone-topbar .nova-control-btn{width:31px;min-width:31px;height:29px}
+ .livezone-brand{font-size:10px;letter-spacing:1.6px}
+ .nova-controls{padding:29px 6px 6px!important}
+ .nova-control-row{gap:4px!important}
+ .nova-control-row>.nova-control-btn{min-width:29px!important;height:29px!important;padding:0 6px!important;font-size:11px!important}
+ .livezone-volume{flex-basis:45px!important;width:45px!important;min-width:40px!important}
+ #qualitySelect{height:29px!important;max-width:82px!important;font-size:9px!important}
+ #inlineServerGroup{max-width:38vw!important}
+ #inlineServerGroup .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 6px!important;font-size:9px!important}
+}
+</style>
+
+
+<style id="remove-user-marked-player-options">
+/* Remove only the controls highlighted in the user's screenshot.
+   Keep their existing JS hooks in place to avoid changing player behavior. */
+#menuChannelBtn,
+#closePlayerBtn,
+#fitBtn,
+#rotateBtn {
+  display: none !important;
+}
+</style>
+
+
+<style id="requested-player-controls-update">
+/* Hide requested UI without deleting elements used by existing JavaScript. */
+.livezone-topbar{display:none!important}
+#muteBtn,#volumeSlider,.livezone-volume{display:none!important}
+#qualitySelect{width:48px!important;min-width:0!important;max-width:48px!important;padding:0 2px!important;font-size:9px!important}
+#playerScreen #qualitySelect{width:48px!important;min-width:0!important;max-width:48px!important;padding:0 2px!important;font-size:9px!important}
+@media(max-width:420px){#qualitySelect,#playerScreen #qualitySelect{width:44px!important;min-width:0!important;max-width:44px!important;padding:0 1px!important;font-size:8px!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<div class="update-stamp">শেষ আপডেট: ২৪ অক্টোবর ২০২৬ (বাংলাদেশ সময়)</div>
+<header class="topbar">
+ <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
+ <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
+</header>
+<section class="playersticky">
+ <div class="sectionhead"><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
+ <div class="playercard">
+  <div class="screen" id="playerScreen">
+   <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>
+   <div class="swipe-hud" id="swipeHud" aria-live="polite"><span class="swipe-icon" id="swipeIcon">☀️</span><span class="swipe-detail"><span id="swipeValue">100%</span><span class="swipe-label" id="swipeLabel">Brightness</span><span class="swipe-meter"><span id="swipeMeterFill"></span></span></span></div>
+   <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
+   <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
+   <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
+   <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
+   <div class="channel-title-overlay" id="channelTitleOverlay" aria-live="polite">SPORTYNOVA LIVE TV</div>
+   <div class="livezone-topbar" id="livezoneTopbar">
+    <button class="nova-control-btn" id="menuChannelBtn" type="button" title="চ্যানেল তালিকা">☰</button>
+    <div class="livezone-brand">LIVE<span>ZONE</span></div>
+    <span class="livezone-top-spacer"></span>
+    <button class="nova-control-btn" id="closePlayerBtn" type="button" title="Stop playback">✕</button>
+   </div>
+   <div class="nova-controls" id="novaControls">
+    <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
+    <div class="nova-control-row">
+     <button class="nova-control-btn" id="muteBtn" aria-label="Mute/unmute" title="Mute/unmute">🔊</button>
+     <input class="livezone-volume" id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" title="Volume">
+     <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play/Pause">▶</button>
+     <button class="nova-control-btn" id="prevChannelBtn" type="button" title="Previous channel" aria-label="Previous channel">⏮</button>
+     <button class="nova-control-btn" id="nextChannelBtn" type="button" title="Next channel" aria-label="Next channel">⏭</button>
+     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen">⛶</button>
+     <button class="nova-control-btn" id="fitBtn" type="button" title="Change fit mode" aria-label="Change fit mode">▣</button>
+     <button class="nova-control-btn" id="rotateBtn" type="button" title="Lock landscape" aria-label="Lock landscape">↻</button>
+     <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
+     <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
+     <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture" title="Picture in Picture">▣</button>
+    </div>
+   </div>
+  </div>
+  <div class="playerfoot"><div style="min-width:0;flex:1"><div class="nowtitle" id="nowTitle">একটি চ্যানেল নির্বাচন করুন</div><div class="nowmeta" id="nowMeta">HLS, MPEG-DASH ও দ্রুত Player</div></div><div class="playeractions"><button class="btn" id="customBtn">URL</button><button class="btn" id="stopBtn">■ STOP</button></div></div>
+ </div>
+ <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
+।</span></div></div>
+</section>
+<main class="channelarea" id="channelArea">
+ <div class="sectionhead sports-sectionhead">
+  <h2>⚽ Live Sports</h2>
+  <div class="match-filter-bar" id="matchFilterBar" aria-label="Match filters">
+   <button type="button" class="match-filter active" data-match-filter="ALL">All Matches <b id="allMatchCount">0</b></button>
+   <button type="button" class="match-filter" data-match-filter="LIVE"><span class="filter-live-dot"></span> Live <b id="liveMatchCount">0</b></button>
+   <button type="button" class="match-filter" data-match-filter="UPCOMING">⏱ Upcoming <b id="upcomingMatchCount">0</b></button>
+  </div>
+  <span class="section-count" id="liveSportsCount">0 MATCHES</span>
+ </div>
+ <div class="channelrow sportsrow" id="liveSportsChannels"></div>
+ <div class="sectionhead"><h2>📺 Live TV Channels</h2><span class="section-count" id="channelCount">0 CHANNELS</span></div>
+ <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Channel categories"></div>
+ <div id="categorySections"></div>
+ <div class="footer">© 2026 SPORTYNOVA 1.0 ·Thanks </div>
+</main>
+</div>
+
+<div class="modal" id="adminModal" aria-hidden="true"><div class="modalbox adminbox"><div class="modalhead"><h3>🔐 SPORTYNOVA Admin</h3><button class="xbtn" id="adminClose" type="button">✕</button></div><div id="adminLoginView"><p class="hint">অ্যাডমিন প্যানেলে প্রবেশের পাসওয়ার্ড দিন।</p><label class="fieldlabel" for="adminPassword">Admin password</label><input class="field" id="adminPassword" type="password" autocomplete="current-password" placeholder="Admin password"><div class="modalbuttons"><button class="btn primary" id="adminLoginBtn" type="button">Login</button></div><p class="hint" id="adminLoginMessage" role="status"></p></div><div id="adminDashboard" hidden><div class="admin-stats"><div><small>মোট চ্যানেল</small><strong id="adminTotal">0</strong></div><div><small>অনলাইন</small><strong id="adminOnline">0</strong></div><div><small>অফলাইন</small><strong id="adminOffline">0</strong></div></div><div class="admin-toolbar"><input class="field" id="adminSearch" placeholder="চ্যানেল খুঁজুন…"><button class="btn" id="adminRefresh" type="button">↻ Refresh</button></div><div id="adminChannelList" class="admin-channel-list"></div><p class="hint" id="adminMessage" role="status"></p><button class="btn" id="adminLogout" type="button">Logout</button></div></div></div>
+<div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">একই প্লেয়ারে HLS/M3U8 (.m3u8) এবং MPEG-DASH/MPD (.mpd) চালানো যাবে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
+<script>
+/* Shaka Player CDN fallback loader. Playback waits until a working copy is available. */
+window.__sportyShakaPromise = null;
+window.ensureSportyShaka = function () {
+  if (window.shaka && window.shaka.Player) return Promise.resolve(true);
+  if (window.__sportyShakaPromise) return window.__sportyShakaPromise;
+  const sources = [
+    "https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.compiled.js",
+    "https://unpkg.com/shaka-player@4.16.2/dist/shaka-player.compiled.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.16.2/shaka-player.compiled.js"
+  ];
+  window.__sportyShakaPromise = new Promise((resolve, reject) => {
+    let i = 0;
+    function next() {
+      if (window.shaka && window.shaka.Player) { resolve(true); return; }
+      if (i >= sources.length) {
+        window.__sportyShakaPromise = null;
+        reject(new Error("ভিডিও প্লেয়ার লাইব্রেরি লোড হয়নি। নেটওয়ার্ক বা CDN ব্লক থাকলে অন্য নেটওয়ার্কে চেষ্টা করুন।"));
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = sources[i++];
+      script.async = true;
+      script.onload = () => (window.shaka && window.shaka.Player) ? resolve(true) : next();
+      script.onerror = next;
+      document.head.appendChild(script);
+    }
+    next();
+  });
+  return window.__sportyShakaPromise;
+};
+</script>
+
+<script>
+const $=id=>document.getElementById(id), video=$("video");
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL",adaptiveQualityTimer=null;
+video.preload="auto";
+video.autoplay=true;
+video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
+const defaults={liveSports:[
+{name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
+{name:"Cricket Live",category:"CRICKET",logo:"🏏",tone:"gold",url:""},
+{name:"Football Live",category:"FOOTBALL",logo:"⚽",tone:"blue",url:""}],liveTvChannels:[]};
+function safeText(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+// Live TV JSON control: show Y/yes shows a channel; N/no hides it. Missing show defaults to visible.
+function isChannelShown(ch){
+ const value=String(ch.Show ?? ch.show ?? "Y").trim().toLowerCase();
+ return !["n","no","false","0","hide","hidden"].includes(value);
+}
+function isServerShown(stream){
+ const value=String(stream?.Show ?? stream?.show ?? "Y").trim().toLowerCase();
+ return !["n","no","false","0","hide","hidden"].includes(value);
+}
+function categoryFor(ch){
+ const raw=String(ch.category||"").toLowerCase(),name=String(ch.name||"").toLowerCase();
+ if(ch.section==="liveSports")return "Live Sports";
+ // Respect an explicit category in channels.json before automatic classification.
+ const explicit=String(ch.category||"").trim().toLowerCase();
+ if(explicit==="movie"||explicit==="movies")return "Movie";
+ if(explicit==="cartoon"||explicit==="cartoons"||explicit==="animation")return "Cartoon";
+ if(explicit==="religion"||explicit==="religious"||explicit==="islamic"||explicit==="religious tv")return "Religion";
+ if(explicit==="documentary"||explicit==="documentaries"||explicit==="documentary tv")return "Documentary";
+ if(/movie|cinema|film/.test(name+" "+raw))return "Movie";
+ if(/cartoon|animation|kids|children/.test(name+" "+raw))return "Cartoon";
+ if(/religion|religious|islamic|quran|koran|azan|makkah|madinah/.test(name+" "+raw))return "Religion";
+ if(/documentary|documentaries|discovery|nat geo|national geographic|animal planet|history tv/.test(name+" "+raw))return "Documentary";
+ if(/sport|football|soccer|cricket|mpd|dash/.test(raw)||/\b(gtv|sony ten|star sports)\b/.test(name))return "Sports";
+ if(/music/.test(raw+" "+name)||/9xm|b4u music|zoom/.test(name))return "Music";
+ if(/news/.test(raw)||/news|dbc|ekhon tv/.test(name))return "News";
+ if(/zee|jalsha|sony|colors|star |sun tv|indian/.test(name)||/indian/.test(raw))return "Indian";
+ if(/bangla/.test(raw)||/boishakhi|asian tv|deepto|nagorik|ntv|rtv|channel i|atn bangla|bijoy|desh tv|me tv|my tv|nrb tv|rajdhani|srk tv|mohona|green tv|maasranga|bangla vision|channel 16|channel 52|amar bangla/.test(name))return "Bangla";
+ return "Entertainment";
+}
+const categoryInfo={
+ "All":{title:"✨ All Channels",order:0},
+ "Bangla":{title:"🇧🇩 Bangla TV",order:1},
+ "Indian":{title:"🇮🇳 Indian TV",order:2},
+ "Music":{title:"🎵 Music",order:3},
+ "Sports":{title:"⚽ Sports",order:4},
+ "News":{title:"📰 News",order:5},
+ "Entertainment":{title:"🎬 Entertainment",order:6},
+ "Movie":{title:"🎥 Movie",order:7},
+ "Cartoon":{title:"🧸 Cartoon",order:8},
+ "Religion":{title:"🕌 Religion",order:9},
+ "Documentary":{title:"🎞️ Documentary",order:10}
+};
+let selectedCategory="Bangla";
+function splitMatchTeams(name){
+ const parts=String(name).trim().split(/\s+(?:VS?\.?|versus|v)\s+/i).filter(Boolean);
+ if(parts.length>=2)return [parts[0].trim(),parts.slice(1).join(" ").trim()];
+ return [String(name||"Team").trim(),"Opponent"];
+}
+// Team logos are loaded from ./data/teams.json. Names and aliases are matched case-insensitively.
+let teamLogoMap = Object.create(null);
+function normalizeTeamName(value){
+ const raw=String(value||"").toLowerCase();
+ return raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+}
+async function loadTeamLogos(){
+ teamLogoMap=Object.create(null);
+ const repoOwner="Adnanakhim98",repoName="Nova-Tv",branch="main";
+ const rawBase=`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+ const registerTeams=(data,sourceUrl)=>{
+  const teams=Array.isArray(data)?data:(Array.isArray(data?.teams)?data.teams:[]);
+  teams.forEach(team=>{
+   if(!team||!team.name||!team.logo)return;
+   let logo=String(team.logo).trim();
+   try{
+    if(/^https?:\/\//i.test(logo)){
+     // Absolute logo URLs are used as-is.
+    }else if(logo.startsWith("/")){
+     logo=rawBase+logo.replace(/^\/+/,"");
+    }else if(!logo.startsWith("data:")){
+     // Relative logo paths are resolved from the JSON file; root-style paths work too.
+     if(/^(?:\.\.\/)*logos\//i.test(logo)) logo=rawBase+logo.replace(/^(?:\.\.\/)+/,"");
+     else if(logo.startsWith("./logos/")) logo=rawBase+logo.slice(2);
+     else if(sourceUrl) logo=new URL(logo,sourceUrl).href;
+    }
+   }catch(e){}
+   const entry={name:String(team.name),logo};
+   [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
+    const key=normalizeTeamName(alias);
+    if(key)teamLogoMap[key]=entry;
+   });
+  });
+ };
+ // Load a fallback shared list first, if present.
+ try{
+  const url=rawBase+"data/teams.json";
+  const response=await fetch(url,{cache:"force-cache"});
+  if(response.ok)registerTeams(await response.json(),url);
+ }catch(error){console.info("Optional data/teams.json not found.");}
+ // GitHub Pages cannot list folders directly. GitHub's repository tree API lets us
+ // discover every JSON file at any depth inside tournament/ automatically.
+ try{
+  const treeUrl=`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`;
+  const response=await fetch(treeUrl,{headers:{Accept:"application/vnd.github+json"},cache:"force-cache"});
+  if(!response.ok)throw new Error("GitHub tree API HTTP "+response.status);
+  const tree=await response.json();
+  const files=(tree.tree||[]).filter(item=>item.type==="blob"&&/^tournament\/.*\.json$/i.test(item.path));
+  const batches=[];
+  for(let i=0;i<files.length;i+=8)batches.push(files.slice(i,i+8));
+  for(const batch of batches){
+   await Promise.all(batch.map(async file=>{
+    try{
+     const url=rawBase+file.path.split("/").map(encodeURIComponent).join("/");
+     const res=await fetch(url,{cache:"force-cache"});
+     if(res.ok)registerTeams(await res.json(),url);
+    }catch(error){console.info("Skipped tournament JSON:",file.path);}
+   }));
+  }
+  console.info(`Loaded team logo aliases from ${files.length} tournament JSON file(s).`);
+ }catch(error){
+  console.warn("Could not auto-discover tournament JSON files. Trying common locations.",error);
+  for(const path of ["tournament/laliga.json","tournament/teams.json","laliga.json"]){
+   try{const url=rawBase+path;const res=await fetch(url,{cache:"force-cache"});if(res.ok)registerTeams(await res.json(),url);}catch(e){}
+  }
+ }
+}
+function teamFlagCode(team){
+ const n=normalizeTeamName(team);
+ const codes={zimbabwe:"zw",afghanistan:"af",bangladesh:"bd",india:"in",pakistan:"pk",srilanka:"lk",westindies:"jm",england:"gb",australia:"au",newzealand:"nz",southafrica:"za",ireland:"ie",nepal:"np",netherlands:"nl",scotland:"gb",usa:"us",unitedstates:"us",uae:"ae",oman:"om",namibia:"na",canada:"ca",hongkong:"hk"};
+ return codes[n]||null;
+}
+function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
+function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
+function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
+ const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
+ const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
+ const name=document.createElement("div");name.className="chname";name.textContent=String(ch.name||"Unnamed channel");
+ if(isLiveEvent){
+  // Country/club names are resolved automatically for known country teams; unknown teams get initials.
+  const teams=splitMatchTeams(ch.name||"");
+  logoBox.classList.add("team-logos");logoBox.textContent="";
+  teams.forEach((team,index)=>{
+   if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
+   const wrap=document.createElement("div");wrap.className="team-logo";
+   const teamEntry=findTeamLogo(team);
+    const code=teamFlagCode(team);
+    const logoUrl=teamEntry&&/^https?:\/\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
+    if(logoUrl){
+      const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
+      img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};
+      wrap.appendChild(img);
+    }else{
+      const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f);
+    }
+    const label=document.createElement("small");label.textContent=team;wrap.appendChild(label);logoBox.appendChild(wrap);
+  });
+ }else{
+  const logoValue=String(ch.logoUrl||ch.logo||"▶").trim();
+  if(/^https?:\/\//i.test(logoValue)){
+   const img=document.createElement("img");img.src=logoValue;img.alt=String(ch.name||"Channel")+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
+   img.onerror=()=>{logoBox.innerHTML="";const f=document.createElement("span");f.className="logo-fallback";f.textContent=String(ch.fallbackLogo||"📺");logoBox.appendChild(f)};logoBox.appendChild(img);
+  }else logoBox.textContent=logoValue;
+ }
+ if(isLiveEvent){
+  const sourcePath=String(ch.__sourceFile||ch.sourceFile||ch.file||"");
+  const fileMatch=sourcePath.match(/match-(\d+)\.json/i);
+  const channelNumber=fileMatch?fileMatch[1]:"";
+
+  // Upcoming matches show the start time; once LIVE, hide the start time
+  // and keep only the channel indicator on the top row.
+  const state=matchStatus(ch);
+  const startLabel=document.createElement("div");
+  startLabel.className="match-start-label";
+  if(state!=="LIVE"){
+   const startText=document.createElement("span");
+   startText.className="match-start-text";
+   startText.textContent=formatMatchStartTime(ch);
+   startLabel.appendChild(startText);
+  }else{
+   startLabel.classList.add("is-live-row");
+  }
+  if(state==="LIVE"&&!channelNumber){startLabel.style.display="none";}
+  if(channelNumber){
+   const channelGroup=document.createElement("span");channelGroup.className="match-channel-group";
+   const lamp=document.createElement("span");lamp.className="match-online-lamp";lamp.setAttribute("aria-label","Online indicator");
+   const channelText=document.createElement("span");channelText.className="match-channel-text";channelText.textContent="CH-"+channelNumber;
+   channelGroup.append(lamp,channelText);startLabel.appendChild(channelGroup);
+   startLabel.title="Channel "+channelNumber;
+  }
+
+  const badgeRow=document.createElement("div");badgeRow.className="sports-badge-row";
+  const status=document.createElement("span");status.className="sports-status";
+  status.textContent=state; if(state==="LIVE")status.classList.add("is-live");
+  if(state==="ENDED")status.classList.add("is-ended");
+  const type=document.createElement("span");type.className="sports-type";
+  type.textContent=String(ch.matchType||ch.match_type||"SPORTS").trim().toUpperCase();
+  if(type.textContent==="FOOTBALL")type.classList.add("is-football");
+  badgeRow.append(status,type);
+
+  // Keep only the individual team names shown directly under their logos.
+  b.classList.add("match-card");
+  b.append(startLabel,logoBox,badgeRow);
+ }else{
+  const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
+  b.append(logoBox,name,category);
+ }
+ b.addEventListener("click",()=>{
+  if(isLiveEvent || ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
+  else openModal(ch.name);
+ });
+ root.appendChild(b);
+}
+function formatMatchStartTime(ch){
+ const dateValue=ch.matchDate||ch.match_date||ch.gameDate||ch.game_date||ch.date;
+ const timeValue=ch.matchTime||ch.match_time||ch.kickoff_time||ch.time;
+ const candidates=[
+  ch.startTime,ch.start_time,ch.kickoff,ch.kickoffTime,ch.matchDateTime,
+  ch.datetime,ch.dateTime,ch.start,ch.matchDateTimeLocal,
+  (dateValue&&timeValue)?(String(dateValue).includes("T")?String(dateValue):String(dateValue)+" "+String(timeValue)):null,
+  timeValue,dateValue
+ ];
+ for(const value of candidates){
+  if(value===undefined||value===null||String(value).trim()==="")continue;
+  const raw=String(value).trim();
+  const parsed=Date.parse(raw);
+  if(Number.isFinite(parsed)){
+   const d=new Date(parsed);
+   const datePart=new Intl.DateTimeFormat("en-GB",{day:"2-digit",month:"short",timeZone:"Asia/Dhaka"}).format(d).replace(/\s+/g,"-");
+   const timePart=new Intl.DateTimeFormat("en-US",{hour:"2-digit",minute:"2-digit",hour12:true,timeZone:"Asia/Dhaka"}).format(d).replace(/\s+/g," ").toUpperCase();
+   return datePart+". "+timePart;
+  }
+  if(/^\d{1,2}:\d{2}(\s?(am|pm))?$/i.test(raw))return raw.replace(/\s+/g," ").toUpperCase();
+ }
+ return "Match Start Time: TBA";
+}
+function matchDateValue(ch){
+ const direct=[ch.startTime,ch.start_time,ch.kickoff,ch.kickoffTime,ch.matchDateTime,ch.datetime,ch.dateTime,ch.start,ch.date];
+ for(const value of direct){if(value===undefined||value===null||value==="")continue;const parsed=Date.parse(String(value));if(Number.isFinite(parsed))return parsed;}
+ const date=ch.matchDate||ch.match_date||ch.date||ch.gameDate||ch.game_date;
+ const time=ch.matchTime||ch.match_time||ch.time||ch.kickoff_time||ch.start_time;
+ if(date){const parsed=Date.parse(String(date)+(time&&!String(date).includes("T")?" "+String(time):""));if(Number.isFinite(parsed))return parsed;}
+ return Number.POSITIVE_INFINITY;
+}
+function matchStatus(ch,now=Date.now()){
+ const start=matchDateValue(ch);
+ const endValues=[ch.endTime,ch.end_time,ch.endDateTime,ch.end];
+ let end=Number.POSITIVE_INFINITY;
+ for(const value of endValues){
+  if(value===undefined||value===null||String(value).trim()==="")continue;
+  const parsed=Date.parse(String(value));
+  if(Number.isFinite(parsed)){end=parsed;break;}
+ }
+ const declared=String(ch.status||ch.matchStatus||ch.state||"").trim().toLowerCase();
+ // Explicit live status wins over an imperfect or stale schedule timestamp.
+ if(/^(live|playing|in.?progress|1st half|2nd half|innings|ongoing)$/.test(declared)||/live|playing|in.?progress|1st half|2nd half|innings/.test(declared))return "LIVE";
+ if(/ended|finished|complete|full.?time|(^|\s)ft($|\s)|result/.test(declared))return "ENDED";
+ // Auto status: a started match stays visible as LIVE until its end time.
+ if(Number.isFinite(start)&&now>=start){
+  if(Number.isFinite(end)&&now>=end)return "ENDED";
+  return "LIVE";
+ }
+ if(Number.isFinite(end)&&now>=end)return "ENDED";
+ return "UPCOMING";
+}
+function sortLiveMatches(items){
+ const now=Date.now();
+ const today=new Date(now);today.setHours(0,0,0,0);const tomorrow=today.getTime()+86400000;
+ return [...items].sort((a,b)=>{
+  const sa=matchStatus(a,now),sb=matchStatus(b,now);
+  const rank={LIVE:0,UPCOMING:1,ENDED:2};
+  if(rank[sa]!==rank[sb])return rank[sa]-rank[sb];
+  const da=matchDateValue(a),db=matchDateValue(b);
+  if(sa==="UPCOMING"){
+   const ba=da>=today.getTime()&&da<tomorrow?0:1,bb=db>=today.getTime()&&db<tomorrow?0:1;
+   if(ba!==bb)return ba-bb;
+  }
+  return da-db||String(a.name||"").localeCompare(String(b.name||""));
+ });
+}
+function normalizeSearchText(value){
+ return String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^a-z0-9\u0980-\u09ff]+/g," ").trim().replace(/\s+/g," ");
+}
+function render(list=channels){
+ const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
+ tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
+ const query=normalizeSearchText($("search").value);
+ const now=Date.now();
+ const searchableText=ch=>normalizeSearchText([
+  ch.name,ch.title,ch.category,ch.section,ch.tournament,ch.league,ch.country,
+  ch.matchType,ch.match_type,ch.competition,ch.channelName,ch.channel_name,
+  ch.aliases, ch.teams, ch.homeTeam,ch.home_team,ch.awayTeam,ch.away_team,
+  ch.team1,ch.team2,ch.url,ch.streamUrl,ch.stream_url,ch.link,
+  ...(Array.isArray(ch.streams)?ch.streams.flatMap(x=>[x?.name,x?.url]):[]),
+  ...(Array.isArray(ch.servers)?ch.servers.flatMap(x=>[x?.name,x?.url]):[])
+ ].flat().filter(Boolean).join(" "));
+ const matchesSearch=ch=>!query||searchableText(ch).includes(query);
+ // Automatically hide matches as soon as their status/end time marks them ENDED.
+ // render() runs every 30 seconds, so the card disappears without a page refresh.
+ const availableMatches=sortLiveMatches(liveSports).filter(ch=>matchStatus(ch,now)!=="ENDED");
+ const liveCount=availableMatches.filter(ch=>matchStatus(ch,now)==="LIVE").length;
+ const upcomingCount=availableMatches.filter(ch=>matchStatus(ch,now)==="UPCOMING").length;
+ $("allMatchCount").textContent=availableMatches.length;
+ $("liveMatchCount").textContent=liveCount;
+ $("upcomingMatchCount").textContent=upcomingCount;
+ document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.matchFilter===selectedMatchFilter));
+ const liveEvents=availableMatches.filter(ch=>
+  (selectedMatchFilter==="ALL"||matchStatus(ch,now)===selectedMatchFilter) &&
+  matchesSearch(ch)
+ );
+ liveEvents.forEach(ch=>makeChannelCard(ch,sportsRoot,"Live Sports",true));
+ $("liveSportsCount").textContent=liveEvents.length+" MATCHES";
+ const filtered=list.filter(matchesSearch);
+ const counts={All:filtered.length};filtered.forEach(ch=>{const cat=categoryFor(ch);counts[cat]=(counts[cat]||0)+1});
+ Object.keys(categoryInfo).sort((a,b)=>categoryInfo[a].order-categoryInfo[b].order).forEach(cat=>{
+  const tab=document.createElement("button");tab.type="button";tab.className="category-tab"+(selectedCategory===cat?" active":"");
+  tab.setAttribute("role","tab");tab.setAttribute("aria-selected",selectedCategory===cat?"true":"false");
+  tab.textContent=categoryInfo[cat].title+(counts[cat]!==undefined?" · "+counts[cat]:"");
+  tab.addEventListener("click",()=>{selectedCategory=cat;render(channels)});tabs.appendChild(tab);
+ });
+ $("channelCount").textContent=filtered.length+" CHANNELS";
+ const searching=!!query;
+ const items=searching?filtered:(selectedCategory==="All"?filtered:filtered.filter(ch=>categoryFor(ch)===selectedCategory));
+ const head=document.createElement("div");head.className="sectionhead";
+ const h=document.createElement("h2");h.textContent=searching?"🔎 Search Results":categoryInfo[selectedCategory].title;
+ const tools=document.createElement("div");tools.className="channel-section-tools";const pill=document.createElement("span");pill.className="online-pill";pill.id="onlinePill";pill.innerHTML='<span class="online-dot"></span> ONLINE: 0/'+channels.filter(ch=>selectedCategory==="All"||categoryFor(ch)===selectedCategory).length;const adminBtn=document.createElement("button");adminBtn.type="button";adminBtn.className="admin-open-btn";adminBtn.textContent="🔐 ADMIN";adminBtn.addEventListener("click",openAdminPanel);tools.append(pill,adminBtn);head.append(h,tools);root.appendChild(head);
+ const row=document.createElement("div");row.className="channelrow"+(!searching&&selectedCategory==="Sports"?" sportsrow":"");
+ if(!items.length){const empty=document.createElement("div");empty.className="hint";empty.textContent=searching?"এই নামে কোনো চ্যানেল পাওয়া যায়নি।":"এই ক্যাটাগরিতে কোনো চ্যানেল পাওয়া যায়নি।";root.appendChild(empty)}
+ items.forEach(ch=>makeChannelCard(ch,row,searching?categoryFor(ch):categoryInfo[selectedCategory].title.replace(/^[^ ]+\s/,""),false));
+ if(items.length)root.appendChild(row);
+}
+function hideQualitySelector(){
+ const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";
+}
+function showQualityOptions(options,mode){
+ const sel=$("qualitySelect");
+ const previous=sel.value;
+ sel.innerHTML="";
+ const auto=document.createElement("option");
+ auto.value="auto";
+ auto.textContent="Auto (Adaptive)";
+ sel.appendChild(auto);
+ options.forEach((item,i)=>{
+  const opt=document.createElement("option");
+  opt.value=String(item.value??i);
+  opt.textContent=item.label;
+  sel.appendChild(opt);
+ });
+ sel.style.display=options.length?"inline-block":"none";
+ qualityMode=options.length?mode:"";
+ // Show the actual active rendition instead of falsely showing Auto.
+ let activeValue="";
+ if(mode==="hls"&&activeHls&&activeHls.currentLevel>=0){
+  activeValue=String(activeHls.currentLevel);
+ }
+ if(mode==="shaka"&&activeShaka){
+  const track=activeShaka.getVariantTracks().find(t=>t.active);
+  if(track)activeValue=String(track.id);
+ }
+ if(activeValue&&Array.from(sel.options).some(o=>o.value===activeValue)){
+  sel.value=activeValue;
+ }else if(previous&&Array.from(sel.options).some(o=>o.value===previous)){
+  sel.value=previous;
+ }else{
+  sel.value="auto";
+ }
+}
+$("qualitySelect").addEventListener("change",()=>{
+ const value=$("qualitySelect").value;
+ try{
+  if(qualityMode==="shaka"&&activeShaka){
+   if(value==="auto"){activeShaka.configure({abr:{enabled:true}})}
+   else{const track=activeShaka.getVariantTracks().find(t=>String(t.id)===String(value));if(track){activeShaka.configure({abr:{enabled:false}});activeShaka.selectVariantTrack(track,true)}}
+  }
+ }catch(e){console.warn("Quality switch failed",e)}
+});
+function setupHlsQualities(){
+ if(!activeHls)return;
+ const levels=activeHls.levels||[];
+ showQualityOptions(levels.map((l,i)=>({value:i,label:(l.height?l.height+"p":Math.round((l.bitrate||0)/1000)+" kbps")})).sort((a,b)=>Number(b.label.replace(/[^0-9]/g,""))-Number(a.label.replace(/[^0-9]/g,""))),"hls");
+}
+function setupShakaQualities(){
+ if(!activeShaka)return;
+ try{
+  const tracks=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
+  // One option per resolution; visibly mark the currently active rendition.
+  const byHeight=new Map();
+  tracks.forEach(t=>{
+   const height=Number(t.height);
+   if(!height)return;
+   const current=byHeight.get(height);
+   if(!current || Number(t.bandwidth||0)>Number(current.bandwidth||0))byHeight.set(height,t);
+  });
+  const active=tracks.find(t=>t.active);
+  const options=[...byHeight.entries()].sort((a,b)=>b[0]-a[0])
+   .map(([height,t])=>({value:String(t.id),label:height+"p"+(active&&Number(active.height)===height?" ✓ চলছে":"")}));
+  showQualityOptions(options,"shaka");
+  if(active){
+   const sel=$("qualitySelect");
+   if(Array.from(sel.options).some(o=>o.value===String(active.id)))sel.value=String(active.id);
+   else{
+    const sameHeight=[...byHeight.values()].find(t=>Number(t.height)===Number(active.height));
+    if(sameHeight)sel.value=String(sameHeight.id);
+   }
+  }
+ }catch(e){
+  console.warn("Could not read DASH quality tracks",e);
+  hideQualitySelector();
+ }
+}
+let lastStreamRequest=null;
+function setPlayerLoading(show,title="ভিডিও চালু হচ্ছে…",message="Please wait while the stream connects.",error=false){
+ const panel=$("playerLoading");
+ if(!panel)return;
+ $("loadingTitle").textContent=title;
+ $("loadingMessage").textContent=message;
+ const retry=$("retryBtn");
+ if(retry)retry.style.display=error?"inline-flex":"none";
+ panel.classList.toggle("show",!!show);
+ panel.style.display=show?"flex":"none";
+}
+function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.display=on?"block":"none";}
+async function stopEngines(){
+  if(adaptiveQualityTimer){clearTimeout(adaptiveQualityTimer);adaptiveQualityTimer=null;}
+  if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
+  if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}
+  video.style.display="";
+  video.pause();
+  video.onloadedmetadata=null;
+  video.onerror=null;
+  video.onplaying=null;
+  video.removeAttribute("src");
+  video.load();
+  delete video.dataset.currentUrl;
+  activeKey=null;
+}
+function syncChannelTitleOverlay(){
+ const title=$("nowTitle")?.textContent?.trim();
+ const overlay=$("channelTitleOverlay");
+ if(overlay)overlay.textContent=title || "SPORTYNOVA LIVE TV";
+}
+if($("nowTitle")){
+ const titleObserver=new MutationObserver(syncChannelTitleOverlay);
+ titleObserver.observe($("nowTitle"),{childList:true,characterData:true,subtree:true});
+}
+syncChannelTitleOverlay();
+function showStatus(title,meta){$("nowTitle").textContent=title;syncChannelTitleOverlay();$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else{setLiveBadge(false);/* Never cover the video surface or inline server controls with an error overlay. */setPlayerLoading(false);}}
+function parseStreamInput(raw, drmFromJson=null){
+ const text=String(raw||"").trim();
+ // Only the pipe-delimited suffix is player metadata. Preserve signed/query URLs intact.
+ const pipe=text.indexOf("|");
+ const manifest=(pipe>=0?text.slice(0,pipe):text).trim();
+ const params=new URLSearchParams(pipe>=0?text.slice(pipe+1).replace(/^\?/ ,""):"");
+ let embedded=new URLSearchParams();
+ try{embedded=new URLSearchParams(new URL(manifest,location.href).search)}catch(e){}
+ return {
+  url:manifest,
+  scheme:(params.get("drmScheme")||embedded.get("drmScheme")||drmFromJson?.scheme||"").toLowerCase(),
+  license:params.get("drmLicense")||embedded.get("drmLicense")||drmFromJson?.license||""
+ };
+}
+function streamKind(url){
+ // Detect the manifest extension from the URL path, ignoring query tokens and fragments.
+ // Also accept common manifest hints when providers use extensionless URLs.
+ const raw=String(url||"").split("|")[0].trim();
+ let path="",query="";
+ try{const u=new URL(raw,location.href);path=u.pathname.toLowerCase();query=(u.search+" "+u.hash).toLowerCase()}
+ catch(e){const clean=raw.split("#")[0];path=clean.split("?")[0].toLowerCase();query=clean.slice(path.length).toLowerCase()}
+ if(/\.mpd$/.test(path)||/manifest(?:\.mpd)?/.test(path)&&/dash|mpd/.test(query))return "mpd";
+ if(/\.m3u8?$/.test(path)||/m3u8/.test(query))return "hls";
+ if(/\.(mp4|m4v|webm|ogv|mov|mkv|mp3|m4a|aac|wav|ogg)$/.test(path))return "direct";
+ if(/\.(ts|m2ts)$/.test(path))return "transport";
+ return "unknown";
+}
+const sportsServerRow=$("sportsServerRow"),serverGroupHome=$("serverGroupHome");
+let serverPopupTimer=null;
+function hideSportsServers(){
+ if(serverPopupTimer){clearTimeout(serverPopupTimer);serverPopupTimer=null;}
+ playerCard.classList.remove("servers-visible");
+}
+function showSportsServers(){
+ if(!playerCard.classList.contains("sports-player-mode"))return;
+ // Reveal the server buttons briefly; every tap restarts the four-second timer.
+ playerCard.classList.add("servers-visible");
+ if(serverPopupTimer)clearTimeout(serverPopupTimer);
+ serverPopupTimer=setTimeout(()=>{
+   serverPopupTimer=null;
+   playerCard.classList.remove("servers-visible");
+ },4000);
+}
+// A tap on the video/player reveals the server strip for four seconds.
+$("playerScreen").addEventListener("pointerdown",e=>{
+ if(!playerCard.classList.contains("sports-player-mode"))return;
+ if(e.target.closest(".sports-server-row")){
+   showSportsServers();
+   return;
+ }
+ showSportsServers();
+},{passive:true});
+// Tapping a server starts playback and restarts the four-second auto-hide timer.
+sportsServerRow.addEventListener("click",(e)=>{showSportsServers(); if(e.target.closest(".inline-server-btn")){e.stopPropagation();}});
+function setPlayerMode(sportsMode){
+ if(!sportsMode)hideSportsServers();
+ playerCard.classList.toggle("sports-player-mode",!!sportsMode);
+ const group=$("inlineServerGroup");
+ if(!group)return;
+ if(sportsMode){sportsServerRow.appendChild(group);}
+ else {
+  const titleOverlay=$("channelTitleOverlay");
+  if(titleOverlay&&titleOverlay.parentElement){titleOverlay.insertAdjacentElement("afterend",group);}
+  else if(serverGroupHome&&serverGroupHome.parentElement){serverGroupHome.parentElement.insertBefore(group,serverGroupHome.nextSibling);}
+ }
+}
+window.playStream=playStream;
+async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
+ const requestId=++playRequestId;
+ const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
+ const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
+ if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
+ lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
+ await stopEngines();
+ if(requestId!==playRequestId)return;
+ setPlayerMode(sportsMode);
+ if(sportsMode)showSportsServers();
+ if(requestId!==playRequestId)return;
+ $("empty").style.display="none";
+ setLiveBadge(false);
+ hideQualitySelector();
+ // Do not cover the video with a loading overlay; start the stream immediately.
+ setPlayerLoading(false);
+ video.dataset.currentUrl=rawUrl;
+ if(currentServerChannel)setInlineServers(currentServerChannel);
+ video.crossOrigin="anonymous";
+ video.preload="auto";
+ video.autoplay=true;
+ video.controls=false;
+ // Restore audible playback when switching from a muted stream/player state.
+ if(url.includes("/YuppTV/ZeeTVHDAPAC.m3u8")){video.muted=false;video.volume=1;}
+
+ let engine="native", settled=false, timer=null;
+ const report=(msg)=>{if(requestId===playRequestId)showStatus(name,msg)};
+ const clearStartupTimer=()=>{if(timer){clearTimeout(timer);timer=null}};
+ const fail=(reason)=>{
+   if(requestId!==playRequestId||settled)return;
+   settled=true;clearStartupTimer();
+   console.warn("SPORTYNOVA playback error:",reason||"unknown");
+   // Live Sports: if playback has not started, automatically try the next
+   // available server after the 9-second startup window. Stop after each
+   // server has been tried once to prevent an endless switching loop.
+   if(sportsMode && currentServerChannel && isSportsChannel(currentServerChannel)){
+     const streams=getChannelStreams(currentServerChannel);
+     const currentUrl=String(rawUrl||"").trim();
+     const currentIndex=streams.findIndex(item=>String(item.url||"").trim()===currentUrl);
+     const attempts=Number(window.__sportsAutoSwitchCount||0);
+     if(streams.length>1 && attempts<streams.length-1){
+       const nextIndex=currentIndex<0?0:(currentIndex+1)%streams.length;
+       if(String(streams[nextIndex]?.url||"").trim()!==currentUrl){
+         window.__sportsAutoSwitchCount=attempts+1;
+         showStatus(name,"ভিডিও চালু হয়নি · পরের সার্ভারে স্বয়ংক্রিয়ভাবে চেষ্টা করা হচ্ছে…");
+         playSelectedServer(nextIndex+1);
+         return;
+       }
+     }
+   }
+   const backupList=String(fallbackUrl||"").split("||").map(s=>s.trim()).filter(Boolean);
+   const backup=(!sportsMode?backupList.find(candidate=>candidate!==String(parsed.url||"").trim()):"");
+   if(backup){
+     showStatus(name,"এই সার্ভার কাজ করছে না · পরের সার্ভারে স্বয়ংক্রিয়ভাবে চেষ্টা করা হচ্ছে…");
+     const remaining=backupList.filter(candidate=>candidate!==backup).join("||");
+     playStream(backup,name,category,drm,remaining);
+     return;
+   }
+   // Keep the player surface and inline Server 1 / Server 2 controls visible on failure.
+   // Do not cover the player with the blocking error overlay; the user can switch servers directly.
+   setLiveBadge(false);
+   setPlayerLoading(false);
+   $("nowTitle").textContent=name;
+   syncChannelTitleOverlay();
+   $("nowMeta").textContent="Stream চালু হয়নি · প্লেয়ারের Server 1 / Server 2 বাটন চাপুন";
+   setInlineServers(currentServerChannel || {name:name,url:rawUrl,category:category});
+ };
+ const success=(label)=>{
+   if(requestId!==playRequestId||settled)return;
+   if(video.paused||video.readyState<2)return;
+   settled=true;clearStartupTimer();
+   if(sportsMode)window.__sportsAutoSwitchCount=0;
+   report(label+" · Playing");
+ };
+ video.onerror=()=>fail("media error");
+ video.onplaying=()=>{
+   if(url.includes("/YuppTV/ZeeTVHDAPAC.m3u8")){
+     video.muted=false;
+     console.info("SPORTYNOVA Zee TV media state",{muted:video.muted,volume:video.volume,audioTracks:video.audioTracks?.length||0,readyState:video.readyState});
+   }
+   success(engine);
+   // Keep the selected rendition stable after startup; do not re-enable ABR automatically.
+ };
+ // A single startup deadline reports a real failure; it does not start another player.
+ // DASH/DRM manifests can take longer than a simple HLS playlist. Keep the
+ // loading state alive long enough for legitimate slower connections to start.
+ const startupLimit=kind==="mpd"?18000:(sportsMode?12000:(kind==="hls"?16000:12000));
+ timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
+
+ try{
+   // One unified playback engine (Shaka Player) handles both HLS/M3U8 and MPEG-DASH/MPD.
+   // This avoids switching engines when the user selects a different channel.
+   if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ারে HLS/M3U8 অথবা MPEG-DASH/MPD লিংক দিন।");
+   if(kind!=="hls"&&kind!=="mpd"&&kind!=="unknown") throw new Error("সমর্থিত স্ট্রিম হলো HLS/M3U8 ও MPEG-DASH/MPD।");
+   if(!window.shaka || !shaka.Player) await window.ensureSportyShaka();
+   if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লাইব্রেরি পাওয়া যায়নি।");
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে HLS/DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
+   engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
+   activeShaka=new shaka.Player(video);
+   const player=activeShaka;
+   // Start at a stable SD/medium rendition for faster startup. Keep adaptive
+   // bitrate disabled unless the user explicitly chooses Auto, avoiding frequent quality jumps.
+   player.configure({
+     streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}},
+     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.95,bandwidthDowngradeTarget:0.85,switchInterval:30},
+     manifest:{retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}}
+   });
+   // Optional ClearKey support from the existing JSON URL format: |drmScheme=clearkey&drmLicense=KID:KEY
+   if(parsed.scheme==="clearkey"&&parsed.license){
+     const pair=parsed.license.split(":");
+     if(pair.length>=2){
+       const cleanHex=v=>String(v||"").replace(/[^0-9a-f]/gi,"").toLowerCase();
+       const kid=cleanHex(pair[0]),key=cleanHex(pair.slice(1).join(":"));
+       if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
+     }
+   }
+   player.addEventListener("error",event=>{
+     if(requestId!==playRequestId)return;
+     const detail=event.detail||{};
+     console.warn("SPORTYNOVA Shaka error",detail.code,detail);
+     if(detail.severity===shaka.util.Error.Severity.CRITICAL)fail("Shaka error "+(detail.code||"playback"));
+   });
+   player.addEventListener("adaptation",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   await player.load(url);
+   if(requestId!==playRequestId)return;
+   // Prefer a low/medium rendition up to 640p (e.g. 480p/540p/640p);
+   // if unavailable, start with the lowest available video rendition instead.
+   const variants=player.getVariantTracks().filter(t=>t.height && t.type!=="audio");
+   if(variants.length){
+     const sdVariants=variants.filter(t=>Number(t.height)<=640);
+     const startTrack=(sdVariants.length?sdVariants:variants).sort((a,b)=>{
+       const heightDiff=Number(b.height||0)-Number(a.height||0);
+       return heightDiff || Number(a.bandwidth||0)-Number(b.bandwidth||0);
+     })[0];
+     if(startTrack){
+       player.configure({abr:{enabled:false}});
+       player.selectVariantTrack(startTrack,true);
+     }
+   }
+   setupShakaQualities();
+   video.play().catch(()=>{});
+ }catch(err){fail(err?.message||"player exception")}
+ render();
+}
+let activeChannelItem=null,currentServerChannel=null,currentChannelStreams=[];
+function isSportsChannel(ch){return !!ch && (ch.section==="liveSports" || /live sports|sports/i.test(String(ch.category||"")));}
+function getChannelStreams(ch){
+ let streams=Array.isArray(ch.streams)?ch.streams.filter(stream=>stream&&isServerShown(stream)&&String(stream.url||stream.src||"").trim()):[];
+ // Keep every visible, usable stream from the match JSON; do not limit to four.
+ // Legacy server fields remain supported when there is no streams array.
+ if(!streams.length && !Array.isArray(ch.streams)){
+  const maxLegacy=isSportsChannel(ch)?50:2;
+  for(let i=1;i<=maxLegacy;i++){
+   const url=ch["server"+i]||ch["server"+i+"Url"]||ch["server"+i+"URL"]||(i===1?ch.url:"")||"";
+   const legacy={name:ch["server"+i+"Name"]||("Server "+i),url,drm:ch["drm"+i]||ch.drm||null,show:ch["server"+i+"Show"]||"yes"};
+   if(isServerShown(legacy)&&String(url).trim())streams.push(legacy);
+  }
+ }
+ return streams.map((stream,i)=>({...stream,name:String(stream.name||("Server "+(i+1))),url:String(stream.url||stream.src||"").trim()}));
+}
+function setInlineServers(ch){
+ currentServerChannel=ch;currentChannelStreams=getChannelStreams(ch);
+ const group=$("inlineServerGroup");
+ if(!group)return;
+ group.replaceChildren();
+ if(!currentChannelStreams.length){
+  const empty=document.createElement("span");empty.className="server-empty-label";empty.textContent="No servers";group.appendChild(empty);return;
+ }
+ currentChannelStreams.forEach((stream,index)=>{
+  const b=document.createElement("button");b.type="button";b.className="nova-control-btn inline-server-btn";
+  b.textContent=stream.name||("Server "+(index+1));
+  b.title=stream.name||("Server "+(index+1));
+  b.setAttribute("aria-label","Play "+b.textContent);
+  b.classList.toggle("active",String(video.dataset.currentUrl||"").trim()===stream.url);
+  b.addEventListener("click",()=>{window.__sportsAutoSwitchCount=0;playSelectedServer(index+1)});
+  group.appendChild(b);
+ });
+}
+function playChannelDefault(ch){
+ activeChannelItem=ch;
+ window.__sportsAutoSwitchCount=0;
+ $("empty").style.display="none";
+ setPlayerLoading(false);
+ setInlineServers(ch);
+ const first=currentChannelStreams.find(stream=>String(stream.url||"").trim())||{};
+ const url=String(first.url||ch.url||"").trim();
+ const fallback=currentChannelStreams.filter(stream=>stream.url&&stream.url!==url).map(stream=>stream.url).join("||");
+ if(!url){showStatus(ch.name||"Live TV","এই ম্যাচে চালু করার মতো কোনো stream URL নেই");return;}
+ showStatus(ch.name||"Live TV",(first.name||"Server 1")+" · Connecting…");
+ playStream(url,ch.name||"Live TV",(ch.category||"LIVE TV")+" · "+(first.name||"Server 1"),first.drm||ch.drm||null,fallback);
+}
+function stepChannel(delta){
+ const playable=[...channels,...liveSports].filter(ch=>
+  ch && isChannelShown(ch) && (String(ch.url||"").trim() || (Array.isArray(ch.streams)&&ch.streams.some(s=>s&&String(s.url||s.src||"").trim())))
+ );
+ if(!playable.length)return;
+ let index=playable.indexOf(activeChannelItem);
+ if(index<0 && activeChannelItem){
+  const key=normalizeSearchText(activeChannelItem.name);
+  index=playable.findIndex(ch=>normalizeSearchText(ch.name)===key);
+ }
+ if(index<0)index=delta>0?-1:0;
+ const next=(index+delta+playable.length)%playable.length;
+ playChannelDefault(playable[next]);
+}
+function playSelectedServer(index){
+ if(!currentServerChannel)return;
+ const stream=currentChannelStreams[index-1]||{},url=String(stream.url||"").trim();
+ if(!url)return;
+ const fallback=String(currentChannelStreams.find((item,i)=>i!==index-1&&item.url)?.url||"").trim();
+ showStatus(currentServerChannel.name||"Live TV",(stream.name||("Server "+index))+" · Connecting…");
+ playStream(url,currentServerChannel.name||"Live TV",(currentServerChannel.category||"LIVE TV")+" · "+(stream.name||("Server "+index)),stream.drm||currentServerChannel.drm||null,fallback);
+}
+// Keep player utility icons fixed while the server strip can be swiped horizontally.
+const serverStrip=$("inlineServerGroup");
+if(serverStrip){
+ serverStrip.addEventListener("wheel",e=>{if(serverStrip.scrollWidth>serverStrip.clientWidth){e.preventDefault();serverStrip.scrollLeft+=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;}},{passive:false});
+ serverStrip.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){serverStrip.scrollBy({left:100,behavior:"smooth"});e.preventDefault()}else if(e.key==="ArrowLeft"){serverStrip.scrollBy({left:-100,behavior:"smooth"});e.preventDefault()}});
+}
+// Fix: the URL button and channels without a stream both call openModal(),
+// but the function was missing, so clicking did nothing.
+function openModal(channelName=""){
+ const modal=$("urlModal");
+ if(!modal) return;
+ const nameField=$("streamName");
+ const urlField=$("streamUrl");
+ if(nameField && channelName) nameField.value=channelName;
+ modal.classList.add("open");
+ if(urlField) setTimeout(()=>urlField.focus(),80);
+}
+$("customBtn").addEventListener("click",()=>openModal());
+
+$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();setPlayerMode(false);$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
+$("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
+$("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
+$("playCustom").onclick=()=>{const url=$("streamUrl").value.trim(),name=$("streamName").value.trim()||"Custom Live";if(!url){alert("Stream URL দিন");return}$("urlModal").classList.remove("open");playStream(url,name,"CUSTOM STREAM");};
+document.querySelectorAll("[data-match-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedMatchFilter=btn.dataset.matchFilter||"ALL";render(channels)}));
+$("search").addEventListener("input",()=>render(channels));
+// Admin API must point to the separately deployed Cloudflare Worker; never put the admin password in this HTML.
+const ADMIN_API_BASE = ""; // Set to your admin/status Worker URL, e.g. https://your-admin-worker.workers.dev
+let adminPasswordInMemory="", adminRows=[];
+let onlineStatusMap={};
+function adminApiReady(){return /^https:\/\//i.test(ADMIN_API_BASE)}
+async function adminApi(path,options={}){
+ if(!adminApiReady())throw new Error("Admin API সেটআপ করা হয়নি। README-তে Worker deploy-এর ধাপ দেখুন।");
+ const headers={...(options.headers||{})};
+ if(adminPasswordInMemory)headers["X-Admin-Password"]=adminPasswordInMemory;
+ if(options.body)headers["Content-Type"]="application/json";
+ const r=await fetch(ADMIN_API_BASE.replace(/\/$/,"")+path,{...options,headers,cache:"no-store"});
+ const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||("HTTP "+r.status));return data;
+}
+function channelAdminId(ch){return String(ch.id||ch.channelId||String(ch.name||"channel").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}
+function allAdminRows(){return channels.map(ch=>({id:channelAdminId(ch),name:String(ch.name||"Unnamed"),url:String(ch.url||ch.streamUrl||""),category:categoryFor(ch),hidden:!isChannelShown(ch)}))}
+function updateOnlinePill(){
+ const cat=selectedCategory;const group=channels.filter(ch=>categoryFor(ch)===cat);let on=0;
+ group.forEach(ch=>{const row=adminRows.find(x=>x.name===ch.name)||ch;const st=onlineStatusMap[row.id]||onlineStatusMap[ch.name];if(st&&st.status==="online")on++;});
+ const pill=document.getElementById("onlinePill");if(pill)pill.innerHTML='<span class="online-dot"></span> ONLINE: '+on+'/'+group.length;
+}
+async function refreshPublicStatus(){
+ try{const d=await adminApi("/status");onlineStatusMap=d.statuses||{};}catch(e){console.warn("Status API unavailable:",e.message)}
+ updateOnlinePill();
+}
+function openAdminPanel(){const m=$("adminModal");m.classList.add("open");m.setAttribute("aria-hidden","false");$("adminLoginView").hidden=false;$("adminDashboard").hidden=true;$("adminLoginMessage").textContent=adminApiReady()?"":"API সেটআপ বাকি: README অনুযায়ী Worker deploy করুন।";$("adminPassword").value="";}
+function closeAdminPanel(){ $("adminModal").classList.remove("open");$("adminModal").setAttribute("aria-hidden","true"); }
+async function adminLogin(){
+ const pw=$("adminPassword").value;if(!pw){$("adminLoginMessage").textContent="পাসওয়ার্ড দিন।";return}
+ adminPasswordInMemory=pw;$("adminLoginMessage").textContent="যাচাই করা হচ্ছে…";
+ try{await adminApi("/admin/list");$("adminLoginView").hidden=true;$("adminDashboard").hidden=false;await loadAdminDashboard();}
+ catch(e){adminPasswordInMemory="";$("adminLoginMessage").textContent=e.message;}
+}
+async function loadAdminDashboard(){
+ $("adminMessage").textContent="স্ট্যাটাস লোড হচ্ছে…";
+ try{const d=await adminApi("/admin/list");adminRows=Array.isArray(d.channels)?d.channels:[];onlineStatusMap=d.statuses||{};renderAdminRows();updateOnlinePill();$("adminMessage").textContent="স্ট্যাটাস Worker-এর সর্বশেষ পরীক্ষার ফল। স্বয়ংক্রিয় পরীক্ষা প্রতি ৫ মিনিটে চলে।";}
+ catch(e){$("adminMessage").textContent=e.message;}
+}
+function renderAdminRows(){
+ const q=$("adminSearch").value.trim().toLowerCase(),root=$("adminChannelList");root.innerHTML="";
+ const rows=adminRows.filter(x=>(x.name+" "+x.category).toLowerCase().includes(q));
+ const values=rows.map(x=>({row:x,status:onlineStatusMap[x.id]||onlineStatusMap[x.name]||{status:"unknown"}}));
+ $("adminTotal").textContent=adminRows.length;$("adminOnline").textContent=adminRows.filter(x=>(onlineStatusMap[x.id]||onlineStatusMap[x.name]||{}).status==="online").length;$("adminOffline").textContent=adminRows.filter(x=>(onlineStatusMap[x.id]||onlineStatusMap[x.name]||{}).status!=="online").length;
+ if(!values.length){root.innerHTML='<p class="hint">কোনো চ্যানেল পাওয়া যায়নি।</p>';return}
+ values.forEach(({row,status})=>{const item=document.createElement("div");item.className="admin-channel-item";const info=document.createElement("div");const name=document.createElement("div");name.className="admin-channel-name";name.textContent=row.name+(row.hidden?" (Hidden)":"");const st=document.createElement("div");st.className="admin-channel-state "+(status.status==="online"?"online":status.status==="offline"?"offline":"");st.textContent=(status.status||"unknown").toUpperCase()+(status.checkedAt?" · "+new Date(status.checkedAt).toLocaleString():"");info.append(name,st);const actions=document.createElement("div");actions.className="admin-channel-actions";
+ const toggle=document.createElement("button");toggle.className="btn";toggle.type="button";toggle.textContent=row.hidden?"Show":"Hide";toggle.onclick=async()=>{try{await adminApi("/admin/channel",{method:"POST",body:JSON.stringify({id:row.id,action:row.hidden?"show":"hide"})});await loadAdminDashboard();await loadConfig();}catch(e){$("adminMessage").textContent=e.message}};
+ const edit=document.createElement("button");edit.className="btn";edit.type="button";edit.textContent="Edit URL";edit.onclick=async()=>{const url=prompt("নতুন stream URL দিন (খালি রাখলে বাতিল):",row.url||"");if(url===null||!url.trim())return;try{await adminApi("/admin/channel",{method:"POST",body:JSON.stringify({id:row.id,action:"url",url:url.trim()})});await loadAdminDashboard();await loadConfig();}catch(e){$("adminMessage").textContent=e.message}};
+ actions.append(toggle,edit);item.append(info,actions);root.append(item);});
+}
+$("adminLoginBtn").addEventListener("click",adminLogin);$("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")adminLogin()});$("adminClose").addEventListener("click",closeAdminPanel);$("adminModal").addEventListener("click",e=>{if(e.target===$("adminModal"))closeAdminPanel()});$("adminRefresh").addEventListener("click",loadAdminDashboard);$("adminSearch").addEventListener("input",renderAdminRows);$("adminLogout").addEventListener("click",()=>{adminPasswordInMemory="";closeAdminPanel()});
+
+function rawBaseForChannels(path){return "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/"+String(path).split("/").map(encodeURIComponent).join("/")+"?v="+Date.now();}
+async function loadConfig(){
+ if(configLoadInProgress)return;
+ configLoadInProgress=true;
+ const files={Bangla:"./data/bangla.json",Indian:"./data/india.json",Sports:"./data/sports.json",News:"./data/news.json",Music:"./data/music.json",Entertainment:"./data/entertainment.json",Movie:"./data/movie.json",Cartoon:"./data/cartoon.json",Religion:"./data/religion.json",Documentary:"./data/documentary.json"};
+ try{
+  const results=await Promise.all(Object.entries(files).map(async([category,path])=>{try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();return (d.channels||d.liveTvChannels||[]).filter(c=>c&&c.name).map(c=>({...c,section:"tv",category:category}));}catch(e){console.warn("Could not load "+path,e);return [];}}));
+  channels=results.flat();
+  // Auto-discover additional channel JSON files under data/; existing hard-coded files remain supported.
+  try{
+   const owner="Adnanakhim98",repo="Nova-Tv",branchName="main";
+   const treeRes=await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/${branchName}?recursive=1`,{headers:{Accept:"application/vnd.github+json"},cache:"no-store"});
+   if(treeRes.ok){
+    const treeData=await treeRes.json();
+    const paths=(treeData.tree||[]).filter(x=>x.type==="blob"&&/^data\/.*\.json$/i.test(x.path)&&!/^data\/(?:matches|teams)(?:\/|\.json$)/i.test(x.path)&&!/(?:match[-_ ]?\d*|live[-_ ]?sports|sports[-_ ]?matches)\.json$/i.test(x.path)).map(x=>x.path);
+    const known=new Set(channels.map(c=>normalizeSearchText(c.name)));
+    for(let i=0;i<paths.length;i+=8){
+     const extra=await Promise.all(paths.slice(i,i+8).map(async path=>{
+      try{const res=await fetch(rawBaseForChannels(path),{cache:"no-store"});if(!res.ok)return [];const data=await res.json();const arr=Array.isArray(data)?data:(data.channels||data.liveTvChannels||data.tvChannels||[]);if(!Array.isArray(arr))return [];const cat=path.split("/").pop().replace(/\.json$/i,"");return arr.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv",category:c.category||cat}));}catch(e){return [];}
+     }));
+     extra.flat().forEach(ch=>{const key=normalizeSearchText(ch.name);if(!known.has(key)){known.add(key);channels.push(ch);}});
+    }
+   }
+  }catch(e){console.info("Extra data JSON discovery skipped; using configured channel files.",e);}
+  // Apply server-side admin overrides (hide/show and URL changes) without changing the original JSON files.
+  try{const adminData=await adminApi("/status");onlineStatusMap=adminData.statuses||{};const overrides=adminData.overrides||{};channels=channels.map((ch,i)=>{const id=channelAdminId(ch),ov=overrides[id]||overrides[ch.name];return ov?{...ch,...(ov.url?{url:ov.url}:{}),Show:ov.hidden?"N":"Y",id}:({...ch,id});}).filter(isChannelShown);}catch(e){channels=channels.map(ch=>({...ch,id:channelAdminId(ch)})).filter(isChannelShown);}
+   // Render Live TV immediately so category menus do not wait for GitHub match discovery.
+   render(channels);
+  // Discover match JSONs from every tournament subfolder, data/matches/, and
+  // any other folder where a file is named match-*.json. No 1..10 limit.
+  const repoOwner="Adnanakhim98",repoName="Nova-Tv",branch="main";
+  const rawBase=`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/`;
+  const matchCandidates=[];
+  const candidatePaths=new Set();
+  const addCandidate=path=>{
+   if(!path||candidatePaths.has(path))return;
+   candidatePaths.add(path);
+   matchCandidates.push({path,url:rawBase+path.split("/").map(encodeURIComponent).join("/")+"?v="+Date.now()});
+  };
+  try{
+   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1&v=${Date.now()}`,{headers:{Accept:"application/vnd.github+json"},cache:"no-store"});
+   if(!treeResponse.ok)throw new Error("GitHub tree API HTTP "+treeResponse.status);
+   const tree=await treeResponse.json();
+   (tree.tree||[]).filter(item=>item.type==="blob"&&/\.json$/i.test(item.path)&&(
+      /^(?:data\/matches|tournament)\//i.test(item.path) ||
+      /(?:^|\/)match[-_ ]?\d*\.json$/i.test(item.path) ||
+      /(?:^|\/)(?:live[-_ ]?sports|sports[-_ ]?matches|willow)\.json$/i.test(item.path)
+   )).forEach(item=>addCandidate(item.path));
+   if(tree.truncated)console.warn("GitHub tree was truncated; numbered-file fallback will also be tried.");
+   if(tree.truncated)for(let i=1;i<=100;i++){addCandidate(`data/matches/match-${i}.json`);addCandidate(`tournament/match-${i}.json`);addCandidate(`match-${i}.json`);}
+  }catch(error){
+   console.warn("Could not discover match JSON files via GitHub API; trying numbered files in common locations.",error);
+   for(let i=1;i<=100;i++){addCandidate(`data/matches/match-${i}.json`);addCandidate(`tournament/match-${i}.json`);addCandidate(`match-${i}.json`);}
+  }
+  const extractMatches=(data,sourcePath="")=>{
+   const out=[],seenObjects=new Set();
+   const add=item=>{
+    if(!item||typeof item!=="object"||Array.isArray(item)||seenObjects.has(item))return;
+    seenObjects.add(item);
+    const hasSource=!!(item.url||item.streamUrl||item.stream_url||item.link||item.matchLink||item.match_link||item.match_url||item.embedUrl||item.embed_url||item.videoUrl||item.video_url||item.sourceUrl||item.source_url||item.streams||item.servers||item.sources||item.source);
+    const identity=!!(item.name||item.title||item.matchName||item.match_name);
+    const matchMeta=!!(item.startTime||item.start_time||item.kickoff||item.kickoffTime||item.matchDate||item.match_date||item.matchTime||item.match_time||item.matchType||item.match_type||item.tournament||item.league||item.status||/live\s*sports|football|cricket|basketball|tennis/i.test(String(item.category||item.section||"")));
+    const sourceLooksLikeMatches=/(?:^|\/)(?:match[-_ ]?\d*|willow|live[-_ ]?sports|sports[-_ ]?matches)\.json$/i.test(sourcePath)||/^tournament\//i.test(sourcePath)||/^data\/matches\//i.test(sourcePath);
+    const nameLooksLikeMatch=/\b(?:vs?\.?|versus)\b/i.test(String(item.name||item.title||item.matchName||item.match_name||""));
+    if(identity&&hasSource&&(matchMeta||(sourceLooksLikeMatches&&nameLooksLikeMatch)))out.push(item);
+   };
+   const walk=(value,depth=0)=>{
+    if(!value||typeof value!=="object"||depth>8)return;
+    if(Array.isArray(value)){value.forEach(v=>walk(v,depth+1));return;}
+    add(value);
+    Object.values(value).forEach(v=>{if(v&&typeof v==="object")walk(v,depth+1);});
+   };
+   walk(data);
+   return out;
+  };
+  const loadedMatches=[];
+  for(let i=0;i<matchCandidates.length;i+=8){
+   const batch=matchCandidates.slice(i,i+8);
+   const results=await Promise.all(batch.map(async file=>{
+    try{
+     const r=await fetch(file.url,{cache:"no-store"});
+     if(!r.ok)return [];
+     const d=await r.json();
+     return extractMatches(d,file.path).map(item=>({...item,name:item.name||item.title||item.matchName||item.match_name,__sourceFile:file.path,section:"liveSports",category:item.category||"Live Sports"})).filter(item=>isChannelShown(item));
+    }catch(e){return [];}
+   }));
+   results.forEach(items=>loadedMatches.push(...items));
+  }
+  // Keep every enabled/visible match, including ended ones, and sort LIVE first,
+  // then today's upcoming, future matches, and ended matches at the bottom.
+  const seenMatches=new Set();
+  liveSports=sortLiveMatches(loadedMatches).filter(item=>{
+   const key=[normalizeTeamName(item.name),matchDateValue(item)].join("|");
+   if(seenMatches.has(key))return false;
+   seenMatches.add(key);
+   return true;
+  });
+  // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
+  if(!liveSports.length){
+   for(const path of ["./data/live-sports.json","./live-sports.json"]){
+    try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)continue;const d=await r.json();const items=(d.liveSports||d.channels||[]);if(Array.isArray(items)){liveSports=items.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));if(liveSports.length)break;}}
+    catch(e){console.warn("Could not load "+path,e)}
+   }
+  }
+  // Backward compatibility: use the old combined file only if the separate files are empty.
+  if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
+ }catch(e){console.warn("Separate JSON load failed",e)}
+  await loadTeamLogos();
+ if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();
+ configLoadInProgress=false;
+}
+
+// SPORTYNOVA controls connected only to the HLS.js engine.
+const playerCard=document.querySelector(".playersticky .playercard");
+const screenEl=$("playerScreen"),seekBar=$("seekBar");
+const formatClock=seconds=>{
+ if(!Number.isFinite(seconds)||seconds<0)return "00:00";
+ const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),sec=Math.floor(seconds%60);
+ return h?`${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+};
+$("playPauseBtn").addEventListener("click",()=>{if(video.paused)video.play().catch(()=>{});else video.pause()});
+const centerPlayPauseBtn = $("centerPlayPauseBtn");
+if(centerPlayPauseBtn){
+ centerPlayPauseBtn.addEventListener("click", e=>{
+  e.stopPropagation();
+  if(video.paused) video.play().catch(()=>{});
+  else video.pause();
+ });
+ const syncCenterPlayPause=()=>{
+  centerPlayPauseBtn.textContent=video.paused?"▶":"Ⅱ";
+  centerPlayPauseBtn.setAttribute("aria-label",video.paused?"Play video":"Pause video");
+ };
+ video.addEventListener("play",syncCenterPlayPause);
+ video.addEventListener("pause",syncCenterPlayPause);
+ video.addEventListener("ended",syncCenterPlayPause);
+ syncCenterPlayPause();
+}
+
+video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
+video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
+$("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
+video.addEventListener("volumechange",()=>{$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
+video.addEventListener("timeupdate",()=>{
+ const duration=video.duration;
+ if(Number.isFinite(duration)&&duration>0){
+  $("currentTime").textContent=formatClock(video.currentTime);$("durationTime").textContent=formatClock(duration);
+  if(!seekBar.matches(":active"))seekBar.value=String(Math.round(video.currentTime/duration*1000));
+ }else{
+  $("currentTime").textContent="LIVE";$("durationTime").textContent=video.seekable.length?"LIVE":"--:--";
+  if(video.seekable.length&&!seekBar.matches(":active")){const start=video.seekable.start(0),end=video.seekable.end(video.seekable.length-1);seekBar.value=String(end>start?Math.round((video.currentTime-start)/(end-start)*1000):1000)}
+ }
+});
+seekBar.addEventListener("change",()=>{
+ const duration=video.duration;
+ if(Number.isFinite(duration)&&duration>0)video.currentTime=Number(seekBar.value)/1000*duration;
+ else if(video.seekable.length){const start=video.seekable.start(0),end=video.seekable.end(video.seekable.length-1);video.currentTime=start+(end-start)*Number(seekBar.value)/1000}
+});
+
+function applyVideoFit(mode){
+ // Smart Fill preserves the original aspect ratio; the screen uses a soft gradient backdrop
+ // rather than stretching the picture or cropping its edges. Only Zoom intentionally crops.
+ let fit="contain", transform="none";
+ if(mode==="fill"){fit="contain";transform="none"}
+ else if(mode==="cover"){fit="cover";transform="none"}
+ else if(mode==="zoom"){fit="cover";transform="scale(1.12)"}
+ else if(mode==="zoomout"){fit="contain";transform="scale(.88)"}
+ video.style.setProperty("--video-fit",fit);
+ video.style.setProperty("--video-transform",transform);
+ video.style.setProperty("object-fit",fit,"important");
+ video.style.setProperty("transform",transform,"important");
+}
+
+applyVideoFit("contain");
+let livezoneFitIndex=0;
+const livezoneFitModes=["fill","cover","zoom"];
+$("prevChannelBtn").addEventListener("click",()=>stepChannel(-1));
+$("nextChannelBtn").addEventListener("click",()=>stepChannel(1));
+$("menuChannelBtn").addEventListener("click",()=>{
+ const list=document.querySelector(".channelarea");
+ if(list)list.scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("closePlayerBtn").addEventListener("click",()=>{$("stopBtn").click()});
+$("volumeSlider").addEventListener("input",e=>{
+ video.volume=Number(e.target.value);
+ video.muted=video.volume===0;
+});
+video.addEventListener("volumechange",()=>{
+ const slider=$("volumeSlider");
+ if(slider)slider.value=String(video.muted?0:video.volume);
+});
+$("fitBtn").addEventListener("click",()=>{
+ livezoneFitIndex=(livezoneFitIndex+1)%livezoneFitModes.length;
+ applyVideoFit(livezoneFitModes[livezoneFitIndex]);
+ $("fitBtn").textContent=["▣","◩","⛶"][livezoneFitIndex];
+ showStatus("Screen fit",["Contain","Cover","Zoom"][livezoneFitIndex]);
+});
+$("rotateBtn").addEventListener("click",async()=>{
+ try{
+  if(screen.orientation?.lock){
+   if(String(screen.orientation.type||"").startsWith("landscape"))screen.orientation.unlock();
+   else await screen.orientation.lock("landscape");
+   showStatus("Screen orientation","Landscape orientation updated");
+  }else showStatus("Screen orientation","এই ব্রাউজারে orientation lock সমর্থিত নয়");
+ }catch(e){showStatus("Screen orientation","ফোনটি Landscape করে নিন");}
+});
+
+$("pipBtn").addEventListener("click",async()=>{
+ try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
+});
+async function enterPlayerFullscreen(){
+ const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+ try{
+  if(playerCard.requestFullscreen){await playerCard.requestFullscreen();if(mobile)try{await screen.orientation?.lock?.("landscape")}catch(e){}}
+  else if(playerCard.webkitRequestFullscreen)playerCard.webkitRequestFullscreen();
+  else {playerCard.classList.add("mobile-rotated");if(mobile)try{await screen.orientation?.lock?.("landscape")}catch(e){}}
+ }catch(e){if(mobile)playerCard.classList.add("mobile-rotated");else console.warn("Fullscreen unavailable",e)}
+}
+$("fullscreenBtn").addEventListener("click",()=>{
+ if(document.fullscreenElement||document.webkitFullscreenElement||playerCard.classList.contains("mobile-rotated")){
+  if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+  playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}
+ }else enterPlayerFullscreen();
+});
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
+document.addEventListener("webkitfullscreenchange",()=>{if(!document.webkitFullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
+let lastVideoTap=0;
+screenEl.addEventListener("click",e=>{
+ if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
+ const now=Date.now();if(now-lastVideoTap<320){if(video.paused)video.play().catch(()=>{});else video.pause()}lastVideoTap=now;
+});
+// Automatically hide player controls 4 seconds after the last interaction in all orientations.
+let controlsHideTimer=null;
+function showPlayerControls(){
+ playerCard.classList.remove("controls-hidden");
+ if(controlsHideTimer)clearTimeout(controlsHideTimer);
+ controlsHideTimer=setTimeout(()=>{
+  if(!video.paused && !video.ended) playerCard.classList.add("controls-hidden");
+ },4000);
+}
+["pointermove","pointerdown","touchstart","keydown"].forEach(evt=>playerCard.addEventListener(evt,showPlayerControls,{passive:true}));
+video.addEventListener("playing",showPlayerControls);
+video.addEventListener("pause",()=>{if(controlsHideTimer)clearTimeout(controlsHideTimer);playerCard.classList.remove("controls-hidden")});
+
+// Swipe gestures: vertical swipe on left = brightness, right = volume; horizontal = seek.
+(function installSwipeControls(){
+ const hud=$("swipeHud"), icon=$("swipeIcon"), value=$("swipeValue"), label=$("swipeLabel"), fill=$("swipeMeterFill");
+ if(!hud||!screenEl)return;
+ let start=null, hudTimer=null, gesture=null, startBrightness=1, startVolume=1, startTime=0;
+ let brightness=1;
+ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+ function showHud(type,amount,extra){
+  const pct=Math.round(clamp(amount,0,1)*100);
+  icon.textContent=type==="brightness"?"☀️":type==="volume"?(video.muted||video.volume===0?"🔇":"🔊"):"↔️";
+  label.textContent=type==="brightness"?"Brightness":type==="volume"?"Volume":"Seek";
+  value.textContent=type==="seek"?(extra||"LIVE"):pct+"%";
+  fill.style.width=(type==="seek"?50:pct)+"%";
+  hud.classList.add("visible");
+  if(hudTimer)clearTimeout(hudTimer);
+  hudTimer=setTimeout(()=>hud.classList.remove("visible"),950);
+ }
+ function getSeekRange(){
+  if(Number.isFinite(video.duration)&&video.duration>0)return {start:0,end:video.duration};
+  try{if(video.seekable&&video.seekable.length)return {start:video.seekable.start(0),end:video.seekable.end(video.seekable.length-1)}}catch(e){}
+  return null;
+ }
+ screenEl.addEventListener("touchstart",e=>{
+  if(e.touches.length!==1||e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
+  const t=e.touches[0],rect=screenEl.getBoundingClientRect();
+  // Ignore touches on the lower control strip.
+  if(t.clientY>rect.bottom-Math.max(58,rect.height*.19))return;
+  start={x:t.clientX,y:t.clientY,rect,at:Date.now()};gesture=null;startBrightness=brightness;startVolume=video.volume;startTime=video.currentTime;
+ },{passive:true});
+ screenEl.addEventListener("touchmove",e=>{
+  if(!start||e.touches.length!==1)return;
+  const t=e.touches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;
+  if(!gesture){if(Math.max(Math.abs(dx),Math.abs(dy))<14)return;gesture=Math.abs(dx)>Math.abs(dy)*1.15?"seek":(start.x<start.rect.left+start.rect.width/2?"brightness":"volume");}
+  if(gesture==="brightness"){
+   brightness=clamp(startBrightness-dy/start.rect.height,0.15,1.5);
+   video.style.filter=`brightness(${brightness})`;
+   showHud("brightness",brightness/1.5);
+  }else if(gesture==="volume"){
+   const vol=clamp(startVolume-dy/start.rect.height,0,1);
+   video.volume=vol;video.muted=vol===0;
+   showHud("volume",vol);
+  }else{
+   const range=getSeekRange();if(!range)return;
+   const span=range.end-range.start;if(span<=0)return;
+   const secondsPerWidth=Math.min(span/2,Math.max(30,span*.12));
+   const target=clamp(startTime+(dx/start.rect.width)*secondsPerWidth,range.start,range.end);
+   try{video.currentTime=target}catch(err){}
+   showHud("seek",0,formatClock(target));
+  }
+  if(e.cancelable)e.preventDefault();
+ },{passive:false});
+ const endGesture=()=>{start=null;gesture=null;if(hudTimer)clearTimeout(hudTimer);hudTimer=setTimeout(()=>hud.classList.remove("visible"),650)};
+ screenEl.addEventListener("touchend",endGesture,{passive:true});
+ screenEl.addEventListener("touchcancel",endGesture,{passive:true});
+})();
+
+// Direct player URL support. The requested stream is used when no ?url= parameter exists.
+const DEFAULT_STREAM="https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8";
+const pageParams=new URLSearchParams(location.search);
+const requestedStream=pageParams.get("url");
+const requestedName=pageParams.get("name")||"SPORTYNOVA Live";
+if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
+else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
+loadConfig();
+// Re-scan GitHub JSON periodically so newly added/edited match files appear without
+// requiring an HTML edit; render status/sort between full data refreshes.
+setInterval(()=>render(channels),30000);
+setInterval(()=>{if(!configLoadInProgress)loadConfig();},180000);
+// Prevent pinch/double-tap zoom on touch browsers; normal vertical scrolling remains enabled.
+document.addEventListener("gesturestart", e => e.preventDefault(), {passive:false});
+document.addEventListener("gesturechange", e => e.preventDefault(), {passive:false});
+document.addEventListener("gestureend", e => e.preventDefault(), {passive:false});
+let lastTouchEnd = 0;
+document.addEventListener("touchend", e => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) e.preventDefault();
+  lastTouchEnd = now;
+}, {passive:false});
+</script>
+<style>
+/* Landscape player: use the full width on both sides and keep the bottom info bar transparent. */
+@media (orientation: landscape) and (max-height: 600px){
+  .playercard:fullscreen .screen video,
+  .playercard:-webkit-full-screen .screen video,
+  .playercard.mobile-rotated .screen video{
+    object-fit:var(--video-fit,contain)!important;
+    transform:var(--video-transform,none)!important;
+    object-position:center center!important;
+    width:100%!important;height:100%!important;
+    max-width:none!important;max-height:none!important;
+  }
+  .playercard:fullscreen .playerfoot,
+  .playercard:-webkit-full-screen .playerfoot,
+  .playercard.mobile-rotated .playerfoot{
+    background:transparent!important;
+    background-color:rgba(0,0,0,.12)!important;
+    border-top:1px solid rgba(255,255,255,.12)!important;
+    backdrop-filter:blur(2px);
+    -webkit-backdrop-filter:blur(2px);
+  }
+}
+.playercard:fullscreen .playerfoot,
+.playercard:-webkit-full-screen .playerfoot,
+.playercard.mobile-rotated .playerfoot{
+  background:rgba(0,0,0,.12)!important;
+  border-top-color:rgba(255,255,255,.12)!important;
+}
+</style>
+
+<style>
+/* LAST UPDATE: 16 October 2026, 10:35 PM Bangladesh time.
+   Auto-hide the orange-marked channel information bar after 5 seconds.
+   Tap the video display to show it again. */
+.playersticky .playercard .playerfoot{
+  transition:opacity .25s ease, transform .25s ease, max-height .25s ease, padding .25s ease;
+  max-height:100px;
+  overflow:hidden;
+}
+.playersticky .playercard.info-bar-hidden .playerfoot{
+  opacity:0!important;
+  transform:translateY(12px);
+  max-height:0!important;
+  min-height:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  border-top-width:0!important;
+  pointer-events:none!important;
+}
+/* Fill the entire phone display when fullscreen is active. */
+.playercard:fullscreen .screen video,
+.playercard:-webkit-full-screen .screen video,
+.playercard.mobile-rotated .screen video{
+  object-fit:var(--video-fit, contain)!important;
+  object-position:center center!important;
+  transform:var(--video-transform, none)!important;
+}
+.playercard:fullscreen .screen,
+.playercard:-webkit-full-screen .screen,
+.playercard.mobile-rotated .screen{
+  width:100%!important;height:100%!important;min-height:0!important;
+}
+</style>
+<script>
+(() => {
+  const card = document.querySelector(".playersticky .playercard");
+  const screen = document.getElementById("playerScreen");
+  if (!card || !screen) return;
+  let hideInfoTimer = null;
+
+  function showInfoBar() {
+    card.classList.remove("info-bar-hidden");
+    if (hideInfoTimer) clearTimeout(hideInfoTimer);
+    hideInfoTimer = setTimeout(() => {
+      // Keep the info bar available while the URL/server modal is open.
+      if (!document.querySelector(".modal.open")) card.classList.add("info-bar-hidden");
+    }, 5000);
+  }
+
+  // The player information bar is visible briefly when a channel starts.
+  showInfoBar();
+  screen.addEventListener("click", (event) => {
+    if (event.target.closest(".nova-controls, button, select, .playerLoading, .empty")) return;
+    showInfoBar();
+  });
+  // Reveal the info bar after playback/channel changes, then hide after 5 seconds.
+  const video = document.getElementById("video");
+  if (video) {
+    video.addEventListener("playing", showInfoBar);
+    video.addEventListener("loadedmetadata", showInfoBar);
+  }
+  document.querySelectorAll("#customBtn, #stopBtn, #playCustom, [data-close]").forEach(el => {
+    el.addEventListener("click", () => {
+      card.classList.remove("info-bar-hidden");
+      if (hideInfoTimer) clearTimeout(hideInfoTimer);
+      if (!el.matches("[data-close]")) hideInfoTimer = setTimeout(() => {
+        if (!document.querySelector(".modal.open")) card.classList.add("info-bar-hidden");
+      }, 5000);
+    });
+  });
+  // On screen interaction, reset the timer without interfering with player controls.
+  ["pointermove", "touchstart", "keydown"].forEach(type => {
+    card.addEventListener(type, event => {
+      if (event.target.closest(".playerfoot, .nova-controls, button, select, input")) return;
+      showInfoBar();
+    }, {passive:true});
+  });
+})();
+</script>
+
+<script>
+(() => {
+  const video = document.getElementById("video");
+  const button = document.getElementById("centerPlayPause");
+  if (!video || !button) return;
+  function sync() {
+    const playing = !video.paused && !video.ended;
+    button.textContent = playing ? "Ⅱ" : "▶";
+    button.setAttribute("aria-label", playing ? "ভিডিও Pause করুন" : "ভিডিও চালান");
+    button.classList.toggle("is-playing", playing);
+  }
+  button.addEventListener("click", async (event) => {
+    event.preventDefault(); event.stopPropagation();
+    if (video.paused) { try { await video.play(); } catch (e) { button.classList.remove("is-playing"); } }
+    else video.pause();
+    sync();
+  });
+  video.addEventListener("play", sync);
+  video.addEventListener("playing", sync);
+  video.addEventListener("pause", sync);
+  video.addEventListener("ended", sync);
+  sync();
+})();
+</script>
+
+<style>
+/* LAST UPDATE: 16 October 2026, 11:15 PM Bangladesh time. Fill mode shows the full frame without cropping. */
+.playercard:fullscreen .screen video,.playercard:-webkit-full-screen .screen video,.playercard.mobile-rotated .screen video{object-fit:var(--video-fit,contain)!important;transform:var(--video-transform,none)!important;object-position:center center!important}
+</style>
+
+<style>
+/* LAST UPDATE: 16 October 2026, 11:06 PM Bangladesh time.
+   Smart Fill: preserve the full picture without stretching or cropping; use a soft backdrop in unused space. */
+.playersticky .screen,
+.playercard:fullscreen .screen,
+.playercard:-webkit-full-screen .screen,
+.playercard.mobile-rotated .screen{
+  background:radial-gradient(ellipse at center, #26354b 0%, #111a2a 52%, #05070c 100%)!important;
+}
+.playersticky .screen>video,
+.playercard:fullscreen .screen>video,
+.playercard:-webkit-full-screen .screen>video,
+.playercard.mobile-rotated .screen>video{
+  object-fit:var(--video-fit,contain)!important;
+  transform:var(--video-transform,none)!important;
+  object-position:center center!important;
+}
+</style>
+
+
+<style>
+/* SPORTYNOVA Premium Dark + Cyan: transparent controls and 4-second auto-hide */
+:root{
+  --bg:#070b13;
+  --panel:#0d1420;
+  --panel2:#111d2b;
+  --line:#24384a;
+  --cyan:#22d3ee;
+  --text:#f3fbff;
+}
+.topbar,.playercard,.noticebar,.channel,.category-tab,.modal-content{
+  border-color:rgba(34,211,238,.18)!important;
+}
+.brandicon,.retryOverlay,.category-tab.active,.channel.active{
+  box-shadow:0 0 18px rgba(34,211,238,.12);
+}
+.brandname .nova{color:#22d3ee!important}
+.playersticky .screen .nova-controls{
+  background:transparent!important;
+  background-image:linear-gradient(180deg,transparent,rgba(2,8,16,.28))!important;
+  box-shadow:none!important;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .22s ease,visibility .22s ease;
+}
+.playersticky .screen .nova-control-row,
+.playersticky .screen .nova-progress-row{
+  background:transparent!important;
+}
+.playersticky .screen .nova-control-btn{
+  background:rgba(5,15,26,.42)!important;
+  border-color:rgba(34,211,238,.3)!important;
+  color:#eafcff!important;
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+.playersticky .screen .nova-control-btn.active,
+.playersticky .screen .nova-control-btn:focus-visible{
+  background:rgba(34,211,238,.22)!important;
+  border-color:#22d3ee!important;
+  outline:2px solid rgba(34,211,238,.25);
+}
+.playersticky .screen .nova-progress-row input,
+.playersticky .screen #seekBar{accent-color:#22d3ee}
+.playersticky .screen.controls-hidden .nova-controls{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.playersticky .screen .center-play-pause{
+  background:rgba(5,15,26,.35)!important;
+  border-color:rgba(255,255,255,.62)!important;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+@media (prefers-reduced-motion:reduce){
+  .playersticky .screen .nova-controls{transition:none}
+}
+</style>
+<script>
+/* Auto-hide player controls after 4 seconds of inactivity.
+   Existing playback engines, buttons, IDs and server logic are not replaced. */
+(() => {
+  const screen = document.getElementById("playerScreen");
+  const video = document.getElementById("video");
+  if (!screen || !video) return;
+  let hideTimer = null;
+  const hide = () => {
+    if (video.paused || video.ended) return;
+    screen.classList.add("controls-hidden");
+  };
+  const show = () => {
+    screen.classList.remove("controls-hidden");
+    if (hideTimer) clearTimeout(hideTimer);
+    if (!video.paused && !video.ended) hideTimer = setTimeout(hide, 4000);
+  };
+  ["pointermove","pointerdown","touchstart","mousemove","keydown"].forEach(type => {
+    screen.addEventListener(type, show, {passive:true});
+  });
+  video.addEventListener("playing", show);
+  video.addEventListener("play", show);
+  video.addEventListener("pause", () => {
+    if (hideTimer) clearTimeout(hideTimer);
+    screen.classList.remove("controls-hidden");
+  });
+  video.addEventListener("ended", () => {
+    if (hideTimer) clearTimeout(hideTimer);
+    screen.classList.remove("controls-hidden");
+  });
+  screen.addEventListener("focusin", show);
+  screen.addEventListener("click", show);
+  show();
+})();
+</script>
+
+
+<style>
+/* SPORTYNOVA Channel Card Design 1 — Premium Glow.
+   CSS-only change: preserve channel rendering, data, player, IDs and playback logic. */
+.channelrow:not(.sportsrow) .channel,
+.channelrow.sportsrow .channel {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid rgba(34,211,238,.22)!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(ellipse at 50% -18%,rgba(34,211,238,.13),transparent 68%),
+    linear-gradient(155deg,rgba(19,34,49,.98),rgba(8,15,25,.99))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 4px 12px rgba(0,0,0,.18);
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease,transform .18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.channelrow:not(.sportsrow) .channel::before,
+.channelrow.sportsrow .channel::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(135deg,rgba(34,211,238,.08),transparent 42%,rgba(34,211,238,.025));
+  opacity:.75;
+}
+.channelrow:not(.sportsrow) .channel:active,
+.channelrow.sportsrow .channel:active {
+  transform:scale(.975);
+  border-color:rgba(34,211,238,.85)!important;
+  box-shadow:0 0 0 1px rgba(34,211,238,.18),0 0 18px rgba(34,211,238,.18);
+}
+.channelrow:not(.sportsrow) .channel.active,
+.channelrow.sportsrow .channel.active {
+  border-color:#22d3ee!important;
+  background:
+    radial-gradient(ellipse at 50% -15%,rgba(34,211,238,.23),transparent 72%),
+    linear-gradient(155deg,#102b39,#0a1724)!important;
+  box-shadow:
+    0 0 0 1px rgba(34,211,238,.25),
+    0 0 18px rgba(34,211,238,.19),
+    inset 0 0 16px rgba(34,211,238,.045)!important;
+}
+.channelrow:not(.sportsrow) .channel:focus-visible,
+.channelrow.sportsrow .channel:focus-visible {
+  outline:2px solid #22d3ee;
+  outline-offset:2px;
+}
+.channelrow:not(.sportsrow) .chlogo,
+.channelrow.sportsrow .chlogo {
+  filter:drop-shadow(0 2px 7px rgba(34,211,238,.09));
+}
+.channelrow:not(.sportsrow) .chname,
+.channelrow.sportsrow .chname {
+  color:#f0fbff!important;
+  letter-spacing:.08px;
+}
+.channelrow:not(.sportsrow) .chcat {
+  color:#8ea8b9!important;
+}
+@media (hover:hover) and (pointer:fine) {
+  .channelrow:not(.sportsrow) .channel:hover,
+  .channelrow.sportsrow .channel:hover {
+    transform:translateY(-2px);
+    border-color:rgba(34,211,238,.72)!important;
+    box-shadow:
+      0 0 0 1px rgba(34,211,238,.1),
+      0 0 20px rgba(34,211,238,.16),
+      0 8px 18px rgba(0,0,0,.24);
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .channelrow:not(.sportsrow) .channel,
+  .channelrow.sportsrow .channel {transition:none}
+}
+</style>
+
+
+
+
+
+<style id="sportynova-requested-fixes">
+/* Live Sports: exactly two match cards side by side; additional matches wrap into rows below. */
+#liveSportsChannels.channelrow.sportsrow{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  align-items:stretch!important;
+}
+#liveSportsChannels.channelrow.sportsrow>.channel{
+  width:100%!important;min-width:0!important;max-width:100%!important;
+}
+/* Keep names and badges readable in the narrower two-column cards. */
+#liveSportsChannels .team-logo{max-width:42%;min-width:0}
+#liveSportsChannels .team-logo small{max-width:100%;font-size:clamp(7px,2.1vw,9px)}
+#liveSportsChannels .team-vs{font-size:clamp(9px,2.5vw,11px)}
+@media(max-width:420px){
+  #liveSportsChannels.channelrow.sportsrow{gap:7px!important}
+  #liveSportsChannels .channel{padding:6px 4px!important}
+  #liveSportsChannels .team-logos{gap:5px!important;min-height:50px!important}
+  #liveSportsChannels .team-logo img,
+  #liveSportsChannels .team-logo-fallback{width:clamp(28px,8vw,38px)!important;height:clamp(28px,8vw,38px)!important}
+  #liveSportsChannels .team-logo small{font-size:7px}
+  #liveSportsChannels .chname{font-size:clamp(9px,2.6vw,11px)!important;white-space:normal!important;overflow-wrap:anywhere}
+}
+/* Low-quality-first playback; adaptive quality is enabled shortly after playback starts. */
+#playerScreen video{image-rendering:auto}
+</style>
+
+<style id="sportynova-four-column-fast-ui">
+/* Live TV: four premium channel tiles per row, with larger logo artwork. */
+#categorySections .channelrow{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;align-items:stretch!important}
+#categorySections .channelrow>.channel{min-width:0!important;min-height:108px!important;padding:10px 4px 9px!important;border-radius:15px!important}
+#categorySections .channelrow .chlogo{height:54px!important;margin:0 0 7px!important;display:grid!important;place-items:center!important;font-size:25px!important}
+#categorySections .channelrow .chlogo img{width:100%!important;max-width:100%!important;height:52px!important;max-height:52px!important;object-fit:contain!important}
+#categorySections .channelrow .chname{font-size:clamp(9px,2.5vw,11px)!important;line-height:1.25!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#categorySections .channelrow .chcat{font-size:8px!important;margin-top:4px!important}
+@media(max-width:420px){
+#categorySections .channelrow{gap:6px!important}
+#categorySections .channelrow>.channel{min-height:96px!important;padding:8px 3px 7px!important;border-radius:13px!important}
+#categorySections .channelrow .chlogo{height:48px!important;margin-bottom:5px!important;font-size:23px!important}
+#categorySections .channelrow .chlogo img{height:46px!important;max-height:46px!important}
+#categorySections .channelrow .chname{font-size:9px!important;line-height:1.2!important}
+#categorySections .channelrow .chcat{font-size:7px!important;margin-top:3px!important}
+}
+#categorySections .channelrow>.channel{animation:tvTileAppear .18s ease-out both}
+@keyframes tvTileAppear{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+<style id="sportynova-requested-control-layout">
+/* Requested adjustments: transparent channel title, play/pause before previous, fullscreen at the far-right control slot. */
+.channel-title-overlay{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  padding:8px 12px!important;
+  text-shadow:0 2px 5px rgba(0,0,0,.9)!important;
+}
+.nova-control-row{position:relative!important}
+#playPauseBtn{order:1!important}
+#prevChannelBtn{order:2!important}
+#nextChannelBtn{order:3!important}
+#fullscreenBtn{order:99!important;margin-left:auto!important;flex:0 0 34px!important;min-width:34px!important}
+@media(max-width:600px){
+ .channel-title-overlay{padding:5px 8px!important}
+ #fullscreenBtn{flex-basis:30px!important;min-width:30px!important}
+}
+</style>
+
+
+<style id="sportynova-final-playpause-and-server-labels">
+/* Keep Play/Pause visible immediately before Previous; do not hide it with legacy options. */
+#playerScreen #playPauseBtn{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  order:1!important;
+  position:relative!important;
+  z-index:18!important;
+  width:32px!important;
+  min-width:32px!important;
+  flex:0 0 32px!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#playerScreen #prevChannelBtn{order:2!important}
+#playerScreen #nextChannelBtn{order:3!important}
+
+/* Live TV server names sit just under the transparent channel title, like the reference image. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  position:absolute!important;
+  top:72px!important;
+  left:16px!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:19!important;
+  display:flex!important;
+  width:max-content!important;
+  max-width:calc(100% - 32px)!important;
+  min-width:0!important;
+  flex:0 0 auto!important;
+  gap:6px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  padding:2px 0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  pointer-events:auto!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{
+  height:30px!important;
+  min-height:30px!important;
+  padding:0 12px!important;
+  border:1px solid rgba(255,255,255,.42)!important;
+  border-radius:999px!important;
+  background:rgba(8,15,28,.35)!important;
+  color:#fff!important;
+  text-shadow:0 1px 3px #000!important;
+  backdrop-filter:blur(3px)!important;
+  font-size:11px!important;
+  pointer-events:auto!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn.active{
+  border-color:#25d8f4!important;
+  background:rgba(10,137,165,.38)!important;
+  color:#d8fbff!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .server-empty-label{display:none!important}
+@media(max-width:600px){
+  .playercard:not(.sports-player-mode) #inlineServerGroup{top:66px!important;left:10px!important;max-width:calc(100% - 20px)!important;gap:4px!important}
+  .playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 9px!important;font-size:10px!important}
+  #playerScreen #playPauseBtn{width:30px!important;min-width:30px!important;flex-basis:30px!important}
+}
+</style>
+
+<style id="sportynova-server-below-title-stable-quality-fix">
+/* Keep server buttons visibly BELOW the channel title, never overlapping it. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  top:72px!important; left:12px!important; right:12px!important; bottom:auto!important;
+  width:max-content!important; max-width:calc(100% - 24px)!important;
+  z-index:22!important; display:flex!important; flex-wrap:nowrap!important;
+  overflow-x:auto!important; overflow-y:hidden!important; background:transparent!important;
+}
+@media(max-width:600px){
+  .playercard:not(.sports-player-mode) #inlineServerGroup{top:66px!important;left:10px!important;right:10px!important;max-width:calc(100% - 20px)!important}
+}
+/* Quality stays on the chosen rendition; Auto remains available as an explicit user choice. */
+</style>
+
+</body>
+</html>
+
+<style>
+/* Quality selector belongs to the video overlay and stays available in landscape/fullscreen.
+   It is shown when HLS (.m3u8) or MPEG-DASH (.mpd) quality levels are available. */
+#playerScreen #qualitySelect{width:auto!important;max-width:96px!important;min-width:72px;height:30px;padding:0 4px!important;background:#111a2b;color:#fff;border:1px solid #ffffff45;border-radius:8px;font-size:10px;flex:0 0 auto}
+#playerScreen .nova-control-row{position:relative;z-index:13}
+#playerLoading{pointer-events:none}
+#playerLoading.show{pointer-events:none}
+#playerScreen .playerLoading #retryBtn{pointer-events:auto}
+@media(max-width:420px){#playerScreen #qualitySelect{max-width:78px!important;min-width:62px;font-size:9px;height:28px}}
+</style>
+
+<style>
+#playerScreen #qualitySelect{width:auto!important;max-width:96px!important;min-width:72px;height:30px;padding:0 4px!important;background:#111a2b;color:#fff;border:1px solid #ffffff45;border-radius:8px;font-size:10px;flex:0 0 auto}
+#playerScreen .nova-control-row{position:relative;z-index:13}
+#playerLoading{pointer-events:none}
+#playerLoading.show{pointer-events:none}
+#playerScreen .playerLoading #retryBtn{pointer-events:auto}
+@media(max-width:420px){#playerScreen #qualitySelect{max-width:78px!important;min-width:62px;font-size:9px;height:28px}}
+</style>
+
+
+<style id="transparent-flag-images">
+/* Show supplied flag/logo image only; do not add a white tile behind it. */
+.chlogo img,.team-logo img{background:transparent!important;padding:0!important;box-shadow:none!important}
+.team-logo img{border-radius:0!important}
+</style>
+
+
+<style>
+/* Premium Dark + Cyan online status and secure admin panel */
+.channel-section-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.online-pill{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(34,211,238,.32);border-radius:999px;padding:6px 9px;background:rgba(34,211,238,.08);color:#8beeff;font-size:11px;font-weight:800;white-space:nowrap}
+.online-dot{width:7px;height:7px;border-radius:50%;background:#2ee58d;box-shadow:0 0 8px #2ee58d;display:inline-block}
+.admin-open-btn{border:1px solid rgba(34,211,238,.45)!important;background:linear-gradient(135deg,#12384a,#101827)!important;color:#bdf7ff!important;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;white-space:nowrap}
+.adminbox{max-width:520px!important;max-height:85dvh;overflow:auto}
+.admin-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.admin-stats>div{background:#0b1320;border:1px solid #26354b;border-radius:12px;padding:12px 8px;text-align:center}
+.admin-stats small{display:block;color:#9aa8bb;font-size:11px}.admin-stats strong{display:block;color:#75efff;font-size:23px;margin-top:4px}
+.admin-toolbar{display:flex;gap:8px;margin:10px 0}.admin-toolbar .field{min-width:0;flex:1}
+.admin-channel-list{display:grid;gap:8px;max-height:42dvh;overflow:auto}
+.admin-channel-item{border:1px solid #28364b;background:#0c1421;border-radius:12px;padding:10px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.admin-channel-name{font-size:13px;font-weight:800;overflow-wrap:anywhere}.admin-channel-state{font-size:11px;margin-top:4px;color:#a6b3c6}.admin-channel-state.online{color:#43e79a}.admin-channel-state.offline{color:#ff7b91}
+.admin-channel-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.admin-channel-actions .btn{padding:6px 8px;font-size:10px}
+.admin-hidden-label{font-size:10px;color:#ffc46b;margin-left:5px}
+@media(max-width:420px){.sectionhead{gap:5px}.channel-section-tools{gap:4px}.online-pill{font-size:10px;padding:5px 7px}.admin-open-btn{font-size:10px;padding:6px 7px}.admin-channel-item{grid-template-columns:minmax(0,1fr)}.admin-channel-actions{justify-content:flex-start}}
+
+.match-filter-bar{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 9px;margin-top:-1px}
+.match-filter-bar::-webkit-scrollbar{display:none}
+.match-filter{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 11px;border:1px solid #2a354a;border-radius:11px;background:linear-gradient(145deg,#151d2b,#0d121e);color:#c3cee0;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}
+.match-filter b{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#27354a;color:#f2fbff;font-size:10px}
+.match-filter.active{border-color:#19c9e8;background:linear-gradient(120deg,#12bfe3,#0878b6);color:#04131b;box-shadow:0 4px 14px #12bfe333}
+.match-filter.active b{background:#061e2a;color:#fff}
+</style>
+
+
+<style id="sportynova-inline-match-filters">
+/* Match filters moved beside the Live Sports heading; playback and data logic preserved. */
+.channelarea > .sports-sectionhead{display:flex!important;align-items:center!important;gap:7px!important;justify-content:space-between!important;flex-wrap:nowrap!important}
+.sports-sectionhead h2{flex:0 0 auto!important;white-space:nowrap!important}
+.sports-sectionhead .match-filter-bar{display:flex!important;align-items:center!important;gap:5px!important;flex:1 1 auto!important;min-width:0!important;overflow:visible!important;padding:0!important;margin:0!important;scrollbar-width:none!important}
+.sports-sectionhead .match-filter{flex:1 1 0!important;min-width:0!important;min-height:31px!important;padding:5px 7px!important;gap:4px!important;border-radius:999px!important;font-size:clamp(8px,2.3vw,10px)!important;letter-spacing:0!important;border:1px solid rgba(111,157,194,.35)!important;background:linear-gradient(145deg,#19283b,#101725)!important;color:#c7d8eb!important;box-shadow:inset 0 1px rgba(255,255,255,.04),0 3px 8px #0003!important;transition:transform .16s,border-color .16s,background .16s!important}
+.sports-sectionhead .match-filter b{min-width:17px!important;height:17px!important;padding:0 4px!important;background:#2a3b52!important;color:#eaf7ff!important;font-size:9px!important}
+.sports-sectionhead .match-filter.active{background:linear-gradient(125deg,#48e8f5,#138ecb)!important;border-color:#68f1ff!important;color:#03131c!important;box-shadow:0 3px 12px #16cde63b,inset 0 1px #ffffff55!important}
+.sports-sectionhead .match-filter.active b{background:#062b3a!important;color:#fff!important}
+.sports-sectionhead .match-filter:active{transform:scale(.96)}
+.filter-live-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#ff4264;box-shadow:0 0 7px #ff4264aa}
+.sports-sectionhead .section-count{display:none!important}
+@media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
+</style>
+
+<style id="sportynova-stable-quality-title-controls">
+.nova-control-row{flex-wrap:nowrap!important}
+#prevChannelBtn,#playPauseBtn,#nextChannelBtn,#fullscreenBtn{flex:0 0 auto!important;min-width:30px!important}
+#prevChannelBtn,#nextChannelBtn{font-size:13px!important}
+#playPauseBtn{border-color:#25cce8!important;background:#123447!important}
+#fullscreenBtn{border-color:#25cce8!important}
+@media (orientation:landscape) and (max-height:600px){
+ .channel-title-overlay{top:6px!important;padding:5px 10px!important;font-size:13px!important}
+ .nova-controls{padding-top:22px!important;padding-bottom:calc(5px + env(safe-area-inset-bottom,0px))!important}
+ .nova-progress-row{margin-bottom:4px!important}
+ .nova-control-row{gap:4px!important}
+ .nova-control-row>.nova-control-btn{height:29px!important;min-width:29px!important;padding:0 5px!important}
+ #qualitySelect{max-width:76px!important;min-width:58px!important}
+}
+</style>
+
+
+<style id="sportynova-live-server-popup-autohide">
+/* Live TV server buttons are a temporary popup: hidden by default, revealed by tapping the player. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transform:translateY(-5px)!important;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important;
+}
+.playercard:not(.sports-player-mode).live-servers-visible #inlineServerGroup{
+  opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+  transform:translateY(0)!important;
+}
+</style>
+<script id="sportynova-live-server-popup-autohide-script">
+(()=>{
+ const card=document.querySelector('.playercard');
+ const screen=document.getElementById('playerScreen');
+ const group=document.getElementById('inlineServerGroup');
+ if(!card||!screen||!group)return;
+ let timer=null;
+ function hide(){
+   if(timer){clearTimeout(timer);timer=null;}
+   card.classList.remove('live-servers-visible');
+ }
+ function show(){
+   if(card.classList.contains('sports-player-mode'))return;
+   card.classList.add('live-servers-visible');
+   if(timer)clearTimeout(timer);
+   timer=setTimeout(()=>{timer=null;card.classList.remove('live-servers-visible');},4000);
+ }
+ // Tap the video/player to open the server popup; it automatically closes after 4 seconds.
+ screen.addEventListener('pointerdown',e=>{
+   if(card.classList.contains('sports-player-mode'))return;
+   if(e.target.closest('#inlineServerGroup')){show();return;}
+   show();
+ },{passive:true});
+ // Selecting a server keeps the popup briefly visible, then it auto-hides.
+ group.addEventListener('click',e=>{
+   if(card.classList.contains('sports-player-mode'))return;
+   show();
+   if(e.target.closest('.inline-server-btn')){
+     if(timer)clearTimeout(timer);
+     timer=setTimeout(()=>{timer=null;card.classList.remove('live-servers-visible');},4000);
+   }
+ });
+ document.addEventListener('fullscreenchange',()=>{if(!card.classList.contains('sports-player-mode'))hide();});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});
+ hide();
+})();
+</script>
+
+
+<style id="sportynova-v5-server-position-and-smooth-playback">
+/* Live TV: move its temporary server popup a little higher. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  top:58px!important;
+  left:12px!important;
+  right:12px!important;
+}
+@media(max-width:600px){
+  .playercard:not(.sports-player-mode) #inlineServerGroup{
+    top:54px!important;
+    left:10px!important;
+    right:10px!important;
+  }
+}
+/* Live Sports: place the server buttons UNDER the match/channel title instead of at the top edge.
+   These rules cover normal, fullscreen, WebKit fullscreen and manual landscape rotation. */
+.playercard.sports-player-mode .sports-server-row,
+.playercard.sports-player-mode:fullscreen .sports-server-row,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row{
+  position:absolute!important;
+  top:58px!important;
+  bottom:auto!important;
+  left:12px!important;
+  right:12px!important;
+  width:auto!important;
+  height:34px!important;
+  min-height:34px!important;
+  max-height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  z-index:100002!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:fullscreen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row #inlineServerGroup{
+  display:flex!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  background:transparent!important;
+}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode:fullscreen .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row .inline-server-btn{
+  background:rgba(0,0,0,.22)!important;
+  border:1px solid rgba(255,255,255,.5)!important;
+  color:#fff!important;
+  backdrop-filter:blur(3px)!important;
+}
+@media(max-width:600px){
+  .playercard.sports-player-mode .sports-server-row,
+  .playercard.sports-player-mode:fullscreen .sports-server-row,
+  .playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+  .playercard.sports-player-mode.mobile-rotated .sports-server-row{
+    top:48px!important;
+    left:8px!important;
+    right:8px!important;
+    height:30px!important;
+    min-height:30px!important;
+    max-height:30px!important;
+  }
+}
+/* Keep the server popup's existing 4-second auto-hide / tap-to-show behavior. */
+</style>

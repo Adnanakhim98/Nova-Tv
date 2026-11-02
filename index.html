@@ -901,7 +901,6 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    Keep their existing JS hooks in place to avoid changing player behavior. */
 #menuChannelBtn,
 #closePlayerBtn,
-#playPauseBtn,
 #fitBtn,
 #rotateBtn {
   display: none !important;
@@ -1509,7 +1508,11 @@ function setPlayerMode(sportsMode){
  const group=$("inlineServerGroup");
  if(!group)return;
  if(sportsMode){sportsServerRow.appendChild(group);}
- else if(serverGroupHome&&serverGroupHome.parentElement){serverGroupHome.parentElement.insertBefore(group,serverGroupHome.nextSibling);}
+ else {
+  const titleOverlay=$("channelTitleOverlay");
+  if(titleOverlay&&titleOverlay.parentElement){titleOverlay.insertAdjacentElement("afterend",group);}
+  else if(serverGroupHome&&serverGroupHome.parentElement){serverGroupHome.parentElement.insertBefore(group,serverGroupHome.nextSibling);}
+ }
 }
 window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
@@ -2546,6 +2549,72 @@ document.addEventListener("touchend", e => {
 }
 </style>
 
+
+<style id="sportynova-final-playpause-and-server-labels">
+/* Keep Play/Pause visible immediately before Previous; do not hide it with legacy options. */
+#playerScreen #playPauseBtn{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  order:1!important;
+  position:relative!important;
+  z-index:18!important;
+  width:32px!important;
+  min-width:32px!important;
+  flex:0 0 32px!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#playerScreen #prevChannelBtn{order:2!important}
+#playerScreen #nextChannelBtn{order:3!important}
+
+/* Live TV server names sit just under the transparent channel title, like the reference image. */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  position:absolute!important;
+  top:52px!important;
+  left:16px!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:19!important;
+  display:flex!important;
+  width:max-content!important;
+  max-width:calc(100% - 32px)!important;
+  min-width:0!important;
+  flex:0 0 auto!important;
+  gap:6px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  padding:2px 0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  pointer-events:auto!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{
+  height:30px!important;
+  min-height:30px!important;
+  padding:0 12px!important;
+  border:1px solid rgba(255,255,255,.42)!important;
+  border-radius:999px!important;
+  background:rgba(8,15,28,.35)!important;
+  color:#fff!important;
+  text-shadow:0 1px 3px #000!important;
+  backdrop-filter:blur(3px)!important;
+  font-size:11px!important;
+  pointer-events:auto!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn.active{
+  border-color:#25d8f4!important;
+  background:rgba(10,137,165,.38)!important;
+  color:#d8fbff!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .server-empty-label{display:none!important}
+@media(max-width:600px){
+  .playercard:not(.sports-player-mode) #inlineServerGroup{top:45px!important;left:10px!important;max-width:calc(100% - 20px)!important;gap:4px!important}
+  .playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 9px!important;font-size:10px!important}
+  #playerScreen #playPauseBtn{width:30px!important;min-width:30px!important;flex-basis:30px!important}
+}
+</style>
 </body>
 </html>
 

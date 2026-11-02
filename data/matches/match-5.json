@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "SSC Napoli Vs AS Roma",
+    "name": " New England Revolution Vs Inter Miami CF",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Liverpool%20FC%20Vs%20Manchester%20City.jpg",
@@ -20,7 +20,7 @@
           "scheme": "clearkey",
           "license": "c028c8cd3912346e60eea2403280abb8:6ed511321a020cace1c7420db4ad49f2"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FUBO SPORTS FHD",
@@ -29,7 +29,7 @@
           "scheme": "clearkey",
           "license": "e84be2c74e0f0e0178be0516034b4227:304d0326d1796128735117f40e258f7d"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "TNT4UK SPORTS FHD",
@@ -38,7 +38,7 @@
           "scheme": "clearkey",
           "license": "fa34fa8c90336dd528c7a23871cad1fe:552a78d1aeb74f1650d68255c5749408"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "BeIN2 SPORTS FHD",
@@ -47,7 +47,7 @@
           "scheme": "clearkey",
           "license": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "SPORT1 CZ FHD",
@@ -56,7 +56,7 @@
           "scheme": "clearkey",
           "license": "11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "CBS SPORTS FHD",
@@ -65,7 +65,7 @@
           "scheme": "clearkey",
           "license": "d9623774ac5c8c351aafe97c5fe70267:5164e6d05164a2d65fa8fcc962aa4861"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "CazéTV FHD",
@@ -74,33 +74,33 @@
           "scheme": "clearkey",
           "license": "34475edab991ad5e92548aebd710410a:501b209cccd323ac00bf5ac15b406cb4"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
-        "name": "PARAMOUNT+ HD",
-        "url": "https://chatgpt.hereisman.net/playlist/58499/load-playlist-multi?&.m3u8",
+        "name": "Inter Miami vs New England",
+        "url": "https://live05.miekgo.app/live/59444581.m3u8",
         "show": "yes"
       },
       {
         "name": "HD QUALITY",
         "url": "https://chatgpt.hereisman.net/playlist/58499/load-playlist?&.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FASTER HD",
         "url": "https://live.vivo155.com/live/hd-en-1-4549055.m3u8?txSecret=1ed04debc35b237d6c978de13ec2d72c&txTime=6ADCE920",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "LOW QUALITY (USE VPN)",
         "url": "http://193.47.62.55/hls/ajjjaaaqqqaaaaq.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",
     "id": 5,
-    "startTime": "2026-10-24T22:00:00+06:00",
-    "endTime": "2026-10-25T03:30:00+06:00",
+    "startTime": "2026-11-02T06:00:00+06:00",
+    "endTime": "2026-11-25T08:00:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "FOOTBALL"

@@ -559,7 +559,7 @@ body{
 <style id="match-start-time-channel-tag">
 /* Match card labels requested; no existing match/player logic changed. */
 #liveSportsChannels .channel{position:relative!important;padding-top:24px!important;padding-bottom:24px!important}
-#liveSportsChannels .match-start-label.is-live-row{justify-content:flex-end;min-height:0;padding-top:3px;padding-bottom:3px}
+#liveSportsChannels .match-start-label.is-live-row{justify-content:flex-end;min-height:0;padding:0!important;margin:0 0 12px!important;border:0!important;background:transparent!important;box-shadow:none!important;min-height:0!important}
 #liveSportsChannels .match-start-label{position:absolute;top:5px;left:50%;transform:translateX(-50%);max-width:calc(100% - 18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(8px,2.1vw,10px);font-weight:800;letter-spacing:.2px;color:#ffd7a1;background:rgba(255,116,65,.12);border:1px solid rgba(255,126,75,.8);padding:3px 7px;line-height:1.15;z-index:2;border-radius:2px}
 #liveSportsChannels .match-channel-tag{position:absolute;left:7px;bottom:6px;z-index:2;font-size:9px;font-weight:900;letter-spacing:.4px;color:#bdf8ff;background:rgba(8,26,39,.92);border:1px solid #20cbe8;border-radius:4px;padding:3px 6px;line-height:1}
 @media(max-width:420px){#liveSportsChannels .channel{padding-top:24px!important;padding-bottom:23px!important}#liveSportsChannels .match-start-label{font-size:8px;padding:3px 5px}#liveSportsChannels .match-channel-tag{left:5px;bottom:5px;font-size:8px;padding:3px 5px}}
@@ -1199,6 +1199,7 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   }else{
    startLabel.classList.add("is-live-row");
   }
+  if(state==="LIVE"&&!channelNumber){startLabel.style.display="none";}
   if(channelNumber){
    const channelGroup=document.createElement("span");channelGroup.className="match-channel-group";
    const lamp=document.createElement("span");lamp.className="match-online-lamp";lamp.setAttribute("aria-label","Online indicator");
@@ -1261,13 +1262,24 @@ function matchDateValue(ch){
  return Number.POSITIVE_INFINITY;
 }
 function matchStatus(ch,now=Date.now()){
- const start=matchDateValue(ch),endValues=[ch.endTime,ch.end_time,ch.endDateTime,ch.end];
- let end=Number.POSITIVE_INFINITY;for(const value of endValues){const parsed=Date.parse(String(value||""));if(Number.isFinite(parsed)){end=parsed;break;}}
- const declared=String(ch.status||ch.matchStatus||ch.state||"").toLowerCase();
- if(/live|playing|in.?progress|1st half|2nd half|innings/.test(declared))return "LIVE";
- if(/ended|finished|complete|full.?time|ft|result/.test(declared))return "ENDED";
+ const start=matchDateValue(ch);
+ const endValues=[ch.endTime,ch.end_time,ch.endDateTime,ch.end];
+ let end=Number.POSITIVE_INFINITY;
+ for(const value of endValues){
+  if(value===undefined||value===null||String(value).trim()==="")continue;
+  const parsed=Date.parse(String(value));
+  if(Number.isFinite(parsed)){end=parsed;break;}
+ }
+ const declared=String(ch.status||ch.matchStatus||ch.state||"").trim().toLowerCase();
+ // Explicit live status wins over an imperfect or stale schedule timestamp.
+ if(/^(live|playing|in.?progress|1st half|2nd half|innings|ongoing)$/.test(declared)||/live|playing|in.?progress|1st half|2nd half|innings/.test(declared))return "LIVE";
+ if(/ended|finished|complete|full.?time|(^|\s)ft($|\s)|result/.test(declared))return "ENDED";
+ // Auto status: a started match stays visible as LIVE until its end time.
+ if(Number.isFinite(start)&&now>=start){
+  if(Number.isFinite(end)&&now>=end)return "ENDED";
+  return "LIVE";
+ }
  if(Number.isFinite(end)&&now>=end)return "ENDED";
- if(Number.isFinite(start)&&now>=start)return "LIVE";
  return "UPCOMING";
 }
 function sortLiveMatches(items){

@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pakistan Vs Sri Lanka",
+    "name": "Pakhtakor (UZB) vs Al Nassr Club (KSA)",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://i.postimg.cc/zfwFjvxf/20261022-135825.png",
@@ -16,7 +16,7 @@
           "scheme": "clearkey",
           "license": "a323fd2c6886dfea4831314fd63c4eb7:462c6dd2b56c26e958f5981fea25aef4"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "WILLOW ALT",
@@ -25,11 +25,11 @@
           "scheme": "clearkey",
           "license": "a323fd2c6886dfea4831314fd63c4eb7:462c6dd2b56c26e958f5981fea25aef4"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
-        "name": "SKY CRICKET FHD",
-        "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=uiXES2ePt7xTpQnbJxn7Dg&e=2074684474&scheme=https",
+        "name": "Tampad",
+        "url": "https://multiregion-asia-cdn.tapmad.com/v1/01a1548c4faf15fc600b1e3e968408/01a1548c7fde1ea557841e1612cf76/main.m3u8",
         "show": "yes"
       },
       {
@@ -39,7 +39,7 @@
           "scheme": "clearkey",
           "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "WILLOW SPORTS HD",
@@ -48,26 +48,26 @@
           "scheme": "clearkey",
           "license": "290e09c837da78d5cd961978d390515c:b748836c71e6a4ca68ef5b5652db6247"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "WILLOW HD",
         "url": "http://mag.tivi-one-iptv.net/play/live.php?mac=00:1A:79:F5:CC:FD&stream=809386&extension=m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FOX CRICKET HD",
         "url": "https://baila-lentoo.pages.dev/all-sp/809389.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",
     "id": 3,
-    "startTime": "2026-10-31T03:20:00+06:00",
-    "endTime": "2026-10-31T23:30:00+06:00",
+    "startTime": "2026-11-02T03:20:00+06:00",
+    "endTime": "2026-11-02T21:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS",
+    "matchType": "Football",
     "drm": {
       "scheme": "clearkey",
       "license": "a323fd2c6886dfea4831314fd63c4eb7:462c6dd2b56c26e958f5981fea25aef4"

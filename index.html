@@ -918,6 +918,61 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 @media(max-width:420px){#qualitySelect,#playerScreen #qualitySelect{width:44px!important;min-width:0!important;max-width:44px!important;padding:0 1px!important;font-size:8px!important}}
 </style>
 
+
+<style id="sportynova-inline-video-banner">
+/* Video banner placed in the orange-marked area beside Telegram/WhatsApp. */
+.playersticky .sportynova-contact-banner-row{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:8px!important;width:100%;min-width:0;margin:7px 0 8px!important;padding:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+.sportynova-contact-banner-row .contactbox{
+  flex:0 1 56%;width:56%;max-width:56%;justify-content:flex-start!important;
+  gap:5px!important;flex-wrap:wrap!important;
+}
+.sportynova-contact-banner-row .contacttext{max-width:100%;text-align:left;font-size:9px}
+.sportynova-contact-banner-row .contactlink{padding:7px 9px!important}
+.sportynova-video-banner{
+  position:relative;display:block;flex:1 1 44%;width:44%;min-width:0;height:78px;
+  overflow:hidden;border:2px solid #ff7a45;border-radius:0;background:#03050a;
+  text-decoration:none;isolation:isolate;
+}
+.sportynova-video-banner video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;
+  display:block;background:#03050a;z-index:0;
+}
+.sportynova-banner-fallback{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  color:#f4fbff;font-weight:900;font-size:clamp(13px,3vw,22px);letter-spacing:1px;
+  background:linear-gradient(135deg,#101b2c,#03050a);z-index:1;
+}
+.sportynova-banner-fallback span{color:#22d3ee}
+.sportynova-video-banner.video-unavailable .sportynova-banner-fallback{display:flex}
+@media(max-width:600px){
+ .playersticky .sportynova-contact-banner-row{gap:6px!important}
+ .sportynova-contact-banner-row .contactbox{flex:0 0 55%;width:55%;max-width:55%;gap:4px!important}
+ .sportynova-contact-banner-row .contacttext{font-size:8px;line-height:1.2;max-width:100%}
+ .sportynova-contact-banner-row .contactlink{font-size:9px!important;padding:6px 7px!important}
+ .sportynova-video-banner{flex:1 1 45%;width:45%;height:78px}
+}
+@media(max-width:360px){
+ .sportynova-contact-banner-row .contactbox{flex-basis:53%;width:53%;max-width:53%}
+ .sportynova-video-banner{height:68px}
+}
+</style>
+<script id="sportynova-banner-fallback-script">
+(()=> {
+ const banner=document.querySelector('.sportynova-video-banner');
+ const video=document.getElementById('sportynovaBannerVideo');
+ if(!banner||!video)return;
+ const fallback=()=>banner.classList.add('video-unavailable');
+ video.addEventListener('error',fallback);
+ video.addEventListener('loadeddata',()=>banner.classList.remove('video-unavailable'),{once:true});
+ video.play().catch(()=>{ /* Muted autoplay may be blocked; tap banner to retry. */ });
+ banner.addEventListener('click',()=>{if(video.paused)video.play().catch(()=>{});});
+})();
+</script>
+
 </head>
 <body>
 <div class="wrap">
@@ -927,7 +982,15 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
 </header>
 <section class="playersticky">
- <div class="sectionhead"><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
+ <div class="sectionhead sportynova-contact-banner-row">
+  <div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+  <a class="sportynova-video-banner" href="#live-sports" aria-label="SPORTYNOVA banner">
+    <video id="sportynovaBannerVideo" autoplay muted loop playsinline preload="metadata">
+      <source src="https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/banner/banner-video.mp4" type="video/mp4">
+    </video>
+    <span class="sportynova-banner-fallback">SPORTY<span>NOVA</span></span>
+  </a>
+</div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>

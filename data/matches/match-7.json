@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Melbourne Stars Women Vs Perth Scorchers Women",
+    "name": "Melbourne Stars Wmn Vs Perth Scorchers Wmn",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -10,8 +10,8 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "STREAM TV + HD",
-        "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=uiXES2ePt7xTpQnbJxn7Dg&e=2074684474&scheme=https",
+        "name": "Tapmad",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a14abbcff31ea540a81c2b41b760/01a14abc06421567ee931e109fa577/main.m3u8",
         "show": "yes"
       },
       {

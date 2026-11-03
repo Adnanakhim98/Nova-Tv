@@ -1535,9 +1535,10 @@ window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
- const requestedServers=(currentChannelStreams||[]).map((s,i)=>({name:s.name||`Server ${i+1}`,url:String(s.url||'').split('|')[0],keyid:s.keyid||s.keyId||(s.drm&&(s.drm.keyid||s.drm.keyId||s.drm.kid))||'',key:s.key||(s.drm&&(s.drm.key||s.drm.value))||'',drm:s.drm||null})).filter(s=>s.url);
- const selectedUrl=String(url||'').trim();
+ const requestedServers=(currentChannelStreams||[]).map((s,i)=>({name:s.name||`Server ${i+1}`,url:String(s.url||'').split('|')[0].trim(),keyid:s.keyid||s.keyId||(s.drm&&(s.drm.keyid||s.drm.keyId||s.drm.kid))||'',key:s.key||(s.drm&&(s.drm.key||s.drm.value))||'',drm:s.drm||null})).filter(s=>s.url&&/\.m3u8?(?:[?#]|$)/i.test(s.url));
+ let selectedUrl=String(url||'').trim();
  const playerServers=requestedServers.length?requestedServers:[{name:'Server 1',url:selectedUrl,keyid:drm&&(drm.keyid||drm.keyId||drm.kid)||'',key:drm&&(drm.key||drm.value)||'',drm:drm||null}];
+ if(!/\.m3u8?(?:[?#]|$)/i.test(selectedUrl)&&requestedServers.length)selectedUrl=requestedServers[0].url;
  if(window.__sportyNovaOpenPlayer){
    await stopEngines();
    if(requestId!==playRequestId)return;
@@ -2689,8 +2690,7 @@ document.addEventListener("touchend", e => {
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.compiled.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15/dist/hls.min.js"></script>
 <script>
 (function(){
 
@@ -2698,7 +2698,7 @@ document.addEventListener('DOMContentLoaded',()=>{if(window.shaka)shaka.polyfill
 const video=document.getElementById('live-player');
 const playerUI=document.getElementById('player-ui');
 const playerViewDiv=document.getElementById('player-view');
-let hls=null,shakaPlayer=null,uiTimeout=null,currentMatchServers=[],globalMatchTitle='Live Match';
+let hls=null,uiTimeout=null,currentMatchServers=[],globalMatchTitle='Live Match';
 let currentFit=0;
 const fitModes=['contain','cover','fill'];
 const seekBar=document.getElementById('seek-bar');
@@ -2725,70 +2725,47 @@ video.addEventListener('pause',()=>{
 video.addEventListener('timeupdate',updateSeekBar);
 
 async function resetVideoElement(){
- if(hls){hls.destroy();hls=null}
- if(shakaPlayer){await shakaPlayer.destroy();shakaPlayer=null}
+ if(hls){try{hls.destroy()}catch(e){}hls=null}
  video.pause();video.removeAttribute('src');video.load();
 }
+function isM3u8(url){
+ try{const u=new URL(String(url),location.href);return /\.m3u8?$/i.test(u.pathname)||/m3u8/i.test(u.search+' '+u.hash)}
+ catch(e){return /\.m3u8?(?:[?#]|$)/i.test(String(url))}
+}
 async function initStream(url,keyid='',key='',drmConfig=null){
- setLoader();
+ setLoader('Connecting M3U8 stream...');
  await resetVideoElement();
  document.getElementById('quality-menu').innerHTML='<button class="quality-btn active">Auto</button>';
- let finalKeyId=keyid?String(keyid).trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase():'';
- let finalKey=key?String(key).trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase():'';
+ if(!isM3u8(url)){showError('<b style="font-size:16px">M3U8 Link Required</b><br><span style="font-size:12px;color:#9ca3af">এই প্লেয়ারে শুধুমাত্র M3U8 / HLS লিংক চালানো যাবে।</span>');return}
  try{
-  if(url.toLowerCase().includes('.mpd')){
-   if(!window.shaka)throw new Error('Shaka Player library could not be loaded.');
-   shaka.polyfill.installAll();
-   if(!shaka.Player.isBrowserSupported())throw new Error('This browser does not support the required DASH playback.');
-   shakaPlayer=new shaka.Player(video);
-   const drm=drmConfig&&typeof drmConfig==='object'?drmConfig:{};
-   const clearKeyLicense=String(drm.license||'');
-   if((!finalKeyId||!finalKey)&&String(drm.scheme||'').toLowerCase()==='clearkey'&&clearKeyLicense.includes(':')){
-    const pair=clearKeyLicense.split(':');finalKeyId=pair[0].trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase();finalKey=pair[1].trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase();
-   }
-   const drmSettings={};
-   if(finalKeyId&&finalKey&&finalKeyId.length===32&&finalKey.length===32){const clearKeys={};clearKeys[finalKeyId]=finalKey;drmSettings.clearKeys=clearKeys;}
-   const licenseUrl=drm.licenseServer||drm.licenseUrl||drm.serverUrl||drm.url||(String(drm.scheme||'').toLowerCase()!=='clearkey'?drm.license:'');
-   const scheme=String(drm.scheme||drm.type||'').toLowerCase();
-   if(licenseUrl&&/^https?:\/\//i.test(String(licenseUrl))){
-    let keySystem=drm.keySystem||drm.keysystem||'';
-    if(!keySystem){if(scheme.includes('widevine'))keySystem='com.widevine.alpha';else if(scheme.includes('playready'))keySystem='com.microsoft.playready';else if(scheme.includes('fairplay'))keySystem='com.apple.fps';}
-    if(keySystem)drmSettings.servers={[keySystem]:String(licenseUrl)};
-   }
-   if(Object.keys(drmSettings).length)shakaPlayer.configure({drm:drmSettings});
-   await shakaPlayer.load(url);
-   await video.play().catch(()=>{});
-   const tracks=shakaPlayer.getVariantTracks();
-   let qMenu='<button class="quality-btn active" id="btn-q-auto" onclick="setQuality(-1)">Auto</button>';
-   const heights=[...new Set(tracks.map(t=>t.height).filter(Boolean))].sort((a,b)=>a-b);
-   if(heights.length>1)heights.forEach(h=>qMenu+=`<button class="quality-btn" id="btn-q-${h}" onclick="setQuality(${h})">${h}p</button>`);
-   else if(heights.length===1)qMenu=`<button class="quality-btn active" style="color:var(--text-muted);cursor:default">${heights[0]}p (Source)</button>`;
-   document.getElementById('quality-menu').innerHTML=qMenu;
-  }else if(window.Hls&&Hls.isSupported()&&url.toLowerCase().includes('.m3u8')){
-   hls=new Hls({maxBufferLength:30});
-   hls.loadSource(url);hls.attachMedia(video);
-   hls.on(Hls.Events.MANIFEST_PARSED,async(e,data)=>{
-    await video.play().catch(()=>{});
-    let qMenu='';
-    if(data.levels&&data.levels.length>1){
-     qMenu='<button class="quality-btn active" id="btn-q-auto" onclick="setQuality(-1)">Auto</button>';
-     data.levels.forEach((level,i)=>{const res=level.height?level.height+'p':'Q'+(i+1);qMenu+=`<button class="quality-btn" id="btn-q-${i}" onclick="setQuality(${i})">${res}</button>`});
-    }else{
-     const res=data.levels&&data.levels[0]&&data.levels[0].height?data.levels[0].height+'p':'Original';
-     qMenu=`<button class="quality-btn active" style="color:var(--text-muted);cursor:default">${res} (Source)</button>`;
-    }
+  if(window.Hls&&Hls.isSupported()){
+   hls=new Hls({enableWorker:true,lowLatencyMode:true,maxBufferLength:30,backBufferLength:30,manifestLoadingTimeOut:20000,manifestLoadingMaxRetry:4,levelLoadingMaxRetry:4});
+   hls.attachMedia(video);
+   hls.on(Hls.Events.MEDIA_ATTACHED,()=>hls.loadSource(url));
+   hls.on(Hls.Events.MANIFEST_PARSED,async(event,data)=>{
+    document.getElementById('player-loader').style.display='none';
+    await video.play().catch(()=>{playerUI.classList.remove('hidden')});
+    const levels=(data&&data.levels)||[];
+    let qMenu='<button class="quality-btn active" id="btn-q-auto" onclick="setQuality(-1)">Auto</button>';
+    if(levels.length>1){levels.forEach((level,i)=>{const label=level.height?level.height+'p':(level.bitrate?Math.round(level.bitrate/1000)+' kbps':'Quality '+(i+1));qMenu+=`<button class="quality-btn" id="btn-q-${i}" onclick="setQuality(${i})">${label}</button>`})}
+    else if(levels.length===1){qMenu=`<button class="quality-btn active" style="color:var(--text-muted);cursor:default">${levels[0].height?levels[0].height+'p':'Original'} (Source)</button>`}
     document.getElementById('quality-menu').innerHTML=qMenu;
    });
-   hls.on(Hls.Events.ERROR,(event,data)=>{if(data.fatal)showError('HLS playback error. Please try another server.')});
-  }else{
+   hls.on(Hls.Events.ERROR,(event,data)=>{
+    if(!data||!data.fatal)return;
+    if(data.type===Hls.ErrorTypes.NETWORK_ERROR){setLoader('Reconnecting stream...');try{hls.startLoad()}catch(e){showError('Network error. Please try another server.')}}
+    else if(data.type===Hls.ErrorTypes.MEDIA_ERROR){try{hls.recoverMediaError()}catch(e){showError('Video decode error. Please try another server.')}}
+    else showError('<b style="font-size:16px">M3U8 Playback Error</b><br><span style="font-size:12px;color:#9ca3af">এই সার্ভারের M3U8 লিংক কাজ করছে না অথবা অ্যাক্সেস ব্লক করা আছে। অন্য সার্ভার চেষ্টা করুন।</span>');
+   });
+  }else if(video.canPlayType('application/vnd.apple.mpegurl')){
    video.src=url;
-   await video.play().catch(()=>{});
+   video.addEventListener('loadedmetadata',async function onMeta(){video.removeEventListener('loadedmetadata',onMeta);document.getElementById('player-loader').style.display='none';await video.play().catch(()=>{});},{once:true});
+   video.addEventListener('error',()=>showError('এই M3U8 লিংকটি ব্রাউজারে চালানো যাচ্ছে না। অন্য সার্ভার চেষ্টা করুন।'),{once:true});
+   video.load();
+  }else{
+   showError('এই ব্রাউজারে HLS / M3U8 চালানোর সাপোর্ট পাওয়া যায়নি।');
   }
- }catch(e){
-  const msg=String(e.message||e);
-  const friendly=msg.includes('6012')?'DRM License Server URL পাওয়া যায়নি। এই MPD চ্যানেলের JSON-এ drm.licenseServer / drm.licenseUrl যোগ করতে হবে।':msg;
-  showError(`<b style="font-size:16px">Stream Error</b><br><span style="font-size:12px;color:#9ca3af">${friendly}</span>`);
- }
+ }catch(e){showError('<b style="font-size:16px">Stream Error</b><br><span style="font-size:12px;color:#9ca3af">'+String(e.message||e).replace(/[<>]/g,'')+'</span>')}
 }
 window.openLivePlayer=function(url,activeIndex=0,keyid='',key='',drmConfig=null){
  if(!url)return;
@@ -2811,15 +2788,10 @@ window.setQuality=function(level){
  if(level===-1){
   document.getElementById('btn-q-auto')?.classList.add('active');
   if(hls)hls.currentLevel=-1;
-  if(shakaPlayer)shakaPlayer.configure({abr:{enabled:true}});
+  if(hls)hls.currentLevel=-1;
  }else{
   document.getElementById('btn-q-'+level)?.classList.add('active');
   if(hls)hls.currentLevel=level;
-  if(shakaPlayer){
-   shakaPlayer.configure({abr:{enabled:false}});
-   const track=shakaPlayer.getVariantTracks().find(t=>t.height===level);
-   if(track)shakaPlayer.selectVariantTrack(track,true);
-  }
  }
  document.getElementById('quality-menu').style.display='none';
 };
@@ -3182,5 +3154,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
 #player-view{--cricfy-red:#ff3157;--text-muted:#9ca3af;display:none!important;position:fixed!important;inset:0!important;z-index:100000!important}
 #player-view.nova-player-open{display:block!important}
-
-</style>
+/* Reliable visible icon fallback when the Font Awesome CDN is blocked on mobile. */
+#player-view .fa-solid:before,#player-view .fa-regular:before{font-family:Arial,sans-serif!important;font-style:normal!important;font-weight:700!important}
+#player-view .fa-arrow-left:before{content:"‹"}#player-view .fa-gear:before{content:"⚙"}
+#player-view .fa-backward-step:before{content:"↶"}#player-view .fa-forward-step:before{content:"↷"}
+#player-view .fa-play:before{content:"▶"}#player-view .fa-pause:before{content:"Ⅱ"}
+#player-view .fa-volume-high:before{content:"◖))"}#player-view .fa-volume-low:before{content:"◖)"}
+#player-view .fa-volume-xmark:before{content:"◖×"}#player-view .fa-compress:before{content:"⛶"}
+#player-view .fa-expand:before{content:"⛶"}#player-view .fa-clone:before{content:"▣"}
+#player-view .fa-sun:before{content:"☼"}#player-view .fa-spinner:before{content:"◌"}
+#player-view .fa-spinner.fa-spin:before{display:inline-block;animation:spin 1s linear infinite}

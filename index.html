@@ -1539,13 +1539,9 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  let selectedUrl=String(url||'').trim();
  const playerServers=requestedServers.length?requestedServers:[{name:'Server 1',url:selectedUrl,keyid:drm&&(drm.keyid||drm.keyId||drm.kid)||'',key:drm&&(drm.key||drm.value)||'',drm:drm||null}];
  if(!/\.m3u8?(?:[?#]|$)/i.test(selectedUrl)&&requestedServers.length)selectedUrl=requestedServers[0].url;
- if(window.__sportyNovaOpenPlayer){
-   await stopEngines();
-   if(requestId!==playRequestId)return;
-   const playerDrm={...(drm&&typeof drm==='object'?drm:{}),scheme:(drm&&drm.scheme)||parsed.scheme||'',license:(drm&&drm.license)||parsed.license||''};
-   window.__sportyNovaOpenPlayer(selectedUrl,name,playerServers,playerDrm);
-   return;
- }
+ // Keep playback in the page's 16:9 inline player so the channel list,
+ // Live Sports / Live TV sections, and inline controls remain visible below.
+ // Do not launch the legacy full-screen overlay here.
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
@@ -2896,6 +2892,33 @@ window.__sportyNovaClosePlayer=function(){closePlayer();playerViewDiv.classList.
 })();
 </script>
 </body>
+
+<style>
+
+/* Inline playback layout: 16:9 player with channel sections below */
+#playerScreen{
+  width:100%!important;
+  aspect-ratio:16 / 9!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:hidden!important;
+}
+#playerScreen video{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+.playersticky{
+  position:relative!important;
+  width:100%!important;
+}
+#channelArea{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+</style>
 </html>
 
 <style>

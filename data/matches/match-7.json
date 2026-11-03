@@ -31,8 +31,8 @@
     ],
     "show": "yes",
     "id": 7,
-    "startTime": "2026-11-02T14:00:00+06:00",
-    "endTime": "2026-11-02T18:00:00+06:00",
+    "startTime": "2026-11-03T14:00:00+06:00",
+    "endTime": "2026-11-02T19:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Cricket"

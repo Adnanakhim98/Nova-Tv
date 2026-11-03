@@ -21,7 +21,7 @@
       {
         "name": "SD SERVER",
         "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE SD",
@@ -39,17 +39,17 @@
           "scheme": "clearkey",
           "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "STAR SPORTS HD",
         "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE (IND)",
         "url": "https://dai-fancode.pages.dev/mumbai/4250355_english_hls_7b5a55758122143_1ta-di_h264/index.m3u8",
-        "show": "yes"
+        "show": "ni"
       }
     ],
     "show": "yes",

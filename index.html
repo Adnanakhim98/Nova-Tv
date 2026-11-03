@@ -2698,6 +2698,9 @@ document.addEventListener('DOMContentLoaded',()=>{if(window.shaka)shaka.polyfill
 const video=document.getElementById('live-player');
 const playerUI=document.getElementById('player-ui');
 const playerViewDiv=document.getElementById('player-view');
+// Keep the replacement player inside SPORTYNOVA's normal compact video screen.
+const sportyScreen=document.getElementById('playerScreen');
+if(sportyScreen && playerViewDiv.parentElement!==sportyScreen) sportyScreen.appendChild(playerViewDiv);
 let hls=null,uiTimeout=null,currentMatchServers=[],globalMatchTitle='Live Match';
 let currentFit=0;
 const fitModes=['contain','cover','fill'];
@@ -2827,12 +2830,23 @@ window.toggleMute=()=>{
  document.getElementById('btn-mute').innerHTML=video.muted?'<i class="fa-solid fa-volume-xmark"></i>':'<i class="fa-solid fa-volume-high"></i>';
  startUIHideTimer();
 };
-window.toggleFullscreen=function(){
- if(!document.fullscreenElement){
-  document.getElementById('player-view').requestFullscreen?.();
-  if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});
+window.toggleFullscreen=async function(){
+ const target=document.getElementById('player-view');
+ const active=document.fullscreenElement||document.webkitFullscreenElement;
+ if(!active){
+  try{
+   if(target.requestFullscreen) await target.requestFullscreen();
+   else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+   // Android Chrome permits landscape locking after fullscreen is entered.
+   try{await screen.orientation?.lock?.('landscape')}catch(e){}
+  }catch(e){
+   // Keep the player usable if the browser blocks fullscreen/orientation APIs.
+   target.classList.add('nova-manual-landscape');
+  }
  }else{
-  document.exitFullscreen?.();if(screen.orientation?.unlock)screen.orientation.unlock();
+  try{if(document.exitFullscreen)await document.exitFullscreen();else document.webkitExitFullscreen?.()}catch(e){}
+  target.classList.remove('nova-manual-landscape');
+  try{screen.orientation?.unlock?.()}catch(e){}
  }
 };
 window.togglePiP=async()=>{
@@ -3164,3 +3178,44 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 #player-view .fa-expand:before{content:"⛶"}#player-view .fa-clone:before{content:"▣"}
 #player-view .fa-sun:before{content:"☼"}#player-view .fa-spinner:before{content:"◌"}
 #player-view .fa-spinner.fa-spin:before{display:inline-block;animation:spin 1s linear infinite}
+
+
+<style id="sportynova-compact-player-landscape-fix">
+/* Default: replacement player occupies the same compact 16:9 SPORTYNOVA player area. */
+#playerScreen{position:relative!important;overflow:hidden!important}
+#playerScreen #player-view,
+#player-view.nova-player-open{
+ display:none!important;position:absolute!important;inset:0!important;
+ width:100%!important;height:100%!important;min-height:0!important;
+ max-height:none!important;aspect-ratio:auto!important;z-index:100!important;
+ background:#000!important;overflow:hidden!important;border-radius:inherit!important;
+}
+#playerScreen #player-view.nova-player-open{display:block!important}
+#playerScreen #video-container{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#playerScreen video#live-player{width:100%!important;height:100%!important;object-fit:contain!important}
+#playerScreen #player-ui{position:absolute!important;inset:0!important}
+#playerScreen .player-top{padding:7px 10px!important;padding-top:max(7px,env(safe-area-inset-top,0px))!important}
+#playerScreen .player-match-title{font-size:12px!important;max-width:38vw!important}
+#playerScreen .player-center{gap:22px!important}
+#playerScreen .ctrl-btn.main{width:48px!important;height:48px!important;font-size:19px!important}
+#playerScreen .ctrl-btn.side{width:34px!important;height:34px!important;font-size:14px!important}
+#playerScreen .player-bottom{padding:5px 10px!important;padding-bottom:max(7px,env(safe-area-inset-bottom,0px))!important;gap:5px!important}
+#playerScreen .progress-container{font-size:10px!important;gap:7px!important}
+#playerScreen .tool-btn{font-size:15px!important;padding:5px!important}
+/* Fullscreen: use the whole display and request landscape from the button handler. */
+#player-view:fullscreen,#player-view:-webkit-full-screen,
+#player-view.nova-manual-landscape{
+ position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;
+ height:100dvh!important;max-height:100dvh!important;aspect-ratio:auto!important;
+ border-radius:0!important;z-index:2147483000!important;background:#000!important;
+}
+#player-view:fullscreen #video-container,#player-view:-webkit-full-screen #video-container,
+#player-view.nova-manual-landscape #video-container{width:100%!important;height:100%!important}
+#player-view:fullscreen video,#player-view:-webkit-full-screen video,
+#player-view.nova-manual-landscape video{width:100%!important;height:100%!important;object-fit:contain!important}
+#player-view:fullscreen .player-center,#player-view:-webkit-full-screen .player-center,
+#player-view.nova-manual-landscape .player-center{gap:45px!important}
+#player-view:fullscreen .ctrl-btn.main,#player-view:-webkit-full-screen .ctrl-btn.main,
+#player-view.nova-manual-landscape .ctrl-btn.main{width:65px!important;height:65px!important}
+@media(orientation:landscape){#player-view:fullscreen .player-top,#player-view:-webkit-full-screen .player-top{padding:12px 18px!important}}
+</style>

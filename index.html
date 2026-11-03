@@ -1549,7 +1549,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  setPlayerLoading(false);
  video.dataset.currentUrl=rawUrl;
  if(currentServerChannel)setInlineServers(currentServerChannel);
- video.crossOrigin="anonymous";
+ // Do not force CORS mode on the media element. Some HLS origins allow
+ // ordinary browser playback but do not send Access-Control-Allow-Origin.
+ // Shaka still uses CORS for manifest/segment fetches; native HLS can avoid
+ // that fetch path on browsers/WebViews that provide native HLS support.
+ video.removeAttribute("crossorigin");
  video.preload="auto";
  video.autoplay=true;
  video.controls=false;
@@ -1625,6 +1629,22 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    // This avoids switching engines when the user selects a different channel.
    if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ারে HLS/M3U8 অথবা MPEG-DASH/MPD লিংক দিন।");
    if(kind!=="hls"&&kind!=="mpd"&&kind!=="unknown") throw new Error("সমর্থিত স্ট্রিম হলো HLS/M3U8 ও MPEG-DASH/MPD।");
+
+   // Prefer native HLS when the browser explicitly supports it. This can work
+   // in Safari/compatible WebViews where JavaScript HLS requests are CORS-blocked.
+   // Browsers without native HLS support continue to use Shaka below.
+   const nativeHlsType = video.canPlayType("application/vnd.apple.mpegurl");
+   if(kind==="hls" && nativeHlsType){
+     engine="Native HLS";
+     video.src=url;
+     video.load();
+     try{await video.play();}catch(playError){
+       console.warn("SPORTYNOVA native HLS play() was deferred:",playError);
+     }
+     render();
+     return;
+   }
+
    if(!window.shaka || !shaka.Player) await window.ensureSportyShaka();
    if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লাইব্রেরি পাওয়া যায়নি।");
    shaka.polyfill.installAll();

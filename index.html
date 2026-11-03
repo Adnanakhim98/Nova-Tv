@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer">
 
 <meta name="description" content="SPORTYNOVA — premium live sports and TV streaming hub.">
 <title>SPORTYNOVA 1.0 — Live TV</title>
@@ -1534,13 +1535,14 @@ window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
- const requestedServers=(currentChannelStreams||[]).map((s,i)=>({name:s.name||`Server ${i+1}`,url:String(s.url||'').split('|')[0],keyid:s.keyid||s.keyId||(s.drm&&(s.drm.keyid||s.drm.keyId||s.drm.kid))||'',key:s.key||(s.drm&&(s.drm.key||s.drm.value))||''})).filter(s=>s.url);
+ const requestedServers=(currentChannelStreams||[]).map((s,i)=>({name:s.name||`Server ${i+1}`,url:String(s.url||'').split('|')[0],keyid:s.keyid||s.keyId||(s.drm&&(s.drm.keyid||s.drm.keyId||s.drm.kid))||'',key:s.key||(s.drm&&(s.drm.key||s.drm.value))||'',drm:s.drm||null})).filter(s=>s.url);
  const selectedUrl=String(url||'').trim();
- const playerServers=requestedServers.length?requestedServers:[{name:'Server 1',url:selectedUrl,keyid:drm&&(drm.keyid||drm.keyId||drm.kid)||'',key:drm&&(drm.key||drm.value)||''}];
+ const playerServers=requestedServers.length?requestedServers:[{name:'Server 1',url:selectedUrl,keyid:drm&&(drm.keyid||drm.keyId||drm.kid)||'',key:drm&&(drm.key||drm.value)||'',drm:drm||null}];
  if(window.__sportyNovaOpenPlayer){
    await stopEngines();
    if(requestId!==playRequestId)return;
-   window.__sportyNovaOpenPlayer(selectedUrl,name,playerServers,drm);
+   const playerDrm={...(drm&&typeof drm==='object'?drm:{}),scheme:(drm&&drm.scheme)||parsed.scheme||'',license:(drm&&drm.license)||parsed.license||''};
+   window.__sportyNovaOpenPlayer(selectedUrl,name,playerServers,playerDrm);
    return;
  }
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
@@ -2727,7 +2729,7 @@ async function resetVideoElement(){
  if(shakaPlayer){await shakaPlayer.destroy();shakaPlayer=null}
  video.pause();video.removeAttribute('src');video.load();
 }
-async function initStream(url,keyid='',key=''){
+async function initStream(url,keyid='',key='',drmConfig=null){
  setLoader();
  await resetVideoElement();
  document.getElementById('quality-menu').innerHTML='<button class="quality-btn active">Auto</button>';
@@ -2739,10 +2741,21 @@ async function initStream(url,keyid='',key=''){
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported())throw new Error('This browser does not support the required DASH playback.');
    shakaPlayer=new shaka.Player(video);
-   if(finalKeyId&&finalKey&&finalKeyId.length===32&&finalKey.length===32){
-    const clearKeys={};clearKeys[finalKeyId]=finalKey;
-    shakaPlayer.configure({drm:{clearKeys}});
+   const drm=drmConfig&&typeof drmConfig==='object'?drmConfig:{};
+   const clearKeyLicense=String(drm.license||'');
+   if((!finalKeyId||!finalKey)&&String(drm.scheme||'').toLowerCase()==='clearkey'&&clearKeyLicense.includes(':')){
+    const pair=clearKeyLicense.split(':');finalKeyId=pair[0].trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase();finalKey=pair[1].trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase();
    }
+   const drmSettings={};
+   if(finalKeyId&&finalKey&&finalKeyId.length===32&&finalKey.length===32){const clearKeys={};clearKeys[finalKeyId]=finalKey;drmSettings.clearKeys=clearKeys;}
+   const licenseUrl=drm.licenseServer||drm.licenseUrl||drm.serverUrl||drm.url||(String(drm.scheme||'').toLowerCase()!=='clearkey'?drm.license:'');
+   const scheme=String(drm.scheme||drm.type||'').toLowerCase();
+   if(licenseUrl&&/^https?:\/\//i.test(String(licenseUrl))){
+    let keySystem=drm.keySystem||drm.keysystem||'';
+    if(!keySystem){if(scheme.includes('widevine'))keySystem='com.widevine.alpha';else if(scheme.includes('playready'))keySystem='com.microsoft.playready';else if(scheme.includes('fairplay'))keySystem='com.apple.fps';}
+    if(keySystem)drmSettings.servers={[keySystem]:String(licenseUrl)};
+   }
+   if(Object.keys(drmSettings).length)shakaPlayer.configure({drm:drmSettings});
    await shakaPlayer.load(url);
    await video.play().catch(()=>{});
    const tracks=shakaPlayer.getVariantTracks();
@@ -2772,23 +2785,26 @@ async function initStream(url,keyid='',key=''){
    await video.play().catch(()=>{});
   }
  }catch(e){
-  showError(`<b style="font-size:16px">Stream Error</b><br><span style="font-size:12px;color:#9ca3af">${String(e.message||e)}</span>`);
+  const msg=String(e.message||e);
+  const friendly=msg.includes('6012')?'DRM License Server URL পাওয়া যায়নি। এই MPD চ্যানেলের JSON-এ drm.licenseServer / drm.licenseUrl যোগ করতে হবে।':msg;
+  showError(`<b style="font-size:16px">Stream Error</b><br><span style="font-size:12px;color:#9ca3af">${friendly}</span>`);
  }
 }
-window.openLivePlayer=function(url,activeIndex=0,keyid='',key=''){
+window.openLivePlayer=function(url,activeIndex=0,keyid='',key='',drmConfig=null){
  if(!url)return;
  document.getElementById('player-title-display').textContent=globalMatchTitle;
  const tabs=document.getElementById('player-server-tabs');tabs.innerHTML='';
  if(currentMatchServers.length>1){
   currentMatchServers.forEach((srv,idx)=>{
    const b=document.createElement('button');b.className='ps-tab'+(idx===activeIndex?' active':'');b.textContent=srv.name||`Server ${idx+1}`;
-   b.onclick=()=>openLivePlayer(srv.url,idx,srv.keyid||'',srv.key||'');
+   b.onclick=()=>openLivePlayer(srv.url,idx,srv.keyid||'',srv.key||'',srv.drm||null);
    tabs.appendChild(b);
   });
  }
  playerUI.classList.remove('hidden');
  document.getElementById('quality-menu').style.display='none';
- initStream(url,keyid,key);startUIHideTimer();
+ const selectedDrm=drmConfig||(currentMatchServers[activeIndex]&&currentMatchServers[activeIndex].drm)||window.__sportyNovaDefaultDrm||null;
+ initStream(url,keyid,key,selectedDrm);startUIHideTimer();
 };
 window.setQuality=function(level){
  document.querySelectorAll('.quality-btn').forEach(btn=>btn.classList.remove('active'));
@@ -2900,8 +2916,9 @@ window.addEventListener('keydown',e=>{
 
 window.__sportyNovaOpenPlayer=function(url,title,servers,drm){
  globalMatchTitle=title||'Live TV'; currentMatchServers=Array.isArray(servers)?servers.filter(s=>s&&s.url):[];
+ window.__sportyNovaDefaultDrm=drm||null;
  const keyid=drm&& (drm.keyid||drm.keyId||drm.kid)||''; const key=drm&&(drm.key||drm.value)||'';
- playerViewDiv.classList.add('nova-player-open'); openLivePlayer(url,0,keyid,key);
+ playerViewDiv.classList.add('nova-player-open'); openLivePlayer(url,0,keyid,key,drm||null);
 };
 window.__sportyNovaClosePlayer=function(){closePlayer();playerViewDiv.classList.remove('nova-player-open');};
 })();

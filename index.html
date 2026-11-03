@@ -1,4 +1,4 @@
-<!-- SPOYNOVA: Unified Shaka player for HLS/M3U8 + MPEG-DASH/MPD — 01 Nov 2026 -->
+<!-- SPORTYNOVA: Unified Shaka player for HLS/M3U8 + MPEG-DASH/MPD — 01 Nov 2026 -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -1534,6 +1534,15 @@ window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
+ const requestedServers=(currentChannelStreams||[]).map((s,i)=>({name:s.name||`Server ${i+1}`,url:String(s.url||'').split('|')[0],keyid:s.keyid||s.keyId||(s.drm&&(s.drm.keyid||s.drm.keyId||s.drm.kid))||'',key:s.key||(s.drm&&(s.drm.key||s.drm.value))||''})).filter(s=>s.url);
+ const selectedUrl=String(url||'').trim();
+ const playerServers=requestedServers.length?requestedServers:[{name:'Server 1',url:selectedUrl,keyid:drm&&(drm.keyid||drm.keyId||drm.kid)||'',key:drm&&(drm.key||drm.value)||''}];
+ if(window.__sportyNovaOpenPlayer){
+   await stopEngines();
+   if(requestId!==playRequestId)return;
+   window.__sportyNovaOpenPlayer(selectedUrl,name,playerServers,drm);
+   return;
+ }
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
@@ -2637,6 +2646,266 @@ document.addEventListener("touchend", e => {
 /* Quality stays on the chosen rendition; Auto remains available as an explicit user choice. */
 </style>
 
+
+<div id="player-view">
+  <div id="player-loader"><i class="fa-solid fa-spinner fa-spin" style="font-size:40px;color:var(--cricfy-red);margin-bottom:10px"></i><div>Connecting Server...</div></div>
+  <div id="brightness-overlay"></div>
+  <div id="gesture-indicator"><i class="fa-solid fa-volume-high"></i><span>50%</span></div>
+  <div id="video-container"><video id="live-player" playsinline autoplay></video></div>
+  <div class="player-ui" id="player-ui">
+    <div class="player-top">
+      <div class="pt-left">
+        <button class="player-back" onclick="closeLivePlayer()" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="player-match-title" id="player-title-display">Live Match</div>
+      </div>
+      <div class="pt-right">
+        <div id="player-server-tabs"></div>
+        <button class="settings-btn" onclick="toggleQualityMenu()" aria-label="Quality settings"><i class="fa-solid fa-gear"></i></button>
+        <div class="quality-menu" id="quality-menu"><button class="quality-btn active">Auto</button></div>
+      </div>
+    </div>
+    <div class="player-center">
+      <button class="ctrl-btn side" onclick="seekVideo(-10)" aria-label="Back 10 seconds"><i class="fa-solid fa-backward-step"></i></button>
+      <button class="ctrl-btn main" id="btn-play-pause" onclick="togglePlay()" aria-label="Play or pause"><i class="fa-solid fa-pause"></i></button>
+      <button class="ctrl-btn side" onclick="seekVideo(10)" aria-label="Forward 10 seconds"><i class="fa-solid fa-forward-step"></i></button>
+    </div>
+    <div class="player-bottom">
+      <div class="progress-container">
+        <span id="time-current">00:00</span>
+        <input type="range" id="seek-bar" value="0" min="0" max="100">
+        <span id="time-total">Live</span>
+      </div>
+      <div class="bottom-tools">
+        <div class="tool-group"><button class="tool-btn" onclick="toggleMute()" id="btn-mute" aria-label="Mute"><i class="fa-solid fa-volume-high"></i></button></div>
+        <div class="tool-group">
+          <button class="tool-btn" onclick="toggleVideoFit()" title="Change Aspect Ratio"><i class="fa-solid fa-compress"></i></button>
+          <button class="tool-btn" onclick="togglePiP()" title="Picture in Picture"><i class="fa-regular fa-clone"></i></button>
+          <button class="tool-btn" onclick="toggleFullscreen()" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.compiled.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+(function(){
+
+document.addEventListener('DOMContentLoaded',()=>{if(window.shaka)shaka.polyfill.installAll()});
+const video=document.getElementById('live-player');
+const playerUI=document.getElementById('player-ui');
+const playerViewDiv=document.getElementById('player-view');
+let hls=null,shakaPlayer=null,uiTimeout=null,currentMatchServers=[],globalMatchTitle='Live Match';
+let currentFit=0;
+const fitModes=['contain','cover','fill'];
+const seekBar=document.getElementById('seek-bar');
+const timeCurrent=document.getElementById('time-current');
+const timeTotal=document.getElementById('time-total');
+
+function setLoader(message='Connecting Server...'){
+ document.getElementById('player-loader').style.display='flex';
+ document.getElementById('player-loader').innerHTML=`<i class="fa-solid fa-spinner fa-spin" style="font-size:40px;color:var(--cricfy-red);margin-bottom:10px"></i><div>${message}</div>`;
+}
+function showError(message){
+ document.getElementById('player-loader').style.display='flex';
+ document.getElementById('player-loader').innerHTML=`<div style="color:#ff3b30;text-align:center;background:rgba(0,0,0,.8);padding:20px;border-radius:12px;border:1px solid #ff3b30">${message}</div>`;
+}
+video.addEventListener('playing',()=>{
+ document.getElementById('player-loader').style.display='none';
+ document.getElementById('btn-play-pause').innerHTML='<i class="fa-solid fa-pause"></i>';
+ startUIHideTimer();
+});
+video.addEventListener('pause',()=>{
+ document.getElementById('btn-play-pause').innerHTML='<i class="fa-solid fa-play"></i>';
+ playerUI.classList.remove('hidden');clearTimeout(uiTimeout);
+});
+video.addEventListener('timeupdate',updateSeekBar);
+
+async function resetVideoElement(){
+ if(hls){hls.destroy();hls=null}
+ if(shakaPlayer){await shakaPlayer.destroy();shakaPlayer=null}
+ video.pause();video.removeAttribute('src');video.load();
+}
+async function initStream(url,keyid='',key=''){
+ setLoader();
+ await resetVideoElement();
+ document.getElementById('quality-menu').innerHTML='<button class="quality-btn active">Auto</button>';
+ let finalKeyId=keyid?String(keyid).trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase():'';
+ let finalKey=key?String(key).trim().replace(/[^a-fA-F0-9]/g,'').toLowerCase():'';
+ try{
+  if(url.toLowerCase().includes('.mpd')){
+   if(!window.shaka)throw new Error('Shaka Player library could not be loaded.');
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported())throw new Error('This browser does not support the required DASH playback.');
+   shakaPlayer=new shaka.Player(video);
+   if(finalKeyId&&finalKey&&finalKeyId.length===32&&finalKey.length===32){
+    const clearKeys={};clearKeys[finalKeyId]=finalKey;
+    shakaPlayer.configure({drm:{clearKeys}});
+   }
+   await shakaPlayer.load(url);
+   await video.play().catch(()=>{});
+   const tracks=shakaPlayer.getVariantTracks();
+   let qMenu='<button class="quality-btn active" id="btn-q-auto" onclick="setQuality(-1)">Auto</button>';
+   const heights=[...new Set(tracks.map(t=>t.height).filter(Boolean))].sort((a,b)=>a-b);
+   if(heights.length>1)heights.forEach(h=>qMenu+=`<button class="quality-btn" id="btn-q-${h}" onclick="setQuality(${h})">${h}p</button>`);
+   else if(heights.length===1)qMenu=`<button class="quality-btn active" style="color:var(--text-muted);cursor:default">${heights[0]}p (Source)</button>`;
+   document.getElementById('quality-menu').innerHTML=qMenu;
+  }else if(window.Hls&&Hls.isSupported()&&url.toLowerCase().includes('.m3u8')){
+   hls=new Hls({maxBufferLength:30});
+   hls.loadSource(url);hls.attachMedia(video);
+   hls.on(Hls.Events.MANIFEST_PARSED,async(e,data)=>{
+    await video.play().catch(()=>{});
+    let qMenu='';
+    if(data.levels&&data.levels.length>1){
+     qMenu='<button class="quality-btn active" id="btn-q-auto" onclick="setQuality(-1)">Auto</button>';
+     data.levels.forEach((level,i)=>{const res=level.height?level.height+'p':'Q'+(i+1);qMenu+=`<button class="quality-btn" id="btn-q-${i}" onclick="setQuality(${i})">${res}</button>`});
+    }else{
+     const res=data.levels&&data.levels[0]&&data.levels[0].height?data.levels[0].height+'p':'Original';
+     qMenu=`<button class="quality-btn active" style="color:var(--text-muted);cursor:default">${res} (Source)</button>`;
+    }
+    document.getElementById('quality-menu').innerHTML=qMenu;
+   });
+   hls.on(Hls.Events.ERROR,(event,data)=>{if(data.fatal)showError('HLS playback error. Please try another server.')});
+  }else{
+   video.src=url;
+   await video.play().catch(()=>{});
+  }
+ }catch(e){
+  showError(`<b style="font-size:16px">Stream Error</b><br><span style="font-size:12px;color:#9ca3af">${String(e.message||e)}</span>`);
+ }
+}
+window.openLivePlayer=function(url,activeIndex=0,keyid='',key=''){
+ if(!url)return;
+ document.getElementById('player-title-display').textContent=globalMatchTitle;
+ const tabs=document.getElementById('player-server-tabs');tabs.innerHTML='';
+ if(currentMatchServers.length>1){
+  currentMatchServers.forEach((srv,idx)=>{
+   const b=document.createElement('button');b.className='ps-tab'+(idx===activeIndex?' active':'');b.textContent=srv.name||`Server ${idx+1}`;
+   b.onclick=()=>openLivePlayer(srv.url,idx,srv.keyid||'',srv.key||'');
+   tabs.appendChild(b);
+  });
+ }
+ playerUI.classList.remove('hidden');
+ document.getElementById('quality-menu').style.display='none';
+ initStream(url,keyid,key);startUIHideTimer();
+};
+window.setQuality=function(level){
+ document.querySelectorAll('.quality-btn').forEach(btn=>btn.classList.remove('active'));
+ if(level===-1){
+  document.getElementById('btn-q-auto')?.classList.add('active');
+  if(hls)hls.currentLevel=-1;
+  if(shakaPlayer)shakaPlayer.configure({abr:{enabled:true}});
+ }else{
+  document.getElementById('btn-q-'+level)?.classList.add('active');
+  if(hls)hls.currentLevel=level;
+  if(shakaPlayer){
+   shakaPlayer.configure({abr:{enabled:false}});
+   const track=shakaPlayer.getVariantTracks().find(t=>t.height===level);
+   if(track)shakaPlayer.selectVariantTrack(track,true);
+  }
+ }
+ document.getElementById('quality-menu').style.display='none';
+};
+window.toggleQualityMenu=function(){
+ const menu=document.getElementById('quality-menu');
+ menu.style.display=menu.style.display==='flex'?'none':'flex';startUIHideTimer();
+};
+window.toggleVideoFit=function(){
+ currentFit=(currentFit+1)%fitModes.length;video.style.objectFit=fitModes[currentFit];
+ const ind=document.getElementById('gesture-indicator');
+ ind.innerHTML=`<i class="fa-solid fa-compress"></i><span>${fitModes[currentFit].toUpperCase()}</span>`;
+ ind.style.display='flex';setTimeout(()=>ind.style.display='none',1000);startUIHideTimer();
+};
+function updateSeekBar(){
+ const live=!video.duration||video.duration===Infinity||isNaN(video.duration)||video.duration>43200;
+ if(live){timeCurrent.innerHTML='<span style="color:var(--cricfy-red)">🔴 LIVE</span>';timeTotal.textContent='LIVE';seekBar.value=100}
+ else{seekBar.value=(video.currentTime/video.duration)*100;timeCurrent.textContent=formatTime(video.currentTime);timeTotal.textContent=formatTime(video.duration)}
+}
+seekBar.addEventListener('input',e=>{
+ const live=!video.duration||video.duration===Infinity||isNaN(video.duration)||video.duration>43200;
+ if(!live&&video.duration&&!isNaN(video.duration))video.currentTime=(e.target.value/100)*video.duration;
+ startUIHideTimer();
+});
+function formatTime(seconds){
+ if(isNaN(seconds)||!isFinite(seconds))return'00:00';
+ const h=Math.floor(seconds/3600),m=Math.floor((seconds%3600)/60),s=Math.floor(seconds%60);
+ return h>0?`${h}:${m<10?'0'+m:m}:${s<10?'0'+s:s}`:`${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+}
+window.togglePlay=()=>{video.paused?video.play():video.pause();startUIHideTimer()};
+window.seekVideo=sec=>{if(video.duration&&video.duration!==Infinity&&!isNaN(video.duration))video.currentTime=Math.min(Math.max(video.currentTime+sec,0),video.duration);startUIHideTimer()};
+window.toggleMute=()=>{
+ video.muted=!video.muted;
+ document.getElementById('btn-mute').innerHTML=video.muted?'<i class="fa-solid fa-volume-xmark"></i>':'<i class="fa-solid fa-volume-high"></i>';
+ startUIHideTimer();
+};
+window.toggleFullscreen=function(){
+ if(!document.fullscreenElement){
+  document.getElementById('player-view').requestFullscreen?.();
+  if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});
+ }else{
+  document.exitFullscreen?.();if(screen.orientation?.unlock)screen.orientation.unlock();
+ }
+};
+window.togglePiP=async()=>{
+ try{document.pictureInPictureElement?await document.exitPictureInPicture():await video.requestPictureInPicture()}catch(e){}
+};
+function closePlayer(){
+ resetVideoElement();
+ if(document.fullscreenElement)document.exitFullscreen?.();
+ if(screen.orientation?.unlock)screen.orientation.unlock();
+}
+window.closeLivePlayer=function(){closePlayer();playerViewDiv.classList.remove("nova-player-open");};
+playerViewDiv.addEventListener('click',e=>{
+ if(e.target.closest('button')||e.target.closest('.ps-tab')||e.target.closest('input'))return;
+ if(playerUI.classList.contains('hidden')){playerUI.classList.remove('hidden');startUIHideTimer()}
+ else{playerUI.classList.add('hidden');document.getElementById('quality-menu').style.display='none'}
+});
+function startUIHideTimer(){
+ clearTimeout(uiTimeout);
+ uiTimeout=setTimeout(()=>{
+  if(!video.paused){playerUI.classList.add('hidden');document.getElementById('quality-menu').style.display='none'}
+ },4000);
+}
+const indicator=document.getElementById('gesture-indicator'),brightOverlay=document.getElementById('brightness-overlay');
+let startY=0,startX=0,initialVol=1,currentBright=0,activeDrag=null;
+playerViewDiv.addEventListener('touchstart',e=>{
+ if(e.target.closest('button')||e.target.closest('input')||e.target.closest('.ps-tab'))return;
+ startX=e.touches[0].clientX;startY=e.touches[0].clientY;initialVol=video.volume;activeDrag=null;
+},{passive:false});
+playerViewDiv.addEventListener('touchmove',e=>{
+ if(e.target.closest('button')||e.target.closest('input')||e.target.closest('.ps-tab'))return;
+ const deltaY=startY-e.touches[0].clientY,deltaX=Math.abs(startX-e.touches[0].clientX);
+ if(Math.abs(deltaY)>10&&deltaX<40){
+  e.preventDefault();
+  if(!activeDrag)activeDrag=startX<window.innerWidth/2?'bright':'vol';
+  const sensitivity=.006;indicator.style.display='flex';
+  if(activeDrag==='vol'){
+   const newVol=Math.min(1,Math.max(0,initialVol+deltaY*sensitivity));video.volume=newVol;
+   const icon=newVol===0?'fa-volume-xmark':newVol<.5?'fa-volume-low':'fa-volume-high';
+   indicator.innerHTML=`<i class="fa-solid ${icon}"></i><span>${Math.round(newVol*100)}%</span>`;
+  }else{
+   currentBright=Math.min(.85,Math.max(0,currentBright-deltaY*sensitivity*.5));brightOverlay.style.opacity=currentBright;
+   indicator.innerHTML=`<i class="fa-solid fa-sun"></i><span>${Math.round((1-currentBright/.85)*100)}%</span>`;
+  }
+ }
+},{passive:false});
+playerViewDiv.addEventListener('touchend',()=>{indicator.style.display='none';activeDrag=null});
+
+window.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&document.fullscreenElement)document.exitFullscreen?.();
+ if(e.code==='Space'&&e.target.tagName!=='INPUT'){e.preventDefault();togglePlay()}
+});
+
+
+window.__sportyNovaOpenPlayer=function(url,title,servers,drm){
+ globalMatchTitle=title||'Live TV'; currentMatchServers=Array.isArray(servers)?servers.filter(s=>s&&s.url):[];
+ const keyid=drm&& (drm.keyid||drm.keyId||drm.kid)||''; const key=drm&&(drm.key||drm.value)||'';
+ playerViewDiv.classList.add('nova-player-open'); openLivePlayer(url,0,keyid,key);
+};
+window.__sportyNovaClosePlayer=function(){closePlayer();playerViewDiv.classList.remove('nova-player-open');};
+})();
+</script>
 </body>
 </html>
 
@@ -2849,4 +3118,52 @@ document.addEventListener("touchend", e => {
   }
 }
 /* Keep the server popup's existing 4-second auto-hide / tap-to-show behavior. */
+
+:root{--bg-color:#000;--cricfy-red:#ff3b30;--text-muted:#9CA3AF}
+*{box-sizing:border-box;scrollbar-width:none}
+*::-webkit-scrollbar{display:none}
+body{ -webkit-tap-highlight-color:transparent }
+#player-view{position:fixed;inset:0;width:100%;height:100dvh;background:#000;z-index:1000;display:block;overflow:hidden;touch-action:none}
+#video-container{width:100%;height:100%;position:relative;display:flex;justify-content:center;align-items:center;background:#000}
+video#live-player{width:100%;height:100%;object-fit:contain;background:#000;outline:none}
+#brightness-overlay{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:5}
+#gesture-indicator{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.6);color:#fff;font-size:26px;padding:15px 25px;border-radius:12px;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;z-index:20;backdrop-filter:blur(8px)}
+#gesture-indicator span{font-size:15px;font-weight:700}
+.player-ui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;background:rgba(0,0,0,.3);z-index:10;transition:opacity .3s ease}
+.player-ui.hidden{opacity:0;pointer-events:none!important}
+.player-ui.hidden *{pointer-events:none!important}
+.player-top{padding:15px 20px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(0,0,0,.9),transparent);padding-top:max(15px,env(safe-area-inset-top))}
+.pt-left{display:flex;align-items:center;gap:15px;min-width:0}
+.player-back,.settings-btn{background:transparent;border:0;color:#fff;cursor:pointer;text-shadow:0 2px 4px rgba(0,0,0,.5)}
+.player-back{font-size:22px;padding:5px}
+.player-match-title{font-size:15px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.pt-right{display:flex;align-items:center;gap:10px}
+#player-server-tabs{display:flex;gap:6px}
+.ps-tab{background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(4px)}
+.ps-tab.active{background:var(--cricfy-red);border-color:var(--cricfy-red)}
+.settings-btn{font-size:20px;padding:5px}
+.quality-menu{position:absolute;top:65px;right:20px;background:rgba(15,15,15,.95);border-radius:8px;border:1px solid rgba(255,255,255,.1);display:none;flex-direction:column;min-width:140px;max-height:60vh;overflow:auto;backdrop-filter:blur(10px);z-index:50}
+.quality-btn{background:transparent;color:#fff;border:0;padding:12px 15px;font-size:13px;font-weight:600;text-align:left;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
+.quality-btn.active{color:var(--cricfy-red)}
+.player-center{display:flex;justify-content:center;align-items:center;gap:45px;flex:1;pointer-events:none}
+.player-ui:not(.hidden) .player-center .ctrl-btn{pointer-events:auto}
+.ctrl-btn{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.1s;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ctrl-btn:active{transform:scale(.9);background:var(--cricfy-red);border-color:var(--cricfy-red)}
+.ctrl-btn.main{width:65px;height:65px;font-size:24px;box-shadow:0 4px 15px rgba(0,0,0,.3)}
+.ctrl-btn.side{width:45px;height:45px;font-size:18px}
+.player-bottom{padding:10px 20px;background:linear-gradient(to top,rgba(0,0,0,.95),transparent);display:flex;flex-direction:column;gap:10px;padding-bottom:max(20px,env(safe-area-inset-bottom,20px))}
+.progress-container{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+input[type=range]{flex:1;-webkit-appearance:none;background:rgba(255,255,255,.3);height:3px;border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--cricfy-red);cursor:pointer;box-shadow:0 0 6px rgba(255,59,48,.6)}
+.bottom-tools{display:flex;justify-content:space-between;align-items:center;margin-top:5px}
+.tool-btn{background:transparent;border:0;color:#fff;font-size:18px;padding:10px;cursor:pointer;text-shadow:0 2px 4px rgba(0,0,0,.5);transition:.2s}
+.tool-btn:active{color:var(--cricfy-red);transform:scale(.9)}
+.tool-group{display:flex;gap:10px;align-items:center}
+#player-loader{position:absolute;inset:0;background:#000;z-index:5;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;font-size:14px;text-align:center;padding:20px}
+@keyframes spin{100%{transform:rotate(360deg)}}
+@media(max-width:480px){.player-top{padding-left:12px;padding-right:12px}.player-match-title{max-width:125px}.pt-right{gap:5px}.ps-tab{padding:5px 8px;font-size:10px}.player-center{gap:28px}}
+
+#player-view{--cricfy-red:#ff3157;--text-muted:#9ca3af;display:none!important;position:fixed!important;inset:0!important;z-index:100000!important}
+#player-view.nova-player-open{display:block!important}
+
 </style>

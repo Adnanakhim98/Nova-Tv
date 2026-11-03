@@ -1,4 +1,4 @@
-<!-- SPORTYNOVA: Unified Shaka player for HLS/M3U8 + MPEG-DASH/MPD — 01 Nov 2026 -->
+<!-- SPORTYNOVA: Unifযরied Shaka player for HLS/M3U8 + MPEG-DASH/MPD — 01 Nov 2026 -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -2698,6 +2698,9 @@ document.addEventListener('DOMContentLoaded',()=>{if(window.shaka)shaka.polyfill
 const video=document.getElementById('live-player');
 const playerUI=document.getElementById('player-ui');
 const playerViewDiv=document.getElementById('player-view');
+// Place the new player inside SPORTYNOVA's compact embedded player viewport.
+const sportyPlayerScreen=document.getElementById('playerScreen');
+if(sportyPlayerScreen && playerViewDiv && playerViewDiv.parentElement!==sportyPlayerScreen){sportyPlayerScreen.appendChild(playerViewDiv);}
 // Keep the replacement player inside SPORTYNOVA's normal compact video screen.
 const sportyScreen=document.getElementById('playerScreen');
 if(sportyScreen && playerViewDiv.parentElement!==sportyScreen) sportyScreen.appendChild(playerViewDiv);
@@ -2803,10 +2806,17 @@ window.toggleQualityMenu=function(){
  menu.style.display=menu.style.display==='flex'?'none':'flex';startUIHideTimer();
 };
 window.toggleVideoFit=function(){
- currentFit=(currentFit+1)%fitModes.length;video.style.objectFit=fitModes[currentFit];
+ currentFit=(currentFit+1)%fitModes.length;
+ const mode=fitModes[currentFit];
+ video.style.objectFit=mode;
+ // Keep the selected fit mode after server changes and expose its current state.
+ const fitButton=document.querySelector('.bottom-tools [title="Change Aspect Ratio"]');
+ if(fitButton){fitButton.setAttribute('data-fit-mode',mode);fitButton.setAttribute('aria-label','Video fit: '+mode);}
  const ind=document.getElementById('gesture-indicator');
- ind.innerHTML=`<i class="fa-solid fa-compress"></i><span>${fitModes[currentFit].toUpperCase()}</span>`;
- ind.style.display='flex';setTimeout(()=>ind.style.display='none',1000);startUIHideTimer();
+ ind.innerHTML=`<i class="fa-solid fa-compress"></i><span>${mode.toUpperCase()}</span>`;
+ ind.style.display='flex';clearTimeout(window.__sportyFitIndicatorTimer);
+ window.__sportyFitIndicatorTimer=setTimeout(()=>ind.style.display='none',1100);
+ startUIHideTimer();
 };
 function updateSeekBar(){
  const live=!video.duration||video.duration===Infinity||isNaN(video.duration)||video.duration>43200;
@@ -2833,22 +2843,41 @@ window.toggleMute=()=>{
 window.toggleFullscreen=async function(){
  const target=document.getElementById('player-view');
  const active=document.fullscreenElement||document.webkitFullscreenElement;
- if(!active){
+ const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+ if(!active&&!target.classList.contains('nova-manual-landscape')){
   try{
-   if(target.requestFullscreen) await target.requestFullscreen();
-   else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen();
-   // Android Chrome permits landscape locking after fullscreen is entered.
-   try{await screen.orientation?.lock?.('landscape')}catch(e){}
+   if(target.requestFullscreen){await target.requestFullscreen();}
+   else if(target.webkitRequestFullscreen){target.webkitRequestFullscreen();}
+   else throw new Error('Fullscreen API unavailable');
+   // Lock only after entering fullscreen (required by Android Chrome).
+   if(mobile){try{await screen.orientation?.lock?.('landscape')}catch(e){target.classList.add('nova-manual-landscape');}}
+   target.classList.add('nova-fullscreen-active');
   }catch(e){
-   // Keep the player usable if the browser blocks fullscreen/orientation APIs.
-   target.classList.add('nova-manual-landscape');
+   // Fallback: rotate the player itself to landscape on browsers without orientation lock.
+   target.classList.add('nova-manual-landscape','nova-fullscreen-active');
   }
+  playerUI.classList.remove('hidden');startUIHideTimer();
  }else{
-  try{if(document.exitFullscreen)await document.exitFullscreen();else document.webkitExitFullscreen?.()}catch(e){}
-  target.classList.remove('nova-manual-landscape');
+  try{if(document.exitFullscreen)await document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen();}catch(e){}
+  target.classList.remove('nova-manual-landscape','nova-fullscreen-active');
   try{screen.orientation?.unlock?.()}catch(e){}
+  playerUI.classList.remove('hidden');startUIHideTimer();
  }
 };
+document.addEventListener('fullscreenchange',()=>{
+ const target=document.getElementById('player-view');
+ if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+  target.classList.remove('nova-fullscreen-active','nova-manual-landscape');
+  try{screen.orientation?.unlock?.()}catch(e){}
+ }
+});
+document.addEventListener('webkitfullscreenchange',()=>{
+ const target=document.getElementById('player-view');
+ if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+  target.classList.remove('nova-fullscreen-active','nova-manual-landscape');
+  try{screen.orientation?.unlock?.()}catch(e){}
+ }
+});
 window.togglePiP=async()=>{
  try{document.pictureInPictureElement?await document.exitPictureInPicture():await video.requestPictureInPicture()}catch(e){}
 };
@@ -2909,6 +2938,37 @@ window.__sportyNovaOpenPlayer=function(url,title,servers,drm){
 window.__sportyNovaClosePlayer=function(){closePlayer();playerViewDiv.classList.remove('nova-player-open');};
 })();
 </script>
+
+<style id="sportynova-final-compact-landscape-controls">
+/* Embedded mode: keep the new player compact inside SPORTYNOVA's normal player frame. */
+#playerScreen{position:relative!important;overflow:hidden!important;aspect-ratio:16/9!important;min-height:0!important;max-height:none!important}
+#playerScreen #player-view{display:none!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;overflow:hidden!important;border-radius:inherit!important;background:#000!important;z-index:100!important;transform:none!important}
+#playerScreen #player-view.nova-player-open{display:block!important}
+#playerScreen #video-container,#playerScreen #video-container video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important}
+#playerScreen #video-container video{object-fit:contain!important;object-position:center!important}
+#playerScreen #player-ui{position:absolute!important;inset:0!important;z-index:10!important;pointer-events:none!important}
+#playerScreen #player-ui button,#playerScreen #player-ui input,#playerScreen #player-ui select,#playerScreen #player-ui .ps-tab,#playerScreen #player-ui .quality-menu{pointer-events:auto!important}
+#playerScreen #player-ui .player-top{padding:7px 10px!important}
+#playerScreen #player-ui .player-bottom{padding:5px 10px max(7px,env(safe-area-inset-bottom))!important;gap:5px!important}
+#playerScreen #player-ui .player-center{gap:22px!important}
+#playerScreen #player-ui .ctrl-btn.main{width:48px!important;height:48px!important}
+#playerScreen #player-ui .ctrl-btn.side{width:34px!important;height:34px!important}
+#player-view:fullscreen,#player-view:-webkit-full-screen{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;border-radius:0!important;transform:none!important;z-index:2147483647!important;background:#000!important;overflow:hidden!important}
+#player-view:fullscreen #video-container,#player-view:-webkit-full-screen #video-container{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#player-view:fullscreen #video-container video,#player-view:-webkit-full-screen #video-container video{width:100%!important;height:100%!important;object-fit:contain!important}
+#player-view:fullscreen #player-ui,#player-view:-webkit-full-screen #player-ui{position:absolute!important;inset:0!important;z-index:2147483646!important;pointer-events:none!important}
+#player-view:fullscreen #player-ui button,#player-view:fullscreen #player-ui input,#player-view:fullscreen #player-ui select,#player-view:fullscreen #player-ui .ps-tab,#player-view:fullscreen #player-ui .quality-menu,#player-view:-webkit-full-screen #player-ui button,#player-view:-webkit-full-screen #player-ui input,#player-view:-webkit-full-screen #player-ui select,#player-view:-webkit-full-screen #player-ui .ps-tab,#player-view:-webkit-full-screen #player-ui .quality-menu{pointer-events:auto!important}
+#player-view:fullscreen .player-center,#player-view:-webkit-full-screen .player-center{gap:clamp(24px,5vw,55px)!important}
+#player-view:fullscreen .ctrl-btn.main,#player-view:-webkit-full-screen .ctrl-btn.main{width:clamp(50px,7vw,68px)!important;height:clamp(50px,7vw,68px)!important}
+/* Fallback for mobile browsers that do not support Screen Orientation Lock. */
+#player-view.nova-manual-landscape{display:block!important;position:fixed!important;top:50%!important;left:50%!important;width:100dvh!important;height:100vw!important;max-width:none!important;max-height:none!important;inset:auto!important;transform:translate(-50%,-50%) rotate(90deg)!important;transform-origin:center center!important;border-radius:0!important;z-index:2147483647!important;background:#000!important;overflow:hidden!important}
+#player-view.nova-manual-landscape #video-container,#player-view.nova-manual-landscape #player-ui{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#player-view.nova-manual-landscape #video-container video{width:100%!important;height:100%!important;object-fit:contain!important}
+#player-view.nova-manual-landscape #player-ui{pointer-events:none!important}
+#player-view.nova-manual-landscape #player-ui button,#player-view.nova-manual-landscape #player-ui input,#player-view.nova-manual-landscape #player-ui select,#player-view.nova-manual-landscape #player-ui .ps-tab,#player-view.nova-manual-landscape #player-ui .quality-menu{pointer-events:auto!important}
+@media(orientation:landscape){#player-view:fullscreen .player-top,#player-view:-webkit-full-screen .player-top{padding:10px 16px!important}#player-view:fullscreen .player-bottom,#player-view:-webkit-full-screen .player-bottom{padding:7px 16px max(9px,env(safe-area-inset-bottom))!important}}
+</style>
+
 </body>
 </html>
 
@@ -3218,4 +3278,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 #player-view:fullscreen .ctrl-btn.main,#player-view:-webkit-full-screen .ctrl-btn.main,
 #player-view.nova-manual-landscape .ctrl-btn.main{width:65px!important;height:65px!important}
 @media(orientation:landscape){#player-view:fullscreen .player-top,#player-view:-webkit-full-screen .player-top{padding:12px 18px!important}}
+</style>
+
+<style id="sportynova-compact-player-fix">
+#playerScreen{position:relative!important;overflow:hidden!important;isolation:isolate!important}
+#playerScreen #player-view{display:none!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;z-index:40!important;background:#000!important;overflow:hidden!important;border-radius:inherit!important;touch-action:pan-y!important}
+#playerScreen #player-view.nova-player-open{display:block!important}
+#playerScreen #video-container{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#playerScreen video#live-player{width:100%!important;height:100%!important;object-fit:contain!important}
+#playerScreen #player-view:fullscreen,#playerScreen #player-view:-webkit-full-screen{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;border-radius:0!important;z-index:2147483647!important;background:#000!important}
+#playerScreen #player-view:fullscreen #video-container,#playerScreen #player-view:-webkit-full-screen #video-container{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#playerScreen #player-view:fullscreen video#live-player,#playerScreen #player-view:-webkit-full-screen video#live-player{width:100%!important;height:100%!important;object-fit:contain!important}
+@media(max-width:600px){#playerScreen #player-view .player-top{padding:8px 10px!important}#playerScreen #player-view .player-bottom{padding:6px 10px max(8px,env(safe-area-inset-bottom))!important}#playerScreen #player-view .player-center{gap:22px!important}#playerScreen #player-view .ctrl-btn.main{width:48px!important;height:48px!important;font-size:19px!important}#playerScreen #player-view .ctrl-btn.side{width:34px!important;height:34px!important;font-size:14px!important}}
 </style>

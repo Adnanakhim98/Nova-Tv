@@ -1226,8 +1226,11 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   b.append(logoBox,name,category);
  }
  b.addEventListener("click",()=>{
-  if(isLiveEvent || ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
-  else openModal(ch.name);
+  if(isLiveEvent || ch.url || Array.isArray(ch.streams)){
+    // Enter the immersive landscape player directly from the user's tap.
+    openImmersivePlayer();
+    playChannelDefault(ch);
+  }else openModal(ch.name);
  });
  root.appendChild(b);
 }
@@ -1539,13 +1542,6 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  let selectedUrl=String(url||'').trim();
  const playerServers=requestedServers.length?requestedServers:[{name:'Server 1',url:selectedUrl,keyid:drm&&(drm.keyid||drm.keyId||drm.kid)||'',key:drm&&(drm.key||drm.value)||'',drm:drm||null}];
  if(!/\.m3u8?(?:[?#]|$)/i.test(selectedUrl)&&requestedServers.length)selectedUrl=requestedServers[0].url;
- if(window.__sportyNovaOpenPlayer){
-   await stopEngines();
-   if(requestId!==playRequestId)return;
-   const playerDrm={...(drm&&typeof drm==='object'?drm:{}),scheme:(drm&&drm.scheme)||parsed.scheme||'',license:(drm&&drm.license)||parsed.license||''};
-   window.__sportyNovaOpenPlayer(selectedUrl,name,playerServers,playerDrm);
-   return;
- }
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
@@ -2909,6 +2905,162 @@ window.__sportyNovaClosePlayer=function(){closePlayer();playerViewDiv.classList.
 .channelarea{min-height:0!important;overflow-y:auto!important;}
 @media(max-width:420px){.playersticky .screen{aspect-ratio:16/9!important;min-height:0!important;max-height:none!important}}
 </style>
+
+<style id="sportynova-immersive-player-update">
+/* The inline player is removed from the channel-list layout and appears only
+   after a TV channel or Live Sports card is selected. */
+.playersticky{display:none!important}
+.playersticky.immersive-open{
+  display:block!important;position:fixed!important;inset:0!important;
+  z-index:99998!important;width:100vw!important;height:100dvh!important;
+  max-width:none!important;margin:0!important;padding:0!important;
+  background:#000!important;overflow:hidden!important;
+}
+.playersticky.immersive-open .sectionhead,
+.playersticky.immersive-open .noticebar{display:none!important}
+.playersticky.immersive-open .playercard{
+  position:fixed!important;inset:0!important;z-index:99999!important;
+  display:flex!important;flex-direction:column!important;
+  width:100vw!important;height:100vh!important;height:100dvh!important;
+  max-width:none!important;max-height:100dvh!important;
+  margin:0!important;padding:0!important;border:0!important;
+  border-radius:0!important;background:#000!important;overflow:hidden!important;
+}
+.playersticky.immersive-open .playercard .screen{
+  flex:1 1 auto!important;width:100%!important;height:100%!important;
+  min-height:0!important;max-height:none!important;aspect-ratio:auto!important;
+  align-self:stretch!important;background:#000!important;
+}
+.playersticky.immersive-open .playercard .screen>video{
+  width:100%!important;height:100%!important;object-fit:contain!important;
+}
+.playersticky.immersive-open .playercard .playerfoot{display:none!important}
+#immersiveBackBtn{
+  display:none;position:absolute;left:12px;top:calc(12px + env(safe-area-inset-top,0px));
+  z-index:100010;width:42px;height:42px;border:1px solid #ffffff55;
+  border-radius:50%;background:rgba(5,12,22,.72);color:#fff;
+  font-size:21px;font-weight:900;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);cursor:pointer;
+}
+.playersticky.immersive-open #immersiveBackBtn{display:flex}
+.playersticky.immersive-open .screenFullBtn{display:none!important}
+.playersticky.immersive-open .nova-controls{
+  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+}
+/* Fallback rotation for browsers that cannot lock screen orientation. */
+.playersticky.immersive-open.rotate-fallback .playercard{
+  width:100dvh!important;height:100vw!important;
+  left:calc((100vw - 100dvh)/2)!important;
+  top:calc((100dvh - 100vw)/2)!important;
+  right:auto!important;bottom:auto!important;
+  transform:rotate(90deg)!important;transform-origin:center center!important;
+}
+@media(orientation:landscape){
+ .playersticky.immersive-open.rotate-fallback .playercard{
+   left:0!important;top:0!important;width:100vw!important;height:100dvh!important;
+   transform:none!important;
+ }
+}
+</style>
+<script id="sportynova-immersive-player-controller">
+(function(){
+ const sticky=document.querySelector(".playersticky");
+ const card=sticky&&sticky.querySelector(".playercard");
+ const screenBox=document.getElementById("playerScreen");
+ if(!sticky||!card||!screenBox)return;
+
+ let historyGuard=false;
+ let orientationRequested=false;
+ let orientationTimer=null;
+
+ const back=document.createElement("button");
+ back.id="immersiveBackBtn";
+ back.type="button";
+ back.setAttribute("aria-label","Back to channel list");
+ back.textContent="←";
+ screenBox.appendChild(back);
+
+ function isFullscreen(){
+   return document.fullscreenElement===card ||
+          document.webkitFullscreenElement===card;
+ }
+ async function requestLandscape(){
+   try{
+     if(screen.orientation&&screen.orientation.lock){
+       await screen.orientation.lock("landscape");
+       orientationRequested=true;
+     }
+   }catch(e){
+     // The CSS rotation fallback below handles browsers without orientation lock.
+   }
+   clearTimeout(orientationTimer);
+   orientationTimer=setTimeout(()=>{
+     if(sticky.classList.contains("immersive-open") &&
+        window.matchMedia("(orientation: portrait)").matches &&
+        !isFullscreen()){
+       sticky.classList.add("rotate-fallback");
+     }
+   },450);
+ }
+ async function openImmersivePlayer(){
+   sticky.classList.add("immersive-open");
+   sticky.classList.remove("rotate-fallback");
+   card.classList.remove("controls-hidden","info-bar-hidden");
+   if(!historyGuard){
+     history.pushState({sportynovaPlayer:true},"","#player");
+     historyGuard=true;
+   }
+   try{
+     if(card.requestFullscreen){
+       await card.requestFullscreen();
+     }else if(card.webkitRequestFullscreen){
+       card.webkitRequestFullscreen();
+     }
+   }catch(e){}
+   requestLandscape();
+ }
+ async function closeImmersivePlayer(fromPopState=false){
+   if(!sticky.classList.contains("immersive-open"))return;
+   sticky.classList.remove("immersive-open","rotate-fallback");
+   card.classList.remove("controls-hidden","info-bar-hidden","mobile-rotated");
+   clearTimeout(orientationTimer);
+   try{
+     if(document.fullscreenElement)await document.exitFullscreen();
+     else if(document.webkitFullscreenElement)document.webkitExitFullscreen();
+   }catch(e){}
+   try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock()}catch(e){}
+   orientationRequested=false;
+   if(historyGuard){
+     historyGuard=false;
+     if(!fromPopState && location.hash==="#player")history.back();
+   }
+ }
+ window.openImmersivePlayer=openImmersivePlayer;
+ window.closeImmersivePlayer=closeImmersivePlayer;
+ back.addEventListener("click",()=>closeImmersivePlayer(false));
+ window.addEventListener("popstate",()=>{
+   if(sticky.classList.contains("immersive-open"))closeImmersivePlayer(true);
+   else historyGuard=false;
+ });
+ document.addEventListener("fullscreenchange",()=>{
+   if(!isFullscreen() && sticky.classList.contains("immersive-open")){
+     // A user/browser Back action exits fullscreen; return to the channel list.
+     closeImmersivePlayer(false);
+   }
+ });
+ document.addEventListener("webkitfullscreenchange",()=>{
+   if(!isFullscreen() && sticky.classList.contains("immersive-open"))
+     closeImmersivePlayer(false);
+ });
+ document.addEventListener("keydown",e=>{
+   if(e.key==="Escape" && sticky.classList.contains("immersive-open")){
+     e.preventDefault();
+     closeImmersivePlayer(false);
+   }
+ });
+})();
+</script>
+
 </body>
 </html>
 

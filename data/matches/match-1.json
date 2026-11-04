@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Afghanistan Vs Zimbabwe",
+    "name": "Adelaide Strikes Vs Brisbane Heat",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
@@ -53,11 +53,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-01T09:20:00+06:00",
-    "endTime": "2026-11-02T01:50:00+06:00",
+    "startTime": "2026-11-05T10:20:00+06:00",
+    "endTime": "2026-11-05T01:50:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS",
+    "matchType": "CRICKETS|WBBL-T20",
     "drm": {
       "scheme": "clearkey",
       "license": "468c69668fb1f8433921d80485af81dc:fdc96b10b6e9cdcc3c5904afb6bff82d"

@@ -96,7 +96,17 @@ def main():
             # If the filename matches an existing team alias, update that team.
             record = index.get(normalize(image_path.stem))
         if record is None:
-            record = {"name": name, "logo": logo_url}
+            logo_url = (
+    "https://raw.githubusercontent.com/"
+    "Adnanakhim98/Nova-Tv/main/logos/"
+    + image_path.name.replace(" ", "%20")
+)
+
+record = {
+    "name": name,
+    "aliases": [name],
+    "logo": logo_url
+}
             records.append(record)
             added += 1
         else:

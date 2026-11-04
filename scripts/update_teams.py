@@ -96,11 +96,7 @@ def main():
             # If the filename matches an existing team alias, update that team.
             record = index.get(normalize(image_path.stem))
         if record is None:
-            record = {
-    "name": name,
-    "aliases": [name],
-    "logo": logo_url
-}
+            record = {"name": name, "logo": logo_url}
             records.append(record)
             added += 1
         else:

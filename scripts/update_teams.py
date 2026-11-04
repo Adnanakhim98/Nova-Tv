@@ -6,7 +6,7 @@ import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-LOGO_DIR = ROOT / "logo"
+LOGO_DIR = ROOT / "logos"
 TEAMS_PATH = ROOT / "data" / "teams.json"
 RAW_BASE = "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logo/"
 SUPPORTED = {".png", ".jpg", ".jpeg", ".webp", ".svg"}

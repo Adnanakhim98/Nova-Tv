@@ -9,45 +9,41 @@
       "logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg"
     },
     {
-"name": "Afghanistan",
-"aliases": [
-"India Women",
-"Indian Flag",
-"India Flag"
-],
-"logo": "https://i.postimg.cc/mg1Z1nbd/afghanistan-flag-footylogos-1.jpg"
+      "name": "Afghanistan",
+      "aliases": [
+        "India Women",
+        "Indian Flag",
+        "India Flag"
+      ],
+      "logo": "https://i.postimg.cc/mg1Z1nbd/afghanistan-flag-footylogos-1.jpg"
     },
-
     {
-  "name": "Liverpool",
-  "aliases": [
-    "Liverpool FC",
-    "Liverpool Team",
-    "Liverpool Logo"
-  ],
-  "logo": "https://assets.football-logos.cc/logos/england/1500x1500/liverpool.d03fd250.png"
-},
-
+      "name": "Liverpool",
+      "aliases": [
+        "Liverpool FC",
+        "Liverpool Team",
+        "Liverpool Logo"
+      ],
+      "logo": "https://assets.football-logos.cc/logos/england/1500x1500/liverpool.d03fd250.png"
+    },
     {
-  "name": "AEK Athens",
-  "aliases": [
-    "AEK Athens FC",
-    "AEK",
-    "AEK Athens Team"
-  ],
-  "logo": "https://i.postimg.cc/rm1LZLp6/aek-athens-logo-footylogos.jpg"
-},
-{
-  "name": "Fenerbahce",
-  "aliases": [
-    "Fenerbahce FC",
-    "Fenerbahçe",
-    "Fenerbahce Team"
-  ],
-  "logo": "https://i.postimg.cc/26Qf9fSg/fenerbahce-logo-footylogos.jpg"
-},
-
-    
+      "name": "AEK Athens",
+      "aliases": [
+        "AEK Athens FC",
+        "AEK",
+        "AEK Athens Team"
+      ],
+      "logo": "https://i.postimg.cc/rm1LZLp6/aek-athens-logo-footylogos.jpg"
+    },
+    {
+      "name": "Fenerbahce",
+      "aliases": [
+        "Fenerbahce FC",
+        "Fenerbahçe",
+        "Fenerbahce Team"
+      ],
+      "logo": "https://i.postimg.cc/26Qf9fSg/fenerbahce-logo-footylogos.jpg"
+    },
     {
       "name": "Barcelona",
       "aliases": [

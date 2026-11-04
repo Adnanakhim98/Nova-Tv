@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Bangladesh Vs China",
+    "name": "Bangladesh Vs Bhutan",
     "category": "Live Sports",
     "logo": "▶",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/FC%20Augsburg%20Vs%20FC%20Bayern%20M%C3%BCnchen.jpg",
@@ -44,10 +44,10 @@
     ],
     "show": "yes",
     "id": 6,
-    "startTime": "2026-11-02T16:00:00+06:00",
-    "endTime": "2026-11-02T19:30:00+06:00",
+    "startTime": "2026-11-05T19:50:00+06:00",
+    "endTime": "2026-11-05T21:50:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Hockey"
+    "matchType": "Football | SAFF Championship"
   }
 }

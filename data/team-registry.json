@@ -1,0 +1,30 @@
+{
+  "teams": [
+    {
+      "name": "Afghanistan",
+      "aliases": [
+        "Afghanistan Cricket Team",
+        "Afghanistan National Team"
+      ],
+      "logoFile": "afghanistan.png"
+    },
+    {
+      "name": "Fenerbahçe",
+      "aliases": [
+        "Fenerbahce",
+        "Fenerbahçe SK",
+        "Fenerbahce FC"
+      ],
+      "logoFile": "fenerbahce.png"
+    },
+    {
+      "name": "AEK Athens FC",
+      "aliases": [
+        "AEK Athens",
+        "AEK",
+        "AEK FC"
+      ],
+      "logoFile": "aek-athens.png"
+    }
+  ]
+}

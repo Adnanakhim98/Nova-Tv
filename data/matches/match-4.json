@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Chitwan Rhinos Vs Sudurpaschim Royals",
+    "name": "Real Madrid Vs AEK Athens FC",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/England%20%F0%9F%8F%85%20Vs%20West%20Indies%20%F0%9F%8F%85.jpg",
@@ -20,12 +20,12 @@
           "scheme": "clearkey",
           "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
-        "name": "SD SERVER",
-        "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
-        "show": "No"
+        "name": "Tapmad",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a14ab8af8915fc600b1e3e9683f0/01a14ab953dd1ea540a81c2b41b75f/main.m3u8",
+        "show": "yes"
       },
       {
         "name": "FANCODE SD",
@@ -62,6 +62,6 @@
     "endTime": "2026-11-02T21:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket"
+    "matchType": "Football"
   }
 }

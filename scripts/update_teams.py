@@ -1,147 +1,135 @@
 #!/usr/bin/env python3
-"""Merge registered local team logos into data/teams.json without deleting other team data."""
+"""Automatically build/update data/teams.json from filenames in logo/."""
 import json
 import re
-import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOGO_DIR = ROOT / "logo"
-REGISTRY_PATH = ROOT / "data" / "team-registry.json"
 TEAMS_PATH = ROOT / "data" / "teams.json"
 RAW_BASE = "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logo/"
-
 SUPPORTED = {".png", ".jpg", ".jpeg", ".webp", ".svg"}
 
+# Optional filename corrections for common clubs/teams. Add mappings here only if needed.
+# The key is the filename without extension, normalized to lowercase letters/numbers.
+KNOWN_NAMES = {
+    "fenerbahce": "Fenerbahçe",
+    "fenerbahcesk": "Fenerbahçe",
+    "aekathens": "AEK Athens FC",
+    "aekathensfc": "AEK Athens FC",
+    "manutd": "Manchester United",
+    "manchesterunited": "Manchester United",
+    "mancity": "Manchester City",
+    "manchestercity": "Manchester City",
+    "realmadrid": "Real Madrid",
+    "barcelona": "Barcelona",
+    "fcbarcelona": "Barcelona",
+    "psg": "Paris Saint-Germain",
+    "parissaintgermain": "Paris Saint-Germain",
+    "afghanistan": "Afghanistan",
+    "indiawomen": "India Women",
+    "india": "India",
+}
 
-def norm(value):
-    return re.sub(r"[^a-z0-9]+", "", str(value or "").casefold())
+def normalize(value):
+    value = unicodedata.normalize("NFKD", str(value or ""))
+    value = "".join(ch for ch in value if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]+", "", value.casefold())
 
+def display_name(stem):
+    key = normalize(stem)
+    if key in KNOWN_NAMES:
+        return KNOWN_NAMES[key]
+    # Turn common separators into spaces, then make a readable display name.
+    value = re.sub(r"[_-]+", " ", stem).strip()
+    value = re.sub(r"\s+", " ", value)
+    # Preserve words already containing capitals; title-case all-lowercase filenames.
+    if value.islower():
+        value = value.title()
+    return value
 
-def load_json(path, default):
-    if not path.exists():
-        return default
+def load_existing():
+    if not TEAMS_PATH.exists():
+        return [], "list", None
     try:
-        return json.loads(path.read_text(encoding="utf-8-sig"))
+        data = json.loads(TEAMS_PATH.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as exc:
-        raise SystemExit(f"Invalid JSON in {path.relative_to(ROOT)}: {exc}")
-
+        raise SystemExit(f"Invalid JSON in data/teams.json: {exc}")
+    if isinstance(data, list):
+        return data, "list", data
+    if isinstance(data, dict) and isinstance(data.get("teams"), list):
+        return data["teams"], "wrapped-list", data
+    if isinstance(data, dict):
+        return list(data.values()), "object-map", data
+    raise SystemExit("data/teams.json must be a JSON array or object.")
 
 def main():
-    registry_data = load_json(REGISTRY_PATH, {"teams": []})
-    registry = registry_data.get("teams", [])
-    if not isinstance(registry, list):
-        raise SystemExit('data/team-registry.json must contain a "teams" array.')
+    LOGO_DIR.mkdir(parents=True, exist_ok=True)
+    files = sorted(
+        p for p in LOGO_DIR.iterdir()
+        if p.is_file() and p.suffix.lower() in SUPPORTED
+    )
+    records, shape, original = load_existing()
 
-    # Build a lookup using official names and aliases, and accept only explicitly registered files.
-    by_alias = {}
-    for item in registry:
-        name = item.get("name", "").strip()
-        filename = item.get("logoFile", "").strip()
-        if not name or not filename:
-            print(f"Skipping invalid registry entry: {item!r}")
-            continue
-        item_aliases = [name] + item.get("aliases", [])
-        for alias in item_aliases:
-            by_alias[norm(alias)] = item
-
-    existing = load_json(TEAMS_PATH, [])
-    if isinstance(existing, list):
-        records = existing
-        container_type = "list"
-    elif isinstance(existing, dict):
-        # Support object maps keyed by team name as well as {"teams": [...]}.
-        if isinstance(existing.get("teams"), list):
-            records = existing["teams"]
-            container_type = "wrapped-list"
-        else:
-            records = list(existing.values())
-            container_type = "object-map"
-    else:
-        raise SystemExit("data/teams.json must be a JSON array or object.")
-
-    # Preserve existing entries and their other fields; match on name or aliases.
+    # Index existing records by common team-name fields and aliases.
     index = {}
     for record in records:
         if not isinstance(record, dict):
             continue
-        for key in ("name", "team", "title", "id"):
-            val = record.get(key)
-            if val:
-                index[norm(val)] = record
-        for alias in record.get("aliases", []) if isinstance(record.get("aliases", []), list) else []:
-            index[norm(alias)] = record
+        for field in ("name", "team", "title", "id"):
+            if record.get(field):
+                index[normalize(record[field])] = record
+        aliases = record.get("aliases", [])
+        if isinstance(aliases, list):
+            for alias in aliases:
+                index[normalize(alias)] = record
 
-    added = updated = skipped = 0
-    for item in registry:
-        name = item.get("name", "").strip()
-        filename = item.get("logoFile", "").strip()
-        if not name or not filename:
-            continue
-        path = (LOGO_DIR / filename).resolve()
-        if LOGO_DIR.resolve() not in path.parents:
-            print(f"Skipping unsafe logo path: {filename}")
-            skipped += 1
-            continue
-        if path.suffix.lower() not in SUPPORTED or not path.is_file():
-            print(f"Logo not found / unsupported for {name}: logo/{filename}")
-            skipped += 1
-            continue
+    added = updated = 0
+    for image_path in files:
+        name = display_name(image_path.stem)
+        key = normalize(name)
+        logo_url = RAW_BASE + image_path.name
+        record = index.get(key)
 
-        target = index.get(norm(name))
-        if target is None:
-            for alias in item.get("aliases", []):
-                target = index.get(norm(alias))
-                if target is not None:
-                    break
-
-        logo_url = RAW_BASE + filename
-        if target is None:
-            target = {
-                "name": name,
-                "aliases": item.get("aliases", []),
-                "logo": logo_url
-            }
-            records.append(target)
+        if record is None:
+            # If the filename matches an existing team alias, update that team.
+            record = index.get(normalize(image_path.stem))
+        if record is None:
+            record = {"name": name, "logo": logo_url}
+            records.append(record)
             added += 1
         else:
-            target["name"] = target.get("name") or name
-            # Keep aliases that already exist and add registry aliases without duplicates.
-            old_aliases = target.get("aliases", [])
-            if not isinstance(old_aliases, list):
-                old_aliases = []
-            target["aliases"] = list(dict.fromkeys(old_aliases + item.get("aliases", [])))
-            target["logo"] = logo_url
+            # Preserve existing fields; only fill name if missing and update logo.
+            if not any(record.get(f) for f in ("name", "team", "title")):
+                record["name"] = name
+            record["logo"] = logo_url
             updated += 1
 
-        for key in ("name", "team", "title", "id"):
-            val = target.get(key)
-            if val:
-                index[norm(val)] = target
-        for alias in target.get("aliases", []):
-            index[norm(alias)] = target
+        # Index again so repeated filenames or aliases won't create duplicates in this run.
+        for field in ("name", "team", "title", "id"):
+            if record.get(field):
+                index[normalize(record[field])] = record
+        index[key] = record
 
-    if container_type == "list":
+    if shape == "list":
         output = records
-    elif container_type == "wrapped-list":
-        existing["teams"] = records
-        output = existing
+    elif shape == "wrapped-list":
+        original["teams"] = records
+        output = original
     else:
-        # Preserve object-map shape; key records by their current name.
+        # Keep object-map shape, using each record's name as the key.
         output = {}
-        for record in records:
+        for i, record in enumerate(records, 1):
             if isinstance(record, dict):
-                key = record.get("name") or record.get("team") or record.get("id")
-                if key is None:
-                    key = f"team-{len(output) + 1}"
-                output[str(key)] = record
+                map_key = record.get("name") or record.get("team") or record.get("id") or f"team-{i}"
+                output[str(map_key)] = record
             else:
-                output[f"team-{len(output) + 1}"] = record
+                output[f"team-{i}"] = record
 
     TEAMS_PATH.parent.mkdir(parents=True, exist_ok=True)
     TEAMS_PATH.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Done. Added: {added}; updated: {updated}; skipped: {skipped}")
-
+    print(f"Scanned {len(files)} logo file(s). Added {added}; updated {updated}.")
 
 if __name__ == "__main__":
     main()

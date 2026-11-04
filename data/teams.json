@@ -29,16 +29,23 @@
 },
 
     {
+  "name": "AEK Athens",
+  "aliases": [
+    "AEK Athens FC",
+    "AEK",
+    "AEK Athens Team"
+  ],
+  "logo": "https://i.postimg.cc/rm1LZLp6/aek-athens-logo-footylogos.jpg"
+},
+{
   "name": "Fenerbahce",
   "aliases": [
     "Fenerbahce FC",
     "Fenerbahçe",
-    "Fenerbahce Team",
-    "Fenerbahce Logo"
+    "Fenerbahce Team"
   ],
-  "logo": "https://www.football-logos.cc/turkey/fenerbahce/"
+  "logo": "https://i.postimg.cc/26Qf9fSg/fenerbahce-logo-footylogos.jpg"
 },
-
 
     
     {

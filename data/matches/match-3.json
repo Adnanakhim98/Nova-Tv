@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "East Bengal FC (IND) vs Al Seeb Club (OMA)",
+    "name": "New Zealand Vs India",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
@@ -60,11 +60,11 @@
     ],
     "show": "yes",
     "id": 3,
-    "startTime": "2026-11-03T19:35:00+06:00",
-    "endTime": "2026-11-03T21:55:00+06:00",
+    "startTime": "2026-11-04T07:50:00+06:00",
+    "endTime": "2026-11-04T16:55:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football",
+    "matchType": "Cricket | ODI",
     "drm": {
       "scheme": "clearkey",
       "license": "a323fd2c6886dfea4831314fd63c4eb7:462c6dd2b56c26e958f5981fea25aef4"

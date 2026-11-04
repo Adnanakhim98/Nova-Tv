@@ -1,20 +1,16 @@
+
 name: Auto-update team logos
 
 on:
   push:
     paths:
       - "logo/**"
-      - "data/team-registry.json"
       - "scripts/update_teams.py"
       - ".github/workflows/update-teams.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
-
-concurrency:
-  group: update-team-logos
-  cancel-in-progress: false
 
 jobs:
   update:
@@ -28,13 +24,13 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Update teams.json from registered logo files
+      - name: Update teams.json
         run: python scripts/update_teams.py
 
-      - name: Commit generated teams.json
+      - name: Commit changes
         run: |
           if git diff --quiet -- data/teams.json; then
-            echo "data/teams.json is already up to date."
+            echo "No changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"

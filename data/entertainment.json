@@ -18,16 +18,27 @@
       "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Zeetv/default/manifest.mpd|drmScheme=clearkey&drmLicense=ed068cf84f0640ccbc7c0e395c0a272e:bb722190f2bb446391020411a7d0828b",
       "logoUrl": "https://imagesdishtvd2h.whatsonindia.com/dasimages/channel/landscape/360x270/yHNSuG1V.png",
       "fallbackLogo": "▶"
-    },
+    },    
+
     {
-      "name": "Enter 10 Bangla",
-      "category": "Entertainment",
-      "logo": "▶",
-      "tone": "purple",
-      "url": "https://live-bangla.akamaized.net/liveabr/playlist.m3u8",
-      "logoUrl": "https://i.postimg.cc/vBHj3r3J/images-fc0d1242765efd4c1494fbfe4ff65c7a-playmist-enter-10-bangla400x400.jpg",
-      "fallbackLogo": "▶"
-    },
+"name": "Enter 10 Bangla",
+"category": "Entertainment",
+"logo": "📺",
+"tone": "red",
+"url": "https://amg00877-b4unew-amg00877c3-xiaomi-in-5474.playouts.now.amagi.tv/720p/index.m3u8",
+"logoUrl": "https://i.postimg.cc/vBHj3r3J/images-fc0d1242765efd4c1494fbfe4ff65c7a-playmist-enter-10-bangla400x400.jpg",
+"fallbackLogo": "📺",
+"streams": [
+{
+"name": "Server 1",
+"url": "https://live-bangla.akamaized.net/liveabr/playlist.m3u8"
+},
+{
+"name": "Server 2",
+"url": "https://amg01448-samsungin-enterr10bangla-samsungin-ad-gg.amagi.tv/playlist/amg01448-samsungin-enterr10bangla-samsungin/playlist.m3u8"
+}
+]
+},
     {
       "name": "Colors Bangla",
       "category": "Entertainment",

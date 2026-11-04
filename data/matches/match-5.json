@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": " New England Revolution Vs Inter Miami CF",
+    "name": "Melbourne Renegades Vs Hobars Hurricanes",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Liverpool%20FC%20Vs%20Manchester%20City.jpg",
@@ -17,10 +17,10 @@
     ],
     "show": "yes",
     "id": 5,
-    "startTime": "2026-11-02T06:00:00+06:00",
-    "endTime": "2026-11-02T08:10:00+06:00",
+    "startTime": "2026-11-04T14:00:00+06:00",
+    "endTime": "2026-11-04T18:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "FOOTBALL"
+    "matchType": "Cricket|T20"
   }
 }

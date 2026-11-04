@@ -1090,8 +1090,11 @@ async function loadTeamLogos(){
  const registerTeams=(data,sourceUrl)=>{
   const teams=Array.isArray(data)?data:(Array.isArray(data?.teams)?data.teams:[]);
   teams.forEach(team=>{
-   if(!team||!team.name||!team.logo)return;
-   let logo=String(team.logo).trim();
+   if(!team||!team.name)return;
+   // Accept common logo field names used by teams.json.
+   const rawLogo=team.logo||team.logoUrl||team.logoURL||team.imageUrl||team.image||team.flag||"";
+   if(!rawLogo)return;
+   let logo=String(rawLogo).trim();
    try{
     if(/^https?:\/\//i.test(logo)){
      // Absolute logo URLs are used as-is.
@@ -1105,7 +1108,8 @@ async function loadTeamLogos(){
     }
    }catch(e){}
    const entry={name:String(team.name),logo};
-   [team.name,...(Array.isArray(team.aliases)?team.aliases:[])].forEach(alias=>{
+   const aliases=[team.name,...(Array.isArray(team.aliases)?team.aliases:[]),...(Array.isArray(team.alternativeNames)?team.alternativeNames:[])];
+   aliases.forEach(alias=>{
     const key=normalizeTeamName(alias);
     if(key)teamLogoMap[key]=entry;
    });
@@ -1114,8 +1118,9 @@ async function loadTeamLogos(){
  // Load a fallback shared list first, if present.
  try{
   const url=rawBase+"data/teams.json";
-  const response=await fetch(url,{cache:"force-cache"});
+  const response=await fetch(url+"?v="+Date.now(),{cache:"no-store"});
   if(response.ok)registerTeams(await response.json(),url);
+  else console.warn("teams.json could not be loaded:",response.status);
  }catch(error){console.info("Optional data/teams.json not found.");}
  // GitHub Pages cannot list folders directly. GitHub's repository tree API lets us
  // discover every JSON file at any depth inside tournament/ automatically.
@@ -1164,7 +1169,8 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
    const wrap=document.createElement("div");wrap.className="team-logo";
    const teamEntry=findTeamLogo(team);
     const code=teamFlagCode(team);
-    const logoUrl=teamEntry&&/^https?:\/\//i.test(teamEntry.logo)?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
+    // Prefer the exact logo registered in data/teams.json; use country flag only if no logo exists.
+    const logoUrl=teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
     if(logoUrl){
       const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
       img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};

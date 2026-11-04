@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Real Madrid Vs AEK Athens FC",
+    "name": "Liverpool Vs Fenerbahce",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/England%20%F0%9F%8F%85%20Vs%20West%20Indies%20%F0%9F%8F%85.jpg",
@@ -58,8 +58,8 @@
     ],
     "show": "yes",
     "id": 4,
-    "startTime": "2026-10-02T14:20:00+06:00",
-    "endTime": "2026-11-02T21:30:00+06:00",
+    "startTime": "2026-11-04T14:20:00+06:00",
+    "endTime": "2026-11-05T03:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football"

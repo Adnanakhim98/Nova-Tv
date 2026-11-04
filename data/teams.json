@@ -55,11 +55,24 @@
     },
     {
       "name": "Brisbane Heat",
-      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logo/Brisbane Heat.png"
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Brisbane%20Heat.png",
+      "aliases": [
+        "Brisbane Heat"
+      ]
     },
     {
       "name": "Bhutan",
-      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logo/Bhutan.svg"
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Bhutan.svg",
+      "aliases": [
+        "Bhutan"
+      ]
+    },
+    {
+      "name": "Maldive",
+      "aliases": [
+        "Maldive"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Maldive.svg"
     }
   ]
 }

@@ -105,9 +105,17 @@
     {
       "name": "Sydney Thunder",
       "aliases": [
-        "Sydney Thunders"
+        "Sydney Thunders",
+        "Sydney Thunder"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/sydney%20thunder.png"
+    },
+    {
+      "name": "West indies",
+      "aliases": [
+        "West indies"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/West%20indies%20.png"
     }
   ]
 }

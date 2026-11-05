@@ -12,13 +12,13 @@
      
       {
         "name": "Tapmad",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14abbcff31ea540a81c2b41b760/01a14abc06421567ee931e109fa577/main.m3u8",
+        "url": "https://pull.niues.live/live/stream-372746_lhd.m3u8?auth_key=1793874874-0-0-3147ae48875948924e1d7b8c0d4cd56a",
         "show": "yes"
       },
       {
         "name": "Sony Sports 1",
         "url": "https://stream.ottplus.live/live/ten_1_hd_abr/live/ten_1_hd_720/chunks.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "TNT Sports 2",
@@ -27,7 +27,7 @@
           "scheme": "clearkey",
           "license": "f3df7843080ae743bf865dc5fdf64c68:567c863bc12eb74788ea74888c042e1b"
         },
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",

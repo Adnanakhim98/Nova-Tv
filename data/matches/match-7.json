@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pokhara Avengers vs Lumbini Lions",
+    "name": "Sydney Thundes Vs Perth Scorcher",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -54,11 +54,11 @@
     ],
     "show": "yes",
     "id": 7,
-    "startTime": "2026-11-03T13:00:00+06:00",
-    "endTime": "2026-11-03T19:30:00+06:00",
+    "startTime": "2026-11-05T14:00:00+06:00",
+    "endTime": "2026-11-05T16:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket",
+    "matchType": "Cricket|WBBL-T20",
     "drm": {
       "scheme": "clearkey",
       "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"

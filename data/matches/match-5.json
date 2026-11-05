@@ -6,17 +6,34 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Liverpool%20FC%20Vs%20Manchester%20City.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "http://162.251.160.53:8089/prime_can_amzn1_dv_gti_f4af03c2_3b70_4ba0_9c38_18b2732cc90d/index.m3u8",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qyp1du4zue/out/v1/625ab75f4b1e48e49180b189310fde8b/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "Tapmad",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14a9fb90c15fc60e91e1786b061/01a14a9feb881ea540a81c2b41b75e/main.m3u8",
+        "name": "WILLOW FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qyp1du4zue/out/v1/625ab75f4b1e48e49180b189310fde8b/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "a16f4890e1a9a95d009f657f9d6837bb:e6e66c827c8a8c7d212db25ee49652e2"
+        },
         "show": "yes"
       },
       {
-        "name": "TNT Sports 3",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd|drmScheme=clearkey&drmLicense=cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca",
+        "name": "SonyLiv PRIME FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/asrhszykzd/out/v1/dc6cc8173af4474e8dcd393adb429278/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "74ea2277355a796a7b81fc5ae0850b8b:9e5fc3413f079d3624873bb524453396"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "WILLOW FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/vqu1w8f6e7/out/v1/f7d7ec07c208491681c1b6f68d0e823f/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "a59f28b25431a5ab1091707c14e6e5b5:0e2b44300a38bd47fbb02e9c687aa2c8"
+        },
         "show": "yes"
       }
     ],
@@ -26,6 +43,10 @@
     "endTime": "2026-11-05T03:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football"
+    "matchType": "Football",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "a16f4890e1a9a95d009f657f9d6837bb:e6e66c827c8a8c7d212db25ee49652e2"
+    }
   }
 }

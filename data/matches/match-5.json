@@ -19,12 +19,9 @@
         "show": "yes"
       },
       {
-        "name": "SonyLiv PRIME FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/asrhszykzd/out/v1/dc6cc8173af4474e8dcd393adb429278/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "74ea2277355a796a7b81fc5ae0850b8b:9e5fc3413f079d3624873bb524453396"
-        },
+        "name": "Sony Sports 1",
+        "url": "https://stream.ottplus.live/live/ten_1_hd_abr/live/ten_1_hd_720/chunks.m3u8",
+        
         "show": "yes"
       },
       {
@@ -34,7 +31,7 @@
           "scheme": "clearkey",
           "license": "a59f28b25431a5ab1091707c14e6e5b5:0e2b44300a38bd47fbb02e9c687aa2c8"
         },
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",

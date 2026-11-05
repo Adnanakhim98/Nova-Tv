@@ -14,8 +14,8 @@
     },
     "streams": [
       {
-        "name": "T-Sports",
-        "url": "https://s1.itcnbd.live/T-Sports-HD/tracks-v1a1/mono.m3u8",
+        "name": "Vset",
+        "url": "https://live05.miekgo.app/live/33860426.m3u8",
         "show": "yes"
       },
       {
@@ -34,7 +34,7 @@
       },
       {
         "name": "MPD Server 2",
-        "url": "https://live05.miekgo.app/live/33860426.m3u8",
+        "url": "",
         
         "show": "yes"
       }

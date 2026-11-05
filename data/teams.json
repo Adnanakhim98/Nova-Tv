@@ -80,6 +80,34 @@
         "Adelaide strikers"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Adelaide%20strikers.png"
+    },
+    {
+      "name": "Melbourne renegades",
+      "aliases": [
+        "Melbourne renegades"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Melbourne%20renegades.png"
+    },
+    {
+      "name": "Perth Scorcher",
+      "aliases": [
+        "Perth Scorcher"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Perth%20Scorcher.png"
+    },
+    {
+      "name": "Sydney Sixers",
+      "aliases": [
+        "Sydney Sixers"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Sydney%20Sixers%20.png"
+    },
+    {
+      "name": "Sydney Thunder",
+      "aliases": [
+        "Sydney Thunder"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/sydney%20thunder.png"
     }
   ]
 }

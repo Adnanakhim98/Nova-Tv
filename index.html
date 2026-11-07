@@ -953,6 +953,41 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
+<style id="sportynova-multiscreen-video-reference">
+#multiScreenOverlay .ms-grid{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
+#multiScreenOverlay .ms-tile{border:1px solid #263343;border-radius:2px}
+#multiScreenOverlay .ms-tile video{object-fit:contain}
+#multiScreenOverlay .ms-tile-name{bottom:48px;left:10px;background:#05080dc9;border:1px solid #ffffff20}
+#multiScreenOverlay .ms-count{letter-spacing:.1px}
+#multiScreenOverlay .ms-tile-empty{background:linear-gradient(145deg,#101a28,#080d16)}
+#multiScreenOverlay .ms-tile-empty button{background:#08bce8;color:#00131c}
+#multiScreenOverlay .ms-head button{min-width:48px}
+#multiScreenOverlay .ms-head .ms-close{min-width:78px}
+#multiScreenOverlay[data-count="2"] .ms-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(0,1fr)}
+#multiScreenOverlay[data-count="3"] .ms-grid,#multiScreenOverlay[data-count="4"] .ms-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+@media(orientation:portrait){
+ #multiScreenOverlay[data-count="2"] .ms-grid{grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr))}
+ #multiScreenOverlay[data-count="3"] .ms-grid,#multiScreenOverlay[data-count="4"] .ms-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr))}
+}
+#multiScreenOverlay.ms-landscape .ms-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
+#multiScreenOverlay.ms-landscape[data-count="1"] .ms-grid{grid-template-columns:1fr!important;grid-template-rows:1fr!important}
+.ms-picker{position:fixed;inset:0;z-index:100110;display:none;align-items:center;justify-content:center;padding:14px;background:#000b;backdrop-filter:blur(7px)}
+.ms-picker.open{display:flex}
+.ms-picker-panel{width:min(680px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;overflow:hidden;border:1px solid #24384c;border-radius:18px;background:#0b111b;box-shadow:0 24px 80px #000b}
+.ms-picker-head{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid #ffffff16;background:#101a28}
+.ms-picker-head>div{display:flex;flex:1;flex-direction:column;gap:2px}.ms-picker-head strong{font-size:16px}.ms-picker-head small{color:#94a8bd;font-size:11px}
+.ms-picker-head button{width:36px;height:36px;border:1px solid #ffffff1d;border-radius:50%;background:#1b2736;color:#fff;font-size:21px}
+.ms-picker-list{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.ms-pick-item{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid #27394c;border-radius:13px;background:linear-gradient(135deg,#151f2d,#101722);color:#f5f8fc;text-align:left;cursor:pointer}
+.ms-pick-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#9aadc1;font-size:10px}
+.ms-pick-live{color:#ff6470;font-weight:900;white-space:nowrap}.ms-pick-live:before{content:"";display:inline-block;width:6px;height:6px;margin-right:5px;border-radius:50%;background:#ff4355;box-shadow:0 0 8px #ff4355}
+.ms-pick-teams{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;font-weight:800}
+.ms-pick-teams span:first-child,.ms-pick-teams span:last-child{flex:1;min-width:0}.ms-pick-teams span:last-child{text-align:right}.ms-pick-vs{color:#71869c;font-size:10px}
+.ms-pick-empty{padding:24px;text-align:center;color:#9eb0c4;font-size:13px}
+@media(max-width:600px){.ms-picker{padding:8px}.ms-picker-panel{max-height:86vh;border-radius:14px}.ms-pick-item{padding:10px}.ms-pick-teams{font-size:12px}}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1009,6 +1044,12 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
   <button type="button" class="ms-close" id="msClose">✕ Close</button>
  </div>
  <div class="ms-grid" id="msGrid"></div>
+</div>
+<div id="msPicker" class="ms-picker" aria-hidden="true">
+ <div class="ms-picker-panel">
+  <div class="ms-picker-head"><button type="button" id="msPickerBack">‹</button><div><strong>Add stream</strong><small id="msPickerCount">0 of 4 added</small></div><button type="button" id="msPickerClose">✕</button></div>
+  <div class="ms-picker-list" id="msPickerList"></div>
+ </div>
 </div>
 
 <main class="channelarea" id="channelArea">
@@ -2701,114 +2742,140 @@ document.addEventListener("touchend", e => {
 <script id="sportynova-multiscreen-engine">
 (()=>{
  const $=id=>document.getElementById(id);
- const overlay=$("multiScreenOverlay"),grid=$("msGrid"),count=$("msCount");
- const mainVideo=$("video");
+ const overlay=$('multiScreenOverlay'),grid=$('msGrid'),count=$('msCount'),picker=$('msPicker'),pickerList=$('msPickerList');
+ const mainVideo=$('video');
  if(!overlay||!grid||!mainVideo)return;
- const slots=Array.from({length:4},()=>({player:null,video:null,name:"",url:"",muted:false}));
- let active=false,adding=false,focused=0,manualLandscape=false;
- const safeText=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const slots=Array.from({length:4},()=>({player:null,hls:null,video:null,name:'',url:'',muted:false,drm:null}));
+ let active=false,focused=0,manualLandscape=false;
+ const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const filled=()=>slots.filter(s=>s.url).length;
  function updateCount(){
-  const n=slots.filter(x=>x.url).length;
-  count.textContent="Multi screen · "+n+"/4";
-  $("msAdd").style.display=n>=4?"none":"inline-flex";
+  const n=filled();count.textContent='Multi screen · '+n+'/4';overlay.dataset.count=String(n);
+  $('msAdd').style.display=n>=4?'none':'inline-flex';
+  $('msPickerCount').textContent=n+' of 4 added';
  }
+ function updateFocus(){grid.querySelectorAll('.ms-tile').forEach((tile,i)=>tile.classList.toggle('is-active',i===focused));}
  function renderSlots(){
   grid.replaceChildren();
   slots.forEach((slot,i)=>{
-   const tile=document.createElement("div");tile.className="ms-tile"+(focused===i?" is-active":"");tile.dataset.slot=i;
-   const v=document.createElement("video");v.playsInline=true;v.setAttribute("playsinline","");v.autoplay=true;v.preload="auto";v.muted=i>0;
-   tile.appendChild(v);slot.video=v;
-   const name=document.createElement("div");name.className="ms-tile-name";name.textContent=slot.name||("Screen "+(i+1));tile.appendChild(name);
-   const tools=document.createElement("div");tools.className="ms-tile-tools";
-   const mute=document.createElement("button");mute.className="ms-tile-action";mute.type="button";mute.textContent=v.muted?"🔇":"🔊";mute.title="Sound on/off";
-   mute.addEventListener("click",()=>{v.muted=!v.muted;slot.muted=v.muted;mute.textContent=v.muted?"🔇":"🔊";});
-   const full=document.createElement("button");full.className="ms-tile-action";full.type="button";full.textContent="⛶";full.title="Full screen";
-   full.addEventListener("click",()=>{if(tile.requestFullscreen)tile.requestFullscreen().catch(()=>{});});
-   const close=document.createElement("button");close.className="ms-tile-action";close.type="button";close.textContent="✕";close.title="Remove screen";
-   close.addEventListener("click",()=>clearSlot(i));
+   const tile=document.createElement('div');tile.className='ms-tile'+(focused===i?' is-active':'');tile.dataset.slot=String(i);
+   const v=document.createElement('video');v.playsInline=true;v.setAttribute('playsinline','');v.autoplay=true;v.preload='auto';v.muted=slot.url?slot.muted:i>0;tile.appendChild(v);slot.video=v;
+   const name=document.createElement('div');name.className='ms-tile-name';name.textContent=slot.name||('Screen '+(i+1));tile.appendChild(name);
+   const tools=document.createElement('div');tools.className='ms-tile-tools';
+   const mute=document.createElement('button');mute.className='ms-tile-action';mute.type='button';mute.textContent=v.muted?'🔇':'🔊';mute.title='Sound on/off';
+   mute.addEventListener('click',()=>{v.muted=!v.muted;slot.muted=v.muted;mute.textContent=v.muted?'🔇':'🔊';});
+   const full=document.createElement('button');full.className='ms-tile-action';full.type='button';full.textContent='⛶';full.title='Full screen';
+   full.addEventListener('click',()=>{if(tile.requestFullscreen)tile.requestFullscreen().catch(()=>{});});
+   const close=document.createElement('button');close.className='ms-tile-action';close.type='button';close.textContent='✕';close.title='Remove screen';close.addEventListener('click',()=>clearSlot(i));
    tools.append(mute,full,close);tile.appendChild(tools);
    if(!slot.url){
-    const empty=document.createElement("div");empty.className="ms-tile-empty";
-    empty.innerHTML='<span>Screen '+(i+1)+' · No channel selected</span><button type="button">＋ Add Channel</button>';
-    empty.querySelector("button").addEventListener("click",()=>{focused=i;adding=true;tile.classList.add("is-active");count.textContent="Select a channel below · Screen "+(i+1);});
-    tile.appendChild(empty);
+    const empty=document.createElement('div');empty.className='ms-tile-empty';
+    const label=document.createElement('span');label.textContent='Screen '+(i+1)+' · No stream added';
+    const add=document.createElement('button');add.type='button';add.textContent='＋ Add Stream';add.addEventListener('click',()=>showPicker(i));
+    empty.append(label,add);tile.appendChild(empty);
    }
-   const error=document.createElement("div");error.className="ms-tile-error";error.textContent="Stream could not be played";tile.appendChild(error);
-   tile.addEventListener("click",e=>{if(e.target.closest("button"))return;focused=i;grid.querySelectorAll(".ms-tile").forEach((t,j)=>t.classList.toggle("is-active",j===i));});
-   grid.appendChild(tile);
+   const error=document.createElement('div');error.className='ms-tile-error';tile.appendChild(error);
+   tile.addEventListener('click',e=>{if(e.target.closest('button'))return;focused=i;updateFocus();});grid.appendChild(tile);
   });
   updateCount();
  }
  async function stopSlot(i){
-  const s=slots[i];if(s.player){try{await s.player.destroy()}catch(e){}s.player=null;}
-  if(s.video){try{s.video.pause();s.video.removeAttribute("src");s.video.load()}catch(e){}}
+  const slot=slots[i];
+  if(slot.player){try{await slot.player.destroy();}catch(e){}slot.player=null;}
+  if(slot.hls){try{slot.hls.destroy();}catch(e){}slot.hls=null;}
+  if(slot.video){try{slot.video.pause();slot.video.removeAttribute('src');slot.video.load();}catch(e){}}
  }
  async function clearSlot(i){
-  await stopSlot(i);Object.assign(slots[i],{name:"",url:"",muted:i>0});renderSlots();
+  await stopSlot(i);Object.assign(slots[i],{name:'',url:'',muted:i>0,drm:null});renderSlots();
  }
+ function parseInput(raw,drm){return window.parseStreamInput?window.parseStreamInput(raw,drm):{url:String(raw||'').split('|')[0],scheme:'',license:''};}
  async function loadSlot(i,rawUrl,name,category,drm){
-  const s=slots[i];await stopSlot(i);
-  const tile=grid.querySelector('[data-slot="'+i+'"]');
-  if(!tile)return;
-  const v=s.video;const parsed=window.parseStreamInput?window.parseStreamInput(rawUrl,drm):{url:String(rawUrl).split("|")[0],scheme:"",license:""};
-  const url=parsed.url;
-  s.name=name||"Live Stream";s.url=rawUrl;s.muted=i>0;v.muted=s.muted;v.autoplay=true;v.crossOrigin="anonymous";
-  const label=tile.querySelector(".ms-tile-name");if(label)label.textContent=s.name;
-  const empty=tile.querySelector(".ms-tile-empty");if(empty)empty.remove();
-  const error=tile.querySelector(".ms-tile-error");if(error)error.style.display="none";
-  const mute=tile.querySelector(".ms-tile-tools button");if(mute)mute.textContent=v.muted?"🔇":"🔊";
+  const slot=slots[i];await stopSlot(i);
+  const tile=grid.querySelector('[data-slot="'+i+'"]');if(!tile)return;
+  const v=slot.video,parsed=parseInput(rawUrl,drm),url=parsed.url||rawUrl;
+  slot.name=name||'Live Stream';slot.url=rawUrl;slot.drm=drm||null;slot.muted=i>0;v.muted=slot.muted;v.autoplay=true;v.crossOrigin='anonymous';
+  const label=tile.querySelector('.ms-tile-name');if(label)label.textContent=slot.name;
+  const empty=tile.querySelector('.ms-tile-empty');if(empty)empty.remove();
+  const error=tile.querySelector('.ms-tile-error');if(error)error.style.display='none';
+  const mute=tile.querySelector('.ms-tile-tools button');if(mute)mute.textContent=v.muted?'🔇':'🔊';
   try{
-   if(!window.shaka||!window.shaka.Player)throw new Error("Player library not ready");
-   const player=new shaka.Player(v);s.player=player;
-   player.configure({
-    streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:2,baseDelay:250,timeout:9000}},
-    abr:{enabled:true,defaultBandwidthEstimate:650000},
-    manifest:{retryParameters:{maxAttempts:2,baseDelay:250,timeout:9000}}
-   });
-   if(parsed.scheme==="clearkey"&&parsed.license){
-    const pair=parsed.license.split(":");const clean=x=>String(x||"").replace(/[^0-9a-f]/gi,"").toLowerCase();
-    const kid=clean(pair[0]),key=clean(pair.slice(1).join(":"));if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
+   if(parsed.scheme==='clearkey'&&parsed.license){
+    if(!window.shaka||!window.shaka.Player)throw new Error('DASH DRM player not ready');
+    const player=new shaka.Player(v);slot.player=player;
+    const pair=String(parsed.license).split(':');const clean=x=>String(x||'').replace(/[^0-9a-f]/gi,'').toLowerCase();
+    const kid=clean(pair[0]),key=clean(pair.slice(1).join(':'));if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
+    player.configure({streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:2,baseDelay:250,timeout:9000}},abr:{enabled:true,defaultBandwidthEstimate:650000}});
+    player.addEventListener('error',()=>showError(error,'Playback error · try another stream'));
+    await player.load(url);await v.play().catch(()=>{});
+   }else if(/\.mpd(?:$|[?#])/i.test(url)||parsed.scheme==='clearkey'){
+    if(!window.shaka||!window.shaka.Player)throw new Error('DASH player not ready');
+    const player=new shaka.Player(v);slot.player=player;
+    player.configure({streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:2,baseDelay:250,timeout:9000}},abr:{enabled:true,defaultBandwidthEstimate:650000}});
+    player.addEventListener('error',()=>showError(error,'Playback error · try another stream'));
+    await player.load(url);await v.play().catch(()=>{});
+   }else if(window.Hls&&Hls.isSupported()){
+    const hls=new Hls({enableWorker:true,lowLatencyMode:true,maxBufferLength:12,backBufferLength:20,manifestLoadingMaxRetry:2,levelLoadingMaxRetry:2});slot.hls=hls;
+    hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal)showError(error,'Stream error · '+(data.details||'try another stream'));});
+    hls.loadSource(url);hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
+   }else{
+    v.src=url;await v.play().catch(()=>{});
    }
-   player.addEventListener("error",()=>{if(error){error.textContent="Playback error · try another server";error.style.display="flex";}});
-   await player.load(url);await v.play().catch(()=>{});
-  }catch(e){
-   console.warn("SPORTYNOVA multi-screen playback:",e);
-   if(error){error.textContent="Stream could not play · "+(e.message||"error");error.style.display="flex";}
-  }
+  }catch(e){console.warn('SPORTYNOVA multi-screen playback:',e);showError(error,'Could not play · '+(e.message||'stream error'));}
   updateCount();
  }
- function nextEmpty(){return slots.findIndex(s=>!s.url)}
+ function showError(el,message){if(el){el.textContent=message;el.style.display='flex';}}
+ function nextEmpty(){return slots.findIndex(s=>!s.url);}
  async function assign(rawUrl,name,category,drm){
-  let i=focused;
-  if(!adding&&slots[i].url){const empty=nextEmpty();if(empty>=0)i=empty;}
-  if(i<0||i>3)i=nextEmpty();
-  if(i<0){count.textContent="Multi screen · 4/4";return;}
-  focused=i;adding=false;
-  await loadSlot(i,rawUrl,name,category,drm);
+  let i=focused;if(slots[i].url){const empty=nextEmpty();if(empty>=0)i=empty;}
+  if(i<0||i>3)i=nextEmpty();if(i<0)return;
+  focused=i;await loadSlot(i,rawUrl,name,category,drm);updateFocus();
  }
+ function showPicker(slotIndex){
+  if(slotIndex!==undefined&&slotIndex!==null)focused=slotIndex;
+  const n=filled();$('msPickerCount').textContent=n+' of 4 added';pickerList.replaceChildren();
+  const items=(Array.isArray(window.liveSports)?window.liveSports:liveSports||[]).filter(ch=>ch&&isChannelShown(ch));
+  const playable=items.filter(ch=>getChannelStreams(ch).length||String(ch.url||'').trim());
+  if(!playable.length){const empty=document.createElement('div');empty.className='ms-pick-empty';empty.textContent='No playable Live Sports streams are available right now.';pickerList.appendChild(empty);}
+  playable.forEach(ch=>{
+   const teams=typeof splitMatchTeams==='function'?splitMatchTeams(ch.name||'Live Match'):[ch.name||'Live Match',''];
+   const streams=getChannelStreams(ch);const first=streams[0]||{url:ch.url,drm:ch.drm,name:'Server 1'};
+   const item=document.createElement('button');item.type='button';item.className='ms-pick-item';
+   const top=document.createElement('div');top.className='ms-pick-top';
+   const league=document.createElement('span');league.textContent=ch.tournament||ch.league||ch.competition||ch.category||'Live Sports';
+   const state=document.createElement('span');state.className='ms-pick-live';const status=typeof matchStatus==='function'?matchStatus(ch):'LIVE';state.textContent=status==='LIVE'?'LIVE':status==='UPCOMING'?'UPCOMING':'ENDED';top.append(league,state);
+   const teamsRow=document.createElement('div');teamsRow.className='ms-pick-teams';
+   const left=document.createElement('span');left.textContent=teams[0]||ch.name;
+   const vs=document.createElement('span');vs.className='ms-pick-vs';vs.textContent='VS';
+   const right=document.createElement('span');right.textContent=teams[1]||'';teamsRow.append(left,vs,right);
+   const bottom=document.createElement('div');bottom.className='ms-pick-top';bottom.textContent=(first.name||'Server 1')+' · '+streams.length+' server'+(streams.length===1?'':'s');
+   item.append(top,teamsRow,bottom);
+   item.addEventListener('click',async()=>{
+    if(filled()>=4){closePicker();return;}
+    closePicker();let target=focused;if(slots[target].url)target=nextEmpty();if(target<0)return;focused=target;
+    await loadSlot(target,first.url||ch.url,ch.name||'Live Match',ch.category||'Live Sports',first.drm||ch.drm||null);updateFocus();
+   });pickerList.appendChild(item);
+  });
+  picker.classList.add('open');picker.setAttribute('aria-hidden','false');
+ }
+ function closePicker(){picker.classList.remove('open');picker.setAttribute('aria-hidden','true');}
  async function open(){
-  if(active)return;
-  active=true;adding=false;focused=0;overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");
-  document.body.style.overflow="hidden";
-  renderSlots();mainVideo.pause();
-  const req=window.__sportyLastStreamRequest;
-  if(req&&req.rawUrl)await assign(req.rawUrl,req.name,req.category,req.drm);
+  if(active)return;active=true;focused=0;overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';renderSlots();
+  const req=window.__sportyLastStreamRequest;if(req&&req.rawUrl)await loadSlot(0,req.rawUrl,req.name,req.category,req.drm);
  }
  async function close(){
-  active=false;adding=false;overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");
-  document.body.style.overflow="";
+  active=false;closePicker();overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';
   for(let i=0;i<4;i++)await stopSlot(i);
-  if(!mainVideo.paused) return;
-  if(mainVideo.dataset.currentUrl&&mainVideo.src)mainVideo.play().catch(()=>{});
+  if(mainVideo.dataset.currentUrl)mainVideo.play().catch(()=>{});
  }
- $("msAdd").addEventListener("click",()=>{const i=nextEmpty();if(i<0)return;focused=i;adding=true;count.textContent="Select a channel below · Screen "+(i+1);});
- $("msClose").addEventListener("click",close);
- $("msRotate").addEventListener("click",()=>{manualLandscape=!manualLandscape;overlay.classList.toggle("ms-landscape",manualLandscape);});
- window.__sportyMultiScreen={isActive:()=>active,assign,open,close};
- const button=document.createElement("button");button.type="button";button.id="multiScreenBtn";button.className="nova-control-btn";button.textContent="▦";button.title="Multi screen";
- button.addEventListener("click",open);
- const row=document.querySelector("#playerScreen .nova-control-row");
- if(row){const full=$("fullscreenBtn");if(full&&full.parentNode===row)row.insertBefore(button,full);else row.appendChild(button);}
+ $('msAdd').addEventListener('click',()=>showPicker(nextEmpty()>=0?nextEmpty():focused));
+ $('msClose').addEventListener('click',close);
+ $('msRotate').addEventListener('click',()=>{manualLandscape=!manualLandscape;overlay.classList.toggle('ms-landscape',manualLandscape);});
+ $('msPickerClose').addEventListener('click',closePicker);$('msPickerBack').addEventListener('click',closePicker);
+ picker.addEventListener('click',e=>{if(e.target===picker)closePicker();});
+ window.__sportyMultiScreen={isActive:()=>active,assign,open,close,showPicker};
+ const button=document.createElement('button');button.type='button';button.id='multiScreenBtn';button.className='nova-control-btn';button.textContent='▦';button.title='Multi screen';button.setAttribute('aria-label','Multi screen');button.addEventListener('click',open);
+ const row=document.querySelector('#playerScreen .nova-control-row');if(row){const full=$('fullscreenBtn');if(full&&full.parentNode===row)row.insertBefore(button,full);else row.appendChild(button);}
 })();
 </script>
 

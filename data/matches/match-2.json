@@ -24,6 +24,11 @@
         "show": "yes"
       },
       {
+        "name": "T SPORTS HD",
+        "url": "http://103.16.24.4:8083/14.m3u8",
+        "show": "yes"
+      },
+      {
         "name": "ROBBITHOLE FHD",
         "url": "https://hpc5-nmc-mnc.mydex.tv/_tkn_st=1793849106~exp=1793877966~acl=/bpk-tv/202/default/*~eti=ec6f90c3bb4e2adc840061f03b9e10fc~sid=27774d63525ecb4a~imax=2~hmac=5f85510854d2be9c155c395e0011573f36d7dbb697aa44cc3ccf956a18025bd9/bpk-tv/202/default/index.m3u8",
         "show": "yes"
@@ -40,16 +45,6 @@
           "scheme": "clearkey",
           "license": "5318e462b9e0677487cb87837f0bbdb1:4fa0fb973b95738306005f2e8591bf8e"
         },
-        "show": "yes"
-      },
-      {
-        "name": "RABBITHOLE FHD",
-        "url": "https://hpc5-nmc-mnc.mydex.tv/_tkn_st=1793163608~exp=1793192468~acl=/bpk-tv/202/default/*~eti=fa5c4cfd542424a6997eeb9a23402d68~sid=bd517d501743ba42~imax=2~hmac=a93e35b6ba5cd2b8f875372fdddac209b26195fd898d8aacdb59621bf0359000/bpk-tv/202/default/index.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "FANCODE (IND)",
-        "url": "https://dai-fancode.pages.dev/mumbai/4250527_english_hls_370c6945842186_1ta-di_h264/index.m3u8",
         "show": "yes"
       }
     ],

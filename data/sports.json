@@ -13,6 +13,154 @@
     "fallbackLogo": "▶️"
   },    
 
+    
+
+  {
+    "name": "Fubo",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/dub-nitro/live/clients/dash/enc/1wlv9dr4vx/out/v1/632322be5f1047acb2472f90f8857182/cenc.mpd|drmScheme=clearkey&drmLicense=42f72c025dd53039244adc13b7e31dad:a7bd941a19f6dd14f3004a623a6ad3a1",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Peacock",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/oqymjvhuld/out/v1/538614f3e2714dc0ad99ac7905570e97/cenc.mpd|drmScheme=clearkey&drmLicense=b96213572690354511dd6dfd1401a8b2:4d35d3c8323c67efd107e3c11c70ed54",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Peacock 5",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/na2zo0qmkg/out/v1/08320d9893444121bbc1ce32de192736/cenc.mpd|drmScheme=clearkey&drmLicense=68b6bf4f863f49ffad6f1c09b33544b4:6d39a5c0706f657c3c57da2ef042b67f",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DZN",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/cazq5ylhak/out/v1/0b4f2883a3b3429d9c6163dae91a7d08/cenc.mpd|drmScheme=clearkey&drmLicense=91154f14212f9974d22c3e937705617e:7ffc20fd4aba7b8d75d5c92564a29991",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+ {
+    "name": "CBS",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/5qz8wmdome/out/v1/b9323e853dce427eac214b77bd48a204/cenc.mpd|drmScheme=clearkey&drmLicense=d9623774ac5c8c351aafe97c5fe70267:5164e6d05164a2d65fa8fcc962aa4861",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "LaLiga",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://cache07.zapitv.com/live/eds_c2/HYPERMOTION1/dash_live_ez/HYPERMOTION1.mpd|drmScheme=clearkey&drmLicense=a88617e904504ee291f49f0e60a51d49:17f92d59fde3b6d2bf4ffb48e8ca720a",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Canal 5",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd|drmScheme=clearkey&drmLicense=d695093ea3e66d75a4d213a3e2cbf360:01be3f645e89a067d2786c295f68dde4",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "SKY TOP EVENT FHD",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/dg9oi3org7/out/v1/e75b690762ba4c4ca72bf30703a4473e/cenc.mpd|drmScheme=clearkey&drmLicense=368bd4ebe301406897324bc777650411:69d27c2c2b7de927d67aacc973259901",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Sky Sports",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/5w8luhh9cb/out/v1/296c2486b8c3411fa2c2084e7ff878bc/cenc.mpd|drmScheme=clearkey&drmLicense=2484b44f054879fa17565257cc5b1d62:0b81cdb3a7ebcf87fee0e5909a11cb36",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Sky Sports 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/w1ad3vckry/out/v1/33ce68a8d21949da84e49f2695e51980/cenc.mpd|drmScheme=clearkey&drmLicense=5e0ee93e86d783f011561f18ff8f34e6:b570eceee332c7e50f87fca1f51e0966",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Sky Sports 3",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/nvl0ccy1t2/out/v1/d41a09a59deb4ab49514f7b185d638b8/cenc.mpd|drmScheme=clearkey&drmLicense=9fccb03726c8ef7d6605ebe5471d0f35:e2bc75447b21d2eaf94a16fd8ae7a51f",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Sky Sports 4",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/ubiowncrej/out/v1/def874d66d3b4dfa99c354ee7d0855c0/cenc.mpd|drmScheme=clearkey&drmLicense=f38ce843871b3e5aa97b8461a093a424:b51d62eeec9c136513c12ea7ec291f6f",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DAZN",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/xdgimhxuss/out/v1/ab2788c43b084dd98efd6b2d44f341b2/cenc.mpd|drmScheme=clearkey&drmLicense=dbe5961afc25dca3045d284329a2d49a:323aa34081722a599096a63a61828cae",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DAZN 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qkqzzycucy/out/v1/354851cb1eae488286a374ae6943cca0/cenc.mpd|drmScheme=clearkey&drmLicense=0b39b0aa00bf3d58afc144366c724ffc:e7e50e2ed11cb7fb5394458feb87d9f8",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "OBS",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/bdcgyalvay/out/v1/c81e08a081824b08b9d9ea680e494b53/cenc.mpd|drmScheme=clearkey&drmLicense=9644dcd60302e7261e76e6f4bd052782:6fd8de55b1f4ff98ce540b08bea9b403",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Bein Sports 3",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/n7hbpksb18/out/v1/be5403be4a674a7da8b3c81b1fe79692/cenc.mpd|drmScheme=clearkey&drmLicense=4fce30c060b7b0464ab765e24fee5ecc:65d612238736eec3794c7e75a6fd362c",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+    
+
     {
     "name": "Unite8 Sports 2",
     "category": "Sports",

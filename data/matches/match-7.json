@@ -6,9 +6,18 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://ott-lb.nettv.com.np/npl/live_match/index.mpd",
     "section": "liveSports",
     "streams": [
+      {
+        "name": "NPL LIVE FHD",
+        "url": "https://ott-lb.nettv.com.np/npl/live_match/index.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+        },
+        "show": "yes"
+      },
       {
         "name": "FANCODE FHD",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
@@ -16,6 +25,11 @@
           "scheme": "clearkey",
           "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         },
+        "show": "yes"
+      },
+      {
+        "name": "STAR SPORTS HD",
+        "url": "http://line.tivi-ott.net/play/live.php?mac=00:1B:79:F9:2A:14&stream=373201&extension=m3u8",
         "show": "yes"
       },
       {

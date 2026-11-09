@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pakistan Vs Sri Lanka.",
+    "name": "Pakistan Vs Sri Lanka CH-3.",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
@@ -10,14 +10,14 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "T SPORTS HD",
-        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
+        "name": "Tapmad HD",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a1456f124d15fc600b1e3e9683d7/01a145990eba15fc60e91e1786b054/main.m3u8",
         "show": "yes"
       },
       {
         "name": "LOW QUALITY (USE VPN)",
         "url": "http://193.47.62.41/hls/D222.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",

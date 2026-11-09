@@ -6,33 +6,24 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Liverpool%20FC%20Vs%20Manchester%20City.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qyp1du4zue/out/v1/625ab75f4b1e48e49180b189310fde8b/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/o4trsdzewu/out/v1/7aea1afda5854baaba3ddeb967f79fb6/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qyp1du4zue/out/v1/625ab75f4b1e48e49180b189310fde8b/cenc.mpd",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/o4trsdzewu/out/v1/7aea1afda5854baaba3ddeb967f79fb6/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "a16f4890e1a9a95d009f657f9d6837bb:e6e66c827c8a8c7d212db25ee49652e2"
+          "license": "73de12852269196bb475042be070e659:2d30fe5b6f743afc0e6b0babb86ac70d"
         },
         "show": "yes"
       },
       {
         "name": "SonyLiv PRIME FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/asrhszykzd/out/v1/dc6cc8173af4474e8dcd393adb429278/cenc.mpd",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/mipdvyxmgk/out/v1/5b1fe1ff59024887a998945d1fcef329/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "74ea2277355a796a7b81fc5ae0850b8b:9e5fc3413f079d3624873bb524453396"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/vqu1w8f6e7/out/v1/f7d7ec07c208491681c1b6f68d0e823f/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "a59f28b25431a5ab1091707c14e6e5b5:0e2b44300a38bd47fbb02e9c687aa2c8"
+          "license": "95903984c253e3fd47b112b72166caea:1283b49097f2481707da62f95b1d02ca"
         },
         "show": "yes"
       }
@@ -46,7 +37,7 @@
     "matchType": "Football",
     "drm": {
       "scheme": "clearkey",
-      "license": "a16f4890e1a9a95d009f657f9d6837bb:e6e66c827c8a8c7d212db25ee49652e2"
+      "license": "73de12852269196bb475042be070e659:2d30fe5b6f743afc0e6b0babb86ac70d"
     }
   }
 }

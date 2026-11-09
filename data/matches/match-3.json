@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "India. Vs  Pakistan.",
+    "name": "Pakistan Vs Sri Lanka.",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
@@ -32,11 +32,11 @@
     ],
     "show": "yes",
     "id": 3,
-    "startTime": "2026-11-05T15:15:00+06:00",
-    "endTime": "2026-11-05T17:15:00+06:00",
+    "startTime": "2026-11-09T10:15:00+06:00",
+    "endTime": "2026-11-09T19:15:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football| SAFF",
+    "matchType": "CRICKETS| Test",
     "drm": {
       "scheme": "clearkey",
       "license": "f3df7843080ae743bf865dc5fdf64c68:567c863bc12eb74788ea74888c042e1b"

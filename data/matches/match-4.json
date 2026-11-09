@@ -48,6 +48,11 @@
           "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         },
         "show": "yes"
+      },
+      {
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.44/hls/D222A.m3u8",
+        "show": "yes"
       }
     ],
     "show": "yes",

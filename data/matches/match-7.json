@@ -16,7 +16,7 @@
           "scheme": "clearkey",
           "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE FHD",
@@ -30,12 +30,12 @@
       {
         "name": "STAR SPORTS HD",
         "url": "http://line.tivi-ott.net/play/live.php?mac=00:1B:79:F9:2A:14&stream=373201&extension=m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "SD SERVER",
         "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE SD",
@@ -58,12 +58,12 @@
       {
         "name": "STAR SPORTS HD",
         "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE (IND)",
         "url": "https://dai-fancode.pages.dev/mumbai/4250355_english_hls_7b5a55758122143_1ta-di_h264/index.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",

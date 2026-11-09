@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Afghanistan Vs Zimbabwe",
+    "name": "Zimbabwe  VS Afghanistan -CH4",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/England%20%F0%9F%8F%85%20Vs%20West%20Indies%20%F0%9F%8F%85.jpg",
@@ -20,7 +20,7 @@
           "scheme": "clearkey",
           "license": "7f6cef23a9b2d9b21e04cd96753f7d01:3f260e0025a8b3273ece982cff0562e0"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "WILLOW ALT",
@@ -29,7 +29,7 @@
           "scheme": "clearkey",
           "license": "7f6cef23a9b2d9b21e04cd96753f7d01:3f260e0025a8b3273ece982cff0562e0"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE2 FHD",
@@ -38,7 +38,7 @@
           "scheme": "clearkey",
           "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
         "name": "FANCODE1 FHD",
@@ -47,11 +47,11 @@
           "scheme": "clearkey",
           "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
         },
-        "show": "yes"
+        "show": "no"
       },
       {
-        "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.44/hls/D222A.m3u8",
+        "name": "Tapmad",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a14a80166b1ea557841e1612cf55/01a14a8047211ea557841e1612cf58/main.m3u8",
         "show": "yes"
       }
     ],

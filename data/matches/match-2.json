@@ -50,11 +50,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-09T09:20:00+06:00",
-    "endTime": "2026-11-09T17:10:00+06:00",
+    "startTime": "2026-11-10T08:00:00+06:00",
+    "endTime": "2026-11-10T17:10:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS|Test Match",
+    "matchType": "CRICKETS|ODI𝕆𝔻𝕀 Match",
     "drm": {
       "scheme": "clearkey",
       "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"

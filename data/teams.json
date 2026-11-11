@@ -116,6 +116,13 @@
         "West indies"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/West%20indies%20.png"
+    },
+    {
+      "name": "Maldives",
+      "aliases": [
+        "Maldives"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Maldives.svg"
     }
   ]
 }

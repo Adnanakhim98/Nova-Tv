@@ -50,8 +50,8 @@
         "show": "no"
       },
       {
-        "name": "Tapmad",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14a80166b1ea557841e1612cf55/01a14a8047211ea557841e1612cf58/main.m3u8",
+        "name": "BTV",
+        "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
         "show": "yes"
       }
     ],

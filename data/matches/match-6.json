@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Bangladesh Vs Bhutan",
+    "name": "Bangladesh Vs Srilanka",
     "category": "Live Sports",
     "logo": "▶",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/FC%20Augsburg%20Vs%20FC%20Bayern%20M%C3%BCnchen.jpg",
@@ -41,8 +41,8 @@
     ],
     "show": "yes",
     "id": 6,
-    "startTime": "2026-11-05T19:50:00+06:00",
-    "endTime": "2026-11-05T21:50:00+06:00",
+    "startTime": "2026-11-11T20:00:00+06:00",
+    "endTime": "2026-11-11T22:00:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football | SAFF Championship"

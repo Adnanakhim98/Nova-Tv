@@ -14,8 +14,8 @@
     },
     "streams": [
       {
-        "name": "Vset",
-        "url": "https://live05.miekgo.app/live/33860426.m3u8",
+        "name": "BTV",
+        "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
         "show": "yes"
       },
       {

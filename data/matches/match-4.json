@@ -9,11 +9,7 @@
     "url": "https://ott-lb.nettv.com.np/npl/live_match/index.mpd",
     "section": "liveSports",
     "streams": [
-      {
-        "name": "Willow",
-        "url": "https://dash-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/ezawp6dxef/out/v1/89f7935bf21246fb971d93c016044f01/cenc.mpd|drmScheme=clearkey&drmLicense=69b4f7d5d85ff47192fce27c107246f7:8993f991655c84eb324bad2c1c551cc1",
-        "show": "yes"
-      },
+      
       {
         "name": "New Zealand Vs India - LOW QUALITY (USE VPN)",
         "url": "http://193.47.62.55/hls/VFFF.m3u8",

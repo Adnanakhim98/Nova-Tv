@@ -41,7 +41,7 @@
     ],
     "show": "yes",
     "id": 6,
-    "startTime": "2026-11-12T11:00:00:00+06:00",
+    "startTime": "2026-11-12T11:00:00+06:00",
     "endTime": "2026-11-12T19:00:00+06:00",
     "enabled": true,
     "status": "auto",

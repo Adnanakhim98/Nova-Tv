@@ -26,26 +26,8 @@
           "license": "5466ebd70704bdeb657f0abf3c5ca4ef:bdd79b72d8e48ed483aa623cc38a8a16"
         },
         "show": "yes"
-      },
-      {
-        "name": "HD QUALITY",
-        "url": "https://chatgpt.hereisman.net/playlist/59876/load-playlist?&.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "SPORT1 CZ FHD",
-        "url": "https://dash2.antik.sk/stream/nvidia_sport_1/playlist_cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.50/hls/EEEEAAAA.m3u8",
-        "show": "yes"
       }
+      
     ],
     "show": "yes",
     "id": 2,

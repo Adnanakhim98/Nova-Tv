@@ -1016,7 +1016,6 @@ window.ensureSportyShaka = function () {
   });
   return window.__sportyShakaPromise;
 };
-window.ensureSportyShaka().catch(()=>{});
 </script>
 
 <script>
@@ -1449,19 +1448,14 @@ function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.
 async function stopEngines(){
   if(adaptiveQualityTimer){clearTimeout(adaptiveQualityTimer);adaptiveQualityTimer=null;}
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
+  if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
   video.onerror=null;
   video.onplaying=null;
-  // Reuse Shaka on channel/server changes instead of rebuilding the engine.
-  if(activeShaka){
-    try{await activeShaka.unload();}
-    catch(e){try{await activeShaka.destroy()}catch(ignore){}activeShaka=null;}
-  }else{
-    video.removeAttribute("src");
-    video.load();
-  }
+  video.removeAttribute("src");
+  video.load();
   delete video.dataset.currentUrl;
   activeKey=null;
 }
@@ -1642,7 +1636,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে HLS/DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
    engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
-   if(!activeShaka)activeShaka=new shaka.Player(video);
+   activeShaka=new shaka.Player(video);
    const player=activeShaka;
    // Start at a stable SD/medium rendition for faster startup. Keep adaptive
    // bitrate disabled unless the user explicitly chooses Auto, avoiding frequent quality jumps.
@@ -1843,8 +1837,6 @@ async function loadConfig(){
  try{
   const results=await Promise.all(Object.entries(files).map(async([category,path])=>{try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();return (d.channels||d.liveTvChannels||[]).filter(c=>c&&c.name).map(c=>({...c,section:"tv",category:category}));}catch(e){console.warn("Could not load "+path,e);return [];}}));
   channels=results.flat();
-  // First visible Live TV render: do not wait for GitHub discovery/status calls.
-  render(channels);
   // Auto-discover additional channel JSON files under data/; existing hard-coded files remain supported.
   try{
    const owner="Adnanakhim98",repo="Nova-Tv",branchName="main";
@@ -1877,7 +1869,7 @@ async function loadConfig(){
    matchCandidates.push({path,url:rawBase+path.split("/").map(encodeURIComponent).join("/")+"?v="+Date.now()});
   };
   try{
-   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`,{headers:{Accept:"application/vnd.github+json"},cache:"force-cache"});
+   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1&v=${Date.now()}`,{headers:{Accept:"application/vnd.github+json"},cache:"no-store"});
    if(!treeResponse.ok)throw new Error("GitHub tree API HTTP "+treeResponse.status);
    const tree=await treeResponse.json();
    (tree.tree||[]).filter(item=>item.type==="blob"&&/\.json$/i.test(item.path)&&(
@@ -1913,16 +1905,18 @@ async function loadConfig(){
    return out;
   };
   const loadedMatches=[];
-  // Fetch every match JSON in parallel to avoid waiting for later batches.
-  const matchResults=await Promise.all(matchCandidates.map(async file=>{
-   try{
-    const r=await fetch(file.url,{cache:"force-cache"});
-    if(!r.ok)return [];
-    const d=await r.json();
-    return extractMatches(d,file.path).map(item=>({...item,name:item.name||item.title||item.matchName||item.match_name,__sourceFile:file.path,section:"liveSports",category:item.category||"Live Sports"})).filter(item=>isChannelShown(item));
-   }catch(e){return [];}
-  }));
-  matchResults.forEach(items=>loadedMatches.push(...items));
+  for(let i=0;i<matchCandidates.length;i+=8){
+   const batch=matchCandidates.slice(i,i+8);
+   const results=await Promise.all(batch.map(async file=>{
+    try{
+     const r=await fetch(file.url,{cache:"no-store"});
+     if(!r.ok)return [];
+     const d=await r.json();
+     return extractMatches(d,file.path).map(item=>({...item,name:item.name||item.title||item.matchName||item.match_name,__sourceFile:file.path,section:"liveSports",category:item.category||"Live Sports"})).filter(item=>isChannelShown(item));
+    }catch(e){return [];}
+   }));
+   results.forEach(items=>loadedMatches.push(...items));
+  }
   // Keep every enabled/visible match, including ended ones, and sort LIVE first,
   // then today's upcoming, future matches, and ended matches at the bottom.
   const seenMatches=new Set();
@@ -1942,10 +1936,8 @@ async function loadConfig(){
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
  }catch(e){console.warn("Separate JSON load failed",e)}
- if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));
- render();refreshPublicStatus();
- // Load registered team logos after cards are visible, then enhance them.
- loadTeamLogos().then(()=>render()).catch(e=>console.info("Team logos skipped",e));
+  await loadTeamLogos();
+ if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();
  configLoadInProgress=false;
 }
 

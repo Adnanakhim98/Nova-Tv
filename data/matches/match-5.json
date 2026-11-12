@@ -11,11 +11,8 @@
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/o4trsdzewu/out/v1/7aea1afda5854baaba3ddeb967f79fb6/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "73de12852269196bb475042be070e659:2d30fe5b6f743afc0e6b0babb86ac70d"
-        },
+        "url": "https://dash-ott.bia-cf.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/x5af8ecwsh/out/v1/c37f1ecce4214502960ae5c0367154ff/cenc.mpd|drmScheme=clearkey&drmLicense=ae9dfc3e14f81520c96678b2818203b0:890f27ce6531575d09365c95c7557cd8",
+        
         "show": "yes"
       },
       {
@@ -25,7 +22,7 @@
           "scheme": "clearkey",
           "license": "95903984c253e3fd47b112b72166caea:1283b49097f2481707da62f95b1d02ca"
         },
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",

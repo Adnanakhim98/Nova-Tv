@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Adelaide Strikers Vs Brisbane Heat",
+    "name": Türkiye Vs Belgium",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
@@ -47,11 +47,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-05T10:40:00+06:00",
-    "endTime": "2026-11-05T13:50:00+06:00",
+    "startTime": "2026-11-12T23:00:00+06:00",
+    "endTime": "2026-11-13T01:10:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS|WBBL-T20",
+    "matchType": "Football|UEFA Nation's League",
     "drm": {
       "scheme": "clearkey",
       "license": "468c69668fb1f8433921d80485af81dc:fdc96b10b6e9cdcc3c5904afb6bff82d"

@@ -1,37 +1,31 @@
 {
   "match": {
-    "name": "Afghanistan U-19 Vs India U-19",
+    "name": " SriLanka  VS Pakistan.",
     "category": "Live Sports",
-    "logo": "🏆",
-    "logoUrl": "",
-    "fallbackLogo": "🏆",
-    "tone": "purple",
-    "url": "https://ott-lb.nettv.com.np/npl/live_match/index.mpd",
+    "logo": "⚽",
+    "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
+    "fallbackLogo": "⚽",
+    "tone": "gold",
+    "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
     "section": "liveSports",
     "streams": [
-      
       {
-        "name": "New Zealand Vs India - LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.55/hls/VFFF.m3u8",
-        "httpReferrer": "http://www.fawanews.sc/",
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
-        "headers": {
-          "Referer": "http://www.fawanews.sc/",
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
-        },
+        "name": "Tapmad HD",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a1456f124d15fc600b1e3e9683d7/01a145990eba15fc60e91e1786b054/main.m3u8",
         "show": "yes"
+      },
+      {
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.41/hls/D222.m3u8",
+        "show": "no"
       }
     ],
     "show": "yes",
-    "id": 7,
-    "startTime": "2026-11-11T12:00:00+06:00",
-    "endTime": "2026-11-12T19:30:00+06:00",
+    "id": 4,
+    "startTime": "2026-11-10T10:30:00+06:00",
+    "endTime": "2026-11-10T19:15:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket|Asia Cup",
-    "drm": {
-      "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-    }
+    "matchType": "CRICKETS| Test"
   }
 }

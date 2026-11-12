@@ -57,11 +57,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-10T08:00:00+06:00",
-    "endTime": "2026-11-10T17:10:00+06:00",
+    "startTime": "2026-11-12T12:00:00+06:00",
+    "endTime": "2026-11-12T14:10:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS|𝕆𝔻𝕀 Match",
+    "matchType": "Football|Fifa Friendly",
     "drm": {
       "scheme": "clearkey",
       "license": "69a5aa835a061ce64a630d1046727e40:d02feac8a999bd06bf4059bf33411749"

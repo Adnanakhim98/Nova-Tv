@@ -30,11 +30,11 @@
     ],
     "show": "yes",
     "id": 5,
-    "startTime": "2026-11-05T11:00:00+06:00",
-    "endTime": "2026-11-05T20:00:00+06:00",
+    "startTime": "2026-11-13T11:00:00+06:00",
+    "endTime": "2026-11-12T20:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football",
+    "matchType": "CRICKETS | Asia Cup",
     "drm": {
       "scheme": "clearkey",
       "license": "73de12852269196bb475042be070e659:2d30fe5b6f743afc0e6b0babb86ac70d"

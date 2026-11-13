@@ -6,49 +6,31 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/e3ozww2yny/out/v1/3a16d07c2cc0444bb8ea10d0483d1ced/cenc.mpd?",
     "section": "liveSports",
     "streams": [
       {
-        "name": "FANCODE FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+        "name": "beIN SPORTS FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/e3ozww2yny/out/v1/3a16d07c2cc0444bb8ea10d0483d1ced/cenc.mpd?",
         "drm": {
           "scheme": "clearkey",
-          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+          "license": "74cbe15488783fab07ff8c702fabafcd:bb607803a49c2d6104f845e7886c971c"
         },
         "show": "yes"
       },
       {
-        "name": "SD SERVER",
-        "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
+        "name": "STREAM TV + HD",
+        "url": "http://162.251.160.53:8089/prime_us_b0hpfhqdxm/index.m3u8",
         "show": "yes"
       },
       {
-        "name": "FANCODE SD",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash-sd/enc/iwpchve3wl/out/v1/946019f85dc64ae99ff9ce64a9727a62/cenc-sd.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "286eb7dc538143790fa9913639531920:e3f5cb08d14d9e9c08438c673819540f"
-        },
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.44/hls/ZAZAZAAAAQ.m3u8",
         "show": "yes"
       },
       {
-        "name": "FANCODE2 FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "STAR SPORTS HD",
-        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "FANCODE (IND)",
-        "url": "https://dai-fancode.pages.dev/mumbai/4250355_english_hls_7b5a55758122143_1ta-di_h264/index.m3u8",
+        "name": "beIN4 ARABIC FHD",
+        "url": "https://baila-lentoo.pages.dev/beinxmq/bein-sports-4.m3u8",
         "show": "yes"
       }
     ],
@@ -61,7 +43,7 @@
     "matchType": "Football | Friendly",
     "drm": {
       "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+      "license": "74cbe15488783fab07ff8c702fabafcd:bb607803a49c2d6104f845e7886c971c"
     }
   }
 }

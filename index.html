@@ -974,6 +974,37 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
+<style id="sportynova-share-icon-inline-v3">
+/* Small share control sits inside the same top row, beside the channel label. */
+#liveSportsChannels .channel.match-card .match-start-label{
+  padding-right:5px!important;
+  gap:4px 6px!important;
+}
+#liveSportsChannels .channel.match-card .match-share-icon{
+  position:static!important;inset:auto!important;
+  display:inline-grid!important;place-items:center!important;
+  flex:0 0 24px!important;width:24px!important;height:24px!important;
+  min-width:24px!important;max-width:24px!important;
+  padding:0!important;margin:0 0 0 2px!important;box-sizing:border-box!important;
+  border:1px solid rgba(55,220,248,.78)!important;border-radius:7px!important;
+  background:linear-gradient(145deg,rgba(13,37,54,.97),rgba(5,15,28,.97))!important;
+  color:#61eaff!important;box-shadow:0 2px 7px rgba(0,0,0,.3)!important;
+  cursor:pointer!important;z-index:2!important;
+}
+#liveSportsChannels .channel.match-card .match-share-icon svg{
+  display:block!important;width:15px!important;height:15px!important;
+}
+#liveSportsChannels .channel.match-card .match-share-icon:active{transform:scale(.94)!important}
+@media(max-width:420px){
+ #liveSportsChannels .channel.match-card .match-share-icon{
+  flex-basis:22px!important;width:22px!important;height:22px!important;
+  min-width:22px!important;max-width:22px!important;border-radius:6px!important;
+ }
+ #liveSportsChannels .channel.match-card .match-share-icon svg{width:14px!important;height:14px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1316,7 +1347,7 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   shareControl.addEventListener("keydown",event=>{
    if(event.key==="Enter"||event.key===" "){shareMatch(event);}
   });
-  b.appendChild(shareControl);
+  startLabel.appendChild(shareControl);
  }else{
   const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
   b.append(logoBox,name,category);

@@ -6,49 +6,68 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "FANCODE FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+        "name": "BeIN2 SPORTS FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+          "license": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8"
         },
         "show": "yes"
       },
       {
-        "name": "SD SERVER",
-        "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "FANCODE SD",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash-sd/enc/iwpchve3wl/out/v1/946019f85dc64ae99ff9ce64a9727a62/cenc-sd.mpd",
+        "name": "TVE La 1 FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/c7di7zkdor/out/v1/f7d5b356e048494a8325563e8916d50b/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "286eb7dc538143790fa9913639531920:e3f5cb08d14d9e9c08438c673819540f"
+          "license": "745cd6ec34a58f2f7ac2af35dc3da6d2:ae008f1e47e6567fe4201a6ff8f1ae54"
         },
         "show": "yes"
       },
       {
-        "name": "FANCODE2 FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+        "name": "FUBO SPORTS FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/xtkswns2yn/out/v1/9c348c1bc962495a9420f01ac0964a86/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
+          "license": "fa5e8db5359fc7d1f15207d5de2a3ac4:78a6c0a41972dfdba2145ae0ad4bd681"
         },
         "show": "yes"
       },
       {
-        "name": "STAR SPORTS HD",
-        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
+        "name": "SPORT1 CZ FHD",
+        "url": "https://dash2.antik.sk/stream/nvidia_sport_1/playlist_cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d"
+        },
         "show": "yes"
       },
       {
-        "name": "FANCODE (IND)",
-        "url": "https://dai-fancode.pages.dev/mumbai/4250355_english_hls_7b5a55758122143_1ta-di_h264/index.m3u8",
+        "name": "TV QUALITY+ HD",
+        "url": "https://chatgpt.hereisman.net/playlist/59947/load-playlist?&.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "TV QUALITY+ HD 2",
+        "url": "https://live.vivo155.com/live/hd-en-1-4518086.m3u8?txSecret=6afb8be749bd528624d0198e4c0d19cc&txTime=6AF77BC6",
+        "show": "yes"
+      },
+      {
+        "name": "HD QUALITY 4",
+        "url": "https://www.rtmpcdn.com/live/caa9e852-e8ce-4d77-8f62-a864ea03d07e.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "SonyLiv (Asia)",
+        "url": "https://sonyeventsglobal.akamaized.net/hls/live/2120308/Footlive1311/ENG/std_lrh-800300010.m3u8?hdnea=exp=1794640658~acl=/*~id=69614981546485791552404768307414~hmac=8bc08c2bdde07bdf17877111b5da374d7257622b3c38e5b32450f1179b71d7d3",
+        "show": "yes"
+      },
+      {
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.44/hls/GPPPAAAAQQ.m3u8",
         "show": "yes"
       }
     ],
@@ -61,7 +80,7 @@
     "matchType": "Football|UEFA Nation's League",
     "drm": {
       "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+      "license": "0b42be2664d7e811d04f3e504e0924c5:ae24090123b8c72ac5404dc152847cb8"
     }
   }
 }

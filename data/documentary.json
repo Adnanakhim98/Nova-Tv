@@ -50,6 +50,237 @@
       "fallbackLogo": "▶",
       "show": "no"
     },
+
+
+    {
+  "channels": [
+    {
+      "name": "Discovery Bangla",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://api.cirkletv.com/api/https?url=http://sm-monirul.xyz/@monirul_Islam_SM/exp.php?id=discovery_bangla&sm=.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Resized_Image_2026_08_13_12_50_00_6767_3_1788331476548_766e05eb10858f49.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://api.cirkletv.com/api/https?url=http://sm-monirul.xyz/@monirul_Islam_SM/exp.php?id=discovery_bangla&sm=.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery Hindi",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://drk6xq0vhn.gpcdn.net/live/discovery_sd_abr/live/discovery_sd_480/chunks.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Resized_Image_2026_08_13_12_49_59_8814_2_1788331314118_f794cb4b63d6581d.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://drk6xq0vhn.gpcdn.net/live/discovery_sd_abr/live/discovery_sd_480/chunks.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery English",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://prod-linear-media.toffeelive.com/cdn/live/discovery_hd/playlist.m3u8?edge-cache-token=Expires=1790344936~Starts=1790341336~URLPrefix=aHR0cHM6Ly9wcm9kLWxpbmVhci1tZWRpYS50b2ZmZWVsaXZlLmNvbQ~Data=eyJzdWJzY3JpYmVyX2lkIjoiMmYyNmEyZmYtODRkYS00NzRiLWJiN2EtMjFlY2VhZTIyNDBmIn0~Signature=t-5WgA-APtI0Eahx8CWtK7SsIe_1ZeDLiNOmukntG8NOGCj_RQ5hjGEMSVKK4UGP_7hGmzTDEqnc_pZZ0xI-Cw",
+      "logoUrl": "https://api.cirkletv.com/files/Resized_Image_2026_08_13_12_50_01_5406_4_1788331590052_b484eea100c8c4e3.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://prod-linear-media.toffeelive.com/cdn/live/discovery_hd/playlist.m3u8?edge-cache-token=Expires=1790344936~Starts=1790341336~URLPrefix=aHR0cHM6Ly9wcm9kLWxpbmVhci1tZWRpYS50b2ZmZWVsaXZlLmNvbQ~Data=eyJzdWJzY3JpYmVyX2lkIjoiMmYyNmEyZmYtODRkYS00NzRiLWJiN2EtMjFlY2VhZTIyNDBmIn0~Signature=t-5WgA-APtI0Eahx8CWtK7SsIe_1ZeDLiNOmukntG8NOGCj_RQ5hjGEMSVKK4UGP_7hGmzTDEqnc_pZZ0xI-Cw"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery Pakistan",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://livecdn.live247stream.com/discoverpakistan/web/playlist.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Hridoy_TV_channel__10__1788332992276_63021179cad5be95.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://livecdn.live247stream.com/discoverpakistan/web/playlist.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "National Geographic",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://tvsen6.aynaott.com/natgeo/index.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Resized_Image_2026_08_13_15_29_20_5232_2_1788331828537_0be2b542e968019f.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://tvsen6.aynaott.com/natgeo/index.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery Science",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://drk6xq0vhn.gpcdn.net/live/discovery_science_abr/live/discovery_science/chunks.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Hridoy_TV_channel__14__1788332017044_ebf7e84128af1517.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://drk6xq0vhn.gpcdn.net/live/discovery_science_abr/live/discovery_science/chunks.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery Turbo",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://drk6xq0vhn.gpcdn.net/live/discovery_turbo_abr/live/discovery_turbo_480/chunks.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Hridoy_TV_channel__12__1788332135885_d2656f3cc9cdb40f.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://drk6xq0vhn.gpcdn.net/live/discovery_turbo_abr/live/discovery_turbo_480/chunks.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery Investigation",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://drk6xq0vhn.gpcdn.net/live/id_hd_abr/live/id_hd/chunks.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/Hridoy_TV_channel__13__1788332885702_fe7a3a94398a5988.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://drk6xq0vhn.gpcdn.net/live/id_hd_abr/live/id_hd/chunks.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Wild TV",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8",
+      "logoUrl": "https://s3.aynaott.com/storage/597c839e577e81813e44812cedc50892",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Wild Nature",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://wildearth-plex.amagi.tv/master.m3u8",
+      "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlCh5kON8yENw9yJfeVtZ-PvFOfbWPyVCFmA&s",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://wildearth-plex.amagi.tv/master.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Adventure Earth",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://autentic-adventure-earth-1-eu.rakuten.wurl.tv/playlist.m3u8",
+      "logoUrl": "https://s3.aynaott.com/storage/13c04e44967d653c70eac9670b47fa5d",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://autentic-adventure-earth-1-eu.rakuten.wurl.tv/playlist.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Discovery",
+      "category": "documentary",
+      "logo": "📺",
+      "tone": "red",
+      "url": "https://d24aqelmrau4kx.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-l1oas691aj7p2/WBTV_IT.m3u8",
+      "logoUrl": "https://api.cirkletv.com/files/discovery_eng_1787305695176_8eca4b2ec7a96399.webp",
+      "fallbackLogo": "📺",
+      "streams": [
+        {
+          "name": "Server 1",
+          "url": "https://d24aqelmrau4kx.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-l1oas691aj7p2/WBTV_IT.m3u8"
+        },
+        {
+          "name": "Server 2",
+          "url": ""
+        }
+      
     {
       "name": "Animal Planet",
       "category": "documentary",

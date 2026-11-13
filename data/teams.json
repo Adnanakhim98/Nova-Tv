@@ -123,6 +123,27 @@
         "Maldives"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Maldives.svg"
+    },
+    {
+      "name": "Japan",
+      "aliases": [
+        "Japan"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Japan.svg"
+    },
+    {
+      "name": "New zealand",
+      "aliases": [
+        "New zealand"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/New%20zealand.svg"
+    },
+    {
+      "name": "Brazil",
+      "aliases": [
+        "Brazil"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/brazil.svg"
     }
   ]
 }

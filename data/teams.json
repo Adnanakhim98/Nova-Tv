@@ -144,6 +144,34 @@
         "Brazil"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/brazil.svg"
+    },
+    {
+      "name": "Argentina",
+      "aliases": [
+        "Argentina"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Argentina%20.svg"
+    },
+    {
+      "name": "Saudi Arabia",
+      "aliases": [
+        "Saudi Arabia"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Saudi%20Arabia%20.svg"
+    },
+    {
+      "name": "South Korea",
+      "aliases": [
+        "South Korea"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/South%20Korea.svg"
+    },
+    {
+      "name": "Uruguay",
+      "aliases": [
+        "Uruguay"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Uruguay.svg"
     }
   ]
 }

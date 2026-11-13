@@ -172,6 +172,41 @@
         "Uruguay"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Uruguay.svg"
+    },
+    {
+      "name": "Chile",
+      "aliases": [
+        "Chile"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Chile%20.svg"
+    },
+    {
+      "name": "Colombia",
+      "aliases": [
+        "Colombia"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Colombia%20.svg"
+    },
+    {
+      "name": "Germany",
+      "aliases": [
+        "Germany"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Germany%20.svg"
+    },
+    {
+      "name": "Qatar",
+      "aliases": [
+        "Qatar"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Qatar.svg"
+    },
+    {
+      "name": "Serbia",
+      "aliases": [
+        "Serbia"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Serbia.svg"
     }
   ]
 }

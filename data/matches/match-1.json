@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Türkiye Vs Belgium",
+    "name": "Australia Vs England",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Tottenham%20FC%20Vs%20Arsenal.jpg",
@@ -31,11 +31,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-12T23:00:00+06:00",
-    "endTime": "2026-11-13T01:10:00+06:00",
+    "startTime": "2026-11-13T09:30:00+06:00",
+    "endTime": "2026-11-13T18:10:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football|UEFA Nation's League",
+    "matchType": "Cricket|ODI",
     "drm": {
       "scheme": "clearkey",
       "license": "7995c724a13748ed970840a8ab5bb9b3:67bdaf1e2175b9ff682fcdf0e2354b1e"

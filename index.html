@@ -933,6 +933,47 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 #liveSportsChannels .channel.match-card .match-share-icon:focus-visible{outline:2px solid #fff;outline-offset:2px}
 </style>
 
+
+<style id="sportynova-match-share-icon-fit-v2">
+/* Share icon: neatly anchored at the top-right of every Live Sports card. */
+#liveSportsChannels .channel.match-card{position:relative!important}
+#liveSportsChannels .channel.match-card .match-share-icon{
+  position:absolute!important;top:7px!important;right:7px!important;
+  z-index:20!important;width:36px!important;height:36px!important;
+  display:grid!important;place-items:center!important;
+  padding:0!important;margin:0!important;box-sizing:border-box!important;
+  border:1px solid rgba(55,220,248,.82)!important;
+  border-radius:11px!important;
+  background:linear-gradient(145deg,rgba(13,37,54,.97),rgba(5,15,28,.97))!important;
+  color:#61eaff!important;
+  box-shadow:0 3px 12px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.10),0 0 9px rgba(33,216,244,.12)!important;
+  cursor:pointer!important;-webkit-tap-highlight-color:transparent;
+}
+#liveSportsChannels .channel.match-card .match-share-icon svg{
+  display:block!important;width:20px!important;height:20px!important;
+}
+#liveSportsChannels .channel.match-card .match-share-icon:active{
+  transform:scale(.94)!important;background:#123b50!important;
+}
+#liveSportsChannels .channel.match-card .match-start-label{
+  box-sizing:border-box!important;padding-right:43px!important;
+  min-width:0!important;
+}
+#liveSportsChannels .channel.match-card .match-start-text{
+  min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+@media(max-width:420px){
+  #liveSportsChannels .channel.match-card .match-share-icon{
+    top:6px!important;right:6px!important;width:33px!important;height:33px!important;
+    border-radius:10px!important;
+  }
+  #liveSportsChannels .channel.match-card .match-share-icon svg{
+    width:19px!important;height:19px!important;
+  }
+  #liveSportsChannels .channel.match-card .match-start-label{padding-right:39px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">

@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "BG Pathum United (THA) vs Tai Po FC (HKG)",
+    "name": "Bangladesh Vs Pakistan",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -54,11 +54,11 @@
     ],
     "show": "yes",
     "id": 18,
-    "startTime": "2026-11-05T18:30:00+06:00",
-    "endTime": "2026-11-05T23:30:00+06:00",
+    "startTime": "2026-11-14T20:30:00+06:00",
+    "endTime": "2026-11-14T22:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket|WBBL-T20",
+    "matchType": "Football| SAFF Championship",
     "drm": {
       "scheme": "clearkey",
       "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"

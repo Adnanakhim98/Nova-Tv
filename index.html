@@ -1050,6 +1050,30 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
+<style id="sportynova-force-custom-controls">
+/* Never let browser-native media controls replace the SPORTYNOVA controls. */
+.playersticky .screen video,
+.playersticky .screen #video {
+  controls: none !important;
+  -webkit-appearance: none !important;
+}
+.playersticky .screen video::-webkit-media-controls,
+.playersticky .screen video::-webkit-media-controls-enclosure,
+.playersticky .screen video::-webkit-media-controls-panel,
+.playersticky .screen video::-webkit-media-controls-overlay-play-button,
+.playersticky .screen video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+.playersticky .screen .nova-controls {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 100003 !important;
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1765,6 +1789,11 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.preload="auto";
  video.autoplay=true;
  video.controls=false;
+ video.removeAttribute("controls");
+ video.setAttribute("playsinline","");
+ video.setAttribute("webkit-playsinline","");
+ video.disablePictureInPicture=true;
+ video.disableRemotePlayback=true;
  // Restore audible playback when switching from a muted stream/player state.
  if(url.includes("/YuppTV/ZeeTVHDAPAC.m3u8")){video.muted=false;video.volume=1;}
 
@@ -1898,15 +1927,19 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
          fail("HLS "+(data.details||data.type||"fatal error"));
        });
        hls.attachMedia(video);
-     }else if(video.canPlayType("application/vnd.apple.mpegurl")||video.canPlayType("application/x-mpegURL")){
-       engine="Native HLS";
+     }else if(/iPhone|iPad|iPod/i.test(navigator.userAgent) &&
+              (video.canPlayType("application/vnd.apple.mpegurl")||video.canPlayType("application/x-mpegURL"))){
+       // Apple Safari fallback only. Keep controls hidden and inline so the
+       // browser does not replace the SPORTYNOVA custom player surface.
+       engine="Native HLS (inline)";
+       video.controls=false;
        video.src=url;
        video.load();
        video.play().catch(playError=>{
-         console.info("SPORTYNOVA native HLS needs a user gesture:",playError);
+         console.info("SPORTYNOVA inline native HLS needs a user gesture:",playError);
        });
      }else{
-       throw new Error("এই ব্রাউজারে HLS/M3U8 চালানোর সুবিধা নেই। Chrome/WebView আপডেট করুন।");
+       throw new Error("Custom Player চালানোর জন্য HLS.js লোড হয়নি। ইন্টারনেট/CDN সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।");
      }
    }else{
      // Keep Shaka Player for MPEG-DASH/MPD and existing ClearKey DRM support.

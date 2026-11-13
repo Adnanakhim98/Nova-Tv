@@ -1250,7 +1250,7 @@ async function loadTeamLogos(){
  // Load a fallback shared list first, if present.
  try{
   const url=rawBase+"data/teams.json";
-  const response=await fetch(url+"?v="+Date.now(),{cache:"no-store"});
+  const response=await fetch(url,{cache:"default"});
   if(response.ok)registerTeams(await response.json(),url);
   else console.warn("teams.json could not be loaded:",response.status);
  }catch(error){console.info("Optional data/teams.json not found.");}
@@ -1258,12 +1258,12 @@ async function loadTeamLogos(){
  // discover every JSON file at any depth inside tournament/ automatically.
  try{
   const treeUrl=`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`;
-  const response=await fetch(treeUrl,{headers:{Accept:"application/vnd.github+json"},cache:"force-cache"});
+  const response=await fetch(treeUrl,{headers:{Accept:"application/vnd.github+json"},cache:"default"});
   if(!response.ok)throw new Error("GitHub tree API HTTP "+response.status);
   const tree=await response.json();
   const files=(tree.tree||[]).filter(item=>item.type==="blob"&&/^tournament\/.*\.json$/i.test(item.path));
   const batches=[];
-  for(let i=0;i<files.length;i+=8)batches.push(files.slice(i,i+8));
+  for(let i=0;i<files.length;i+=32)batches.push(files.slice(i,i+32));
   for(const batch of batches){
    await Promise.all(batch.map(async file=>{
     try{
@@ -2007,10 +2007,21 @@ function rawBaseForChannels(path){return "https://raw.githubusercontent.com/Adna
 async function loadConfig(){
  if(configLoadInProgress)return;
  configLoadInProgress=true;
+ // Start logo-map loading in parallel; match cards must never wait for remote logos.
+ const teamLogoPromise=loadTeamLogos().catch(error=>console.warn("Team logo loading skipped:",error));
  const files={Bangla:"./data/bangla.json",Indian:"./data/india.json",Sports:"./data/sports.json",News:"./data/news.json",Music:"./data/music.json",Entertainment:"./data/entertainment.json",Movie:"./data/movie.json",Cartoon:"./data/cartoon.json",Religion:"./data/religion.json",Documentary:"./data/documentary.json"};
  try{
   const results=await Promise.all(Object.entries(files).map(async([category,path])=>{try{const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();return (d.channels||d.liveTvChannels||[]).filter(c=>c&&c.name).map(c=>({...c,section:"tv",category:category}));}catch(e){console.warn("Could not load "+path,e);return [];}}));
   channels=results.flat();
+  // Show configured channels immediately, then restore the previous match list while fresh data loads.
+  render(channels);
+  try{
+   const cachedMatches=JSON.parse(localStorage.getItem("sportynova_live_matches_v1")||"null");
+   if(Array.isArray(cachedMatches)&&cachedMatches.length){
+    liveSports=cachedMatches.filter(item=>item&&item.name&&isChannelShown(item));
+    render(channels);
+   }
+  }catch(e){console.info("Local match cache unavailable.");}
   // Auto-discover additional channel JSON files under data/; existing hard-coded files remain supported.
   try{
    const owner="Adnanakhim98",repo="Nova-Tv",branchName="main";
@@ -2019,9 +2030,9 @@ async function loadConfig(){
     const treeData=await treeRes.json();
     const paths=(treeData.tree||[]).filter(x=>x.type==="blob"&&/^data\/.*\.json$/i.test(x.path)&&!/^data\/(?:matches|teams)(?:\/|\.json$)/i.test(x.path)&&!/(?:match[-_ ]?\d*|live[-_ ]?sports|sports[-_ ]?matches)\.json$/i.test(x.path)).map(x=>x.path);
     const known=new Set(channels.map(c=>normalizeSearchText(c.name)));
-    for(let i=0;i<paths.length;i+=8){
-     const extra=await Promise.all(paths.slice(i,i+8).map(async path=>{
-      try{const res=await fetch(rawBaseForChannels(path),{cache:"no-store"});if(!res.ok)return [];const data=await res.json();const arr=Array.isArray(data)?data:(data.channels||data.liveTvChannels||data.tvChannels||[]);if(!Array.isArray(arr))return [];const cat=path.split("/").pop().replace(/\.json$/i,"");return arr.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv",category:c.category||cat}));}catch(e){return [];}
+    for(let i=0;i<paths.length;i+=32){
+     const extra=await Promise.all(paths.slice(i,i+32).map(async path=>{
+      try{const res=await fetch(rawBaseForChannels(path),{cache:"default"});if(!res.ok)return [];const data=await res.json();const arr=Array.isArray(data)?data:(data.channels||data.liveTvChannels||data.tvChannels||[]);if(!Array.isArray(arr))return [];const cat=path.split("/").pop().replace(/\.json$/i,"");return arr.filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv",category:c.category||cat}));}catch(e){return [];}
      }));
      extra.flat().forEach(ch=>{const key=normalizeSearchText(ch.name);if(!known.has(key)){known.add(key);channels.push(ch);}});
     }
@@ -2040,10 +2051,10 @@ async function loadConfig(){
   const addCandidate=path=>{
    if(!path||candidatePaths.has(path))return;
    candidatePaths.add(path);
-   matchCandidates.push({path,url:rawBase+path.split("/").map(encodeURIComponent).join("/")+"?v="+Date.now()});
+   matchCandidates.push({path,url:rawBase+path.split("/").map(encodeURIComponent).join("/")});
   };
   try{
-   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1&v=${Date.now()}`,{headers:{Accept:"application/vnd.github+json"},cache:"no-store"});
+   const treeResponse=await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`,{headers:{Accept:"application/vnd.github+json"},cache:"default"});
    if(!treeResponse.ok)throw new Error("GitHub tree API HTTP "+treeResponse.status);
    const tree=await treeResponse.json();
    (tree.tree||[]).filter(item=>item.type==="blob"&&/\.json$/i.test(item.path)&&(
@@ -2079,11 +2090,11 @@ async function loadConfig(){
    return out;
   };
   const loadedMatches=[];
-  for(let i=0;i<matchCandidates.length;i+=8){
-   const batch=matchCandidates.slice(i,i+8);
+  for(let i=0;i<matchCandidates.length;i+=32){
+   const batch=matchCandidates.slice(i,i+32);
    const results=await Promise.all(batch.map(async file=>{
     try{
-     const r=await fetch(file.url,{cache:"no-store"});
+     const r=await fetch(file.url,{cache:"default"});
      if(!r.ok)return [];
      const d=await r.json();
      return extractMatches(d,file.path).map(item=>({...item,name:item.name||item.title||item.matchName||item.match_name,__sourceFile:file.path,section:"liveSports",category:item.category||"Live Sports"})).filter(item=>isChannelShown(item));
@@ -2100,6 +2111,8 @@ async function loadConfig(){
    seenMatches.add(key);
    return true;
   });
+  // Save the latest match data so the next reload can paint match cards immediately.
+  try{localStorage.setItem("sportynova_live_matches_v1",JSON.stringify(liveSports));}catch(e){console.info("Match cache storage is full or unavailable.");}
   // Backward compatibility: if no individual match JSON files are available, try the previous combined file.
   if(!liveSports.length){
    for(const path of ["./data/live-sports.json","./live-sports.json"]){
@@ -2110,8 +2123,10 @@ async function loadConfig(){
   // Backward compatibility: use the old combined file only if the separate files are empty.
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
  }catch(e){console.warn("Separate JSON load failed",e)}
-  await loadTeamLogos();
- if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();
+ if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));
+ render();refreshPublicStatus();
+ // Upgrade team initials to their real logos when the background logo map is ready.
+ teamLogoPromise.then(()=>render(channels)).catch(error=>console.warn("Logo refresh skipped:",error));
  // If this page was opened from a match share link, open that exact match directly.
  try{
   const params=new URLSearchParams(location.search);

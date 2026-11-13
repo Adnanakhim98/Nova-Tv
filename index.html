@@ -1050,30 +1050,6 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
-
-<style id="sportynova-force-custom-controls">
-/* Never let browser-native media controls replace the SPORTYNOVA controls. */
-.playersticky .screen video,
-.playersticky .screen #video {
-  controls: none !important;
-  -webkit-appearance: none !important;
-}
-.playersticky .screen video::-webkit-media-controls,
-.playersticky .screen video::-webkit-media-controls-enclosure,
-.playersticky .screen video::-webkit-media-controls-panel,
-.playersticky .screen video::-webkit-media-controls-overlay-play-button,
-.playersticky .screen video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  -webkit-appearance: none !important;
-}
-.playersticky .screen .nova-controls {
-  display: block !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  z-index: 100003 !important;
-}
-</style>
-
 </head>
 <body>
 <div class="wrap">
@@ -1142,38 +1118,6 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 <div class="modal" id="adminModal" aria-hidden="true"><div class="modalbox adminbox"><div class="modalhead"><h3>🔐 SPORTYNOVA Admin</h3><button class="xbtn" id="adminClose" type="button">✕</button></div><div id="adminLoginView"><p class="hint">অ্যাডমিন প্যানেলে প্রবেশের পাসওয়ার্ড দিন।</p><label class="fieldlabel" for="adminPassword">Admin password</label><input class="field" id="adminPassword" type="password" autocomplete="current-password" placeholder="Admin password"><div class="modalbuttons"><button class="btn primary" id="adminLoginBtn" type="button">Login</button></div><p class="hint" id="adminLoginMessage" role="status"></p></div><div id="adminDashboard" hidden><div class="admin-stats"><div><small>মোট চ্যানেল</small><strong id="adminTotal">0</strong></div><div><small>অনলাইন</small><strong id="adminOnline">0</strong></div><div><small>অফলাইন</small><strong id="adminOffline">0</strong></div></div><div class="admin-toolbar"><input class="field" id="adminSearch" placeholder="চ্যানেল খুঁজুন…"><button class="btn" id="adminRefresh" type="button">↻ Refresh</button></div><div id="adminChannelList" class="admin-channel-list"></div><p class="hint" id="adminMessage" role="status"></p><button class="btn" id="adminLogout" type="button">Logout</button></div></div></div>
 <div class="modal" id="urlModal"><div class="modalbox"><div class="modalhead"><h3>Stream URL চালান</h3><button class="xbtn" data-close>✕</button></div><label class="fieldlabel" for="streamName">চ্যানেলের নাম</label><input class="field" id="streamName" placeholder="My Live Channel"><label class="fieldlabel" for="streamUrl">অনুমোদিত stream URL</label><input class="field" id="streamUrl" placeholder="https://example.com/live/manifest.mpd|drmScheme=clearkey&drmLicense=KID:KEY"><div class="hint">একই প্লেয়ারে HLS/M3U8 (.m3u8) এবং MPEG-DASH/MPD (.mpd) চালানো যাবে। লিংকটি কাজ করতে source server-এর CORS, access token, codec ও DRM অনুমতি ঠিক থাকতে হবে।</div><div class="modalbuttons"><button class="btn" data-close>বাতিল</button><button class="btn primary" id="playCustom">চালান</button></div></div></div>
 <script>
-
-/* HLS.js loader for browsers/WebViews that do not provide native HLS. */
-window.__sportyHlsPromise = null;
-window.ensureSportyHls = function () {
-  if (window.Hls && window.Hls.isSupported()) return Promise.resolve(true);
-  if (window.__sportyHlsPromise) return window.__sportyHlsPromise;
-  const sources = [
-    "https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.min.js",
-    "https://unpkg.com/hls.js@1.5.20/dist/hls.min.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.20/hls.min.js"
-  ];
-  window.__sportyHlsPromise = new Promise((resolve, reject) => {
-    let i = 0;
-    function next() {
-      if (window.Hls && window.Hls.isSupported()) { resolve(true); return; }
-      if (i >= sources.length) {
-        window.__sportyHlsPromise = null;
-        reject(new Error("HLS player library could not load. Check your network/CDN access."));
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = sources[i++];
-      script.async = true;
-      script.onload = () => (window.Hls && window.Hls.isSupported()) ? resolve(true) : next();
-      script.onerror = next;
-      document.head.appendChild(script);
-    }
-    next();
-  });
-  return window.__sportyHlsPromise;
-};
-
 /* Shaka Player CDN fallback loader. Playback waits until a working copy is available. */
 window.__sportyShakaPromise = null;
 window.ensureSportyShaka = function () {
@@ -1789,11 +1733,6 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  video.preload="auto";
  video.autoplay=true;
  video.controls=false;
- video.removeAttribute("controls");
- video.setAttribute("playsinline","");
- video.setAttribute("webkit-playsinline","");
- video.disablePictureInPicture=true;
- video.disableRemotePlayback=true;
  // Restore audible playback when switching from a muted stream/player state.
  if(url.includes("/YuppTV/ZeeTVHDAPAC.m3u8")){video.muted=false;video.volume=1;}
 
@@ -1862,129 +1801,59 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  timer=setTimeout(()=>fail("startup timeout after "+Math.round(startupLimit/1000)+" seconds"),startupLimit);
 
  try{
+   // One unified playback engine (Shaka Player) handles both HLS/M3U8 and MPEG-DASH/MPD.
+   // This avoids switching engines when the user selects a different channel.
    if(kind==="direct"||kind==="transport") throw new Error("এই প্লেয়ারে HLS/M3U8 অথবা MPEG-DASH/MPD লিংক দিন।");
    if(kind!=="hls"&&kind!=="mpd"&&kind!=="unknown") throw new Error("সমর্থিত স্ট্রিম হলো HLS/M3U8 ও MPEG-DASH/MPD।");
-
-   if(kind==="hls"){
-     // HLS.js uses Media Source Extensions on Android/desktop browsers.
-     // Native HLS remains the fallback for Safari/iOS WebViews.
-     let hlsReady=false;
-     try{
-       await window.ensureSportyHls();
-       hlsReady=!!(window.Hls&&window.Hls.isSupported());
-     }catch(loadError){
-       console.warn("SPORTYNOVA HLS.js CDN load failed; checking native HLS.",loadError);
+   if(!window.shaka || !shaka.Player) await window.ensureSportyShaka();
+   if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লাইব্রেরি পাওয়া যায়নি।");
+   shaka.polyfill.installAll();
+   if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে HLS/DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
+   engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
+   activeShaka=new shaka.Player(video);
+   const player=activeShaka;
+   // Start at a stable SD/medium rendition for faster startup. Keep adaptive
+   // bitrate disabled unless the user explicitly chooses Auto, avoiding frequent quality jumps.
+   player.configure({
+     streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}},
+     abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.95,bandwidthDowngradeTarget:0.85,switchInterval:30},
+     manifest:{retryParameters:{maxAttempts:3,baseDelay:250,backoffFactor:1.4,timeout:10000}}
+   });
+   // Optional ClearKey support from the existing JSON URL format: |drmScheme=clearkey&drmLicense=KID:KEY
+   if(parsed.scheme==="clearkey"&&parsed.license){
+     const pair=parsed.license.split(":");
+     if(pair.length>=2){
+       const cleanHex=v=>String(v||"").replace(/[^0-9a-f]/gi,"").toLowerCase();
+       const kid=cleanHex(pair[0]),key=cleanHex(pair.slice(1).join(":"));
+       if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
      }
-     if(requestId!==playRequestId)return;
-
-     if(hlsReady){
-       engine="HLS.js";
-       const hls=new Hls({
-         enableWorker:true,
-         lowLatencyMode:true,
-         backBufferLength:30,
-         maxBufferLength:20,
-         maxMaxBufferLength:40,
-         manifestLoadingTimeOut:15000,
-         manifestLoadingMaxRetry:3,
-         manifestLoadingRetryDelay:700,
-         levelLoadingTimeOut:15000,
-         levelLoadingMaxRetry:3,
-         levelLoadingRetryDelay:700,
-         fragLoadingTimeOut:20000,
-         fragLoadingMaxRetry:4,
-         fragLoadingRetryDelay:700
-       });
-       activeHls=hls;
-       let networkRecoveries=0,mediaRecoveries=0;
-       hls.on(Hls.Events.MEDIA_ATTACHED,()=>{
-         if(requestId===playRequestId)hls.loadSource(url);
-       });
-       hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-         if(requestId!==playRequestId)return;
-         setupHlsQualities();
-         video.play().catch(playError=>{
-           console.info("SPORTYNOVA autoplay requires a user gesture:",playError);
-           report("Play চাপুন · ভিডিও প্রস্তুত");
-         });
-       });
-       hls.on(Hls.Events.ERROR,(_event,data)=>{
-         if(requestId!==playRequestId||settled)return;
-         console.warn("SPORTYNOVA HLS.js error",data.type,data.details,data);
-         if(!data.fatal)return;
-         if(data.type===Hls.ErrorTypes.NETWORK_ERROR && networkRecoveries<2){
-           networkRecoveries++;
-           console.info("SPORTYNOVA retrying HLS network loading",networkRecoveries);
-           hls.startLoad();
-           return;
-         }
-         if(data.type===Hls.ErrorTypes.MEDIA_ERROR && mediaRecoveries<2){
-           mediaRecoveries++;
-           console.info("SPORTYNOVA recovering HLS media",mediaRecoveries);
-           hls.recoverMediaError();
-           return;
-         }
-         fail("HLS "+(data.details||data.type||"fatal error"));
-       });
-       hls.attachMedia(video);
-     }else if(/iPhone|iPad|iPod/i.test(navigator.userAgent) &&
-              (video.canPlayType("application/vnd.apple.mpegurl")||video.canPlayType("application/x-mpegURL"))){
-       // Apple Safari fallback only. Keep controls hidden and inline so the
-       // browser does not replace the SPORTYNOVA custom player surface.
-       engine="Native HLS (inline)";
-       video.controls=false;
-       video.src=url;
-       video.load();
-       video.play().catch(playError=>{
-         console.info("SPORTYNOVA inline native HLS needs a user gesture:",playError);
-       });
-     }else{
-       throw new Error("Custom Player চালানোর জন্য HLS.js লোড হয়নি। ইন্টারনেট/CDN সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।");
-     }
-   }else{
-     // Keep Shaka Player for MPEG-DASH/MPD and existing ClearKey DRM support.
-     if(!window.shaka || !shaka.Player) await window.ensureSportyShaka();
-     if(!window.shaka || !shaka.Player) throw new Error("ভিডিও প্লেয়ার লাইব্রেরি পাওয়া যায়নি।");
-     shaka.polyfill.installAll();
-     if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে MPEG-DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
-     engine="Shaka (MPEG-DASH)";
-     activeShaka=new shaka.Player(video);
-     const player=activeShaka;
-     player.configure({
-       streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:4,baseDelay:500,backoffFactor:1.5,timeout:15000}},
-       abr:{enabled:false,defaultBandwidthEstimate:700000,bandwidthUpgradeTarget:0.95,bandwidthDowngradeTarget:0.85,switchInterval:30},
-       manifest:{retryParameters:{maxAttempts:4,baseDelay:500,backoffFactor:1.5,timeout:15000}}
-     });
-     if(parsed.scheme==="clearkey"&&parsed.license){
-       const pair=parsed.license.split(":");
-       if(pair.length>=2){
-         const cleanHex=v=>String(v||"").replace(/[^0-9a-f]/gi,"").toLowerCase();
-         const kid=cleanHex(pair[0]),key=cleanHex(pair.slice(1).join(":"));
-         if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
-       }
-     }
-     player.addEventListener("error",event=>{
-       if(requestId!==playRequestId)return;
-       const detail=event.detail||{};
-       console.warn("SPORTYNOVA Shaka error",detail.code,detail);
-       if(detail.severity===shaka.util.Error.Severity.CRITICAL)fail("DASH error "+(detail.code||"playback"));
-     });
-     player.addEventListener("adaptation",()=>{if(requestId===playRequestId)setupShakaQualities()});
-     player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
-     await player.load(url);
-     if(requestId!==playRequestId)return;
-     const variants=player.getVariantTracks().filter(t=>t.height&&t.type!=="audio");
-     if(variants.length){
-       const sdVariants=variants.filter(t=>Number(t.height)<=640);
-       const startTrack=(sdVariants.length?sdVariants:variants).sort((a,b)=>{
-         const heightDiff=Number(b.height||0)-Number(a.height||0);
-         return heightDiff||Number(a.bandwidth||0)-Number(b.bandwidth||0);
-       })[0];
-       if(startTrack){player.configure({abr:{enabled:false}});player.selectVariantTrack(startTrack,true);}
-     }
-     setupShakaQualities();
-     video.play().catch(()=>{});
    }
+   player.addEventListener("error",event=>{
+     if(requestId!==playRequestId)return;
+     const detail=event.detail||{};
+     console.warn("SPORTYNOVA Shaka error",detail.code,detail);
+     if(detail.severity===shaka.util.Error.Severity.CRITICAL)fail("Shaka error "+(detail.code||"playback"));
+   });
+   player.addEventListener("adaptation",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   await player.load(url);
+   if(requestId!==playRequestId)return;
+   // Prefer a low/medium rendition up to 640p (e.g. 480p/540p/640p);
+   // if unavailable, start with the lowest available video rendition instead.
+   const variants=player.getVariantTracks().filter(t=>t.height && t.type!=="audio");
+   if(variants.length){
+     const sdVariants=variants.filter(t=>Number(t.height)<=640);
+     const startTrack=(sdVariants.length?sdVariants:variants).sort((a,b)=>{
+       const heightDiff=Number(b.height||0)-Number(a.height||0);
+       return heightDiff || Number(a.bandwidth||0)-Number(b.bandwidth||0);
+     })[0];
+     if(startTrack){
+       player.configure({abr:{enabled:false}});
+       player.selectVariantTrack(startTrack,true);
+     }
+   }
+   setupShakaQualities();
+   video.play().catch(()=>{});
  }catch(err){fail(err?.message||"player exception")}
  render();
 }

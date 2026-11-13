@@ -918,6 +918,50 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 @media(max-width:420px){#qualitySelect,#playerScreen #qualitySelect{width:44px!important;min-width:0!important;max-width:44px!important;padding:0 1px!important;font-size:8px!important}}
 </style>
 
+
+<style id="sportynova-multiscreen-styles">
+#multiScreenBtn{border-color:#20cde8!important;color:#baf7ff!important;white-space:nowrap}
+#multiScreenOverlay{position:fixed;inset:0;z-index:100100;background:#000;display:none;color:#fff;font-family:Inter,"Hind Siliguri",sans-serif;overflow:hidden}
+#multiScreenOverlay.open{display:flex;flex-direction:column}
+.ms-head{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:10px;padding:8px 14px;background:#050608;border-bottom:1px solid #20242b;z-index:3}
+.ms-count{font-size:clamp(14px,2.3vw,21px);font-weight:800;flex:1}
+.ms-head button,.ms-tile-action{border:1px solid #ffffff24;background:#17191e;color:#fff;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:800}
+.ms-head .ms-close{background:#c92e35;border-color:#e34b51}
+.ms-grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr));gap:3px;padding:3px;background:#000}
+.ms-tile{position:relative;min-width:0;min-height:0;overflow:hidden;background:#101318;border:1px solid #222831}
+.ms-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.ms-tile-name{position:absolute;left:9px;bottom:50px;z-index:2;max-width:75%;padding:6px 9px;border-radius:6px;background:#0009;font-size:clamp(10px,1.5vw,15px);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms-tile-tools{position:absolute;right:7px;bottom:7px;z-index:3;display:flex;gap:5px}
+.ms-tile-action{padding:6px 10px;background:#05090fc9;font-size:12px}
+.ms-tile-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#aeb9c8;font-size:13px}
+.ms-tile-empty button{border:0;border-radius:999px;padding:10px 18px;background:#13bde4;color:#03131a;font-weight:900}
+.ms-tile-error{position:absolute;inset:0;z-index:2;display:none;align-items:center;justify-content:center;text-align:center;padding:15px;color:#fff;background:#0008;font-size:12px}
+.ms-tile.is-active{border:2px solid #1bd4f2}
+@media (orientation:landscape){
+ #multiScreenOverlay .ms-head{height:58px;flex-basis:58px}
+ #multiScreenOverlay .ms-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+}
+@media (orientation:portrait){
+ #multiScreenOverlay .ms-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr))}
+}
+#multiScreenOverlay.ms-landscape .ms-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important}
+@media(max-width:600px){
+ .ms-head{padding:7px 9px;gap:7px}
+ .ms-head button{padding:8px 11px;font-size:11px}
+ .ms-tile-name{bottom:43px;left:6px;font-size:10px}
+ .ms-tile-action{font-size:11px;padding:6px 8px}
+}
+</style>
+
+
+<style id="sportynova-direct-match-share">
+.match-share-wrap{position:relative;min-width:0;min-height:0;height:100%}
+.match-share-wrap>.match-card{width:100%;height:100%;min-height:inherit}
+.match-share-btn{position:absolute;right:7px;bottom:7px;z-index:4;width:27px;height:27px;border:1px solid #4b8da8;border-radius:9px;background:linear-gradient(135deg,#183c53,#102337);color:#c9f8ff;font-size:17px;font-weight:900;line-height:1;box-shadow:0 3px 10px #0007;cursor:pointer}
+.match-share-btn:active{transform:scale(.94)}
+.match-share-wrap .match-card .sports-badge-row{padding-right:27px}
+@media(max-width:420px){.match-share-btn{right:5px;bottom:5px;width:24px;height:24px;font-size:15px;border-radius:8px}}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -965,6 +1009,17 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
  <div class="noticebar" role="status" aria-label="লাইভ নোটিশ"><div class="notice-label">📢 NOTICE</div><div class="notice-window"><span class="notice-text" id="noticeText">SPORTYNOVA PREMIUM — স্বাগতম! 🔴 লাইভ চ্যানেল দেখতে নিচের তালিকা থেকে নির্বাচন করুন। কোনো stream কাজ না করলে অন্য server চেষ্টা করুন। আপনাদের আরও ভালো অভিজ্ঞতার জন্য আমরা নিয়মিত আপডেট করছি। ❤️
 ।</span></div></div>
 </section>
+
+<div id="multiScreenOverlay" aria-hidden="true">
+ <div class="ms-head">
+  <div class="ms-count" id="msCount">Multi screen · 0/4</div>
+  <button type="button" id="msRotate" aria-label="Rotate layout">▱</button>
+  <button type="button" id="msAdd">＋ Add</button>
+  <button type="button" class="ms-close" id="msClose">✕ Close</button>
+ </div>
+ <div class="ms-grid" id="msGrid"></div>
+</div>
+
 <main class="channelarea" id="channelArea">
  <div class="sectionhead sports-sectionhead">
   <h2>⚽ Live Sports</h2>
@@ -1234,8 +1289,62 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   if(isLiveEvent || ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
   else openModal(ch.name);
  });
+ if(isLiveEvent){
+  const sourcePath=String(ch.__sourceFile||ch.sourceFile||ch.file||"");
+  const matchFile=sourcePath.match(/(?:^|\/)match-(\d+)\.json$/i);
+  if(matchFile){
+   const matchId="match-"+matchFile[1];
+   b.dataset.matchId=matchId;
+   const wrap=document.createElement("div");wrap.className="match-share-wrap";
+   const share=document.createElement("button");share.type="button";share.className="match-share-btn";share.textContent="↗";
+   share.title="Share direct match link";share.setAttribute("aria-label","Share "+String(ch.name||"match"));
+   share.addEventListener("click",async event=>{event.preventDefault();event.stopPropagation();await shareDirectMatch(matchId,ch.name||"Live Match");});
+   wrap.append(b,share);root.appendChild(wrap);return;
+  }
+ }
  root.appendChild(b);
 }
+let directMatchOpened=false;
+function directMatchUrl(matchId){
+ const url=new URL(location.href);
+ url.searchParams.delete("url");url.searchParams.delete("name");
+ url.searchParams.set("match",matchId);
+ return url.toString();
+}
+async function shareDirectMatch(matchId,matchName){
+ const url=directMatchUrl(matchId);
+ const title=String(matchName||"Live Match")+" | SPORTYNOVA";
+ const text="Watch "+String(matchName||"the match")+" live on SPORTYNOVA";
+ try{
+  if(navigator.share){await navigator.share({title,text,url});return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);alert("Direct match link copied!\n"+url);return;}
+  window.prompt("Copy direct match link:",url);
+ }catch(error){
+  if(error&&error.name==="AbortError")return;
+  window.prompt("Copy direct match link:",url);
+ }
+}
+function openDirectMatchFromUrl(){
+ if(directMatchOpened)return;
+ const requested=String(pageParams.get("match")||"").trim();
+ if(!requested)return;
+ const matchId=/^\d+$/.test(requested)?"match-"+requested:requested;
+ if(!/^match-\d+$/i.test(matchId))return;
+ const wanted=matchId.toLowerCase();
+ const match=liveSports.find(item=>{
+  const path=String(item.__sourceFile||item.sourceFile||item.file||"");
+  const found=path.match(/(?:^|\/)(match-\d+)\.json$/i);
+  return found&&found[1].toLowerCase()===wanted;
+ });
+ if(!match)return;
+ directMatchOpened=true;
+ selectedMatchFilter="ALL";
+ render(channels);
+ playChannelDefault(match);
+ const player=document.querySelector(".playersticky");
+ if(player)player.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
 function formatMatchStartTime(ch){
  const dateValue=ch.matchDate||ch.match_date||ch.gameDate||ch.game_date||ch.date;
  const timeValue=ch.matchTime||ch.match_time||ch.kickoff_time||ch.time;
@@ -1538,6 +1647,14 @@ function setPlayerMode(sportsMode){
 }
 window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
+ if(window.__sportyMultiScreen&&window.__sportyMultiScreen.isActive()){
+  window.__sportyLastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
+  const ready=window.ensureSportyShaka?await window.ensureSportyShaka():null;
+  if(ready===false) return;
+  await window.__sportyMultiScreen.assign(rawUrl,name,category,drm);
+  return;
+ }
+ window.__sportyLastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
@@ -1937,7 +2054,7 @@ async function loadConfig(){
   if(!channels.length){const r=await fetch("./channels.json",{cache:"no-store"});if(r.ok){const d=await r.json();channels=(d.liveTvChannels||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"tv"}));if(!liveSports.length)liveSports=(d.liveSports||[]).filter(c=>c&&c.name&&isChannelShown(c)).map(c=>({...c,section:"liveSports",category:"Live Sports"}));}}
  }catch(e){console.warn("Separate JSON load failed",e)}
   await loadTeamLogos();
- if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();
+ if(!liveSports.length)liveSports=defaults.liveSports.map(c=>({...c,section:"liveSports",category:"Live Sports"}));render();refreshPublicStatus();openDirectMatchFromUrl();
  configLoadInProgress=false;
 }
 
@@ -2134,7 +2251,7 @@ const pageParams=new URLSearchParams(location.search);
 const requestedStream=pageParams.get("url");
 const requestedName=pageParams.get("name")||"SPORTYNOVA Live";
 if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
-else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
+else if(!pageParams.get("match"))playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
 loadConfig();
 // Re-scan GitHub JSON periodically so newly added/edited match files appear without
 // requiring an HTML edit; render status/sort between full data refreshes.
@@ -2642,6 +2759,121 @@ document.addEventListener("touchend", e => {
 }
 /* Quality stays on the chosen rendition; Auto remains available as an explicit user choice. */
 </style>
+
+
+<script id="sportynova-multiscreen-engine">
+(()=>{
+ const $=id=>document.getElementById(id);
+ const overlay=$("multiScreenOverlay"),grid=$("msGrid"),count=$("msCount");
+ const mainVideo=$("video");
+ if(!overlay||!grid||!mainVideo)return;
+ const slots=Array.from({length:4},()=>({player:null,video:null,name:"",url:"",muted:false}));
+ let active=false,adding=false,focused=0,manualLandscape=false;
+ const safeText=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ function updateCount(){
+  const n=slots.filter(x=>x.url).length;
+  count.textContent="Multi screen · "+n+"/4";
+  $("msAdd").style.display=n>=4?"none":"inline-flex";
+ }
+ function renderSlots(){
+  grid.replaceChildren();
+  slots.forEach((slot,i)=>{
+   const tile=document.createElement("div");tile.className="ms-tile"+(focused===i?" is-active":"");tile.dataset.slot=i;
+   const v=document.createElement("video");v.playsInline=true;v.setAttribute("playsinline","");v.autoplay=true;v.preload="auto";v.muted=i>0;
+   tile.appendChild(v);slot.video=v;
+   const name=document.createElement("div");name.className="ms-tile-name";name.textContent=slot.name||("Screen "+(i+1));tile.appendChild(name);
+   const tools=document.createElement("div");tools.className="ms-tile-tools";
+   const mute=document.createElement("button");mute.className="ms-tile-action";mute.type="button";mute.textContent=v.muted?"🔇":"🔊";mute.title="Sound on/off";
+   mute.addEventListener("click",()=>{v.muted=!v.muted;slot.muted=v.muted;mute.textContent=v.muted?"🔇":"🔊";});
+   const full=document.createElement("button");full.className="ms-tile-action";full.type="button";full.textContent="⛶";full.title="Full screen";
+   full.addEventListener("click",()=>{if(tile.requestFullscreen)tile.requestFullscreen().catch(()=>{});});
+   const close=document.createElement("button");close.className="ms-tile-action";close.type="button";close.textContent="✕";close.title="Remove screen";
+   close.addEventListener("click",()=>clearSlot(i));
+   tools.append(mute,full,close);tile.appendChild(tools);
+   if(!slot.url){
+    const empty=document.createElement("div");empty.className="ms-tile-empty";
+    empty.innerHTML='<span>Screen '+(i+1)+' · No channel selected</span><button type="button">＋ Add Channel</button>';
+    empty.querySelector("button").addEventListener("click",()=>{focused=i;adding=true;tile.classList.add("is-active");count.textContent="Select a channel below · Screen "+(i+1);});
+    tile.appendChild(empty);
+   }
+   const error=document.createElement("div");error.className="ms-tile-error";error.textContent="Stream could not be played";tile.appendChild(error);
+   tile.addEventListener("click",e=>{if(e.target.closest("button"))return;focused=i;grid.querySelectorAll(".ms-tile").forEach((t,j)=>t.classList.toggle("is-active",j===i));});
+   grid.appendChild(tile);
+  });
+  updateCount();
+ }
+ async function stopSlot(i){
+  const s=slots[i];if(s.player){try{await s.player.destroy()}catch(e){}s.player=null;}
+  if(s.video){try{s.video.pause();s.video.removeAttribute("src");s.video.load()}catch(e){}}
+ }
+ async function clearSlot(i){
+  await stopSlot(i);Object.assign(slots[i],{name:"",url:"",muted:i>0});renderSlots();
+ }
+ async function loadSlot(i,rawUrl,name,category,drm){
+  const s=slots[i];await stopSlot(i);
+  const tile=grid.querySelector('[data-slot="'+i+'"]');
+  if(!tile)return;
+  const v=s.video;const parsed=window.parseStreamInput?window.parseStreamInput(rawUrl,drm):{url:String(rawUrl).split("|")[0],scheme:"",license:""};
+  const url=parsed.url;
+  s.name=name||"Live Stream";s.url=rawUrl;s.muted=i>0;v.muted=s.muted;v.autoplay=true;v.crossOrigin="anonymous";
+  const label=tile.querySelector(".ms-tile-name");if(label)label.textContent=s.name;
+  const empty=tile.querySelector(".ms-tile-empty");if(empty)empty.remove();
+  const error=tile.querySelector(".ms-tile-error");if(error)error.style.display="none";
+  const mute=tile.querySelector(".ms-tile-tools button");if(mute)mute.textContent=v.muted?"🔇":"🔊";
+  try{
+   if(!window.shaka||!window.shaka.Player)throw new Error("Player library not ready");
+   const player=new shaka.Player(v);s.player=player;
+   player.configure({
+    streaming:{bufferingGoal:8,rebufferingGoal:2,bufferBehind:20,retryParameters:{maxAttempts:2,baseDelay:250,timeout:9000}},
+    abr:{enabled:true,defaultBandwidthEstimate:650000},
+    manifest:{retryParameters:{maxAttempts:2,baseDelay:250,timeout:9000}}
+   });
+   if(parsed.scheme==="clearkey"&&parsed.license){
+    const pair=parsed.license.split(":");const clean=x=>String(x||"").replace(/[^0-9a-f]/gi,"").toLowerCase();
+    const kid=clean(pair[0]),key=clean(pair.slice(1).join(":"));if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
+   }
+   player.addEventListener("error",()=>{if(error){error.textContent="Playback error · try another server";error.style.display="flex";}});
+   await player.load(url);await v.play().catch(()=>{});
+  }catch(e){
+   console.warn("SPORTYNOVA multi-screen playback:",e);
+   if(error){error.textContent="Stream could not play · "+(e.message||"error");error.style.display="flex";}
+  }
+  updateCount();
+ }
+ function nextEmpty(){return slots.findIndex(s=>!s.url)}
+ async function assign(rawUrl,name,category,drm){
+  let i=focused;
+  if(!adding&&slots[i].url){const empty=nextEmpty();if(empty>=0)i=empty;}
+  if(i<0||i>3)i=nextEmpty();
+  if(i<0){count.textContent="Multi screen · 4/4";return;}
+  focused=i;adding=false;
+  await loadSlot(i,rawUrl,name,category,drm);
+ }
+ async function open(){
+  if(active)return;
+  active=true;adding=false;focused=0;overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+  renderSlots();mainVideo.pause();
+  const req=window.__sportyLastStreamRequest;
+  if(req&&req.rawUrl)await assign(req.rawUrl,req.name,req.category,req.drm);
+ }
+ async function close(){
+  active=false;adding=false;overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+  for(let i=0;i<4;i++)await stopSlot(i);
+  if(!mainVideo.paused) return;
+  if(mainVideo.dataset.currentUrl&&mainVideo.src)mainVideo.play().catch(()=>{});
+ }
+ $("msAdd").addEventListener("click",()=>{const i=nextEmpty();if(i<0)return;focused=i;adding=true;count.textContent="Select a channel below · Screen "+(i+1);});
+ $("msClose").addEventListener("click",close);
+ $("msRotate").addEventListener("click",()=>{manualLandscape=!manualLandscape;overlay.classList.toggle("ms-landscape",manualLandscape);});
+ window.__sportyMultiScreen={isActive:()=>active,assign,open,close};
+ const button=document.createElement("button");button.type="button";button.id="multiScreenBtn";button.className="nova-control-btn";button.textContent="▦";button.title="Multi screen";
+ button.addEventListener("click",open);
+ const row=document.querySelector("#playerScreen .nova-control-row");
+ if(row){const full=$("fullscreenBtn");if(full&&full.parentNode===row)row.insertBefore(button,full);else row.appendChild(button);}
+})();
+</script>
 
 </body>
 </html>

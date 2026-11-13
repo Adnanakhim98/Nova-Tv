@@ -3076,3 +3076,70 @@ document.addEventListener("touchend", e => {
 }
 /* Keep the server popup's existing 4-second auto-hide / tap-to-show behavior. */
 </style>
+
+
+<!-- SPORTYNOVA: keep the page at a fixed browser zoom level.
+     Normal scrolling, single-finger player gestures and player controls remain enabled. -->
+<style id="sportynova-fixed-page-zoom">
+  html, body {
+    touch-action: pan-y !important;
+    -ms-touch-action: pan-y !important;
+    overscroll-behavior: none;
+  }
+  /* Avoid browser text auto-resizing when the viewport changes. */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+</style>
+<script id="sportynova-fixed-page-zoom-script">
+(() => {
+  const viewport = document.querySelector('meta[name="viewport"]');
+  if (viewport) {
+    viewport.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
+    );
+  }
+
+  // Block only multi-finger gestures. One-finger scrolling and player swipes are untouched.
+  const blockMultiTouch = (event) => {
+    if (event.touches && event.touches.length > 1) {
+      event.preventDefault();
+    }
+  };
+  document.addEventListener('touchstart', blockMultiTouch, { passive: false, capture: true });
+  document.addEventListener('touchmove', blockMultiTouch, { passive: false, capture: true });
+
+  // Safari/iOS gesture events and desktop trackpad/browser zoom.
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(type => {
+    document.addEventListener(type, event => event.preventDefault(), { passive: false });
+  });
+  document.addEventListener('wheel', event => {
+    if (event.ctrlKey || event.metaKey) event.preventDefault();
+  }, { passive: false });
+
+  // Prevent keyboard zoom shortcuts where the page has focus.
+  document.addEventListener('keydown', event => {
+    if ((event.ctrlKey || event.metaKey) &&
+        ['+', '-', '=', '0'].includes(event.key)) {
+      event.preventDefault();
+    }
+  }, { capture: true });
+
+  // Keep the viewport fixed if a browser reports a pinch-scale change.
+  if (window.visualViewport) {
+    let correcting = false;
+    window.visualViewport.addEventListener('resize', () => {
+      if (correcting || window.visualViewport.scale === 1) return;
+      correcting = true;
+      requestAnimationFrame(() => {
+        if (viewport) {
+          viewport.setAttribute(
+            'content',
+            'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
+          );
+        }
+        correcting = false;
+      });
+    }, { passive: true });
+  }
+})();
+</script>

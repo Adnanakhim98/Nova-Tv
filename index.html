@@ -1371,8 +1371,15 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
    event.preventDefault();
    event.stopPropagation();
    const shareUrl=new URL(location.href);
-   shareUrl.searchParams.set("matchPath",String(ch.__sourceFile||ch.sourceFile||ch.file||""));
-   shareUrl.searchParams.set("matchName",String(ch.name||""));
+   const sourcePath=String(ch.__sourceFile||ch.sourceFile||ch.file||"");
+   const matchNumber=(sourcePath.match(/match-(\d+)\.json/i)||[])[1];
+   shareUrl.search="";
+   if(matchNumber)shareUrl.searchParams.set("match","match-"+matchNumber);
+   else{
+    // Keep compatibility for match files that do not use the numbered naming format.
+    shareUrl.searchParams.set("matchPath",sourcePath);
+    shareUrl.searchParams.set("matchName",String(ch.name||""));
+   }
    shareUrl.hash="";
    const payload={title:String(ch.name||"Live Match")+" | SportyNova",text:"Watch "+String(ch.name||"Live Match")+" live on SportyNova",url:shareUrl.href};
    try{
@@ -2108,20 +2115,32 @@ async function loadConfig(){
  // If this page was opened from a match share link, open that exact match directly.
  try{
   const params=new URLSearchParams(location.search);
+  const legacyMatch=params.get("match");
   const sharedPath=params.get("matchPath");
   const sharedName=params.get("matchName");
-  if(sharedPath&&sharedName){
-   const target=liveSports.find(item=>
+  let target=null;
+  if(legacyMatch){
+   const matchNumber=(legacyMatch.match(/^match-(\d+)$/i)||[])[1];
+   if(matchNumber){
+    target=liveSports.find(item=>{
+     const sourcePath=String(item.__sourceFile||item.sourceFile||item.file||"");
+     const sourceNumber=(sourcePath.match(/match-(\d+)\.json/i)||[])[1];
+     return sourceNumber===matchNumber;
+    })||null;
+   }
+  }else if(sharedPath&&sharedName){
+   // Continue supporting previously shared matchPath + matchName URLs.
+   target=liveSports.find(item=>
     String(item.__sourceFile||item.sourceFile||item.file||"")===sharedPath &&
     String(item.name||"")===sharedName
-   );
-   if(target){
-    setTimeout(()=>{
-     playChannelDefault(target);
-     const player=document.querySelector(".playersticky .playercard");
-     if(player)player.scrollIntoView({behavior:"smooth",block:"center"});
-    },250);
-   }
+   )||null;
+  }
+  if(target){
+   setTimeout(()=>{
+    playChannelDefault(target);
+    const player=document.querySelector(".playersticky .playercard");
+    if(player)player.scrollIntoView({behavior:"smooth",block:"center"});
+   },250);
   }
  }catch(error){console.warn("Could not open shared match link",error);}
  configLoadInProgress=false;

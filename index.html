@@ -1005,6 +1005,51 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
+<style id="sportynova-share-icon-final-fit">
+/* Keep the share icon compact inside the existing time/channel pill row. */
+#liveSportsChannels .channel.match-card .match-start-label{
+  display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  align-items:center!important;justify-content:space-between!important;
+  gap:3px!important;min-width:0!important;width:100%!important;
+  box-sizing:border-box!important;overflow:hidden!important;
+  padding:4px 5px!important;
+}
+#liveSportsChannels .channel.match-card .match-start-text{
+  flex:1 1 auto!important;min-width:0!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+  font-size:clamp(8px,2.5vw,10px)!important;
+}
+#liveSportsChannels .channel.match-card .match-channel-group{
+  flex:0 0 auto!important;display:inline-flex!important;align-items:center!important;
+  gap:4px!important;white-space:nowrap!important;margin-left:auto!important;
+}
+#liveSportsChannels .channel.match-card .match-channel-text{
+  font-size:clamp(8px,2.4vw,10px)!important;white-space:nowrap!important;
+}
+#liveSportsChannels .channel.match-card .match-share-icon{
+  position:static!important;inset:auto!important;float:none!important;
+  display:inline-grid!important;place-items:center!important;
+  flex:0 0 18px!important;width:18px!important;height:18px!important;
+  min-width:18px!important;max-width:18px!important;
+  padding:0!important;margin:0 0 0 2px!important;box-sizing:border-box!important;
+  border:1px solid rgba(55,220,248,.78)!important;border-radius:5px!important;
+  background:rgba(5,20,34,.96)!important;color:#61eaff!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.25)!important;z-index:2!important;
+}
+#liveSportsChannels .channel.match-card .match-share-icon svg{
+  display:block!important;width:11px!important;height:11px!important;
+}
+@media(max-width:420px){
+ #liveSportsChannels .channel.match-card .match-start-label{padding:4px 4px!important;gap:2px!important}
+ #liveSportsChannels .channel.match-card .match-share-icon{
+   flex-basis:17px!important;width:17px!important;height:17px!important;
+   min-width:17px!important;max-width:17px!important;border-radius:4px!important;
+ }
+ #liveSportsChannels .channel.match-card .match-share-icon svg{width:10px!important;height:10px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">

@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Bangladesh Vs Pakistan",
+    "name": "Pakistan Vs Bangladesh",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -9,26 +9,13 @@
     "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
     "section": "liveSports",
     "streams": [
-      {
-        "name": "BTV BD FHD",
-        "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "VETO TV (IND)",
-        "url": "https://vetointv.akamaized.net/Dreamboat-CH01/master.m3u8",
-        "show": "yes"
-      },
+      
       {
         "name": "BACKUP HD",
-        "url": "https://pull.niur.live/live/stream-9912132_lhd.m3u8?txSecret=56c20834d52717b7eab6af5fe033b236&txTime=6af8c3a6",
-        "show": "yes"
-      },
-      {
-        "name": "TOFFEE HD",
-        "url": "https://tv10.workerbot-tv10.workers.dev/play/9dijmqEBalKyvLQIIAFj.m3u8?token=exp=1794669625~hmac=XLGnj_QNxIWJDLzFD-QAZlPzYd6_sNYdS-avGYdgy_g",
+        "url": "https://m3u8-proxy-v1.jahinalamshamim.workers.dev/proxy?url=https://live2.jorvakstreamcache.com/live/channel19.m3u8",
         "show": "yes"
       }
+
     ],
     "show": "yes",
     "id": 18,

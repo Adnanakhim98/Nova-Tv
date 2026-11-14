@@ -18,11 +18,11 @@
     ],
     "show": "yes",
     "id": 6,
-    "startTime": "2026-11-11T12:00:00+06:00",
-    "endTime": "2026-11-11T19:30:00+06:00",
+    "startTime": "2026-11-14T11:00:00+06:00",
+    "endTime": "2026-11-14T19:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket|Asia Cup",
+    "matchType": "Cricket|Asia Cup-Final",
     "drm": {
       "scheme": "clearkey",
       "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"

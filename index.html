@@ -1148,6 +1148,8 @@ window.ensureSportyShaka = function () {
   });
   return window.__sportyShakaPromise;
 };
+// Download the playback engine before the user taps a channel.
+window.ensureSportyShaka().catch(error => console.warn("SPORTYNOVA player preload:", error));
 </script>
 
 <script>
@@ -1155,6 +1157,14 @@ const $=id=>document.getElementById(id), video=$("video");
 let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL",adaptiveQualityTimer=null;
 video.preload="auto";
 video.autoplay=true;
+// Warm up the reusable player while the channel list/config is loading.
+window.__sportyPlayerWarmup=window.ensureSportyShaka().then(()=>{
+ if(window.shaka&&shaka.Player&&shaka.Player.isBrowserSupported()){
+   shaka.polyfill.installAll();
+   if(!activeShaka)activeShaka=new shaka.Player(video);
+ }
+ return true;
+}).catch(error=>{console.warn("SPORTYNOVA player warmup:",error);return false});
 video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
 const defaults={liveSports:[
 {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
@@ -1480,7 +1490,29 @@ function sortLiveMatches(items){
 function normalizeSearchText(value){
  return String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^a-z0-9\u0980-\u09ff]+/g," ").trim().replace(/\s+/g," ");
 }
+const sportyWarmedOrigins=new Set();
+function warmStreamConnections(items){
+ (items||[]).forEach(channel=>{
+   const streams=Array.isArray(channel?.streams)?channel.streams:[channel];
+   streams.forEach(stream=>{
+     const raw=String(stream?.url||stream?.src||"").trim();
+     if(!/^https?:\/\//i.test(raw))return;
+     try{
+       const origin=new URL(raw).origin;
+       if(sportyWarmedOrigins.has(origin))return;
+       sportyWarmedOrigins.add(origin);
+       const preconnect=document.createElement("link");
+       preconnect.rel="preconnect";preconnect.href=origin;preconnect.crossOrigin="anonymous";
+       document.head.appendChild(preconnect);
+       const dns=document.createElement("link");
+       dns.rel="dns-prefetch";dns.href=origin;
+       document.head.appendChild(dns);
+     }catch(e){}
+   });
+ });
+}
 function render(list=channels){
+ warmStreamConnections([...(Array.isArray(list)?list:[]),...(Array.isArray(liveSports)?liveSports:[])]);
  const tabs=$("categoryTabs"),root=$("categorySections"),sportsRoot=$("liveSportsChannels");
  tabs.innerHTML="";root.innerHTML="";sportsRoot.innerHTML="";
  const query=normalizeSearchText($("search").value);
@@ -1622,14 +1654,17 @@ function setLiveBadge(on){const badge=$("playerLiveBadge");if(badge)badge.style.
 async function stopEngines(){
   if(adaptiveQualityTimer){clearTimeout(adaptiveQualityTimer);adaptiveQualityTimer=null;}
   if(activeHls){const old=activeHls;activeHls=null;try{old.destroy()}catch(e){}}
-  if(activeShaka){const old=activeShaka;activeShaka=null;try{await old.destroy()}catch(e){}}
+  // Keep the single Shaka instance warm. Its next load(url) replaces the
+  // previous presentation; destroying/recreating it on every tap adds delay.
   video.style.display="";
   video.pause();
   video.onloadedmetadata=null;
   video.onerror=null;
   video.onplaying=null;
-  video.removeAttribute("src");
-  video.load();
+  if(!activeShaka){
+    video.removeAttribute("src");
+    video.load();
+  }
   delete video.dataset.currentUrl;
   activeKey=null;
 }
@@ -1810,8 +1845,14 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    shaka.polyfill.installAll();
    if(!shaka.Player.isBrowserSupported()) throw new Error("এই ব্রাউজারে HLS/DASH প্লেব্যাক সমর্থিত নয়। Chrome আপডেট করে চেষ্টা করুন।");
    engine="Shaka ("+(kind==="mpd"?"MPEG-DASH":"HLS")+")";
-   activeShaka=new shaka.Player(video);
+   // Reuse the already-created player instead of constructing a new engine per click.
+   activeShaka=activeShaka || new shaka.Player(video);
    const player=activeShaka;
+   if(player.__sportyHandlers){
+     player.removeEventListener("error",player.__sportyHandlers.error);
+     player.removeEventListener("adaptation",player.__sportyHandlers.adaptation);
+     player.removeEventListener("variantchanged",player.__sportyHandlers.variantchanged);
+   }
    // Start at a stable SD/medium rendition for faster startup. Keep adaptive
    // bitrate disabled unless the user explicitly chooses Auto, avoiding frequent quality jumps.
    player.configure({
@@ -1828,14 +1869,20 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        if(kid&&key)player.configure({drm:{clearKeys:{[kid]:key}}});
      }
    }
-   player.addEventListener("error",event=>{
-     if(requestId!==playRequestId)return;
-     const detail=event.detail||{};
-     console.warn("SPORTYNOVA Shaka error",detail.code,detail);
-     if(detail.severity===shaka.util.Error.Severity.CRITICAL)fail("Shaka error "+(detail.code||"playback"));
-   });
-   player.addEventListener("adaptation",()=>{if(requestId===playRequestId)setupShakaQualities()});
-   player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
+   const playerHandlers={
+     error:event=>{
+       if(requestId!==playRequestId)return;
+       const detail=event.detail||{};
+       console.warn("SPORTYNOVA Shaka error",detail.code,detail);
+       if(detail.severity===shaka.util.Error.Severity.CRITICAL)fail("Shaka error "+(detail.code||"playback"));
+     },
+     adaptation:()=>{if(requestId===playRequestId)setupShakaQualities()},
+     variantchanged:()=>{if(requestId===playRequestId)setupShakaQualities()}
+   };
+   player.__sportyHandlers=playerHandlers;
+   player.addEventListener("error",playerHandlers.error);
+   player.addEventListener("adaptation",playerHandlers.adaptation);
+   player.addEventListener("variantchanged",playerHandlers.variantchanged);
    await player.load(url);
    if(requestId!==playRequestId)return;
    // Prefer a low/medium rendition up to 640p (e.g. 480p/540p/640p);

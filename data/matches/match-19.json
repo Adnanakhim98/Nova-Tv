@@ -6,22 +6,14 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://chatgpt.hereisman.net/playlist//load-playlist?&.m3u8",
     "section": "liveSports",
     "streams": [
       {
-        "name": "BTV HD",
-        "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
-        
-        "show": "yes"
-      },
-    
-      {
-        "name": "T SPORTS HD",
-        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
+        "name": "STREAM TV + HD",
+        "url": "https://chatgpt.hereisman.net/playlist//load-playlist?&.m3u8",
         "show": "yes"
       }
-      
     ],
     "show": "yes",
     "id": 19,
@@ -29,10 +21,6 @@
     "endTime": "2026-11-14T17:00:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football | SAFF Championship",
-    "drm": {
-      "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-    }
+    "matchType": "Football | SAFF Championship"
   }
 }

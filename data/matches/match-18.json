@@ -6,26 +6,29 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "Yellow",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
     "section": "liveSports",
     "streams": [
       {
-        "name": "BTV HD",
+        "name": "BTV BD FHD",
         "url": "https://nkafmbewiff.gpcdn.net/tile_2/master.m3u8",
-        "show": "no"
-      },
-
-      {
-        "name": "Xo",
-        "url": "https://m3u8-proxy-v1.jahinalamshamim.workers.dev/proxy?url=https://live2.jorvakstreamcache.com/live/channel19.m3u8",
         "show": "yes"
       },
       {
-        "name": "T Sports HD",
-        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
+        "name": "VETO TV (IND)",
+        "url": "https://vetointv.akamaized.net/Dreamboat-CH01/master.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "BACKUP HD",
+        "url": "https://pull.niur.live/live/stream-9912132_lhd.m3u8?txSecret=56c20834d52717b7eab6af5fe033b236&txTime=6af8c3a6",
+        "show": "yes"
+      },
+      {
+        "name": "TOFFEE HD",
+        "url": "https://tv10.workerbot-tv10.workers.dev/play/9dijmqEBalKyvLQIIAFj.m3u8?token=exp=1794669625~hmac=XLGnj_QNxIWJDLzFD-QAZlPzYd6_sNYdS-avGYdgy_g",
         "show": "yes"
       }
-      
     ],
     "show": "yes",
     "id": 18,
@@ -33,10 +36,6 @@
     "endTime": "2026-11-14T22:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football| SAFF Championship",
-    "drm": {
-      "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-    }
+    "matchType": "Football| SAFF Championship"
   }
 }

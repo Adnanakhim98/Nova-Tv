@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Sydney Thunders Vs Perth Scorcher",
+    "name": "Pakistan Under-19 Vs India Under-19",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -58,7 +58,7 @@
     "endTime": "2026-11-05T16:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket|WBBL-T20",
+    "matchType": "Cricket|Asia Cup Final-2026",
     "drm": {
       "scheme": "clearkey",
       "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"

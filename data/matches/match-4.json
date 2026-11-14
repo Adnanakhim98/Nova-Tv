@@ -10,8 +10,8 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "A Sports",
-        "url": "https://live.msnetworks.net/a-sports/master.m3u8",
+        "name": "Tapmad",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a14a9fb90c15fc60e91e1786b061/01a14a9feb881ea540a81c2b41b75e/main.m3u8",
         
         "show": "yes"
       },

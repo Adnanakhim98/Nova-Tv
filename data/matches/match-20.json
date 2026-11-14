@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Norway Vs Wales",
+    "name": " Wales Vs Norway",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -37,7 +37,7 @@
         "show": "yes"
       },
       {
-        "name": "LOW QUALITY (USE VPN)",
+        "name": "LOW QUALITY",
         "url": "http://193.47.62.50/hls/PPPPA.m3u8",
         "show": "yes"
       }

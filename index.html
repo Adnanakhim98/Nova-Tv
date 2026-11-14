@@ -2258,22 +2258,73 @@ $("rotateBtn").addEventListener("click",async()=>{
 $("pipBtn").addEventListener("click",async()=>{
  try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
 });
+// Device-aware fullscreen: rotate only phones; keep desktop/tablet layout native.
+const isPhoneDevice = () => /Android|iPhone|iPod|Mobile/i.test(navigator.userAgent) &&
+  !/Windows NT|Macintosh|X11/i.test(navigator.userAgent);
+
 async function enterPlayerFullscreen(){
- const mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+ const mobile=isPhoneDevice();
+ playerCard.classList.remove("manual-landscape");
  try{
-  if(playerCard.requestFullscreen){await playerCard.requestFullscreen();if(mobile)try{await screen.orientation?.lock?.("landscape")}catch(e){}}
-  else if(playerCard.webkitRequestFullscreen)playerCard.webkitRequestFullscreen();
-  else {playerCard.classList.add("mobile-rotated");if(mobile)try{await screen.orientation?.lock?.("landscape")}catch(e){}}
- }catch(e){if(mobile)playerCard.classList.add("mobile-rotated");else console.warn("Fullscreen unavailable",e)}
+  // Fullscreen must be requested directly from the user's button gesture.
+  if(playerCard.requestFullscreen){
+   await playerCard.requestFullscreen();
+  }else if(playerCard.webkitRequestFullscreen){
+   playerCard.webkitRequestFullscreen();
+  }else{
+   // AppCreator24/WebView fallback when the Fullscreen API is unavailable.
+   if(mobile) playerCard.classList.add("mobile-rotated","manual-landscape");
+   else playerCard.classList.add("desktop-fallback-fullscreen");
+  }
+
+  // Orientation Lock is supported only by some Android WebViews/browsers.
+  if(mobile){
+   let locked=false;
+   try{
+    if(screen.orientation && typeof screen.orientation.lock==="function"){
+     await screen.orientation.lock("landscape");
+     locked=true;
+    }
+   }catch(err){ console.warn("Landscape orientation lock unavailable; using CSS fallback.",err); }
+   if(!locked){
+    playerCard.classList.add("mobile-rotated","manual-landscape");
+   }
+  }
+ }catch(err){
+  console.warn("Fullscreen request unavailable:",err);
+  if(mobile) playerCard.classList.add("mobile-rotated","manual-landscape");
+  else playerCard.classList.add("desktop-fallback-fullscreen");
+ }
 }
+
+function exitPlayerFullscreen(){
+ const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
+ if(document.exitFullscreen && document.fullscreenElement){
+  document.exitFullscreen().catch(()=>{});
+ }else if(document.webkitExitFullscreen && document.webkitFullscreenElement){
+  document.webkitExitFullscreen();
+ }
+ playerCard.classList.remove("mobile-rotated","manual-landscape","desktop-fallback-fullscreen","controls-hidden");
+ try{screen.orientation?.unlock?.()}catch(e){}
+}
+
 $("fullscreenBtn").addEventListener("click",()=>{
- if(document.fullscreenElement||document.webkitFullscreenElement||playerCard.classList.contains("mobile-rotated")){
-  if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
-  playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}
- }else enterPlayerFullscreen();
+ const active=!!(document.fullscreenElement||document.webkitFullscreenElement) ||
+  playerCard.classList.contains("mobile-rotated") ||
+  playerCard.classList.contains("desktop-fallback-fullscreen");
+ if(active) exitPlayerFullscreen();
+ else enterPlayerFullscreen();
 });
-document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
-document.addEventListener("webkitfullscreenchange",()=>{if(!document.webkitFullscreenElement){playerCard.classList.remove("mobile-rotated","controls-hidden");try{screen.orientation?.unlock?.()}catch(e){}}});
+
+function syncFullscreenState(){
+ const active=!!(document.fullscreenElement||document.webkitFullscreenElement);
+ if(!active){
+  playerCard.classList.remove("mobile-rotated","manual-landscape","desktop-fallback-fullscreen","controls-hidden");
+  try{screen.orientation?.unlock?.()}catch(e){}
+ }
+}
+document.addEventListener("fullscreenchange",syncFullscreenState);
+document.addEventListener("webkitfullscreenchange",syncFullscreenState);
 let lastVideoTap=0;
 screenEl.addEventListener("click",e=>{
  if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
@@ -2863,7 +2914,42 @@ document.addEventListener("touchend", e => {
 /* Quality stays on the chosen rendition; Auto remains available as an explicit user choice. */
 </style>
 
-</body>
+
+<style id="sportynova-appcreator24-device-fullscreen-fix">
+/* Android/AppCreator24 fallback: rotate the player surface if WebView cannot lock orientation. */
+.playercard.mobile-rotated.manual-landscape{
+  position:fixed!important;
+  top:50%!important;left:50%!important;right:auto!important;bottom:auto!important;inset:auto!important;
+  width:100dvh!important;height:100vw!important;
+  max-width:none!important;max-height:none!important;
+  transform:translate(-50%,-50%) rotate(90deg)!important;
+  transform-origin:center center!important;
+  z-index:2147483000!important;
+  border:0!important;border-radius:0!important;
+  display:flex!important;flex-direction:column!important;
+  overflow:hidden!important;background:#000!important;
+}
+.playercard.mobile-rotated.manual-landscape .screen{
+  flex:1 1 auto!important;width:100%!important;height:100%!important;
+  min-height:0!important;max-height:none!important;aspect-ratio:auto!important;
+}
+.playercard.mobile-rotated.manual-landscape .screen>video{
+  width:100%!important;height:100%!important;object-fit:contain!important;
+}
+.playercard.mobile-rotated.manual-landscape .playerfoot{display:none!important}
+/* Desktop fallback is fullscreen-shaped but never rotated. */
+.playercard.desktop-fallback-fullscreen{
+  position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;
+  max-width:none!important;max-height:none!important;z-index:2147483000!important;
+  border:0!important;border-radius:0!important;display:flex!important;flex-direction:column!important;
+  background:#000!important;
+}
+.playercard.desktop-fallback-fullscreen .screen{flex:1 1 auto!important;min-height:0!important;aspect-ratio:auto!important}
+@media (orientation:landscape){
+ .playercard.mobile-rotated.manual-landscape{width:100vw!important;height:100dvh!important;transform:translate(-50%,-50%)!important}
+}
+</style>
+\n</body>
 </html>
 
 <style>

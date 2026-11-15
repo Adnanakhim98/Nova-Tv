@@ -10,18 +10,17 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "Tapmad",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14ab8af8915fc600b1e3e9683f0/01a14ab953dd1ea540a81c2b41b75f/main.m3u8",
-        "show": "yes"
-      },
-      
-      {
         "name": "TNT3UK SPORTS FHD",
         "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
           "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
         },
+        "show": "yes"
+      },
+      {
+        "name": "STREAM TV + HD",
+        "url": "https://chatgpt.hereisman.net/playlist//load-playlist?&.m3u8",
         "show": "yes"
       }
     ],

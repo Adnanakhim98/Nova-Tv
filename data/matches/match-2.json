@@ -6,29 +6,15 @@
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/puehlftk5j/out/v1/f7f0da1ee112481ca0024e6d4dd97f4a/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd",
     "section": "liveSports",
     "streams": [
-     {
-        "name": "Tapmad HD",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14abbcff31ea540a81c2b41b760/01a14abc06421567ee931e109fa577/main.m3u8",
-        
-        "show": "yes"
-     },
-
-       {
-        "name": "Willow",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/iuqnuk7pr4/out/v1/e3422bcef5ec40a591e96d528b83bdd6/cenc.mpd|drmScheme=clearkey&drmLicense=9daab9f2057ca46ae108997a0886b434:220b4c0284b9a045c49c8cf1ddbb49a8",
-        
-        "show": "yes"
-       },
-      
       {
-        "name": "TNT2UK SPORTS FHD",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/puehlftk5j/out/v1/f7f0da1ee112481ca0024e6d4dd97f4a/cenc.mpd",
+        "name": "TNT3UK SPORTS FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/dev1hjwzh9/out/v1/a5f0ee7ad7b24906b14f43bebbbe4678/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "f3df7843080ae743bf865dc5fdf64c68:567c863bc12eb74788ea74888c042e1b"
+          "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
         },
         "show": "yes"
       }
@@ -42,7 +28,7 @@
     "matchType": "CRICKETS| ODI",
     "drm": {
       "scheme": "clearkey",
-      "license": "f3df7843080ae743bf865dc5fdf64c68:567c863bc12eb74788ea74888c042e1b"
+      "license": "cc91508324ce9dcaf425a43d58f1d9d4:643e5474d9edd87c7d9091c8c97994ca"
     }
   }
 }

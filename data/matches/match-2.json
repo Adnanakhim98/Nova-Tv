@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": " India VS New Zealand ",
+    "name": "New Zealand Vs India",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
@@ -35,8 +35,8 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-13T08:00:00+06:00",
-    "endTime": "2026-11-13T16:15:00+06:00",
+    "startTime": "2026-11-15T08:00:00+06:00",
+    "endTime": "2026-11-15T16:15:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "CRICKETS| ODI",

@@ -16,13 +16,10 @@
         "show": "yes"
       },
       {
-        "name": "SonyLiv PRIME FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/mipdvyxmgk/out/v1/5b1fe1ff59024887a998945d1fcef329/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "95903984c253e3fd47b112b72166caea:1283b49097f2481707da62f95b1d02ca"
-        },
-        "show": "no"
+        "name": "T-SPORTS",
+        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
+        
+        "show": "yes"
       }
     ],
     "show": "yes",

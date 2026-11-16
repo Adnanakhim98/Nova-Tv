@@ -6,19 +6,35 @@
     "logoUrl": "https://raw.githubusercontent.com/sm-monirulislam/Upcoming-and-Live-Sports-Data/main/match_image/Liverpool%20FC%20Vs%20Manchester%20City.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/o4trsdzewu/out/v1/7aea1afda5854baaba3ddeb967f79fb6/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/vmsojksiyc/out/v1/5d915e7f388946c09ed9d07fd40f9f96/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://dash-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/vmsojksiyc/out/v1/5d915e7f388946c09ed9d07fd40f9f96/cenc.mpd|drmScheme=clearkey&drmLicense=3d872367d3ff927c4abf0198dfeb01d2:47945393588cf479b728df327f3bef53",
-        
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/vmsojksiyc/out/v1/5d915e7f388946c09ed9d07fd40f9f96/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "3d872367d3ff927c4abf0198dfeb01d2:47945393588cf479b728df327f3bef53"
+        },
         "show": "yes"
       },
       {
-        "name": "T-SPORTS",
+        "name": "SKY SPORTS CRICKET",
+        "url": "https://bl.rutube.ru/livestream/7c13a51576b9ff2601f08f5d57dd5169/index.m3u8?s=uiXES2ePt7xTpQnbJxn7Dg&e=2074684474&scheme=https",
+        "show": "yes"
+      },
+      {
+        "name": "T SPORTS HD",
         "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
-        
+        "show": "yes"
+      },
+      {
+        "name": "WILLOW ALT",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/vmsojksiyc/out/v1/5d915e7f388946c09ed9d07fd40f9f96/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "3d872367d3ff927c4abf0198dfeb01d2:47945393588cf479b728df327f3bef53"
+        },
         "show": "yes"
       }
     ],
@@ -31,7 +47,7 @@
     "matchType": "CRICKETS | Test match",
     "drm": {
       "scheme": "clearkey",
-      "license": "73de12852269196bb475042be070e659:2d30fe5b6f743afc0e6b0babb86ac70d"
+      "license": "3d872367d3ff927c4abf0198dfeb01d2:47945393588cf479b728df327f3bef53"
     }
   }
 }

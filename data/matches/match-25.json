@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Argentina Vs Uruguay",
+    "name": "Argentina Vs Costa Rica",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -24,8 +24,8 @@
     ],
     "show": "yes",
     "id": 25,
-    "startTime": "2026-11-14T05:00:00+06:00",
-    "endTime": "2026-11-14T07:00:00+06:00",
+    "startTime": "2026-11-18T05:00:00+06:00",
+    "endTime": "2026-11-18T07:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football|FIFA Friendly",

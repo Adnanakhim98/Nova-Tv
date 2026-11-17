@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pakistan Under-19 Vs India Under-19",
+    "name": "Brazil Vs Singapore",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -58,11 +58,11 @@
     ],
     "show": "yes",
     "id": 10,
-    "startTime": "2026-11-05T14:00:00+06:00",
-    "endTime": "2026-11-05T16:30:00+06:00",
+    "startTime": "2026-11-17T16:00:00+06:00",
+    "endTime": "2026-11-17T18:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket|Asia Cup Final-2026",
+    "matchType": "Football|Fifa Friendly",
     "drm": {
       "scheme": "clearkey",
       "license": "6d9898b922c715df238b810032f99e04:24ce2fd66d77c73540f129ae83c967d7"

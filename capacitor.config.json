@@ -1,0 +1,9 @@
+
+{
+  "appId": "com.sportynova.app",
+  "appName": "SportyNova",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

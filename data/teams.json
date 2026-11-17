@@ -207,6 +207,34 @@
         "Serbia"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Serbia.svg"
+    },
+    {
+      "name": "Jordan",
+      "aliases": [
+        "Jordan"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Jordan.svg"
+    },
+    {
+      "name": "Paraguay",
+      "aliases": [
+        "Paraguay"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Paraguay%20.svg"
+    },
+    {
+      "name": "Singapore",
+      "aliases": [
+        "Singapore"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Singapore.Svg"
+    },
+    {
+      "name": "Uzbekistan",
+      "aliases": [
+        "Uzbekistan"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Uzbekistan.svg"
     }
   ]
 }

@@ -3413,3 +3413,56 @@ document.addEventListener("touchend", e => {
   area.addEventListener('touchcancel',finish,{passive:true});
 })();
 </script>
+
+
+<!-- SPORTYNOVA blue and red brand animation override -->
+<style id="sportynova-blue-red-brand">
+.brand .brandname > span:first-child {
+  color: #168bff !important;
+  background: linear-gradient(90deg, #0878ff 0%, #55b7ff 45%, #0878ff 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-size: 220% auto !important;
+  animation: sportyBlueShine 3s linear infinite !important;
+  text-shadow: 0 0 14px rgba(22,139,255,.30);
+}
+.brand .brandname > span.nova {
+  color: #ff2948 !important;
+  background: linear-gradient(90deg, #ff173d 0%, #ff8293 45%, #e9002e 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-size: 220% auto !important;
+  animation: sportyRedShine 2.7s linear infinite !important;
+  text-shadow: 0 0 14px rgba(255,41,72,.30);
+}
+.brand .brandname > span.version {
+  color: #168bff !important;
+  background: linear-gradient(90deg, #168bff, #ff2948, #168bff) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-size: 220% auto !important;
+  animation: sportyVersionGlow 2.4s ease-in-out infinite !important;
+}
+@keyframes sportyBlueShine {
+  0% { background-position: 200% center; filter: drop-shadow(0 0 2px rgba(22,139,255,.35)); }
+  100% { background-position: -20% center; filter: drop-shadow(0 0 9px rgba(22,139,255,.7)); }
+}
+@keyframes sportyRedShine {
+  0% { background-position: 200% center; filter: drop-shadow(0 0 2px rgba(255,41,72,.35)); }
+  100% { background-position: -20% center; filter: drop-shadow(0 0 9px rgba(255,41,72,.7)); }
+}
+@keyframes sportyVersionGlow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(22,139,255,.55)); }
+  50% { filter: drop-shadow(0 0 9px rgba(255,41,72,.8)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand .brandname > span:first-child,
+  .brand .brandname > span.nova,
+  .brand .brandname > span.version {
+    animation: none !important;
+  }
+}
+</style>

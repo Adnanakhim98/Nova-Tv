@@ -235,6 +235,13 @@
         "Uzbekistan"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Uzbekistan.svg"
+    },
+    {
+      "name": "Costa Rica",
+      "aliases": [
+        "Costa Rica"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Costa%20Rica.png"
     }
   ]
 }

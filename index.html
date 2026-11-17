@@ -1366,79 +1366,6 @@ function teamFlagCode(team){
 }
 function findTeamLogo(team){return teamLogoMap[normalizeTeamName(team)]||null;}
 function teamInitials(team){return String(team).trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"?"}
-
-// Countdown, optional score display, and local match reminders.
-function sportynovaMatchId(ch){
- const path=String(ch.__sourceFile||ch.sourceFile||ch.file||"");
- return path || (String(ch.name||"match")+"|"+String(matchDateValue(ch)));
-}
-function sportynovaScoreText(ch){
- const direct=ch.score||ch.result||ch.currentScore||ch.current_score;
- if(typeof direct==="string"&&direct.trim())return direct.trim();
- const home=ch.homeScore??ch.home_score??ch.scoreHome??ch.score_home??ch.team1Score??ch.team1_score;
- const away=ch.awayScore??ch.away_score??ch.scoreAway??ch.score_away??ch.team2Score??ch.team2_score;
- if(home!==undefined&&home!==null&&away!==undefined&&away!==null)return String(home)+" - "+String(away);
- if(Array.isArray(ch.scores)&&ch.scores.length)return ch.scores.map(x=>typeof x==="object"?(x.score??x.runs??""):x).filter(x=>x!=="").join(" - ");
- return "";
-}
-function sportynovaGetReminders(){
- try{const value=JSON.parse(localStorage.getItem("sportynova_match_reminders")||"[]");return Array.isArray(value)?value:[];}catch(e){return [];}
-}
-function sportynovaSaveReminders(items){
- try{localStorage.setItem("sportynova_match_reminders",JSON.stringify(items));return true;}catch(e){return false;}
-}
-function sportynovaSetReminder(ch){
- const start=matchDateValue(ch);
- if(!Number.isFinite(start)){showStatus("Match Reminder","এই ম্যাচের শুরুর সময় দেওয়া নেই");return;}
- const id=sportynovaMatchId(ch);
- const reminders=sportynovaGetReminders();
- const existing=reminders.findIndex(x=>x.id===id);
- if(existing>=0){
-  reminders.splice(existing,1);sportynovaSaveReminders(reminders);
-  showStatus("Reminder Cancelled","ম্যাচ রিমাইন্ডার বাতিল করা হয়েছে");
- }else{
-  reminders.push({id,name:String(ch.name||"Live Match"),startAt:start,fired:false});
-  sportynovaSaveReminders(reminders);
-  if("Notification" in window && Notification.permission==="default"){
-   try{Notification.requestPermission().then(()=>{}).catch(()=>{});}catch(e){}
-  }
-  showStatus("Reminder Set","ম্যাচ শুরুর ১০ মিনিট আগে মনে করিয়ে দেওয়া হবে");
- }
- render(channels);
-}
-function sportynovaUpdateCountdowns(){
- const now=Date.now();
- document.querySelectorAll("[data-match-countdown]").forEach(el=>{
-  const start=Number(el.dataset.matchCountdown);
-  if(!Number.isFinite(start))return;
-  let left=Math.max(0,start-now);
-  if(left===0){el.textContent="Starting now";return;}
-  const days=Math.floor(left/86400000);left%=86400000;
-  const hours=Math.floor(left/3600000);left%=3600000;
-  const mins=Math.floor(left/60000);const secs=Math.floor((left%60000)/1000);
-  el.textContent="Starts in "+(days?days+"d ":"")+String(hours).padStart(2,"0")+":"+String(mins).padStart(2,"0")+":"+String(secs).padStart(2,"0");
- });
-}
-function sportynovaCheckReminders(){
- const now=Date.now(),reminders=sportynovaGetReminders();let changed=false;
- reminders.forEach(item=>{
-  if(!item.fired&&item.startAt-now<=10*60*1000&&item.startAt-now>0){
-   item.fired=true;changed=true;
-   const message=String(item.name||"Match")+" starts in 10 minutes";
-   if("Notification" in window&&Notification.permission==="granted"){
-    try{new Notification("SPORTYNOVA Match Reminder",{body:message,icon:""});}catch(e){showStatus("Match Reminder",message);}
-   }else{
-    showStatus("SPORTYNOVA Reminder",message);
-    if(navigator.vibrate)navigator.vibrate([180,80,180]);
-   }
-  }
- });
- if(changed)sportynovaSaveReminders(reminders);
-}
-setInterval(sportynovaUpdateCountdowns,1000);
-setInterval(sportynovaCheckReminders,15000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden){sportynovaUpdateCountdowns();sportynovaCheckReminders();}});
-
 function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const b=document.createElement("button");b.type="button";b.className="channel"+(ch.url&&ch.url===video.dataset.currentUrl?" active":"");
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
@@ -1489,13 +1416,6 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
    startLabel.classList.add("is-live-row");
   }
   if(state==="LIVE"&&!channelNumber){startLabel.style.display="none";}
-  const matchStart=matchDateValue(ch);
-  if(state==="UPCOMING"&&Number.isFinite(matchStart)){
-   const countdown=document.createElement("span");
-   countdown.className="match-countdown";
-   countdown.dataset.matchCountdown=String(matchStart);
-   startLabel.appendChild(countdown);
-  }
   if(channelNumber){
    const channelGroup=document.createElement("span");channelGroup.className="match-channel-group";
    const lamp=document.createElement("span");lamp.className="match-online-lamp";lamp.setAttribute("aria-label","Online indicator");
@@ -1513,29 +1433,9 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   if(type.textContent==="FOOTBALL")type.classList.add("is-football");
   badgeRow.append(status,type);
 
-  const reminder=document.createElement("span");
-  reminder.className="match-reminder"+(sportynovaGetReminders().some(x=>x.id===sportynovaMatchId(ch))?" is-set":"");
-  reminder.setAttribute("role","button");
-  reminder.setAttribute("tabindex","0");
-  reminder.setAttribute("aria-label","Set match reminder");
-  reminder.title="ম্যাচ শুরুর ১০ মিনিট আগে রিমাইন্ডার";
-  reminder.textContent=reminder.classList.contains("is-set")?"🔔 Set":"🔔 Remind";
-  const toggleReminder=(event)=>{event.preventDefault();event.stopPropagation();sportynovaSetReminder(ch);};
-  reminder.addEventListener("click",toggleReminder);
-  reminder.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){toggleReminder(event);}});
-  badgeRow.appendChild(reminder);
-
   // Keep only the individual team names shown directly under their logos.
   b.classList.add("match-card");
-  b.append(startLabel,logoBox);
-  const scoreText=sportynovaScoreText(ch);
-  if(scoreText){
-   const score=document.createElement("div");
-   score.className="match-score";
-   score.textContent="SCORE  "+scoreText;
-   b.appendChild(score);
-  }
-  b.appendChild(badgeRow);
+  b.append(startLabel,logoBox,badgeRow);
 
   // Icon-only direct share control. It stays separate from the card's play action.
   const shareControl=document.createElement("span");
@@ -3738,40 +3638,5 @@ document.addEventListener("touchend", e => {
   .topbar .brandname > span.nova,
   .topbar .brandname > span.version,
   .topbar .brandicon { animation: none !important; }
-}
-</style>
-
-
-<!-- Match countdown, score and reminder styling -->
-<style id="sportynova-countdown-score-reminder">
-#liveSportsChannels .match-countdown{
- display:inline-flex;align-items:center;justify-content:center;
- color:#a9f4ff;font-size:9px;font-weight:900;letter-spacing:.2px;
- padding:2px 5px;margin-left:4px;border-radius:5px;
- background:rgba(0,194,225,.13);border:1px solid rgba(0,214,239,.42);
- white-space:nowrap;text-shadow:0 0 7px rgba(0,215,255,.35)
-}
-#liveSportsChannels .match-score{
- width:100%;text-align:center;margin:0 auto 5px;padding:4px 5px;
- color:#fff;font-size:clamp(11px,3vw,14px);font-weight:1000;
- letter-spacing:.6px;border-radius:7px;
- background:linear-gradient(90deg,rgba(0,139,255,.16),rgba(0,218,235,.16),rgba(0,139,255,.16));
- border:1px solid rgba(0,207,235,.38);text-shadow:0 0 8px rgba(0,198,255,.45)
-}
-#liveSportsChannels .match-reminder{
- display:inline-flex;align-items:center;justify-content:center;
- min-height:23px;padding:4px 7px;margin-left:auto;border-radius:999px;
- color:#baf5ff;background:rgba(0,173,220,.13);
- border:1px solid rgba(0,207,239,.55);font-size:9px;font-weight:900;
- white-space:nowrap;cursor:pointer;user-select:none
-}
-#liveSportsChannels .match-reminder.is-set{
- color:#fff;background:linear-gradient(135deg,#087dba,#00a9a5);
- border-color:#63efff;box-shadow:0 0 9px rgba(0,207,239,.35)
-}
-#liveSportsChannels .match-reminder:active{transform:scale(.95)}
-@media(max-width:420px){
- #liveSportsChannels .match-countdown{font-size:8px;padding:2px 3px}
- #liveSportsChannels .match-reminder{font-size:8px;padding:4px 5px}
 }
 </style>

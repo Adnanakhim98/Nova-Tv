@@ -6,25 +6,55 @@
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/j7kojz9zjq/out/v1/364b343c25d549ebade260951e5ae871/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qsiyy3pj1z/out/v1/18e7e922d8f44a768c404c3304bbf8ee/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "Tapmad",
-        "url": "https://multiregion-asia-cdn.tapmad.com/v1/01a154a641d51567ee931e109fa59f/01a154a676281ea557841e1612cf77/main.m3u8",
-        
+        "name": "TNT1UK SPORTS FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/qsiyy3pj1z/out/v1/18e7e922d8f44a768c404c3304bbf8ee/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "f780c2f1d5a79df25cbf84c3100ae9db:147c4e675e69a128ed783faf67a5b72c"
+        },
         "show": "yes"
       },
       {
         "name": "WILLOW ALT",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/j7kojz9zjq/out/v1/364b343c25d549ebade260951e5ae871/cenc.mpd",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/qsiyy3pj1z/out/v1/18e7e922d8f44a768c404c3304bbf8ee/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "b21487d48dba161df1dbcb2709e78ac5:495d4dfd655791c39933461c3751bde3"
+          "license": "f780c2f1d5a79df25cbf84c3100ae9db:147c4e675e69a128ed783faf67a5b72c"
         },
-        "show": "no"
+        "show": "yes"
+      },
+      {
+        "name": "ATN SPORTS FHD",
+        "url": "https://stream1.liveland.af/hls/tv/ariana/playlist.m3u8",
+        "show": "yes"
+      },
+      {
+        "name": "FANCODE2 FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "FANCODE1 FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "LOW QUALITY (USE VPN)",
+        "url": "http://193.47.62.44/hls/RREGEGEA.m3u8",
+        "show": "yes"
       }
-    
     ],
     "show": "yes",
     "id": 4,
@@ -35,7 +65,7 @@
     "matchType": "CRICKETS| Test",
     "drm": {
       "scheme": "clearkey",
-      "license": "b21487d48dba161df1dbcb2709e78ac5:495d4dfd655791c39933461c3751bde3"
+      "license": "f780c2f1d5a79df25cbf84c3100ae9db:147c4e675e69a128ed783faf67a5b72c"
     }
   }
 }

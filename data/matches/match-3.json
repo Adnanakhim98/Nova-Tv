@@ -6,18 +6,36 @@
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/q81cdtuumj/out/v1/55851c07cf594e8d8e260f8cc0a7f89c/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "Tapmad HD",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a1456f124d15fc600b1e3e9683d7/01a145990eba15fc60e91e1786b054/main.m3u8",
+        "name": "WILLOW FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/q81cdtuumj/out/v1/55851c07cf594e8d8e260f8cc0a7f89c/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "717e39c4207ef6bd6a1a495fb2e3b133:f9f666cac7de2e2d69bd42e8fcd06ad7"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "WILLOW ALT",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/q81cdtuumj/out/v1/55851c07cf594e8d8e260f8cc0a7f89c/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "717e39c4207ef6bd6a1a495fb2e3b133:f9f666cac7de2e2d69bd42e8fcd06ad7"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "T SPORTS HD",
+        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
         "show": "yes"
       },
       {
         "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.41/hls/D222.m3u8",
-        "show": "no"
+        "url": "http://193.47.62.41/hls/RREGEGE.m3u8",
+        "show": "yes"
       }
     ],
     "show": "yes",
@@ -26,6 +44,10 @@
     "endTime": "2026-11-17T19:15:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS| Test"
+    "matchType": "CRICKETS| Test",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "717e39c4207ef6bd6a1a495fb2e3b133:f9f666cac7de2e2d69bd42e8fcd06ad7"
+    }
   }
 }

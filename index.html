@@ -1361,6 +1361,91 @@ select:focus-visible {
 }
 </style>
 
+
+<style id="sportynova-desktop-true-fullscreen-fix">
+/* PC / laptop / TV: make the actual fullscreen player occupy the whole viewport.
+   Mobile fullscreen and its existing landscape behavior remain unchanged. */
+@media (min-width: 601px) {
+  .playercard:fullscreen,
+  .playercard:-webkit-full-screen,
+  .playercard.desktop-fallback-fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-width: 100vw !important;
+    min-height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #000 !important;
+    z-index: 2147483000 !important;
+    transform: none !important;
+  }
+
+  .playercard:fullscreen .screen,
+  .playercard:-webkit-full-screen .screen,
+  .playercard.desktop-fallback-fullscreen .screen {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #000 !important;
+  }
+
+  .playercard:fullscreen .screen > video,
+  .playercard:-webkit-full-screen .screen > video,
+  .playercard.desktop-fallback-fullscreen .screen > video {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    margin: 0 !important;
+    background: #000 !important;
+  }
+
+  .playercard:fullscreen .playerfoot,
+  .playercard:-webkit-full-screen .playerfoot,
+  .playercard.desktop-fallback-fullscreen .playerfoot {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* The CSS fallback is used only when the browser/WebView has no Fullscreen API. */
+@media (min-width: 601px) {
+  .playercard.desktop-fallback-fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">

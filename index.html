@@ -3307,3 +3307,109 @@ document.addEventListener("touchend", e => {
   }
 })();
 </script>
+
+
+<!-- SPORTYNOVA 1.0: premium white/red brand animation + pull-down refresh -->
+<style id="sportynova-white-red-refresh">
+  .topbar .brandname{
+    animation:novaWhiteRedGlow 2.8s ease-in-out infinite!important;
+    filter:drop-shadow(0 0 7px rgba(255,255,255,.08));
+  }
+  .topbar .brandname > span:first-child{
+    background:linear-gradient(100deg,#fff 0%,#f5f5f5 24%,#ff526b 48%,#fff 70%,#ff294d 88%,#fff 100%)!important;
+    background-size:240% auto!important;
+    background-clip:text!important;-webkit-background-clip:text!important;
+    -webkit-text-fill-color:transparent!important;
+    animation:novaWhiteRedShimmer 3.2s linear infinite!important;
+  }
+  .topbar .brandname .nova{
+    background:linear-gradient(100deg,#ff294d 0%,#ff7187 28%,#fff 52%,#ff294d 76%,#ff7187 100%)!important;
+    background-size:220% auto!important;
+    background-clip:text!important;-webkit-background-clip:text!important;
+    -webkit-text-fill-color:transparent!important;
+    animation:novaWhiteRedShimmer 2.8s linear infinite!important;
+  }
+  .topbar .brandname .version{
+    color:#fff!important;-webkit-text-fill-color:#fff!important;
+    text-shadow:0 0 8px rgba(255,55,83,.75)!important;
+    animation:novaVersionRedPulse 1.9s ease-in-out infinite!important;
+  }
+  .topbar .brandicon{
+    background:linear-gradient(145deg,#fff 0%,#f4f4f4 42%,#ff3157 100%)!important;
+    color:#a90e2c!important;border:1px solid rgba(255,255,255,.8)!important;
+    box-shadow:0 0 18px rgba(255,49,87,.32),inset 0 1px 3px #fff!important;
+  }
+  @keyframes novaWhiteRedShimmer{0%{background-position:220% center}100%{background-position:-20% center}}
+  @keyframes novaWhiteRedGlow{0%,100%{filter:drop-shadow(0 0 2px rgba(255,255,255,.08))}50%{filter:drop-shadow(0 0 9px rgba(255,49,87,.32))}}
+  @keyframes novaVersionRedPulse{0%,100%{opacity:.78}50%{opacity:1;text-shadow:0 0 11px rgba(255,49,87,.95)!important}}
+  #sportynovaPullIndicator{
+    position:fixed;top:7px;left:50%;transform:translate(-50%,-52px);
+    z-index:2147483001;display:flex;align-items:center;gap:8px;
+    padding:8px 14px;border:1px solid rgba(255,255,255,.55);border-radius:999px;
+    color:#fff;background:linear-gradient(110deg,#fff 0%,#ff3157 100%);
+    box-shadow:0 5px 22px rgba(255,49,87,.3);font:700 11px Inter,sans-serif;
+    opacity:0;transition:transform .16s ease,opacity .16s ease;pointer-events:none;
+    white-space:nowrap;
+  }
+  #sportynovaPullIndicator.visible{transform:translate(-50%,0);opacity:1}
+  #sportynovaPullIndicator .pull-arrow{font-size:15px;color:#b20d2d;line-height:1}
+  #sportynovaPullIndicator.refreshing .pull-arrow{animation:novaPullSpin .7s linear infinite}
+  @keyframes novaPullSpin{to{transform:rotate(360deg)}}
+  @media(prefers-reduced-motion:reduce){
+    .topbar .brandname,.topbar .brandname span{animation:none!important}
+  }
+</style>
+<script id="sportynova-pull-to-refresh">
+(() => {
+  const area=document.querySelector('.channelarea');
+  if(!area) return;
+  const indicator=document.createElement('div');
+  indicator.id='sportynovaPullIndicator';
+  indicator.innerHTML='<span class="pull-arrow">↓</span><span class="pull-label">Refresh SPORTYNOVA</span>';
+  document.body.appendChild(indicator);
+
+  let startY=0, pulling=false, distance=0, active=false;
+  const threshold=76, maxPull=112;
+  const blocked=el=>!!el.closest('input,textarea,select,button,a,.screen,.playercard,.modal,.nova-controls,.inline-server-group');
+
+  area.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1 || area.scrollTop>0 || blocked(e.target)) return;
+    startY=e.touches[0].clientY;
+    pulling=true;active=false;distance=0;
+  },{passive:true});
+
+  area.addEventListener('touchmove',e=>{
+    if(!pulling || e.touches.length!==1) return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy<=0){pulling=false;return;}
+    if(area.scrollTop>0){pulling=false;return;}
+    if(dy>8){
+      active=true;
+      distance=Math.min(maxPull,dy*.58);
+      indicator.style.transform=`translate(-50%,${Math.max(0,distance-52)}px)`;
+      indicator.style.opacity=String(Math.min(1,distance/42));
+      indicator.classList.add('visible');
+      indicator.querySelector('.pull-label').textContent=distance>=threshold?'Release to refresh':'Pull down to refresh';
+      indicator.querySelector('.pull-arrow').textContent=distance>=threshold?'↻':'↓';
+      e.preventDefault();
+    }
+  },{passive:false});
+
+  const finish=()=>{
+    if(!pulling)return;
+    pulling=false;
+    if(active && distance>=threshold){
+      indicator.classList.add('refreshing','visible');
+      indicator.querySelector('.pull-arrow').textContent='↻';
+      indicator.querySelector('.pull-label').textContent='Refreshing…';
+      window.location.reload();
+      return;
+    }
+    indicator.classList.remove('visible');
+    indicator.style.transform='';
+    indicator.style.opacity='';
+  };
+  area.addEventListener('touchend',finish,{passive:true});
+  area.addEventListener('touchcancel',finish,{passive:true});
+})();
+</script>

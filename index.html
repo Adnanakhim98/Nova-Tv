@@ -1133,7 +1133,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 <body>
 <div class="wrap">
 <header class="topbar">
- <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
+ <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">LIVE SPORTS • LIVE TV • ANYTIME ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
 </header>
 <section class="playersticky">
@@ -3464,5 +3464,92 @@ document.addEventListener("touchend", e => {
   .brand .brandname > span.version {
     animation: none !important;
   }
+}
+</style>
+
+
+<!-- Reference-inspired SPORTYNOVA premium wordmark -->
+<style id="sportynova-reference-wordmark">
+.topbar .brandname {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 0 !important;
+  padding-bottom: 5px !important;
+  font-family: "Arial Black", "Inter", system-ui, sans-serif !important;
+  font-size: clamp(19px, 4.7vw, 29px) !important;
+  font-style: italic !important;
+  font-weight: 1000 !important;
+  letter-spacing: -1.15px !important;
+  line-height: 1 !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,.32) !important;
+}
+.topbar .brandname::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 5% !important;
+  right: 1% !important;
+  bottom: 0 !important;
+  height: 3px !important;
+  border-radius: 100% !important;
+  background: linear-gradient(90deg, transparent, #08dff2 18%, #00d9ed 82%, transparent) !important;
+  box-shadow: 0 0 10px rgba(0,220,245,.75) !important;
+  transform: skewX(-22deg) !important;
+}
+.topbar .brandname > span:first-child {
+  color: #fff !important;
+  background: linear-gradient(180deg, #ffffff 0%, #e9f3ff 55%, #ffffff 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: sportyWhitePulse 3s ease-in-out infinite !important;
+}
+.topbar .brandname > span.nova {
+  color: #00ddeb !important;
+  background: linear-gradient(180deg, #39f4ff 0%, #00d9e9 55%, #00a9d5 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: sportyCyanPulse 2.7s ease-in-out infinite !important;
+}
+.topbar .brandname > span.version {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  font-size: .43em !important;
+  letter-spacing: 0 !important;
+  margin-left: 4px !important;
+  text-shadow: 0 0 8px rgba(0,220,245,.7) !important;
+}
+.topbar .brandicon {
+  background: linear-gradient(135deg, #071b65 0%, #087fff 48%, #00dce9 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(91,239,255,.9) !important;
+  box-shadow: 0 0 15px rgba(0,145,255,.55), 0 0 7px rgba(0,225,239,.45) !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,.5) !important;
+}
+.topbar .tagline {
+  color: #eaf4ff !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+  font-size: clamp(7px, 1.65vw, 10px) !important;
+  font-style: italic !important;
+  font-weight: 800 !important;
+  letter-spacing: clamp(.65px, .25vw, 1.7px) !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 8px rgba(0,120,255,.3) !important;
+}
+@keyframes sportyWhitePulse {
+  0%, 100% { filter: drop-shadow(0 0 1px rgba(255,255,255,.25)); }
+  50% { filter: drop-shadow(0 0 7px rgba(255,255,255,.55)); }
+}
+@keyframes sportyCyanPulse {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(0,220,239,.35)); }
+  50% { filter: drop-shadow(0 0 10px rgba(0,220,239,.9)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .topbar .brandname > span:first-child,
+  .topbar .brandname > span.nova { animation: none !important; }
 }
 </style>

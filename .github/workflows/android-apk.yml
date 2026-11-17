@@ -35,6 +35,9 @@ jobs:
       - name: Prepare website files
         run: npm run prepare:web
 
+      - name: Build native bridge
+        run: npm run build:native
+
       - name: Add Android platform
         run: npx cap add android
 

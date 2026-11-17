@@ -6,22 +6,17 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://www.rtmpcdn.com/live/32e50e4d-d9fd-4d58-bf03-e5bd0aed8f8f.m3u8",
+    "url": "https://www.rtmpcdn.com/live/324ebf4a-01d6-44bb-ae1c-ef0870baaf9c.m3u8",
     "section": "liveSports",
     "streams": [
       {
-        "name": "TV QUALITY+",
-        "url": "https://www.rtmpcdn.com/live/32e50e4d-d9fd-4d58-bf03-e5bd0aed8f8f.m3u8",
-        "show": "yes"
-      },
-      {
         "name": "STREAM TV + HD",
-        "url": "https://live2.jorvakstreamcache.com/live/channel24.m3u8?",
+        "url": "https://www.rtmpcdn.com/live/324ebf4a-01d6-44bb-ae1c-ef0870baaf9c.m3u8",
         "show": "yes"
       },
       {
         "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.41/hls/BBBBAAA.m3u8",
+        "url": "http://193.47.62.41/hls/JJJJGA.m3u8",
         "show": "yes"
       }
     ],

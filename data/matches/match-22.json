@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Qatar Vs Australia",
+    "name": "Jordan Vs Australia",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -27,8 +27,8 @@
     ],
     "show": "yes",
     "id": 22,
-    "startTime": "2026-11-13T20:45:00+06:00",
-    "endTime": "2026-11-13T22:50:00+06:00",
+    "startTime": "2026-11-17T22:00:00+06:00",
+    "endTime": "2026-11-18T01:50:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football | FIFA Friendly"

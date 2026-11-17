@@ -1050,16 +1050,94 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
+<style id="sportynova-brand-animation-and-live-badge">
+/* Animated SPORTYNOVA wordmark */
+.topbar .brandname{
+  display:inline-flex;
+  align-items:baseline;
+  gap:0;
+  animation:novaBrandGlow 2.8s ease-in-out infinite;
+}
+.topbar .brandname > span:first-child,
+.topbar .brandname .nova{
+  background:linear-gradient(100deg,#f5fbff 0%,#65efff 28%,#18bfe9 48%,#ffffff 63%,#36d9f4 82%,#f5fbff 100%);
+  background-size:220% auto;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:novaTextShimmer 4s linear infinite;
+}
+.topbar .brandname .version{
+  color:#b8d9e9!important;
+  -webkit-text-fill-color:#b8d9e9!important;
+  text-shadow:0 0 9px rgba(33,216,244,.65);
+  animation:novaVersionPulse 2s ease-in-out infinite;
+}
+@keyframes novaTextShimmer{
+  0%{background-position:200% center}
+  100%{background-position:-20% center}
+}
+@keyframes novaBrandGlow{
+  0%,100%{filter:drop-shadow(0 0 0 rgba(33,216,244,0))}
+  50%{filter:drop-shadow(0 0 7px rgba(33,216,244,.3))}
+}
+@keyframes novaVersionPulse{
+  0%,100%{opacity:.72}
+  50%{opacity:1}
+}
+/* Replaces the empty space beside Telegram and WhatsApp */
+.live-status-mini{
+  display:inline-flex;
+  flex:0 0 auto;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:30px;
+  padding:0 11px;
+  border:1px solid rgba(33,216,244,.32);
+  border-radius:999px;
+  background:linear-gradient(110deg,rgba(14,49,65,.82),rgba(10,20,35,.88));
+  color:#baf5ff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.65px;
+  white-space:nowrap;
+  box-shadow:0 0 15px rgba(33,216,244,.09),inset 0 1px rgba(255,255,255,.05);
+}
+.live-status-dot{
+  width:7px;height:7px;flex:0 0 7px;border-radius:50%;
+  background:#ff4264;
+  box-shadow:0 0 0 3px rgba(255,66,100,.13),0 0 10px rgba(255,66,100,.75);
+  animation:liveMiniPulse 1.25s ease-in-out infinite;
+}
+@keyframes liveMiniPulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.48;transform:scale(.78)}
+}
+@media(max-width:420px){
+  .playersticky > .sectionhead{
+    justify-content:space-between!important;
+    gap:5px!important;
+  }
+  .live-status-mini{min-height:27px;padding:0 8px;gap:5px;font-size:8px;letter-spacing:.35px}
+  .playersticky .contactbox{gap:4px!important}
+  .playersticky .contacttext{max-width:76px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .topbar .brandname,.topbar .brandname span,.live-status-dot{animation:none!important}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
-<div class="update-stamp">শেষ আপডেট: ২৪ অক্টোবর ২০২৬ (বাংলাদেশ সময়)</div>
 <header class="topbar">
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
 </header>
 <section class="playersticky">
- <div class="sectionhead"><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
+ <div class="sectionhead"><div class="live-status-mini"><span class="live-status-dot"></span><span>LIVE STREAMING</span></div><div class="contactbox"><span class="contacttext">কোনো চ্যানেল অ্যাড করতে যোগাযোগ করুন</span><a class="contactlink telegram" href="https://t.me/SportyNovam3u8" target="_blank" rel="noopener noreferrer">Telegram</a><a class="contactlink whatsapp" href="https://chat.whatsapp.com/IP3ZfYTOGhx03cdJf2K7OK?s=sh&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer">WhatsApp</a></div></div>
  <div class="playercard">
   <div class="screen" id="playerScreen">
    <video id="video" playsinline webkit-playsinline preload="auto" autoplay></video>

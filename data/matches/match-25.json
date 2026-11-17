@@ -6,21 +6,46 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/w8kwdfmlgs/out/v1/3aa321e477504937a439b602e078eb18/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "Sport FHD",
-        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/w8kwdfmlgs/out/v1/3aa321e477504937a439b602e078eb18/cenc.mpd|drmScheme=clearkey&drmLicense=51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b",
-        
+        "name": "SporTV BR FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/w8kwdfmlgs/out/v1/3aa321e477504937a439b602e078eb18/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b"
+        },
         "show": "yes"
       },
       {
-        "name": "SD SERVER",
-        "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
+        "name": "D SPORTS + FHD",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/z5oyxzsxdk/out/v1/7695a0f64a0e424b973d5b09a2a3eb91/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "f836853d8eac19446ed9535f5fc568b1:b3bc5ef00602b29abac7e482d3d9fbf3"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "SporTV BR ALT",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/w8kwdfmlgs/out/v1/3aa321e477504937a439b602e078eb18/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "HD QUALITY",
+        "url": "https://live2.jorvakstreamcache.com/live/channel11.m3u8?",
+        "show": "yes"
+      },
+      {
+        "name": "TYC SPORTS INT",
+        "url": "https://cast.zlive.st/p/auto-tyc-sports-internacional-0/index.m3u8?",
         "show": "yes"
       }
-      
     ],
     "show": "yes",
     "id": 25,
@@ -31,7 +56,7 @@
     "matchType": "Football|FIFA Friendly",
     "drm": {
       "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+      "license": "51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b"
     }
   }
 }

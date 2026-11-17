@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Saudi Arabia Vs South Korea",
+    "name": "Saudi Arabia Vs Uzbekistan",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -27,8 +27,8 @@
     ],
     "show": "yes",
     "id": 23,
-    "startTime": "2026-11-13T20:30:00+06:00",
-    "endTime": "2026-11-13T22:30:00+06:00",
+    "startTime": "2026-11-17T21:30:00+06:00",
+    "endTime": "2026-11-17T23:55:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football | FIFA Friendly"

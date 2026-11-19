@@ -1435,8 +1435,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  stopEngines();
  setPlayerMode(false); // All categories use the standard Live TV player UI.
  hideSportsServers();
- // Start the same full-screen landscape player for every video source.
- setTimeout(()=>{ if(requestId===playRequestId) enterPlayerFullscreen().catch(()=>{}); },80);
+ // Keep portrait / inline player by default. Fullscreen + landscape only when user taps the fullscreen button.
  if(requestId!==playRequestId)return;
  $("empty").style.display="none";
  setLiveBadge(false);

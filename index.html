@@ -204,6 +204,14 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 @media(min-width:421px){.channelrow.sportsrow .chlogo{height:64px!important}.channelrow.sportsrow .chlogo img{height:62px!important;max-height:62px!important}}
 
 
+
+/* Fullscreen control moved to the extreme bottom-right corner of the player. */
+.playersticky .screen{position:relative!important}
+.playersticky #fullscreenBtn{position:absolute!important;right:8px!important;bottom:8px!important;z-index:30!important;margin:0!important}
+.playersticky .nova-control-row{padding-right:46px!important}
+.playersticky .playercard:fullscreen #fullscreenBtn,.playersticky .playercard:-webkit-full-screen #fullscreenBtn{right:16px!important;bottom:14px!important}
+@media(max-width:420px){.playersticky #fullscreenBtn{right:6px!important;bottom:6px!important}.playersticky .nova-control-row{padding-right:40px!important}}
+
 /* Replacement standalone-style video player controls */
 .playersticky .screen{position:relative!important}
 .playersticky .screen>video{z-index:1}

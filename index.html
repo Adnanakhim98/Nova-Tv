@@ -1371,7 +1371,7 @@ function setupShakaQualities(){
   });
   const active=tracks.find(t=>t.active);
   const options=[...byHeight.entries()].sort((a,b)=>b[0]-a[0])
-   .map(([height,t])=>({value:String(t.id),label:height+"p"+(active&&Number(active.height)===height?" ✓ Playing ":"")}));
+   .map(([height,t])=>({value:String(t.id),label:height+"p"+(active&&Number(active.height)===height?" ":"")}));
   showQualityOptions(options,"shaka");
   if(active){
    const sel=$("qualitySelect");

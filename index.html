@@ -1950,6 +1950,8 @@ async function enterPlayerFullscreen(){
  if(native?.isNative?.()){
   const locked = await native.enterLandscape();
   playerCard.classList.add("mobile-rotated");
+  // Extra call to hide status/navigation icons (top bar + side system buttons)
+  try{ await native.hideSystemUI?.(); }catch(e){}
   if(!locked) console.warn("Native landscape orientation could not be locked");
   return;
  }
@@ -1987,6 +1989,7 @@ async function exitPlayerFullscreen(){
  const native = window.SportyNovaNative;
  if(native?.isNative?.()){
   await native.enterPortrait();
+  try{ await native.showSystemUI?.(); }catch(e){}
  }else{
   try{screen.orientation?.unlock?.();}catch(e){}
  }

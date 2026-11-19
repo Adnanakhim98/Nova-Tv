@@ -940,9 +940,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
     <div class="nova-control-row">
      <select class="nova-fit-select" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none"><option value="auto">Auto</option></select>
      <button class="nova-control-btn quality-popup-trigger" id="qualityPopupBtn" type="button" aria-label="ভিডিও কোয়ালিটি নির্বাচন" aria-haspopup="dialog" aria-expanded="false" style="display:none">Auto ▾</button>
-     <button class="nova-control-btn" id="playerStopBtn" type="button" aria-label="Stop" title="Stop">■</button>
      <button class="nova-control-btn" id="playPauseBtn" type="button" aria-label="Pause" title="Play / Pause">Ⅱ</button>
-     <button class="nova-control-btn" id="prevChannelBtn" type="button" aria-label="Previous channel" title="Previous channel">|◀</button>
      <button class="nova-control-btn" id="nextChannelBtn" type="button" aria-label="Next channel" title="Next channel">▶|</button>
      <button class="nova-control-btn" id="fullscreenBtn" type="button" aria-label="Fullscreen" title="Fullscreen">⛶</button>
      <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
@@ -2685,6 +2683,59 @@ document.addEventListener("touchend", e => {
     width:auto!important;min-width:0!important;max-width:none!important;
     flex:0 0 auto!important;padding:0 9px!important;
     font-size:11px!important;
+  }
+}
+</style>
+
+
+<style id="sportynova-quality-button-fit-next-button">
+/* Final override: quality selector is as tall as Next, width fits the whole label; previous icon removed. */
+#playerScreen .nova-control-row #qualityPopupBtn{
+  height:34px!important;min-height:34px!important;max-height:34px!important;
+  width:max-content!important;min-width:max-content!important;max-width:none!important;
+  flex:0 0 auto!important;padding:0 10px!important;
+  font-size:12px!important;line-height:1.15!important;
+  white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+  border-radius:8px!important;
+}
+@media(max-width:420px){
+  #playerScreen .nova-control-row #qualityPopupBtn{
+    height:32px!important;min-height:32px!important;max-height:32px!important;
+    width:max-content!important;min-width:max-content!important;max-width:none!important;
+    flex:0 0 auto!important;padding:0 9px!important;
+    font-size:11px!important;line-height:1.15!important;
+  }
+}
+#playerScreen .nova-control-row #prevChannelBtn{display:none!important}
+</style>
+
+
+<style id="sportynova-remove-stop-square-icon">
+#playerScreen .nova-control-row #playerStopBtn,
+#playerScreen .nova-control-row #stopBtn{display:none!important}
+</style>
+
+
+<style id="sportynova-requested-quality-and-stop-final">
+/* Quality selector: same height as Next button; width follows full label text. */
+#playerScreen .nova-control-row #qualityPopupBtn{
+  box-sizing:border-box!important;
+  height:34px!important;min-height:34px!important;max-height:34px!important;
+  width:max-content!important;min-width:max-content!important;max-width:none!important;
+  flex:0 0 auto!important;padding:0 10px!important;
+  font-size:12px!important;line-height:1.15!important;
+  white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+/* Remove Stop square/button from player UI. */
+#playerScreen .nova-control-row #playerStopBtn,
+#playerScreen .nova-control-row #stopBtn,
+#stopBtn{display:none!important}
+@media(max-width:420px){
+  #playerScreen .nova-control-row #qualityPopupBtn{
+    height:32px!important;min-height:32px!important;max-height:32px!important;
+    width:max-content!important;min-width:max-content!important;max-width:none!important;
+    flex:0 0 auto!important;padding:0 9px!important;
+    font-size:11px!important;line-height:1.15!important;
   }
 }
 </style>

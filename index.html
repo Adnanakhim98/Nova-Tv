@@ -2967,3 +2967,19 @@ document.addEventListener("touchend", e => {
  window.refreshQualityPopupItems();
 })();
 </script>
+
+
+<!-- Fixed mobile page scale: prevent browser pinch zoom while preserving normal scrolling and player fullscreen. -->
+<style id="sportynova-fixed-page-zoom">
+html,body{touch-action:pan-x pan-y!important;-ms-touch-action:pan-x pan-y!important;overscroll-behavior: none!important;}
+</style>
+<script id="sportynova-disable-page-pinch-zoom">
+(()=>{
+  // Fallback for mobile browsers that ignore the viewport zoom restriction.
+  const stopMultiTouch=e=>{if(e.touches&&e.touches.length>1)e.preventDefault();};
+  document.addEventListener('touchmove',stopMultiTouch,{passive:false,capture:true});
+  document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
+  document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
+  document.addEventListener('gestureend',e=>e.preventDefault(),{passive:false});
+})();
+</script>

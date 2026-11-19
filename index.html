@@ -500,7 +500,11 @@ body{
 @media(max-width:420px){#inlineServerGroup{gap:4px}#inlineServerGroup .inline-server-btn{padding:0 7px;font-size:9px}}
 </style>
 <style id="sports-shaka-player-mode">
-/* Legacy style rules retained harmlessly; Shaka player library and playback branch are removed. */
+/* Live Sports uses Shaka controls; server buttons overlay the bottom control bar. */
+.playercard.sports-player-mode .nova-controls,
+.playercard.sports-player-mode #centerPlayPause{display:none!important}
+.playercard.sports-player-mode .screen .shaka-controls-container{display:flex!important;z-index:15!important}
+.playercard.sports-player-mode .screen .shaka-controls-container .shaka-range-container{accent-color:#21d8f4}
 .playercard.sports-player-mode .sports-server-row{display:flex!important;position:absolute!important;left:14%!important;right:18%!important;bottom:13px!important;width:auto!important;min-width:0!important;height:36px!important;max-height:36px!important;min-height:36px!important;padding:0 4px!important;align-items:center!important;gap:5px!important;z-index:25!important;background:linear-gradient(90deg,rgba(7,15,27,.92),rgba(7,15,27,.68))!important;border:1px solid #ffffff24!important;border-radius:9px!important;overflow:hidden!important;pointer-events:auto!important}
 .playercard.sports-player-mode .sports-server-row #inlineServerGroup{display:flex!important;flex:1 1 auto!important;width:100%!important;min-width:0!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;gap:5px!important;touch-action:pan-x!important;scrollbar-width:none!important}
 .playercard.sports-player-mode .sports-server-row #inlineServerGroup::-webkit-scrollbar{display:none!important}
@@ -1567,7 +1571,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      if(requestId!==playRequestId)return;
 
      // Start at fixed quality preferring 360/480/504/520/640. ABR stays OFF permanently.
-     const preferredHeights=[540,504,520,480,360];
+     const preferredHeights=[360,480,504,520,640];
      const variants=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
      if(variants.length){
        let chosen=null;
@@ -1588,9 +1592,9 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      engine="HLS.js";
      activeHls=new Hls({
        enableWorker:true,lowLatencyMode:false,backBufferLength:20,
-       maxBufferLength:12,maxMaxBufferLength:18,maxBufferSize:24000000,
-       manifestLoadingTimeOut:5000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:150,
-       levelLoadingTimeOut:5000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:150,
+       maxBufferLength:20,maxMaxBufferLength:30,maxBufferSize:40000000,
+       manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:200,
+       levelLoadingTimeOut:7000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:200,
        fragLoadingTimeOut:12000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:250,
        startLevel:0,autoStartLoad:true,capLevelToPlayerSize:false,
        abrEwmaDefaultEstimate:800000,abrBandWidthFactor:0.7,abrBandWidthUpFactor:0.5
@@ -1601,12 +1605,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
        if(requestId!==playRequestId)return;
        // Begin at lowest HLS level (usually ~360/480). ABR stays OFF — quality does not auto-change.
-       try{
-         const levels=activeHls.levels||[];
-         const idx540=levels.findIndex(l=>Number(l.height)===540);
-         const lower=levels.map((l,i)=>({i,h:Number(l.height||0)})).filter(x=>x.h>0&&x.h<=540).sort((a,b)=>b.h-a.h);
-         activeHls.currentLevel=idx540>=0?idx540:(lower.length?lower[0].i:0);
-       }catch(e){}
+       try{activeHls.currentLevel=0;}catch(e){}
        // Also disable adaptive switching in the HLS instance.
        try{activeHls.autoLevelEnabled=false;}catch(e){}
        setupHlsQualities();
@@ -2488,7 +2487,7 @@ document.addEventListener("touchend", e => {
   #liveSportsChannels .team-logo small{font-size:7px}
   #liveSportsChannels .chname{font-size:clamp(9px,2.6vw,11px)!important;white-space:normal!important;overflow-wrap:anywhere}
 }
-/* 540p-first playback preference; fallback to available lower resolution for faster startup. */
+/* Low-quality-first playback; adaptive quality begins after 30 seconds, with the active resolution marked. */
 #playerScreen video{image-rendering:auto}
 </style>
 
@@ -2582,4 +2581,68 @@ document.addEventListener("touchend", e => {
 .filter-live-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#ff4264;box-shadow:0 0 7px #ff4264aa}
 .sports-sectionhead .section-count{display:none!important}
 @media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
+</style>
+
+
+<!-- SPORTYNOVA: index-93 reference server-button style port; keep index-116 update banner and quality selector -->
+<style id="sportynova-server-buttons-index93-style">
+/* Live TV server pills under the channel title, always visible */
+.playercard:not(.sports-player-mode) #inlineServerGroup{
+  position:absolute!important;top:58px!important;left:12px!important;right:12px!important;bottom:auto!important;
+  z-index:100002!important;display:flex!important;width:max-content!important;max-width:calc(100% - 24px)!important;
+  min-width:0!important;flex:0 0 auto!important;gap:6px!important;overflow-x:auto!important;overflow-y:hidden!important;
+  padding:2px 0!important;background:transparent!important;border:0!important;box-shadow:none!important;
+  opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:none!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{
+  height:30px!important;min-height:30px!important;padding:0 12px!important;
+  border:1px solid rgba(255,255,255,.42)!important;border-radius:999px!important;
+  background:rgba(8,15,28,.35)!important;color:#fff!important;text-shadow:0 1px 3px #000!important;
+  backdrop-filter:blur(3px)!important;font-size:11px!important;pointer-events:auto!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn.active{
+  border-color:#25d8f4!important;background:rgba(10,137,165,.38)!important;color:#d8fbff!important;
+}
+.playercard:not(.sports-player-mode) #inlineServerGroup .server-empty-label{display:none!important}
+/* Sports servers sit below the match title, similar to the highlighted reference area */
+.playercard.sports-player-mode .sports-server-row,
+.playercard.sports-player-mode:fullscreen .sports-server-row,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row{
+  position:absolute!important;top:58px!important;bottom:auto!important;left:12px!important;right:12px!important;
+  width:auto!important;height:34px!important;min-height:34px!important;max-height:34px!important;
+  display:flex!important;align-items:center!important;z-index:100002!important;background:transparent!important;
+  border:0!important;box-shadow:none!important;overflow:visible!important;opacity:1!important;visibility:visible!important;
+  transform:none!important;pointer-events:auto!important;
+}
+.playercard.sports-player-mode .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:fullscreen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row #inlineServerGroup,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row #inlineServerGroup{
+  display:flex!important;max-width:100%!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;
+  background:transparent!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode:fullscreen .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row .inline-server-btn,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row .inline-server-btn{
+  height:30px!important;min-height:30px!important;padding:0 12px!important;border-radius:999px!important;
+  background:rgba(8,15,28,.35)!important;border:1px solid rgba(255,255,255,.42)!important;
+  color:#fff!important;text-shadow:0 1px 3px #000!important;backdrop-filter:blur(3px)!important;font-size:11px!important;
+}
+.playercard.sports-player-mode .sports-server-row .inline-server-btn.active,
+.playercard.sports-player-mode:fullscreen .sports-server-row .inline-server-btn.active,
+.playercard.sports-player-mode:-webkit-full-screen .sports-server-row .inline-server-btn.active,
+.playercard.sports-player-mode.mobile-rotated .sports-server-row .inline-server-btn.active{
+  border-color:#25d8f4!important;background:rgba(10,137,165,.38)!important;color:#d8fbff!important;
+}
+@media(max-width:600px){
+  .playercard:not(.sports-player-mode) #inlineServerGroup{top:54px!important;left:10px!important;right:10px!important;max-width:calc(100% - 20px)!important;gap:4px!important}
+  .playercard:not(.sports-player-mode) #inlineServerGroup .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 9px!important;font-size:10px!important}
+  .playercard.sports-player-mode .sports-server-row,
+  .playercard.sports-player-mode:fullscreen .sports-server-row,
+  .playercard.sports-player-mode:-webkit-full-screen .sports-server-row,
+  .playercard.sports-player-mode.mobile-rotated .sports-server-row{top:54px!important;left:10px!important;right:10px!important;height:31px!important;min-height:31px!important;max-height:31px!important}
+  .playercard.sports-player-mode .sports-server-row .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 9px!important;font-size:10px!important}
+}
 </style>

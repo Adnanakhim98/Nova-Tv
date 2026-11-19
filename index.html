@@ -896,6 +896,27 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 }
 </style>
 
+
+<style id="sportynova-requested-controls-and-title">
+.playersticky .screen .nova-controls{z-index:20!important;padding:28px 8px 7px!important}
+.playersticky .screen .nova-progress-row{display:flex!important;margin-bottom:7px!important}
+.playersticky .screen .nova-control-row{display:flex!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:5px!important;min-width:0!important;padding-right:42px!important}
+.playersticky .screen .nova-control-row #qualitySelect{display:none;flex:0 1 76px!important;width:76px!important;min-width:58px!important;max-width:76px!important;height:31px!important;padding:0 4px!important;font-size:10px!important;text-align:center!important}
+.playersticky .screen .nova-control-row .nova-control-btn{flex:0 0 32px!important;width:32px!important;min-width:32px!important;height:31px!important;padding:0!important;font-size:14px!important;border-radius:9px!important}
+.playersticky .screen .nova-control-row #playerStopBtn{color:#ff9aaa!important}
+.playersticky .screen .nova-control-row #prevChannelBtn,.playersticky .screen .nova-control-row #nextChannelBtn{font-size:13px!important}
+.playersticky .screen #playerOverlayTitle{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;max-width:100%!important;line-height:1.28!important;font-size:clamp(11px,3.1vw,16px)!important;text-shadow:0 2px 5px #000!important}
+@media(max-width:430px){
+ .playersticky .screen .nova-controls{padding:23px 6px 6px!important}
+ .playersticky .screen .nova-control-row{gap:4px!important;padding-right:39px!important}
+ .playersticky .screen .nova-control-row #qualitySelect{flex-basis:68px!important;width:68px!important;max-width:68px!important;min-width:54px!important;height:29px!important;font-size:9px!important}
+ .playersticky .screen .nova-control-row .nova-control-btn{flex-basis:29px!important;width:29px!important;min-width:29px!important;height:29px!important;font-size:12px!important}
+}
+.playercard:fullscreen .screen .nova-control-row,.playercard:-webkit-full-screen .screen .nova-control-row,.playercard.mobile-rotated .screen .nova-control-row{gap:9px!important;padding-right:50px!important}
+.playercard:fullscreen .screen .nova-control-row .nova-control-btn,.playercard:-webkit-full-screen .screen .nova-control-row .nova-control-btn,.playercard.mobile-rotated .screen .nova-control-row .nova-control-btn{flex-basis:42px!important;width:42px!important;min-width:42px!important;height:39px!important;font-size:16px!important}
+.playercard:fullscreen .screen .nova-control-row #qualitySelect,.playercard:-webkit-full-screen .screen .nova-control-row #qualitySelect,.playercard.mobile-rotated .screen .nova-control-row #qualitySelect{height:39px!important;max-width:95px!important;width:95px!important;font-size:12px!important}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -916,16 +937,14 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
-    \1<button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play / Pause">Ⅱ</button>
-     <button class="nova-control-btn" id="previousServerBtn" aria-label="Previous server" title="Previous server">|◀</button>
-     <button class="nova-control-btn" id="nextServerBtn" aria-label="Next server" title="Next server">▶|</button>
-     <button class="nova-control-btn" id="muteBtn" aria-label="Mute" title="Mute / Unmute">🔊</button>
-     <span class="nova-control-spacer"></span>
-     <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">⚙ Quality</option></select>
+    <div class="nova-control-row">
+     <select class="nova-fit-select" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none"><option value="auto">Auto</option></select>
+     <button class="nova-control-btn" id="playerStopBtn" type="button" aria-label="Stop" title="Stop">■</button>
+     <button class="nova-control-btn" id="playPauseBtn" type="button" aria-label="Pause" title="Play / Pause">Ⅱ</button>
+     <button class="nova-control-btn" id="prevChannelBtn" type="button" aria-label="Previous channel" title="Previous channel">|◀</button>
+     <button class="nova-control-btn" id="nextChannelBtn" type="button" aria-label="Next channel" title="Next channel">▶|</button>
+     <button class="nova-control-btn" id="fullscreenBtn" type="button" aria-label="Fullscreen" title="Fullscreen">⛶</button>
      <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
-     <button class="nova-control-btn" id="stopControlBtn" aria-label="Stop video" title="Stop">■</button>
-     <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture" title="Picture in Picture">▣</button>
-     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen">⛶</button>
     </div>
    </div>
   </div>
@@ -1159,8 +1178,9 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
   b.append(logoBox,name,category);
  }
- window.__sportynovaRenderedChannels=window.__sportynovaRenderedChannels||new WeakMap();
- window.__sportynovaRenderedChannels.set(b,ch);
+ b.addEventListener("pointerenter",()=>warmupChannel(ch),{passive:true});
+ b.addEventListener("touchstart",()=>warmupChannel(ch),{passive:true,once:true});
+ b.addEventListener("focus",()=>warmupChannel(ch),{passive:true});
  b.addEventListener("click",()=>{
   if(isLiveEvent || ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
   else openModal(ch.name);
@@ -1637,7 +1657,21 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  }catch(err){fail(err?.message||"player exception")}
  render();
 }
-let currentServerChannel=null,currentChannelStreams=[];
+let currentServerChannel=null,currentChannelStreams=[],currentPlayingChannel=null;
+const warmedStreamUrls=new Set();
+function warmupChannel(ch){
+ try{
+  const stream=(Array.isArray(ch?.streams)?ch.streams.find(x=>x&&isServerShown(x)&&String(x.url||x.src||"").trim()):null);
+  const raw=String(stream?.url||stream?.src||ch?.url||"").trim();
+  if(!/^https?:\/\//i.test(raw)||warmedStreamUrls.has(raw))return;
+  warmedStreamUrls.add(raw);
+  const origin=new URL(raw,location.href).origin;
+  if(!document.querySelector('link[data-nova-preconnect="'+origin+'"]')){
+   const link=document.createElement("link");link.rel="preconnect";link.href=origin;link.crossOrigin="anonymous";link.dataset.novaPreconnect=origin;document.head.appendChild(link);
+  }
+  if(/\.(?:m3u8|mpd)(?:$|[?#])/i.test(raw))fetch(raw,{mode:"cors",credentials:"omit",cache:"force-cache"}).catch(()=>{});
+ }catch(e){}
+}
 function isSportsChannel(ch){return !!ch && (ch.section==="liveSports" || /live sports|sports/i.test(String(ch.category||"")));}
 function getChannelStreams(ch){
  let streams=Array.isArray(ch.streams)?ch.streams.filter(stream=>stream&&isServerShown(stream)&&String(stream.url||stream.src||"").trim()):[];
@@ -1672,6 +1706,7 @@ function setInlineServers(ch){
  });
 }
 function playChannelDefault(ch){
+ currentPlayingChannel=ch;
  window.__sportsAutoSwitchCount=0;
  $("empty").style.display="none";
  setPlayerLoading(false);
@@ -1908,8 +1943,8 @@ if(centerPlayPauseBtn){
 
 video.addEventListener("play",()=>{$("playPauseBtn").textContent="Ⅱ"});
 video.addEventListener("pause",()=>{$("playPauseBtn").textContent="▶"});
-$("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
-video.addEventListener("volumechange",()=>{$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
+if($("muteBtn"))$("muteBtn").addEventListener("click",()=>{video.muted=!video.muted;$("muteBtn").textContent=video.muted?"🔇":"🔊"});
+video.addEventListener("volumechange",()=>{if($("muteBtn"))$("muteBtn").textContent=(video.muted||video.volume===0)?"🔇":"🔊"});
 video.addEventListener("timeupdate",()=>{
  const duration=video.duration;
  if(Number.isFinite(duration)&&duration>0){
@@ -1940,7 +1975,7 @@ function applyVideoFit(mode){
  video.style.setProperty("transform",transform,"important");
 }
 applyVideoFit("contain");
-$("pipBtn").addEventListener("click",async()=>{
+if($("pipBtn"))$("pipBtn").addEventListener("click",async()=>{
  try{if(document.pictureInPictureElement)await document.exitPictureInPicture();else if(document.pictureInPictureEnabled&&video.requestPictureInPicture)await video.requestPictureInPicture();else alert("এই ব্রাউজারে Picture-in-Picture সমর্থিত নয়।")}catch(e){console.warn("PiP unavailable",e)}
 });
 // Native Android uses Capacitor's orientation plugin. A normal browser keeps
@@ -2520,6 +2555,41 @@ document.addEventListener("touchend", e => {
 #categorySections .channelrow>.channel{animation:tvTileAppear .18s ease-out both}
 @keyframes tvTileAppear{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 </style>
+
+<script id="sportynova-bottom-player-actions">
+(() => {
+ const byId=id=>document.getElementById(id);
+ const video=byId("video");
+ if(!video)return;
+ const stopPlayback=()=>{const existing=byId("stopBtn");if(existing)existing.click();};
+ byId("playerStopBtn")?.addEventListener("click",stopPlayback);
+ const navigate=direction=>{
+  try{
+   const active=currentPlayingChannel;
+   if(!active)return;
+   const sports=active.section==="liveSports"||/live sports|sports/i.test(String(active.category||""));
+   const list=sports?(Array.isArray(liveSports)?liveSports:[]):(Array.isArray(channels)?channels:[]);
+   if(!list.length)return;
+   let index=list.indexOf(active);
+   if(index<0)index=list.findIndex(item=>String(item.name||"").trim().toLowerCase()===String(active.name||"").trim().toLowerCase());
+   const next=list[index+direction];
+   if(next)playChannelDefault(next);
+  }catch(error){console.warn("Channel navigation unavailable",error);}
+ };
+ byId("prevChannelBtn")?.addEventListener("click",()=>navigate(-1));
+ byId("nextChannelBtn")?.addEventListener("click",()=>navigate(1));
+ const syncPlayButton=()=>{
+  const button=byId("playPauseBtn");if(!button)return;
+  button.textContent=video.paused?"▶":"Ⅱ";
+  button.setAttribute("aria-label",video.paused?"Play":"Pause");
+  button.title=video.paused?"Play":"Pause";
+ };
+ video.addEventListener("play",syncPlayButton);video.addEventListener("pause",syncPlayButton);video.addEventListener("ended",syncPlayButton);syncPlayButton();
+ const title=byId("nowTitle");
+ if(title){title.title=title.textContent||"";new MutationObserver(()=>{title.title=title.textContent||"";}).observe(title,{childList:true,characterData:true,subtree:true});}
+})();
+</script>
+
 </body>
 </html>
 
@@ -2746,30 +2816,3 @@ document.addEventListener("touchend", e => {
 .playercard .screen #sportsServerRow #inlineServerGroup .inline-server-btn{flex:0 0 auto!important;white-space:nowrap!important}
 @media(orientation:landscape){.playercard:fullscreen .screen #sportsServerRow,.playercard:-webkit-full-screen .screen #sportsServerRow,.playercard.mobile-rotated .screen #sportsServerRow{flex-direction:column!important;top:8px!important;left:10px!important;right:10px!important}.playercard:fullscreen .screen #playerOverlayTitle,.playercard:-webkit-full-screen .screen #playerOverlayTitle,.playercard.mobile-rotated .screen #playerOverlayTitle{width:100%!important;max-width:100%!important;white-space:normal!important}}
 </style>
-
-<style id="sportynova-full-title-and-icon-controls">
-#playerOverlayTitle{display:block!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;max-width:min(86vw,900px)!important;width:max-content!important;line-height:1.25!important;font-size:clamp(14px,3.2vw,20px)!important;padding:7px 11px!important;border-radius:10px!important;background:rgba(3,8,17,.62)!important;color:#fff!important;text-shadow:0 2px 5px #000!important}
-.nowtitle{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.35!important}
-.playerfoot>div:first-child{min-width:0!important}.nova-control-btn{font-size:15px!important;font-weight:900!important}
-#previousServerBtn,#nextServerBtn{min-width:34px!important}#stopControlBtn{color:#ff9cab!important;border-color:#ff557455!important}
-@media(max-width:420px){.nova-control-row{gap:5px!important}.nova-control-btn{min-width:30px!important;padding:0 6px!important;font-size:12px!important}#previousServerBtn,#nextServerBtn{min-width:29px!important}#playerOverlayTitle{max-width:88vw!important;font-size:13px!important;padding:6px 8px!important}}
-</style>
-<script id="sportynova-server-navigation-and-prewarm">
-(()=>{
- const $=id=>document.getElementById(id),group=$("inlineServerGroup");if(!group)return;
- const warmed=new Set();
- function warm(ch){
-  const first=(Array.isArray(ch?.streams)?ch.streams:[ch]).find(x=>x&&x.url)||{};
-  const raw=String(first.url||ch?.url||"").trim();if(!/^https?:\/\//i.test(raw))return;
-  try{const u=new URL(raw,location.href);
-   if(!warmed.has(u.origin)){warmed.add(u.origin);const p=document.createElement("link");p.rel="preconnect";p.href=u.origin;p.crossOrigin="anonymous";document.head.appendChild(p);const d=document.createElement("link");d.rel="dns-prefetch";d.href=u.origin;document.head.appendChild(d);}
-   if(!warmed.has(raw)){warmed.add(raw);const f=document.createElement("link");f.rel="prefetch";f.href=raw;f.as="fetch";f.crossOrigin="anonymous";document.head.appendChild(f);}
-  }catch(e){}
- }
- function warmCard(e){const card=e.target.closest?.(".channel");if(card){const ch=window.__sportynovaRenderedChannels?.get(card);if(ch)warm(ch);}}
- document.addEventListener("pointerdown",warmCard,{passive:true});document.addEventListener("touchstart",warmCard,{passive:true});
- $("stopControlBtn")?.addEventListener("click",()=>$("stopBtn")?.click());
- function move(n){const bs=[...group.querySelectorAll(".inline-server-btn")];if(!bs.length)return;const a=bs.findIndex(b=>b.classList.contains("active"));bs[(Math.max(0,a)+n+bs.length)%bs.length].click();}
- $("previousServerBtn")?.addEventListener("click",()=>move(-1));$("nextServerBtn")?.addEventListener("click",()=>move(1));
-})();
-</script>

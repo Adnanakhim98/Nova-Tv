@@ -44,6 +44,12 @@ jobs:
       - name: Sync Android project
         run: npx cap sync android
 
+      - name: Patch MainActivity for immersive mode
+        run: node scripts/patch-android-immersive.mjs
+
+      - name: Apply SportyNova app icon
+        run: node scripts/apply-app-icon.mjs
+
       - name: Build APK
         working-directory: android
         run: |

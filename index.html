@@ -940,6 +940,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
     <div class="nova-control-row">
      <select class="nova-fit-select" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none"><option value="auto">Auto</option></select>
      <button class="nova-control-btn quality-popup-trigger" id="qualityPopupBtn" type="button" aria-label="ভিডিও কোয়ালিটি নির্বাচন" aria-haspopup="dialog" aria-expanded="false" style="display:none">Auto ▾</button>
+     <button class="nova-control-btn" id="prevChannelBtn" type="button" aria-label="Previous channel" title="Previous channel">|◀</button>
      <button class="nova-control-btn" id="playPauseBtn" type="button" aria-label="Pause" title="Play / Pause">Ⅱ</button>
      <button class="nova-control-btn" id="nextChannelBtn" type="button" aria-label="Next channel" title="Next channel">▶|</button>
      <button class="nova-control-btn" id="fullscreenBtn" type="button" aria-label="Fullscreen" title="Fullscreen">⛶</button>
@@ -2737,6 +2738,30 @@ document.addEventListener("touchend", e => {
     flex:0 0 auto!important;padding:0 9px!important;
     font-size:11px!important;line-height:1.15!important;
   }
+}
+</style>
+
+
+<style id="sportynova-controls-final-request">
+#playerScreen .nova-control-row #prevChannelBtn{display:flex!important;visibility:visible!important;order:3!important}
+#playerScreen .nova-control-row #playPauseBtn{order:2!important}
+#playerScreen .nova-control-row #nextChannelBtn{order:4!important}
+#playerScreen .nova-control-row #qualityPopupBtn{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;
+ height:34px!important;min-height:34px!important;max-height:34px!important;
+ width:max-content!important;min-width:max-content!important;max-width:none!important;
+ flex:0 0 auto!important;padding:0 10px!important;
+ font-size:13px!important;line-height:1.15!important;
+ white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+@media(max-width:420px){
+ #playerScreen .nova-control-row #prevChannelBtn{display:flex!important;visibility:visible!important}
+ #playerScreen .nova-control-row #qualityPopupBtn{
+  height:32px!important;min-height:32px!important;max-height:32px!important;
+  width:max-content!important;min-width:max-content!important;max-width:none!important;
+  flex:0 0 auto!important;padding:0 9px!important;font-size:12px!important;
+ }
 }
 </style>
 

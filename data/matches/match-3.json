@@ -6,24 +6,24 @@
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/w6dgdlcx03/out/v1/04ed50f3a2eb429b87ed5d70b737dd46/cenc.mpd",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/i4j35tc3ub/out/v1/3bf2e223260f4d74ad57635eb14fd068/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/w6dgdlcx03/out/v1/04ed50f3a2eb429b87ed5d70b737dd46/cenc.mpd",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/i4j35tc3ub/out/v1/3bf2e223260f4d74ad57635eb14fd068/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "a368bc0596cc6975605701aa79d01f3c:d514a032036589c2a3e4ea2d958793a3"
+          "license": "15bb136e7ac737c7f35172fe6703b695:8fa933ee92c1e8d1f5d2855152d784f2"
         },
         "show": "yes"
       },
       {
         "name": "WILLOW ALT",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/w6dgdlcx03/out/v1/04ed50f3a2eb429b87ed5d70b737dd46/cenc.mpd",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/i4j35tc3ub/out/v1/3bf2e223260f4d74ad57635eb14fd068/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "a368bc0596cc6975605701aa79d01f3c:d514a032036589c2a3e4ea2d958793a3"
+          "license": "15bb136e7ac737c7f35172fe6703b695:8fa933ee92c1e8d1f5d2855152d784f2"
         },
         "show": "yes"
       },
@@ -47,7 +47,7 @@
     "matchType": "CRICKETS| Test",
     "drm": {
       "scheme": "clearkey",
-      "license": "a368bc0596cc6975605701aa79d01f3c:d514a032036589c2a3e4ea2d958793a3"
+      "license": "15bb136e7ac737c7f35172fe6703b695:8fa933ee92c1e8d1f5d2855152d784f2"
     }
   }
 }

@@ -2669,6 +2669,26 @@ document.addEventListener("touchend", e => {
 }
 </style>
 
+
+<style id="sportynova-quality-button-final-size">
+/* Quality button: match Play button height and fit the quality label naturally. */
+#playerScreen .nova-control-row #qualityPopupBtn{
+  height:34px!important;min-height:34px!important;
+  width:auto!important;min-width:0!important;max-width:none!important;
+  flex:0 0 auto!important;padding:0 10px!important;
+  font-size:12px!important;line-height:1.1!important;
+  white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+@media(max-width:420px){
+  #playerScreen .nova-control-row #qualityPopupBtn{
+    height:32px!important;min-height:32px!important;
+    width:auto!important;min-width:0!important;max-width:none!important;
+    flex:0 0 auto!important;padding:0 9px!important;
+    font-size:11px!important;
+  }
+}
+</style>
+
 </body>
 </html>
 

@@ -978,10 +978,11 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 <script src="./native-bridge.js"></script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
-let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL";
+let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL",immediatePlayIntent=false;
 video.preload="auto";
 video.autoplay=true;
-video.addEventListener("canplay",()=>{if(video.dataset.currentUrl)video.play().catch(()=>{})});
+video.addEventListener("canplay",()=>{if(video.dataset.currentUrl&&(immediatePlayIntent||video.paused))video.play().catch(()=>{})});
+video.addEventListener("playing",()=>{immediatePlayIntent=false});
 const defaults={liveSports:[
 {name:"Sports 1",category:"SPORTS",logo:"⚽",tone:"blue",url:""},
 {name:"Cricket Live",category:"CRICKET",logo:"🏏",tone:"gold",url:""},
@@ -1477,6 +1478,7 @@ function setPlayerMode(sportsMode){
 }
 window.playStream=playStream;
 async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fallbackUrl=""){
+ immediatePlayIntent=true;
  const requestId=++playRequestId;
  const parsed=parseStreamInput(rawUrl,drm),url=parsed.url,kind=streamKind(url);
  const sportsMode=/live\s*sports|sports/i.test(String(category||"")) || !!(currentServerChannel&&isSportsChannel(currentServerChannel));
@@ -1493,9 +1495,12 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  // Do not cover the video with a loading overlay; start the stream immediately.
  setPlayerLoading(false);
  video.dataset.currentUrl=rawUrl;
+ // Attempt play early, then again as soon as the browser reports media ready.
+ video.play().catch(()=>{});
  if(currentServerChannel)setInlineServers(currentServerChannel);
  video.crossOrigin="anonymous";
  video.preload="auto";
+ video.setAttribute("fetchpriority","high");
  video.autoplay=true;
  video.controls=false;
 
@@ -1565,17 +1570,17 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka.configure({
        streaming:{
          // Smooth DASH playback: retain a larger buffer to absorb brief network dips.
-         bufferingGoal:20,rebufferingGoal:6,bufferBehind:45,lowLatencyMode:false,
-         retryParameters:{timeout:15000,stallTimeout:7000,connectionTimeout:10000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}
+         bufferingGoal:12,rebufferingGoal:2,bufferBehind:30,lowLatencyMode:false,
+         retryParameters:{timeout:10000,stallTimeout:5000,connectionTimeout:7000,maxAttempts:3,baseDelay:250,backoffFactor:1.5}
        },
-       manifest:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}},
-       drm:{retryParameters:{timeout:15000,maxAttempts:4,baseDelay:350,backoffFactor:1.6}},
+       manifest:{retryParameters:{timeout:10000,maxAttempts:3,baseDelay:250,backoffFactor:1.5}},
+       drm:{retryParameters:{timeout:10000,maxAttempts:3,baseDelay:250,backoffFactor:1.5}},
        abr:{
-         enabled:false,
-         defaultBandwidthEstimate:1800000,
-         bandwidthDowngradeTarget:0.90,
-         bandwidthUpgradeTarget:0.70,
-         switchInterval:15
+         enabled:true,
+         defaultBandwidthEstimate:900000,
+         bandwidthDowngradeTarget:0.85,
+         bandwidthUpgradeTarget:0.65,
+         switchInterval:8
        }
      });
      activeShaka.addEventListener("error",evt=>fail("Shaka error "+(evt.detail?.code||"")));
@@ -1585,6 +1590,8 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      activeShaka.addEventListener("variantchanged",()=>setupShakaQualities());
      await activeShaka.attach(video);
      if(requestId!==playRequestId)return;
+     video.play().catch(()=>{}); // early play request while DASH manifest loads
+
      video.controls=false;
      if(sportsMode){
        activeShakaUI=new shaka.ui.Overlay(activeShaka,screenEl,video);
@@ -1612,15 +1619,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
-     // Start at a medium rendition (median available resolution), with ABR disabled.
-     const variants=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
-     if(variants.length){
-       const heights=[...new Set(variants.map(t=>Number(t.height)).filter(Boolean))].sort((a,b)=>a-b);
-       const mediumHeight=heights[Math.floor(heights.length/2)];
-       const chosen=variants.filter(t=>Number(t.height)===mediumHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
-       if(chosen){try{activeShaka.selectVariantTrack(chosen,true);}catch(e){}}
-     }
-     activeShaka.configure({abr:{enabled:false}});
+     // Fast startup: let ABR begin on a conservative rendition instead of waiting for a manual mid-quality selection.
      setupShakaQualities();
      video.play().catch(()=>{});
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
@@ -1631,23 +1630,16 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:200,
        levelLoadingTimeOut:7000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:200,
        fragLoadingTimeOut:12000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:250,
-       startLevel:0,autoStartLoad:true,capLevelToPlayerSize:false,
-       abrEwmaDefaultEstimate:800000,abrBandWidthFactor:0.7,abrBandWidthUpFactor:0.5
+       startLevel:-1,autoStartLoad:true,capLevelToPlayerSize:false,
+       abrEwmaDefaultEstimate:650000,abrBandWidthFactor:0.85,abrBandWidthUpFactor:0.65
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
        if(requestId===playRequestId){activeHls.loadSource(url);}
      });
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
        if(requestId!==playRequestId)return;
-       // Start at medium HLS rendition (median available resolution); keep ABR disabled.
-       try{
-         const lvls=activeHls.levels||[];
-         const sorted=lvls.map((l,i)=>({i,h:Number(l.height||0),b:Number(l.bitrate||0)})).sort((a,b)=>a.h-b.h||a.b-b.b);
-         const mid=sorted[Math.floor(sorted.length/2)];
-         activeHls.startLevel=mid?mid.i:0;
-         activeHls.currentLevel=mid?mid.i:0;
-       }catch(e){try{activeHls.currentLevel=0;}catch(_){}}
-       try{activeHls.autoLevelEnabled=false;}catch(e){}
+       // Fast startup: keep HLS adaptive and allow its first suitable low-bitrate level.
+       try{activeHls.startLevel=-1;activeHls.currentLevel=-1;activeHls.autoLevelEnabled=true;}catch(e){}
        setupHlsQualities();
        video.play().catch(()=>{});
      });
@@ -1657,6 +1649,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        fail("HLS.js "+data.type);
      });
      activeHls.attachMedia(video);
+     video.play().catch(()=>{}); // early play request while HLS is attaching
    }else{
      // Native playback for direct files, transport streams, and browsers with native HLS.
      engine=kind==="hls"?"Native HLS":"Native media";
@@ -1755,7 +1748,7 @@ function openModal(channelName=""){
 }
 $("customBtn").addEventListener("click",()=>openModal());
 
-$("stopBtn").onclick=async()=>{playRequestId++;await stopEngines();setPlayerMode(false);$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
+$("stopBtn").onclick=async()=>{immediatePlayIntent=false;playRequestId++;await stopEngines();setPlayerMode(false);$("empty").style.display="flex";setLiveBadge(false);setPlayerLoading(false);delete video.dataset.currentUrl;lastStreamRequest=null;hideQualitySelector();showStatus("একটি চ্যানেল নির্বাচন করুন","প্লেব্যাক বন্ধ করা হয়েছে");render();};
 $("retryBtn").onclick=()=>{if(lastStreamRequest)playStream(lastStreamRequest.rawUrl,lastStreamRequest.name,lastStreamRequest.category,lastStreamRequest.drm,lastStreamRequest.fallbackUrl||"");};
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
 $("urlModal").addEventListener("click",e=>{if(e.target===$("urlModal"))$("urlModal").classList.remove("open")});
@@ -2083,10 +2076,10 @@ window.addEventListener("sportynova:android-back",async(event)=>{
  const menu = $("channelArea");
  if(menu) menu.scrollTo({top:0,behavior:"smooth"});
 });
-let lastVideoTap=0;
 screenEl.addEventListener("click",e=>{
  if(e.target.closest(".nova-controls,button,select,.playerLoading,.empty"))return;
- const now=Date.now();if(now-lastVideoTap<320){if(video.paused)video.play().catch(()=>{});else video.pause()}lastVideoTap=now;
+ // Single tap requests playback immediately; retry once media becomes playable.
+ if(video.paused && video.dataset.currentUrl){immediatePlayIntent=true;video.play().catch(()=>{});}
 });
 // Automatically hide player controls 4 seconds after the last interaction in all orientations.
 let controlsHideTimer=null;
@@ -2788,6 +2781,7 @@ document.addEventListener("touchend", e => {
 }
 </style>
 
+<!-- SPORTYNOVA FAST-START PLAYBACK UPDATE -->
 </body>
 </html>
 

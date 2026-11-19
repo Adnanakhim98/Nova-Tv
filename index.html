@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 2তথথদররছ4 Octoঈber 2026 (Bangladesh time, UTC+06:00) — DASH smooth ABR update -->
+<!-- LAST UPDATE: 19 November 2026 (Bangladesh time, UTC+06:00) — Landscape full-screen + fixed quality (no ABR) + instant channel play -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -267,15 +267,23 @@ body{background:radial-gradient(ellipse at 50% -20%,#14253b 0,transparent 45%),v
 </style>
 
 <style>
-/* Landscape player height reduced by 10% as requested. */
+/* Landscape: full screen in the marked horizontal direction (100% width & height). */
 @media (orientation: landscape) {
   .playercard:fullscreen .screen,
   .playercard:-webkit-full-screen .screen,
   .playercard.mobile-rotated .screen {
-    flex: 0 0 90% !important;
-    height: 90% !important;
-    max-height: 90% !important;
-    align-self: center !important;
+    flex: 1 1 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    width: 100% !important;
+    align-self: stretch !important;
+  }
+  .playercard:fullscreen .screen video,
+  .playercard:-webkit-full-screen .screen video,
+  .playercard.mobile-rotated .screen video {
+    object-fit: contain !important;
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 </style>
@@ -883,7 +891,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 </head>
 <body>
 <div class="wrap">
-<div class="update-stamp">শেষ আপডেট: ২৪ অক্টোবর ২০২৬ (বাংলাদেশ সময়)</div>
+<div class="update-stamp">শেষ আপডেট: ১৯ নভেম্বর ২০২৬ (বাংলাদেশ সময়) — Landscape full + fixed quality</div>
 <header class="topbar">
  <div class="brand"><div class="brandicon">▶</div><div><div class="brandname"><span>SPORTY</span><span class="nova">NOVA</span><span class="version">1.0</span></div><div class="tagline">WATCH LIVE · ANYTIME · ANYWHERE</div></div></div>
  <input id="search" class="search" placeholder="Search channels…" aria-label="Search channel">
@@ -1562,26 +1570,23 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
      await activeShaka.load(url);
      if(requestId!==playRequestId)return;
 
-     // Start at the lowest available DASH quality, then enable adaptive quality
-     // 30 seconds after playback actually begins to give the stream time to settle.
+     // Start at fixed quality preferring 360/480/504/520/640. ABR stays OFF permanently.
+     const preferredHeights=[360,480,504,520,640];
      const variants=activeShaka.getVariantTracks().filter(t=>t.height && t.type!=="audio");
      if(variants.length){
-       const lowestHeight=Math.min(...variants.map(t=>Number(t.height)).filter(Boolean));
-       const lowest=variants.filter(t=>Number(t.height)===lowestHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
-       if(lowest){try{activeShaka.selectVariantTrack(lowest,false);}catch(e){}}
+       let chosen=null;
+       for(const h of preferredHeights){
+         const matches=variants.filter(t=>Number(t.height)===h).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0));
+         if(matches.length){chosen=matches[0];break;}
+       }
+       if(!chosen){
+         const lowestHeight=Math.min(...variants.map(t=>Number(t.height)).filter(Boolean));
+         chosen=variants.filter(t=>Number(t.height)===lowestHeight).sort((a,b)=>Number(a.bandwidth||0)-Number(b.bandwidth||0))[0];
+       }
+       if(chosen){try{activeShaka.selectVariantTrack(chosen,true);}catch(e){}}
      }
+     activeShaka.configure({abr:{enabled:false}});
      setupShakaQualities();
-     let autoQualityTimerStarted=false;
-     const enableAutoAfterPlayback=()=>{
-       if(autoQualityTimerStarted)return;
-       autoQualityTimerStarted=true;
-       setTimeout(()=>{
-         if(requestId!==playRequestId||!activeShaka||video.paused)return;
-         activeShaka.configure({abr:{enabled:true}});
-         setupShakaQualities();
-       },30000);
-     };
-     video.addEventListener("playing",enableAutoAfterPlayback);
      video.play().catch(()=>{});
    }else if(kind==="hls"&&window.Hls&&Hls.isSupported()){
      engine="HLS.js";
@@ -1591,28 +1596,19 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
        manifestLoadingTimeOut:7000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:200,
        levelLoadingTimeOut:7000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:200,
        fragLoadingTimeOut:12000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:250,
-       startLevel:0,capLevelToPlayerSize:true,abrEwmaDefaultEstimate:1800000,
-       abrBandWidthFactor:0.9,abrBandWidthUpFactor:0.75
+       startLevel:0,autoStartLoad:true,capLevelToPlayerSize:false,
+       abrEwmaDefaultEstimate:800000,abrBandWidthFactor:0.7,abrBandWidthUpFactor:0.5
      });
      activeHls.on(Hls.Events.MEDIA_ATTACHED,()=>{
        if(requestId===playRequestId){activeHls.loadSource(url);}
      });
      activeHls.on(Hls.Events.MANIFEST_PARSED,()=>{
        if(requestId!==playRequestId)return;
-       // Begin at the lowest HLS level. Switch to automatic adaptation after 30s of playback.
+       // Begin at lowest HLS level (usually ~360/480). ABR stays OFF — quality does not auto-change.
        try{activeHls.currentLevel=0;}catch(e){}
+       // Also disable adaptive switching in the HLS instance.
+       try{activeHls.autoLevelEnabled=false;}catch(e){}
        setupHlsQualities();
-       let autoQualityTimerStarted=false;
-       const enableHlsAutoAfterPlayback=()=>{
-         if(autoQualityTimerStarted)return;
-         autoQualityTimerStarted=true;
-         setTimeout(()=>{
-           if(requestId!==playRequestId||!activeHls||video.paused)return;
-           activeHls.currentLevel=-1;
-           setupHlsQualities();
-         },30000);
-       };
-       video.addEventListener("playing",enableHlsAutoAfterPlayback);
        video.play().catch(()=>{});
      });
      activeHls.on(Hls.Events.LEVEL_SWITCHED,()=>setupHlsQualities());
@@ -2586,4 +2582,3 @@ document.addEventListener("touchend", e => {
 .sports-sectionhead .section-count{display:none!important}
 @media(max-width:420px){.channelarea > .sports-sectionhead{gap:5px!important;padding:7px 7px!important}.sports-sectionhead h2{font-size:12px!important}.sports-sectionhead .match-filter-bar{gap:4px!important}.sports-sectionhead .match-filter{min-height:30px!important;padding:4px 5px!important;font-size:8px!important;letter-spacing:-.1px!important}.sports-sectionhead .match-filter b{min-width:16px!important;height:16px!important;font-size:8px!important}}
 </style>
-

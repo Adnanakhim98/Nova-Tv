@@ -939,6 +939,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
      <select class="nova-fit-select" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none"><option value="auto">Auto</option></select>
+     <button class="nova-control-btn quality-popup-trigger" id="qualityPopupBtn" type="button" aria-label="ভিডিও কোয়ালিটি নির্বাচন" aria-haspopup="dialog" aria-expanded="false" style="display:none">Auto ▾</button>
      <button class="nova-control-btn" id="playerStopBtn" type="button" aria-label="Stop" title="Stop">■</button>
      <button class="nova-control-btn" id="playPauseBtn" type="button" aria-label="Pause" title="Play / Pause">Ⅱ</button>
      <button class="nova-control-btn" id="prevChannelBtn" type="button" aria-label="Previous channel" title="Previous channel">|◀</button>
@@ -1302,6 +1303,8 @@ function render(list=channels){
 }
 function hideQualitySelector(){
  const sel=$("qualitySelect");sel.style.display="none";sel.innerHTML='<option value="auto">Auto</option>';qualityMode="";
+ const popupBtn=$("qualityPopupBtn");if(popupBtn){popupBtn.style.display="none";popupBtn.setAttribute("aria-expanded","false");}
+ const popup=$("qualityPopup");if(popup)popup.classList.remove("open");
 }
 function showQualityOptions(options,mode){
  const sel=$("qualitySelect");
@@ -1336,8 +1339,10 @@ function showQualityOptions(options,mode){
  }else{
   sel.value="auto";
  }
+ if(typeof refreshQualityPopupItems==="function")refreshQualityPopupItems();
 }
 $("qualitySelect").addEventListener("change",()=>{
+ if(typeof refreshQualityPopupItems==="function")refreshQualityPopupItems();
  const value=$("qualitySelect").value;
  try{
   if(qualityMode==="hls"&&activeHls) activeHls.currentLevel=value==="auto"?-1:Number(value);
@@ -2883,3 +2888,82 @@ document.addEventListener("touchend", e => {
  box-shadow:0 0 0 2px rgba(33,216,244,.20),0 0 20px rgba(33,216,244,.22)!important;
 }
 </style>
+
+<style id="sportynova-compact-quality-popup">
+/* Compact custom quality popup: narrower on both sides and shorter vertically. */
+#playerScreen .nova-control-row #qualitySelect{display:none!important}
+#playerScreen .nova-control-row #qualityPopupBtn{
+ display:none;flex:0 0 auto!important;width:auto!important;min-width:48px!important;max-width:62px!important;
+ height:25px!important;min-height:25px!important;padding:0 5px!important;border-radius:6px!important;
+ font-size:9px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;border:1px solid rgba(188,211,241,.35)!important;
+ background:rgba(17,27,44,.94)!important;color:#f4f8ff!important;z-index:22!important;
+}
+#qualityPopup{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:100010;
+ display:none;flex-direction:column;width:min(340px,calc(100% - 76px));
+ max-height:min(54vh,330px);overflow:hidden;border:1px solid rgba(170,190,220,.25);
+ border-radius:13px;background:rgba(35,35,43,.98);box-shadow:0 12px 34px rgba(0,0,0,.55);
+ backdrop-filter:blur(12px);color:#f5f7ff;
+}
+#qualityPopup.open{display:flex}
+#qualityPopup .quality-popup-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+ padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.12);font-size:11px;font-weight:800;flex:0 0 auto}
+#qualityPopup .quality-popup-close{width:24px;height:24px;border:1px solid #ffffff30;border-radius:7px;
+ background:#ffffff12;color:#fff;font-size:15px;line-height:1;}
+#qualityPopup .quality-popup-list{overflow-y:auto;overscroll-behavior:contain;padding:3px;scrollbar-width:thin}
+#qualityPopup .quality-popup-option{display:flex;align-items:center;justify-content:space-between;gap:8px;
+ width:100%;min-height:35px;padding:6px 9px;border:0;border-bottom:1px solid rgba(255,255,255,.09);
+ border-radius:6px;background:transparent;color:#f1f3fa;text-align:left;font-size:12px;line-height:1.2}
+#qualityPopup .quality-popup-option:last-child{border-bottom:0}
+#qualityPopup .quality-popup-option.selected{background:rgba(35,195,224,.15);color:#b9f5ff}
+#qualityPopup .quality-popup-check{font-size:11px;color:#bba7ff;font-weight:900;white-space:nowrap}
+@media(max-width:420px){
+ #playerScreen .nova-control-row #qualityPopupBtn{min-width:44px!important;max-width:53px!important;height:23px!important;min-height:23px!important;padding:0 4px!important;font-size:8px!important}
+ #qualityPopup{width:min(290px,calc(100% - 64px));max-height:min(50vh,270px);border-radius:11px}
+ #qualityPopup .quality-popup-head{padding:7px 9px;font-size:10px}
+ #qualityPopup .quality-popup-option{min-height:31px;padding:5px 8px;font-size:11px}
+}
+@media(orientation:landscape){#qualityPopup{width:min(360px,calc(100% - 100px));max-height:min(58vh,300px)}}
+.playercard:fullscreen #qualityPopup,.playercard:-webkit-full-screen #qualityPopup,.playercard.mobile-rotated #qualityPopup{z-index:100010}
+</style>
+<script id="sportynova-compact-quality-popup-script">
+(()=>{
+ const screen=document.getElementById('playerScreen');
+ const select=document.getElementById('qualitySelect');
+ const trigger=document.getElementById('qualityPopupBtn');
+ if(!screen||!select||!trigger||document.getElementById('qualityPopup'))return;
+ const popup=document.createElement('div');popup.id='qualityPopup';popup.setAttribute('role','dialog');popup.setAttribute('aria-label','ভিডিও কোয়ালিটি');
+ popup.innerHTML='<div class="quality-popup-head"><span>ভিডিও কোয়ালিটি</span><button type="button" class="quality-popup-close" aria-label="বন্ধ করুন">×</button></div><div class="quality-popup-list"></div>';
+ screen.appendChild(popup);
+ const list=popup.querySelector('.quality-popup-list');
+ const close=()=>{popup.classList.remove('open');trigger.setAttribute('aria-expanded','false');};
+ const labelFor=o=>(o.textContent||'').replace(/\s*✓\s*চলছে\s*/,'').trim()||'Auto';
+ window.refreshQualityPopupItems=()=>{
+  if(!select.options.length)return;
+  list.replaceChildren();
+  [...select.options].forEach(option=>{
+   const b=document.createElement('button');b.type='button';b.className='quality-popup-option'+(option.value===select.value?' selected':'');
+   const name=document.createElement('span');name.textContent=labelFor(option);
+   const check=document.createElement('span');check.className='quality-popup-check';check.textContent=option.value===select.value?'✓ চলছে':'';
+   b.append(name,check);
+   b.addEventListener('click',()=>{
+    select.value=option.value;
+    select.dispatchEvent(new Event('change',{bubbles:true}));
+    trigger.textContent=labelFor(option)+' ▾';
+    close();
+   });
+   list.appendChild(b);
+  });
+  const active=select.options[select.selectedIndex];
+  trigger.textContent=(active?labelFor(active):'Quality')+' ▾';
+  trigger.style.display=select.options.length>1?'inline-flex':'none';
+ };
+ trigger.addEventListener('click',e=>{e.stopPropagation();window.refreshQualityPopupItems();popup.classList.toggle('open');trigger.setAttribute('aria-expanded',popup.classList.contains('open')?'true':'false');});
+ popup.querySelector('.quality-popup-close').addEventListener('click',close);
+ document.addEventListener('pointerdown',e=>{if(popup.classList.contains('open')&&!popup.contains(e.target)&&e.target!==trigger)close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+ const observer=new MutationObserver(()=>window.refreshQualityPopupItems());observer.observe(select,{childList:true,subtree:true});
+ window.refreshQualityPopupItems();
+})();
+</script>

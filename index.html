@@ -850,34 +850,30 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 </style>
 
 
-<style id="sportynova-landscape-brand-cleanup">
-/* Hide SportyNova header/search branding while the player is rotated/fullscreen. */
-@media (orientation: landscape) {
-  body:has(.playercard.mobile-rotated) .topbar,
-  body:has(.playercard.mobile-rotated) .sectionhead,
-  body:has(.playercard.mobile-rotated) .channelarea,
-  body:has(.playercard.mobile-rotated) .noticebar,
-  body:has(.playercard.mobile-rotated) .footer,
-  body:has(.playercard.mobile-rotated) .searchhint,
-  body:has(.playercard:fullscreen) .topbar,
-  body:has(.playercard:fullscreen) .sectionhead,
-  body:has(.playercard:fullscreen) .channelarea,
-  body:has(.playercard:fullscreen) .noticebar,
-  body:has(.playercard:fullscreen) .footer,
-  body:has(.playercard:fullscreen) .searchhint,
-  body:has(.playercard:-webkit-full-screen) .topbar,
-  body:has(.playercard:-webkit-full-screen) .sectionhead,
-  body:has(.playercard:-webkit-full-screen) .channelarea,
-  body:has(.playercard:-webkit-full-screen) .noticebar,
-  body:has(.playercard:-webkit-full-screen) .footer,
-  body:has(.playercard:-webkit-full-screen) .searchhint { display: none !important; }
+<style id="sportynova-unified-landscape-player">
+/* Unified player: all videos open in the existing Live TV player, fullscreen landscape. */
+@media (orientation: landscape) and (max-height: 600px) {
+  body, html { background:#000!important; overflow:hidden!important; }
+  .wrap, .topbar, .update-stamp, .noticebar, .sectionhead, .channelarea, .footer,
+  .playersticky > :not(.playercard) { display:none!important; }
+  .playersticky { position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important;
+    margin:0!important; padding:0!important; background:#000!important; z-index:99990!important; }
+  .playercard, .playercard:fullscreen, .playercard:-webkit-full-screen, .playercard.mobile-rotated {
+    position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important;
+    max-height:100dvh!important; margin:0!important; padding:0!important; border:0!important;
+    border-radius:0!important; background:#000!important; display:flex!important; flex-direction:column!important;
+    overflow:hidden!important; z-index:99999!important; }
+  .playercard .screen, .playercard:fullscreen .screen, .playercard:-webkit-full-screen .screen, .playercard.mobile-rotated .screen {
+    flex:1 1 100%!important; width:100vw!important; height:100dvh!important; max-height:100dvh!important;
+    min-height:0!important; aspect-ratio:auto!important; margin:0!important; align-self:stretch!important; background:#000!important; }
+  .playercard .screen video, .playercard:fullscreen .screen video, .playercard:-webkit-full-screen .screen video, .playercard.mobile-rotated .screen video {
+    width:100%!important; height:100%!important; max-width:none!important; max-height:none!important;
+    object-fit:contain!important; object-position:center!important; background:#000!important; }
+  .playercard .empty strong, .playercard .empty span, .playercard .empty .tvicon { display:none!important; }
+  .playercard .playerfoot { display:none!important; }
+  .playercard .sports-server-row { display:none!important; }
+  .playercard .nova-controls { z-index:20!important; }
 }
-.playercard.mobile-rotated .empty strong,
-.playercard.mobile-rotated .empty span,
-.playercard:fullscreen .empty strong,
-.playercard:fullscreen .empty span,
-.playercard:-webkit-full-screen .empty strong,
-.playercard:-webkit-full-screen .empty span { display:none !important; }
 </style>
 
 </head>
@@ -1433,8 +1429,10 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
  if(!/^https?:\/\//i.test(url)){alert("সঠিক http:// অথবা https:// URL দিন।");return}
  lastStreamRequest={rawUrl,name,category,drm,fallbackUrl};
  stopEngines();
- setPlayerMode(sportsMode);
- if(sportsMode)showSportsServers();
+ setPlayerMode(false); // All categories use the standard Live TV player UI.
+ hideSportsServers();
+ // Start the same full-screen landscape player for every video source.
+ setTimeout(()=>{ if(requestId===playRequestId) enterPlayerFullscreen().catch(()=>{}); },80);
  if(requestId!==playRequestId)return;
  $("empty").style.display="none";
  setLiveBadge(false);

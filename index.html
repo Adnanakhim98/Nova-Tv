@@ -2633,6 +2633,42 @@ document.addEventListener("touchend", e => {
 }
 </style>
 
+
+
+<style id="sportynova-control-spacing-quality-order-update">
+/* Requested controls-only update: more spacing, larger buttons, quality after Next. */
+#playerScreen .nova-control-row{
+  gap:8px!important;
+}
+#playerScreen .nova-control-row #playerStopBtn{order:1!important}
+#playerScreen .nova-control-row #playPauseBtn{order:2!important}
+#playerScreen .nova-control-row #prevChannelBtn{order:3!important}
+#playerScreen .nova-control-row #nextChannelBtn{order:4!important}
+#playerScreen .nova-control-row #qualityPopupBtn{order:5!important}
+#playerScreen .nova-control-row #fullscreenBtn{order:6!important}
+#playerScreen .nova-control-row .nova-control-btn{
+  width:36px!important;min-width:36px!important;flex-basis:36px!important;
+  height:34px!important;min-height:34px!important;font-size:14px!important;
+}
+#playerScreen .nova-control-row #qualityPopupBtn{
+  width:auto!important;min-width:66px!important;max-width:78px!important;
+  flex-basis:auto!important;height:34px!important;min-height:34px!important;
+  padding:0 8px!important;font-size:10px!important;
+}
+@media(max-width:420px){
+  #playerScreen .nova-control-row{gap:7px!important}
+  #playerScreen .nova-control-row .nova-control-btn{
+    width:34px!important;min-width:34px!important;flex-basis:34px!important;
+    height:32px!important;min-height:32px!important;font-size:13px!important;
+  }
+  #playerScreen .nova-control-row #qualityPopupBtn{
+    width:auto!important;min-width:62px!important;max-width:72px!important;
+    flex-basis:auto!important;height:32px!important;min-height:32px!important;
+    padding:0 7px!important;font-size:9px!important;
+  }
+}
+</style>
+
 </body>
 </html>
 

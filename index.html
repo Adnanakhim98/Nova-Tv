@@ -850,29 +850,30 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 </style>
 
 
-<style id="sportynova-unified-landscape-player">
-/* Unified player: all videos open in the existing Live TV player, fullscreen landscape. */
-@media (orientation: landscape) and (max-height: 600px) {
-  body, html { background:#000!important; overflow:hidden!important; }
-  .wrap, .topbar, .update-stamp, .noticebar, .sectionhead, .channelarea, .footer,
-  .playersticky > :not(.playercard) { display:none!important; }
-  .playersticky { position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important;
-    margin:0!important; padding:0!important; background:#000!important; z-index:99990!important; }
-  .playercard, .playercard:fullscreen, .playercard:-webkit-full-screen, .playercard.mobile-rotated {
-    position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important;
-    max-height:100dvh!important; margin:0!important; padding:0!important; border:0!important;
-    border-radius:0!important; background:#000!important; display:flex!important; flex-direction:column!important;
-    overflow:hidden!important; z-index:99999!important; }
-  .playercard .screen, .playercard:fullscreen .screen, .playercard:-webkit-full-screen .screen, .playercard.mobile-rotated .screen {
-    flex:1 1 100%!important; width:100vw!important; height:100dvh!important; max-height:100dvh!important;
-    min-height:0!important; aspect-ratio:auto!important; margin:0!important; align-self:stretch!important; background:#000!important; }
-  .playercard .screen video, .playercard:fullscreen .screen video, .playercard:-webkit-full-screen .screen video, .playercard.mobile-rotated .screen video {
-    width:100%!important; height:100%!important; max-width:none!important; max-height:none!important;
-    object-fit:contain!important; object-position:center!important; background:#000!important; }
-  .playercard .empty strong, .playercard .empty span, .playercard .empty .tvicon { display:none!important; }
-  .playercard .playerfoot { display:none!important; }
-  .playercard .sports-server-row { display:none!important; }
-  .playercard .nova-controls { z-index:20!important; }
+
+
+<style id="sportynova-fullscreen-only-orientation-fix">
+/* Normal browsing remains in portrait page layout.
+   Landscape player layout is applied only while Fullscreen API or
+   mobile-rotated fallback is active; no orientation-only takeover. */
+.playercard:not(:fullscreen):not(:-webkit-full-screen):not(.mobile-rotated) {
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  border-radius:20px!important;
+}
+.playercard:not(:fullscreen):not(:-webkit-full-screen):not(.mobile-rotated) .screen {
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:16/9!important;
+  flex:initial!important;
+}
+.playercard:not(:fullscreen):not(:-webkit-full-screen):not(.mobile-rotated) .screen>video {
+  width:100%!important;
+  height:100%!important;
+  object-fit:var(--video-fit,contain)!important;
 }
 </style>
 
@@ -2504,73 +2505,6 @@ document.addEventListener("touchend", e => {
 #categorySections .channelrow>.channel{animation:tvTileAppear .18s ease-out both}
 @keyframes tvTileAppear{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 </style>
-
-<style id="sportynova-landscape-fix-v2">
-/* FIX: keep the player visible in landscape. The earlier rule hid .wrap,
-   but .playersticky is inside it, so the player was hidden too. */
-@media (orientation: landscape) and (max-height: 600px) {
-  html, body { width:100%; height:100%; background:#000!important; overflow:hidden!important; }
-  body > .wrap {
-    display:flex!important; position:fixed!important; inset:0!important;
-    width:100vw!important; height:100vh!important; height:100dvh!important;
-    max-width:none!important; margin:0!important; padding:0!important;
-    gap:0!important; background:#000!important; z-index:99990!important;
-  }
-  body > .wrap > .playersticky {
-    display:block!important; position:fixed!important; inset:0!important;
-    width:100vw!important; height:100vh!important; height:100dvh!important;
-    max-height:none!important; margin:0!important; padding:0!important;
-    background:#000!important; z-index:99991!important;
-  }
-  body > .wrap > :not(.playersticky) { display:none!important; }
-  body > .wrap > .playersticky > :not(.playercard) { display:none!important; }
-  body > .wrap > .playersticky .playercard,
-  body > .wrap > .playersticky .playercard.mobile-rotated,
-  body > .wrap > .playersticky .playercard:fullscreen,
-  body > .wrap > .playersticky .playercard:-webkit-full-screen {
-    display:flex!important; position:fixed!important; inset:0!important;
-    width:100vw!important; height:100vh!important; height:100dvh!important;
-    max-width:none!important; max-height:none!important; min-height:0!important;
-    margin:0!important; padding:0!important; border:0!important; border-radius:0!important;
-    background:#000!important; overflow:hidden!important; flex-direction:column!important;
-    z-index:99999!important;
-  }
-  body > .wrap > .playersticky .playercard .screen,
-  body > .wrap > .playersticky .playercard.mobile-rotated .screen,
-  body > .wrap > .playersticky .playercard:fullscreen .screen,
-  body > .wrap > .playersticky .playercard:-webkit-full-screen .screen {
-    display:block!important; position:relative!important; flex:1 1 auto!important;
-    width:100%!important; height:auto!important; min-height:0!important; max-height:none!important;
-    aspect-ratio:auto!important; margin:0!important; align-self:stretch!important;
-    background:#000!important; overflow:hidden!important;
-  }
-  body > .wrap > .playersticky .playercard .screen > video {
-    display:block!important; position:absolute!important; inset:0!important;
-    width:100%!important; height:100%!important; min-width:0!important; min-height:0!important;
-    max-width:none!important; max-height:none!important; object-fit:contain!important;
-    object-position:center center!important; background:#000!important;
-  }
-  body > .wrap > .playersticky .playercard .empty strong,
-  body > .wrap > .playersticky .playercard .empty span,
-  body > .wrap > .playersticky .playercard .empty .tvicon { display:none!important; }
-  body > .wrap > .playersticky .playercard .playerfoot { display:none!important; }
-  body > .wrap > .playersticky .playercard .sports-server-row { display:none!important; }
-  body > .wrap > .playersticky .playercard .nova-controls { display:block!important; z-index:20!important; }
-}
-/* Fallback fullscreen/rotated state: avoid collapsing the screen or controls. */
-.playercard.mobile-rotated {
-  display:flex!important; flex-direction:column!important; overflow:hidden!important;
-}
-.playercard.mobile-rotated .screen { flex:1 1 auto!important; min-height:0!important; }
-.playercard.mobile-rotated .screen>video {
-  width:100%!important; height:100%!important; object-fit:var(--video-fit,contain)!important;
-}
-.playercard.mobile-rotated .empty strong,
-.playercard.mobile-rotated .empty span,
-.playercard.mobile-rotated .empty .tvicon { display:none!important; }
-.playercard.mobile-rotated .playerfoot { display:none!important; }
-</style>
-
 </body>
 </html>
 

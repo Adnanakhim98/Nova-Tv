@@ -916,14 +916,16 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
-    <div class="nova-control-row">
-     <button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause">▶</button>
-     <button class="nova-control-btn" id="muteBtn" aria-label="Mute">🔊</button>
+    \1<button class="nova-control-btn" id="playPauseBtn" aria-label="Play/Pause" title="Play / Pause">Ⅱ</button>
+     <button class="nova-control-btn" id="previousServerBtn" aria-label="Previous server" title="Previous server">|◀</button>
+     <button class="nova-control-btn" id="nextServerBtn" aria-label="Next server" title="Next server">▶|</button>
+     <button class="nova-control-btn" id="muteBtn" aria-label="Mute" title="Mute / Unmute">🔊</button>
      <span class="nova-control-spacer"></span>
-      <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">Quality: Auto</option></select>
+     <select class="btn" id="qualitySelect" aria-label="ভিডিও কোয়ালিটি" title="Video quality" style="display:none;max-width:112px;padding:5px 4px"><option value="auto">⚙ Quality</option></select>
      <span id="serverGroupHome" aria-hidden="true"></span><span class="inline-server-group" id="inlineServerGroup" aria-label="সার্ভার নির্বাচন"><span class="server-empty-label">Server list</span></span>
-     <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture">▣</button>
-     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen">⛶</button>
+     <button class="nova-control-btn" id="stopControlBtn" aria-label="Stop video" title="Stop">■</button>
+     <button class="nova-control-btn" id="pipBtn" aria-label="Picture in Picture" title="Picture in Picture">▣</button>
+     <button class="nova-control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen">⛶</button>
     </div>
    </div>
   </div>
@@ -1157,6 +1159,8 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   const category=document.createElement("div");category.className="chcat";category.textContent=categoryLabel;
   b.append(logoBox,name,category);
  }
+ window.__sportynovaRenderedChannels=window.__sportynovaRenderedChannels||new WeakMap();
+ window.__sportynovaRenderedChannels.set(b,ch);
  b.addEventListener("click",()=>{
   if(isLiveEvent || ch.url || Array.isArray(ch.streams)) playChannelDefault(ch);
   else openModal(ch.name);
@@ -2742,3 +2746,30 @@ document.addEventListener("touchend", e => {
 .playercard .screen #sportsServerRow #inlineServerGroup .inline-server-btn{flex:0 0 auto!important;white-space:nowrap!important}
 @media(orientation:landscape){.playercard:fullscreen .screen #sportsServerRow,.playercard:-webkit-full-screen .screen #sportsServerRow,.playercard.mobile-rotated .screen #sportsServerRow{flex-direction:column!important;top:8px!important;left:10px!important;right:10px!important}.playercard:fullscreen .screen #playerOverlayTitle,.playercard:-webkit-full-screen .screen #playerOverlayTitle,.playercard.mobile-rotated .screen #playerOverlayTitle{width:100%!important;max-width:100%!important;white-space:normal!important}}
 </style>
+
+<style id="sportynova-full-title-and-icon-controls">
+#playerOverlayTitle{display:block!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;max-width:min(86vw,900px)!important;width:max-content!important;line-height:1.25!important;font-size:clamp(14px,3.2vw,20px)!important;padding:7px 11px!important;border-radius:10px!important;background:rgba(3,8,17,.62)!important;color:#fff!important;text-shadow:0 2px 5px #000!important}
+.nowtitle{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.35!important}
+.playerfoot>div:first-child{min-width:0!important}.nova-control-btn{font-size:15px!important;font-weight:900!important}
+#previousServerBtn,#nextServerBtn{min-width:34px!important}#stopControlBtn{color:#ff9cab!important;border-color:#ff557455!important}
+@media(max-width:420px){.nova-control-row{gap:5px!important}.nova-control-btn{min-width:30px!important;padding:0 6px!important;font-size:12px!important}#previousServerBtn,#nextServerBtn{min-width:29px!important}#playerOverlayTitle{max-width:88vw!important;font-size:13px!important;padding:6px 8px!important}}
+</style>
+<script id="sportynova-server-navigation-and-prewarm">
+(()=>{
+ const $=id=>document.getElementById(id),group=$("inlineServerGroup");if(!group)return;
+ const warmed=new Set();
+ function warm(ch){
+  const first=(Array.isArray(ch?.streams)?ch.streams:[ch]).find(x=>x&&x.url)||{};
+  const raw=String(first.url||ch?.url||"").trim();if(!/^https?:\/\//i.test(raw))return;
+  try{const u=new URL(raw,location.href);
+   if(!warmed.has(u.origin)){warmed.add(u.origin);const p=document.createElement("link");p.rel="preconnect";p.href=u.origin;p.crossOrigin="anonymous";document.head.appendChild(p);const d=document.createElement("link");d.rel="dns-prefetch";d.href=u.origin;document.head.appendChild(d);}
+   if(!warmed.has(raw)){warmed.add(raw);const f=document.createElement("link");f.rel="prefetch";f.href=raw;f.as="fetch";f.crossOrigin="anonymous";document.head.appendChild(f);}
+  }catch(e){}
+ }
+ function warmCard(e){const card=e.target.closest?.(".channel");if(card){const ch=window.__sportynovaRenderedChannels?.get(card);if(ch)warm(ch);}}
+ document.addEventListener("pointerdown",warmCard,{passive:true});document.addEventListener("touchstart",warmCard,{passive:true});
+ $("stopControlBtn")?.addEventListener("click",()=>$("stopBtn")?.click());
+ function move(n){const bs=[...group.querySelectorAll(".inline-server-btn")];if(!bs.length)return;const a=bs.findIndex(b=>b.classList.contains("active"));bs[(Math.max(0,a)+n+bs.length)%bs.length].click();}
+ $("previousServerBtn")?.addEventListener("click",()=>move(-1));$("nextServerBtn")?.addEventListener("click",()=>move(1));
+})();
+</script>

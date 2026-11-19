@@ -2933,8 +2933,8 @@ document.addEventListener("touchend", e => {
  const select=document.getElementById('qualitySelect');
  const trigger=document.getElementById('qualityPopupBtn');
  if(!screen||!select||!trigger||document.getElementById('qualityPopup'))return;
- const popup=document.createElement('div');popup.id='qualityPopup';popup.setAttribute('role','dialog');popup.setAttribute('aria-label','ভিডিও কোয়ালিটি');
- popup.innerHTML='<div class="quality-popup-head"><span>ভিডিও কোয়ালিটি</span><button type="button" class="quality-popup-close" aria-label="বন্ধ করুন">×</button></div><div class="quality-popup-list"></div>';
+ const popup=document.createElement('div');popup.id='qualityPopup';popup.setAttribute('role','dialog');popup.setAttribute('aria-label','Video Quality Selector');
+ popup.innerHTML='<div class="quality-popup-head"><span>Video Quality Selector</span><button type="button" class="quality-popup-close" aria-label="বন্ধ করুন">×</button></div><div class="quality-popup-list"></div>';
  screen.appendChild(popup);
  const list=popup.querySelector('.quality-popup-list');
  const close=()=>{popup.classList.remove('open');trigger.setAttribute('aria-expanded','false');};

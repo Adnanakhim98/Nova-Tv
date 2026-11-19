@@ -917,7 +917,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
    <div class="empty" id="empty"><div class="tvicon">📺</div><strong>SPORTYNOVA LIVE TV</strong><span>নিচের তালিকা থেকে একটি চ্যানেল নির্বাচন করুন</span></div>
    <div class="playerLoading" id="playerLoading" role="status" aria-live="polite"><strong id="loadingTitle">অনুগ্রহপূর্বক ৭ থেকে ১০ সেকেন্ড অপেক্ষা করুন</strong><span id="loadingMessage">Please Wait 7 to 10 Seconds.<br>অপেক্ষা করার জন্য ধন্যবাদ</span><button class="btn retryOverlay" id="retryBtn" style="display:none">↻ আবার চেষ্টা করুন</button></div>
    <button class="center-play-pause" id="centerPlayPause" type="button" aria-label="ভিডিও চালান">▶</button>
-   <div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div>
+   <div class="player-top-info" id="playerTopInfo"><div class="player-overlay-title" id="playerOverlayTitle"></div><div class="sports-server-row" id="sportsServerRow" aria-label="Live Sports servers"></div></div>
    <div class="nova-controls" id="novaControls">
     <div class="nova-progress-row"><span id="currentTime">00:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="ভিডিও seek"><span id="durationTime">LIVE</span></div>
     <div class="nova-control-row">
@@ -1382,7 +1382,7 @@ function stopEngines(){
   delete video.dataset.currentUrl;
   activeKey=null;
 }
-function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else{setLiveBadge(false);/* Never cover the video surface or inline server controls with an error overlay. */setPlayerLoading(false);}}
+function showStatus(title,meta){$("nowTitle").textContent=title;$("nowMeta").textContent=meta;const overlayTitle=$("playerOverlayTitle");if(overlayTitle)overlayTitle.textContent=title||"";if(/playing/i.test(meta)){setLiveBadge(true);setPlayerLoading(false)}else{setLiveBadge(false);/* Never cover the video surface or inline server controls with an error overlay. */setPlayerLoading(false);}}
 function parseStreamInput(raw, drmFromJson=null){
  const text=String(raw||"").trim();
  // Only the pipe-delimited suffix is player metadata. Preserve signed/query URLs intact.
@@ -1507,6 +1507,7 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    setLiveBadge(false);
    setPlayerLoading(false);
    $("nowTitle").textContent=name;
+   const overlayTitle=$("playerOverlayTitle");if(overlayTitle)overlayTitle.textContent=name||"";
    $("nowMeta").textContent="Stream চালু হয়নি · প্লেয়ারের Server 1 / Server 2 বাটন চাপুন";
    setInlineServers(currentServerChannel || {name:name,url:rawUrl,category:category});
  };
@@ -2531,6 +2532,29 @@ document.addEventListener("touchend", e => {
 #categorySections .channelrow>.channel{animation:tvTileAppear .18s ease-out both}
 @keyframes tvTileAppear{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 </style>
+
+<style id="sportynova-player-overlay-layout-v2">
+/* Player overlay: current channel/match name and server strip in the marked upper-left area. */
+.playercard .player-top-info{position:absolute!important;top:8px!important;left:8px!important;right:auto!important;width:min(78%,520px)!important;max-width:calc(100% - 16px)!important;z-index:100010!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important;opacity:1!important;visibility:visible!important;pointer-events:none!important;transform:none!important;transition:opacity .2s ease,visibility .2s ease!important}
+.playercard .player-overlay-title{display:block!important;max-width:100%!important;width:max-content!important;padding:5px 10px!important;border:1px solid rgba(255,255,255,.32)!important;border-radius:8px!important;background:rgba(4,9,16,.6)!important;color:#fff!important;font-size:clamp(11px,3.4vw,16px)!important;font-weight:800!important;text-shadow:0 1px 3px #000!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important;backdrop-filter:blur(4px)!important}
+.playercard .player-top-info .sports-server-row{position:static!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;width:100%!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:5px!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;transform:none!important;z-index:100011!important}
+.playercard .player-top-info #inlineServerGroup{flex:0 1 auto!important;width:auto!important;min-width:0!important;max-width:100%!important;display:flex!important;flex-wrap:wrap!important;gap:5px!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important;white-space:nowrap!important}
+.playercard .player-top-info #inlineServerGroup::-webkit-scrollbar{display:none!important}
+.playercard .player-top-info .inline-server-btn{height:30px!important;min-height:30px!important;padding:0 10px!important;border-radius:8px!important;background:rgba(4,10,17,.56)!important;border:1px solid rgba(255,255,255,.52)!important;color:#fff!important;font-size:10px!important;text-shadow:0 1px 3px #000!important}
+.playercard .player-top-info .inline-server-btn.active{background:rgba(0,190,220,.32)!important;border-color:#21d8f4!important;color:#dcfbff!important}
+.playercard.top-info-hidden .player-top-info{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.playercard .nova-control-row{position:relative!important;padding-right:76px!important;min-height:32px!important}
+.playercard .nova-control-row #pipBtn{position:absolute!important;right:43px!important;bottom:3px!important}
+.playercard .nova-control-row #fullscreenBtn{position:absolute!important;right:4px!important;bottom:3px!important}
+.playercard:fullscreen .player-top-info,.playercard:-webkit-full-screen .player-top-info,.playercard.mobile-rotated .player-top-info{top:10px!important;left:12px!important;width:min(72%,680px)!important;max-width:calc(100% - 24px)!important}
+.playercard:fullscreen .player-overlay-title,.playercard:-webkit-full-screen .player-overlay-title,.playercard.mobile-rotated .player-overlay-title{font-size:clamp(14px,2vw,20px)!important;padding:7px 12px!important}
+.playercard:fullscreen .player-top-info .inline-server-btn,.playercard:-webkit-full-screen .player-top-info .inline-server-btn,.playercard.mobile-rotated .player-top-info .inline-server-btn{height:34px!important;min-height:34px!important;padding:0 12px!important;font-size:12px!important}
+@media(max-width:600px){.playercard .player-top-info{top:7px!important;left:7px!important;width:min(78%,calc(100% - 14px))!important}.playercard .player-overlay-title{font-size:11px!important;padding:4px 8px!important}.playercard .player-top-info .inline-server-btn{height:27px!important;min-height:27px!important;padding:0 7px!important;font-size:9px!important}.playercard .nova-control-row{padding-right:70px!important}.playercard .nova-control-row #pipBtn{right:39px!important}.playercard .nova-control-row #fullscreenBtn{right:3px!important}}
+</style>
+<script id="sportynova-player-top-overlay-autohide">
+(()=>{const card=document.querySelector('.playercard'),screen=document.getElementById('playerScreen'),video=document.getElementById('video'),title=document.getElementById('playerOverlayTitle');if(!card||!screen||!video||!title)return;let timer=null;function reveal(){card.classList.remove('top-info-hidden');if(timer)clearTimeout(timer);if(!video.paused&&!video.ended)timer=setTimeout(()=>card.classList.add('top-info-hidden'),4000)}['pointerdown','touchstart','mousemove','keydown'].forEach(ev=>screen.addEventListener(ev,reveal,{passive:true}));video.addEventListener('playing',reveal);video.addEventListener('play',reveal);video.addEventListener('pause',()=>{if(timer)clearTimeout(timer);timer=null;card.classList.remove('top-info-hidden')});video.addEventListener('ended',()=>{if(timer)clearTimeout(timer);timer=null;card.classList.remove('top-info-hidden')});card.addEventListener('click',reveal);reveal();})();
+</script>
+
 </body>
 </html>
 

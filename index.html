@@ -2680,3 +2680,49 @@ document.addEventListener("touchend", e => {
  if(!video.paused&&!video.ended)timer=setTimeout(hide,4000);
 })();
 </script>
+
+
+<style id="sportynova-server-under-title-transparent">
+/* Title on first line; servers immediately below. Transparent title background. */
+.playercard .screen #sportsServerRow{
+  display:flex!important; flex-direction:column!important; align-items:stretch!important;
+  justify-content:flex-start!important; gap:5px!important;
+  height:auto!important; min-height:0!important; max-height:none!important;
+  padding:5px 6px!important; overflow:visible!important;
+  background:transparent!important; border:0!important; border-radius:0!important;
+  box-shadow:none!important;
+}
+.playercard .screen #playerOverlayTitle{
+  display:block!important; flex:0 0 auto!important; width:100%!important;
+  min-width:0!important; max-width:100%!important; margin:0!important;
+  padding:0!important; background:transparent!important; border:0!important;
+  box-shadow:none!important; border-radius:0!important;
+  color:#fff!important; font-weight:800!important;
+  white-space:nowrap!important; overflow:hidden!important; text-overflow:ellipsis!important;
+  line-height:1.35!important; font-size:clamp(12px,3.4vw,17px)!important;
+}
+.playercard .screen #inlineServerGroup{
+  display:flex!important; flex:0 0 auto!important; width:100%!important; min-width:0!important;
+  max-width:100%!important; align-self:stretch!important;
+  flex-direction:row!important; flex-wrap:nowrap!important; align-items:center!important;
+  gap:5px!important; overflow-x:auto!important; overflow-y:hidden!important;
+  white-space:nowrap!important; scrollbar-width:none!important;
+  -webkit-overflow-scrolling:touch!important; touch-action:pan-x!important;
+}
+.playercard .screen #inlineServerGroup::-webkit-scrollbar{display:none!important}
+.playercard .screen #inlineServerGroup .inline-server-btn{
+  flex:0 0 auto!important; white-space:nowrap!important;
+}
+@media(max-width:430px){
+ .playercard .screen #sportsServerRow{gap:4px!important;padding:4px 5px!important}
+ .playercard .screen #playerOverlayTitle{font-size:12px!important}
+}
+@media(orientation:landscape){
+ .playercard:fullscreen .screen #sportsServerRow,
+ .playercard:-webkit-full-screen .screen #sportsServerRow,
+ .playercard.mobile-rotated .screen #sportsServerRow{flex-direction:column!important;gap:6px!important}
+ .playercard:fullscreen .screen #playerOverlayTitle,
+ .playercard:-webkit-full-screen .screen #playerOverlayTitle,
+ .playercard.mobile-rotated .screen #playerOverlayTitle{width:100%!important;max-width:100%!important}
+}
+</style>

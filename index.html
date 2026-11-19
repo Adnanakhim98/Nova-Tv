@@ -1,4 +1,4 @@
-<!-- LAST UPDATE: 19 November 2026 (Bangladesh time, UTC+06:00) — Landscape full-screen + fixed quality (no ABR) + instant channel play -->
+<!-- LAST UPDATE: 18November 2026 (Bangladesh time, UTC+06:00) — Landscape full-screen + fixed quality (no ABR) + instant channel play -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -2589,6 +2589,31 @@ document.addEventListener("touchend", e => {
  if(title){title.title=title.textContent||"";new MutationObserver(()=>{title.title=title.textContent||"";}).observe(title,{childList:true,characterData:true,subtree:true});}
 })();
 </script>
+
+
+<style id="sportynova-match-title-no-truncation-final">
+/* Final override: match title gets its own full-width row above server buttons. */
+.playercard .screen #sportsServerRow{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ justify-content:flex-start!important;gap:6px!important;
+ height:auto!important;min-height:0!important;max-height:none!important;
+ overflow:visible!important;white-space:normal!important;
+}
+.playercard .screen #sportsServerRow #playerOverlayTitle{
+ display:block!important;flex:0 0 auto!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:auto!important;max-height:none!important;
+ white-space:normal!important;overflow:visible!important;
+ text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;
+ line-height:1.35!important;font-size:clamp(13px,3.8vw,18px)!important;
+}
+.playercard .screen #sportsServerRow #inlineServerGroup{
+ flex:0 0 auto!important;width:100%!important;min-width:0!important;max-width:100%!important;
+}
+@media(max-width:430px){
+ .playercard .screen #sportsServerRow #playerOverlayTitle{font-size:13px!important;line-height:1.35!important}
+}
+</style>
 
 </body>
 </html>

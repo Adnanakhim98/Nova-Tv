@@ -16,7 +16,7 @@
           "scheme": "clearkey",
           "license": "b50eedac4fd1a7f6068fc90c875a2f2e:b6c288c9a0112f3729538b3fb37bd044"
         },
-        "show": "yes"
+        "show": "No"
       },
       {
         "name": "PREMIER1 SPORTS FHD",
@@ -39,7 +39,7 @@
     "endTime": "2026-11-20T23:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Football|Fifa Friendly",
+    "matchType": "Abudhabi| T10",
     "drm": {
       "scheme": "clearkey",
       "license": "b50eedac4fd1a7f6068fc90c875a2f2e:b6c288c9a0112f3729538b3fb37bd044"

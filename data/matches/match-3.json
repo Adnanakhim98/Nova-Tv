@@ -6,30 +6,26 @@
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/i4j35tc3ub/out/v1/3bf2e223260f4d74ad57635eb14fd068/cenc.mpd",
+    "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/rga2lws43c/out/v1/1d31ca47c2e24339bb6a939c28924550/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/i4j35tc3ub/out/v1/3bf2e223260f4d74ad57635eb14fd068/cenc.mpd",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/rga2lws43c/out/v1/1d31ca47c2e24339bb6a939c28924550/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "15bb136e7ac737c7f35172fe6703b695:8fa933ee92c1e8d1f5d2855152d784f2"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW ALT",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/i4j35tc3ub/out/v1/3bf2e223260f4d74ad57635eb14fd068/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "15bb136e7ac737c7f35172fe6703b695:8fa933ee92c1e8d1f5d2855152d784f2"
+          "license": "d129d1272d5a71f72a74839d021c46a6:b357d476f2f374c66dff8fa650df717b"
         },
         "show": "yes"
       },
       {
         "name": "T SPORTS HD",
-        "url": "https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8",
+        "url": "https://tencent-cdn.tapmad.com/v1/01a14a9fb90c15fc60e91e1786b061/01a14a9feb881ea540a81c2b41b75e/main.m3u8?",
+        "show": "yes"
+      },
+      {
+        "name": "HD QUALITY",
+        "url": "https://live.msnetworks.net/ptv-sports/master.m3u8",
         "show": "yes"
       },
       {
@@ -47,7 +43,7 @@
     "matchType": "CRICKETS| Test",
     "drm": {
       "scheme": "clearkey",
-      "license": "15bb136e7ac737c7f35172fe6703b695:8fa933ee92c1e8d1f5d2855152d784f2"
+      "license": "d129d1272d5a71f72a74839d021c46a6:b357d476f2f374c66dff8fa650df717b"
     }
   }
 }

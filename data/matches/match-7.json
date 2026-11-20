@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Afghanistan U-19 Vs India U-19",
+    "name": "Pakistan A Vs UAE",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -12,14 +12,14 @@
       
       {
         "name": "Willow",
-        "url": "https://dash-ott.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/ezawp6dxef/out/v1/89f7935bf21246fb971d93c016044f01/cenc.mpd|drmScheme=clearkey&drmLicense=69b4f7d5d85ff47192fce27c107246f7:8993f991655c84eb324bad2c1c551cc1",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/yiibkf8ifo/out/v1/4f2e6d2fb906490e910c22a4dfbfbd82/cenc.mpd|drmScheme=clearkey&drmLicense=c180edac009ec2b3ddc9822f3ae814c3:b94d327fd81dd7a5a43a0a7bd737dd8a",
         "show": "yes"
       }
     ],
     "show": "yes",
     "id": 7,
-    "startTime": "2026-11-12T12:00:00+06:00",
-    "endTime": "2026-11-12T19:30:00+06:00",
+    "startTime": "2026-11-20T12:00:00+06:00",
+    "endTime": "2026-11-20T19:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Cricket|Asia Cup",

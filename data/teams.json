@@ -247,10 +247,24 @@
       "name": "Pakistan",
       "aliases": [
         "Pakistan",
-         "Pakistan Flag",
+        "Pakistan Flag",
         "Pakistan A"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Pakistan.svg"
+    },
+    {
+      "name": "Bengaluru",
+      "aliases": [
+        "Bengaluru"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Bengaluru.png"
+    },
+    {
+      "name": "Mumbai City FC",
+      "aliases": [
+        "Mumbai City FC"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Mumbai%20City%20FC.png"
     }
   ]
 }

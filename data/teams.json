@@ -242,6 +242,13 @@
         "Costa Rica"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Costa%20Rica.png"
+    },
+    {
+      "name": "Pakistan",
+      "aliases": [
+        "Pakistan"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Pakistan.svg"
     }
   ]
 }

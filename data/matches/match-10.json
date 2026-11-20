@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Arabian Aces Vs UAE Bulls",
+    "name": "Yas Lions Vs UAE Bulls",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -39,7 +39,7 @@
     "endTime": "2026-11-20T23:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Abudhabi| T10",
+    "matchType": "Abudhabi| T10 Final",
     "drm": {
       "scheme": "clearkey",
       "license": "b50eedac4fd1a7f6068fc90c875a2f2e:b6c288c9a0112f3729538b3fb37bd044"

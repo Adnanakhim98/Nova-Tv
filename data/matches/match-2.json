@@ -62,11 +62,11 @@
     ],
     "show": "yes",
     "id": 2,
-    "startTime": "2026-11-15T08:00:00+06:00",
-    "endTime": "2026-11-15T16:15:00+06:00",
+    "startTime": "2026-11-20T08:00:00+06:00",
+    "endTime": "2026-11-20T16:15:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS| ODI",
+    "matchType": "CRICKETS| TEST",
     "drm": {
       "scheme": "clearkey",
       "license": "766c7943cfc3e9d982ff49ca5e16bb90:f715c4b43971ca6990af7eff70f021b0"

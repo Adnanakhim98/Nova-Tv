@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Brazil Vs Singapore",
+    "name": "ABU DHABI T10 LEAGUE Vs ABU DHABI T10 LEAGUE",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -27,8 +27,8 @@
     ],
     "show": "yes",
     "id": 10,
-    "startTime": "2026-11-17T16:00:00+06:00",
-    "endTime": "2026-11-17T18:30:00+06:00",
+    "startTime": "2026-11-20T16:00:00+06:00",
+    "endTime": "2026-11-20T23:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Football|Fifa Friendly",

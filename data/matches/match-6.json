@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pakistan Under-19 Vs India Under-19",
+    "name": "Bangladesh A Vs Afghanistan A",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -58,8 +58,8 @@
     ],
     "show": "yes",
     "id": 6,
-    "startTime": "2026-11-14T11:00:00+06:00",
-    "endTime": "2026-11-14T19:30:00+06:00",
+    "startTime": "2026-11-21T16:00:00+06:00",
+    "endTime": "2026-11-22T01:30:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "Cricket|Asia Cup-Final",

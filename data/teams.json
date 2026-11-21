@@ -265,6 +265,48 @@
         "Mumbai City FC"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Mumbai%20City%20FC.png"
+    },
+    {
+      "name": "Australia",
+      "aliases": [
+        "Australia"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Australia.svg"
+    },
+    {
+      "name": "Bangladesh",
+      "aliases": [
+        "Bangladesh"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Bangladesh.svg"
+    },
+    {
+      "name": "England",
+      "aliases": [
+        "England"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/England.svg"
+    },
+    {
+      "name": "Fulham",
+      "aliases": [
+        "Fulham"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Fulham.svg"
+    },
+    {
+      "name": "India",
+      "aliases": [
+        "India"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/India.svg"
+    },
+    {
+      "name": "Mancheste City",
+      "aliases": [
+        "Mancheste City"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Mancheste%20City.svg"
     }
   ]
 }

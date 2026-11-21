@@ -329,6 +329,20 @@
         "Vipers"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Vipers.png"
+    },
+    {
+      "name": "Chelsea",
+      "aliases": [
+        "Chelsea"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Chelsea.svg"
+    },
+    {
+      "name": "Leeds",
+      "aliases": [
+        "Leeds"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Leeds.svg"
     }
   ]
 }

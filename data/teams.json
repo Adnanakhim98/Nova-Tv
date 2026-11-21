@@ -307,6 +307,13 @@
         "Mancheste City"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Mancheste%20City.svg"
+    },
+    {
+      "name": "Manchester City",
+      "aliases": [
+        "Manchester City"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Manchester%20City.svg"
     }
   ]
 }

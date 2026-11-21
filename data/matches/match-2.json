@@ -6,33 +6,33 @@
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
     "fallbackLogo": "⚽",
     "tone": "gold",
-    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/cq1jp64r6p/out/v1/c500a59e5a174e4681c5c88d8d8b3b4d/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/1rio9enthp/out/v1/349d14aa7815498f8c11ab98f7100aaa/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
         "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/cq1jp64r6p/out/v1/c500a59e5a174e4681c5c88d8d8b3b4d/cenc.mpd",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/1rio9enthp/out/v1/349d14aa7815498f8c11ab98f7100aaa/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "766c7943cfc3e9d982ff49ca5e16bb90:f715c4b43971ca6990af7eff70f021b0"
+          "license": "a478f5af8b826d44778571031c84e257:ceabaa285b51b50a60cf5240715a6f28"
         },
         "show": "yes"
       },
       {
         "name": "PRIME ENG FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/2crmhngewx/out/v1/7005e762d047462aa11136773a136dfa/cenc.mpd?",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/mebvsdzu7s/out/v1/563c92c11fff4290a160e365f6996c34/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "ebc640cb03dbdf8677190f7e4b2e96b0:7ab2c0204d41d1eefeca0cc04622c4cc"
+          "license": "fda7a391d6346eb3176d0379fdc094d0:1ee285d5bec7f6855d51e3e5f630ad1f"
         },
         "show": "yes"
       },
       {
         "name": "PRIME HINDI FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/m0edrlrm8n/out/v1/769e4d71dfec4c4cb8189a0bf5051266/cenc.mpd?",
+        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/szeafaauqf/out/v1/6b31170c3b5749928bff04fc71f02b06/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "080deb5f5141f1274093066904865667:af9d012f808345520ac2d3b2cc9026de"
+          "license": "424a04fa4464fdb9d5f3d61ddf48776a:85a5da47db9f57cdccdbac01c980aece"
         },
         "show": "yes"
       },
@@ -58,6 +58,15 @@
         "name": "LOW QUALITY (USE VPN)",
         "url": "http://193.47.62.41/hls/qaqaqa.m3u8",
         "show": "yes"
+      },
+      {
+        "name": "WILLOW ALT",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/1rio9enthp/out/v1/349d14aa7815498f8c11ab98f7100aaa/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "a478f5af8b826d44778571031c84e257:ceabaa285b51b50a60cf5240715a6f28"
+        },
+        "show": "yes"
       }
     ],
     "show": "yes",
@@ -69,7 +78,7 @@
     "matchType": "CRICKETS| TEST",
     "drm": {
       "scheme": "clearkey",
-      "license": "766c7943cfc3e9d982ff49ca5e16bb90:f715c4b43971ca6990af7eff70f021b0"
+      "license": "a478f5af8b826d44778571031c84e257:ceabaa285b51b50a60cf5240715a6f28"
     }
   }
 }

@@ -56,6 +56,44 @@
     "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7kD5UQB8B6g6p3APlG_hJ_GJhe-AE1RSL8Va8lB00Ig&s=10",
     "fallbackLogo": "▶️"
   },
+
+  {
+    "name": "SLOVAKIA: Nova Sport 1",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://dash2.antik.sk/stream/nvidia_nova_sport1/playlist_cenc.mpd|drmScheme=clearkey&drmLicense=11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Nova_Sport_1_2024.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "SLOVAKIA: Nova Sport 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://dash2.antik.sk/stream/nvidia_nova_sport2/playlist_cenc.mpd|drmScheme=clearkey&drmLicense=11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Nova_Sport_2_2024.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "SLOVAKIA SPORT 1",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://dash2.antik.sk/stream/nvidia_sport_1/playlist_cenc.mpd|drmScheme=clearkey&drmLicense=11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d",
+    "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqZgyuL2ZXIz_UUHIe4qmLxQavlz7_wx-CTQ&s",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "SLOVAKIA SPORT 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://dash2.antik.sk/stream/nvidia_sport2/playlist_cenc.mpd|drmScheme=clearkey&drmLicense=11223344556677889900112233445566:4b80724d0ef86bcb2c21f7999d67739d",
+    "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVs9bk5KPd125dbp0JMpaqTBmZSlkVjl-2-0DVNnvNCWevrQcdFOOSlcfAUALlhMPwxfo&usqp=CAU",
+    "fallbackLogo": "▶️"
+  },
+    
     
     {
       "name": "Fussball",

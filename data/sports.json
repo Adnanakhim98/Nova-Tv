@@ -67,6 +67,34 @@
     "fallbackLogo": "▶️"
   },
 
+  {
+    "name": "DSPORTS",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/x0srg3jjpz/out/v1/f779c49314394d61886d63f58d9d52e4/cenc.mpd|drmScheme=clearkey&drmLicense=4f4c3a9912ea752e88f4497864a1bc8b:278128004fe8c6ffb2cd2a0c154a241a",
+    "logoUrl": "https://i.ibb.co.com/gMDzj3Ky/dportsar.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DSPORTS 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash-sd/enc/hufm7lgnhx/out/v1/5045630288d44123ba85427b2c36f29f/cenc-sd.mpd|drmScheme=clearkey&drmLicense=18044a84b7e6c1bbf852591797e53a2c:38b3b6f8810917d89636927bddb79294",
+    "logoUrl": "https://i.ibb.co.com/gMDzj3Ky/dportsar.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DSPORTS +",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/gru-nitro/live/dash/enc/ud6bnhthpj/out/v1/2639a2f4480f4269953de466d5f46463/cenc.mpd|drmScheme=clearkey&drmLicense=83f81c4cc1443991543de4e22eea7586:ddfd7ca653d6f35543d8edb3c688e20f",
+    "logoUrl": "https://i.ibb.co.com/gMDzj3Ky/dportsar.png",
+    "fallbackLogo": "▶️"
+  },
+
   
   {
     "name": "Action Sports 1",

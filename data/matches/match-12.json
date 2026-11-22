@@ -20,7 +20,7 @@
       },
       {
         "name": "SandBrix HD",
-        "url": "https://amssandbrix.sandbrix.live/sandbrix/streams/mk139q1Mi9bHznBA775016895861.m3u8",
+        "url": "https://my-m3u8-proxy2.digitalgatgethat.workers.dev/proxy?url=https://amssandbrix.sandbrix.live/sandbrix/streams/mk139q1Mi9bHznBA775016895861.m3u8",
         "show": "yes"
       }
     ],

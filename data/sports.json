@@ -56,6 +56,36 @@
     "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7kD5UQB8B6g6p3APlG_hJ_GJhe-AE1RSL8Va8lB00Ig&s=10",
     "fallbackLogo": "▶️"
   },
+
+    
+  {
+    "name": "KUWAIT SPORT 🇰🇼",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/index.m3u8",
+    "logoUrl": "https://i.ibb.co.com/vCJkd04n/kwtsport.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "KUWAIT SPORT 2 🇰🇼",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/index.m3u8",
+    "logoUrl": "https://i.ibb.co.com/vCJkd04n/kwtsport.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "LaLiga TV HYPERMOTION 🇪🇸",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://cache07.zapitv.com/live/eds_c2/HYPERMOTION1/dash_live_ez/HYPERMOTION1.mpd|drmScheme=clearkey&drmLicense=a88617e904504ee291f49f0e60a51d49:17f92d59fde3b6d2bf4ffb48e8ca720a",
+    "logoUrl": "https://i.ibb.co.com/VMRvMyS/laligatvhyperm.png",
+    "fallbackLogo": "▶️"
+  },
+    
     
   {
     "name": "D SPORTS",

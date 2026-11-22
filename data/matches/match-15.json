@@ -18,7 +18,6 @@
         },
         "show": "yes"
       },
-      
       {
         "name": "beIN4 ARABIC FHD",
         "url": "https://baila-lentoo.pages.dev/beinxmq/bein-sports-4.m3u8",
@@ -35,6 +34,9 @@
     "drm": {
       "scheme": "clearkey",
       "license": "74cbe15488783fab07ff8c702fabafcd:bb607803a49c2d6104f845e7886c971c"
-    }
+    },
+    "timeUpdateStatus": "API_ERROR",
+    "timeUpdateMessage": "HTTP 429: Too Many Requests",
+    "timeCheckedAt": "2026-11-22T12:47:08+06:00"
   }
 }

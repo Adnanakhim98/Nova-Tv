@@ -91,6 +91,9 @@
     "drm": {
       "scheme": "clearkey",
       "license": "65f9ed4580a4af3c117a339c44cdfe3b:3e7d40c4b2ca331fe48bd65acae439d7"
-    }
+    },
+    "timeUpdateStatus": "API_ERROR",
+    "timeUpdateMessage": "HTTP 429: Too Many Requests",
+    "timeCheckedAt": "2026-11-22T12:47:09+06:00"
   }
 }

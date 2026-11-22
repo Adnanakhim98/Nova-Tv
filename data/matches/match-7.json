@@ -9,7 +9,6 @@
     "url": "https://ott-lb.nettv.com.np/npl/live_match/index.mpd",
     "section": "liveSports",
     "streams": [
-      
       {
         "name": "Willow",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/yiibkf8ifo/out/v1/4f2e6d2fb906490e910c22a4dfbfbd82/cenc.mpd|drmScheme=clearkey&drmLicense=c180edac009ec2b3ddc9822f3ae814c3:b94d327fd81dd7a5a43a0a7bd737dd8a",
@@ -26,6 +25,9 @@
     "drm": {
       "scheme": "clearkey",
       "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-    }
+    },
+    "timeUpdateStatus": "API_ERROR",
+    "timeUpdateMessage": "HTTP 429: Too Many Requests",
+    "timeCheckedAt": "2026-11-22T12:47:04+06:00"
   }
 }

@@ -43,6 +43,9 @@
     "drm": {
       "scheme": "clearkey",
       "license": "1a5df53609ebc9857898c490f4724918:77f62980d582ec541280796acf8b2d19"
-    }
+    },
+    "timeUpdateStatus": "NOT FOUND",
+    "timeUpdateMessage": "No exact team-pair match found in API.",
+    "timeCheckedAt": "2026-11-22T12:47:03+06:00"
   }
 }

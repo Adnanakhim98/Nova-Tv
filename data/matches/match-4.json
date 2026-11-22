@@ -12,10 +12,8 @@
       {
         "name": "TAPMAD FHD",
         "url": "https://tencent-cdn.tapmad.com/v1/01a14ab8af8915fc600b1e3e9683f0/01a14ab953dd1ea540a81c2b41b75f/main.m3u8",
-        
         "show": "yes"
       },
-      
       {
         "name": "WILLOW FHD ALT",
         "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/7swiykissa/out/v1/c2fd1d13622f41d89738e5e52fa874df/cenc.mpd",
@@ -36,6 +34,9 @@
     "drm": {
       "scheme": "clearkey",
       "license": "9182aacd8a009ac915fc6c53e13c8223:f7d76ec4abba54f282b5647142603b17"
-    }
+    },
+    "timeUpdateStatus": "API_ERROR",
+    "timeUpdateMessage": "HTTP 429: Too Many Requests",
+    "timeCheckedAt": "2026-11-22T12:47:06+06:00"
   }
 }

@@ -26,6 +26,9 @@
     "endTime": "2026-11-22T00:50:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket | IL-T20"
+    "matchType": "Cricket | IL-T20",
+    "timeUpdateStatus": "API_ERROR",
+    "timeUpdateMessage": "HTTP 429: Too Many Requests",
+    "timeCheckedAt": "2026-11-22T12:47:06+06:00"
   }
 }

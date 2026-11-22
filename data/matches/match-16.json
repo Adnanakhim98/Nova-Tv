@@ -9,12 +9,7 @@
     "url": "https://d1ifzl5cnhi7bu.cloudfront.net/out/v1/45ba30e075ad455a8767d3f33e67ea3d/index.mpd",
     "section": "liveSports",
     "streams": [
-      {
-        "name": "STREAM TV+ HD",
-        "url": "https://d1ifzl5cnhi7bu.cloudfront.net/out/v1/45ba30e075ad455a8767d3f33e67ea3d/index.mpd",
-        
-        "show": "yes"
-      },
+      
             {
         "name": "Action HD",
         "url": "https://ottlive.dishhome.com.np/protected/BlnekZ4Bnu3lGwDQwBL2/dash/manifest.mpd|drmScheme=clearkey&drmLicense=e6136af0960e4fb8b535dd6b1dd307c8:7e73113b6fbcc167612a0b2e58715bd8",

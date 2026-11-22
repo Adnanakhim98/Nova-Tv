@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPORTYNOVA Auto Match Time Updater
+# SPORTYNOVA Auto Match Time Updater (Rate-Limit Safe)
 # Searches TheSportsDB for manually listed matches and updates startTime/endTime.
 # API failures are recorded as API_ERROR, never mislabeled as NOT FOUND.
 
@@ -82,21 +82,40 @@ def get_match_objects(data):
     return found
 
 
-def api_search(event_name):
+def api_search(event_name, max_retries=3):
+    """
+    Search TheSportsDB with rate-limit protection.
+    The free API limit is low, so requests are spaced out globally by the caller.
+    If HTTP 429 occurs, wait 65 seconds and retry (up to max_retries).
+    """
     query = urllib.parse.urlencode({"e": event_name})
     url = f"{API_BASE}/searchevents.php?{query}"
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "SPORTYNOVA-AutoMatch/1.0"}
+        headers={"User-Agent": "SPORTYNOVA-AutoMatch/1.1"}
     )
-    try:
-        with urllib.request.urlopen(request, timeout=25) as response:
-            payload = json.loads(response.read().decode("utf-8"))
-        return payload.get("event") or [], None
-    except urllib.error.HTTPError as exc:
-        return [], f"HTTP {exc.code}: {exc.reason}"
-    except Exception as exc:
-        return [], str(exc)
+
+    for attempt in range(max_retries + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            return payload.get("event") or [], None
+
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429 and attempt < max_retries:
+                wait_seconds = 65
+                print(
+                    f"[RATE LIMIT] HTTP 429. Waiting {wait_seconds}s "
+                    f"before retry {attempt + 1}/{max_retries}..."
+                )
+                time.sleep(wait_seconds)
+                continue
+            return [], f"HTTP {exc.code}: {exc.reason}"
+
+        except Exception as exc:
+            return [], str(exc)
+
+    return [], "HTTP 429: Too Many Requests (retry limit reached)"
 
 
 def event_teams(event):
@@ -226,7 +245,7 @@ def main():
                 changed = True
                 summary.append(record)
                 print(f"[API_ERROR] {a} vs {b}: {error}")
-                time.sleep(0.25)
+                time.sleep(2.2)
                 continue
 
             candidates = [e for e in events if pair_matches(a, b, e)]
@@ -307,7 +326,7 @@ def main():
                     changed = True
                     print(f"[API MATCHED] {a} vs {b}: {iso_local(start)}")
             summary.append(record)
-            time.sleep(0.25)
+            time.sleep(2.2)
 
         if changed:
             save_json(path, data)
@@ -325,7 +344,7 @@ def main():
         "matches": summary,
     }
     save_json(STATUS_FILE, output)
-    print("\nSPORTYNOVA API Match Check complete")
+    print("\nSPORTYNOVA API Match Check complete (rate-limit safe mode)")
     print(json.dumps(output["counts"], ensure_ascii=False, indent=2))
 
 

@@ -6,34 +6,38 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
+    "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/m6sqanvm2m/out/v1/f6beb46c6e9a4132ad739f3ca27df6aa/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
+        "name": "PREMIER SPORTS FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/m6sqanvm2m/out/v1/f6beb46c6e9a4132ad739f3ca27df6aa/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "1444f4235529f183f0a5a486befe9cdb:e5e3fec67a1bb3472a2089c8a0a2557f"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "TSN4 SPORTS FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ihys8nw4wv/out/v1/fde190f369484bc6b6117cc16cd82a9f/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "abc5b2883121012850ebda05b528c5ec:e5250924f4b738905f7163a0134587a7"
+        },
+        "show": "yes"
+      },
+      {
+        "name": "beIN ENGLISH FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "335dad778109954503dcbb21dc92015f:24bfd75d436cbf73168a2a2dccd40281"
+        },
+        "show": "yes"
+      },
+      {
         "name": "FANCODE FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "SD SERVER",
-        "url": "http://162.251.160.53:8089/NPLT20/index.m3u8",
-        "show": "yes"
-      },
-      {
-        "name": "FANCODE SD",
-        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash-sd/enc/iwpchve3wl/out/v1/946019f85dc64ae99ff9ce64a9727a62/cenc-sd.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "286eb7dc538143790fa9913639531920:e3f5cb08d14d9e9c08438c673819540f"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "FANCODE2 FHD",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
         "drm": {
           "scheme": "clearkey",
@@ -42,13 +46,17 @@
         "show": "yes"
       },
       {
-        "name": "STAR SPORTS HD",
-        "url": "https://flussonic.defineatoz.com/starsportsselect2sw/tracks-v1a1/mono.m3u8",
+        "name": "CAZE TV FHD",
+        "url": "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/3ynrpdanq2/out/v1/81fd4c26584044d2b1a1cc5b32fa9af0/cenc.mpd?",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "34475edab991ad5e92548aebd710410a:501b209cccd323ac00bf5ac15b406cb4"
+        },
         "show": "yes"
       },
       {
-        "name": "FANCODE (IND)",
-        "url": "https://dai-fancode.pages.dev/mumbai/4250355_english_hls_7b5a55758122143_1ta-di_h264/index.m3u8",
+        "name": "ESPN DEPORTES+HD",
+        "url": "https://chatgpt.hereisman.net/playlist/60725/load-playlist-multi?&.m3u8",
         "show": "yes"
       }
     ],
@@ -61,7 +69,7 @@
     "matchType": "Football| La-Liga",
     "drm": {
       "scheme": "clearkey",
-      "license": "82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca"
+      "license": "1444f4235529f183f0a5a486befe9cdb:e5e3fec67a1bb3472a2089c8a0a2557f"
     },
     "timeUpdateStatus": "API_ERROR",
     "timeUpdateMessage": "HTTP 429: Too Many Requests",

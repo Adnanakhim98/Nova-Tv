@@ -12,12 +12,15 @@
       {
         "name": "STREAM TV+ HD",
         "url": "https://d1ifzl5cnhi7bu.cloudfront.net/out/v1/45ba30e075ad455a8767d3f33e67ea3d/index.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "0ae4f162eec3e6f2b580a5bf0f4a64d4:03483335db81cba5bbcf51b6d31196d9"
-        },
+        
         "show": "yes"
-      }
+      },
+            {
+        "name": "Action HD",
+        "url": "https://ottlive.dishhome.com.np/protected/BlnekZ4Bnu3lGwDQwBL2/dash/manifest.mpd|drmScheme=clearkey&drmLicense=e6136af0960e4fb8b535dd6b1dd307c8:7e73113b6fbcc167612a0b2e58715bd8",
+        
+        "show": "yes"
+            }
     ],
     "show": "yes",
     "id": 16,

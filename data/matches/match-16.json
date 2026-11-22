@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "T10 LEAGUE Vs T10 LEAGUE",
+    "name": "Pakistan A Vs INDIA A",
     "category": "Live Sports",
     "logo": "🏆",
     "logoUrl": "",
@@ -35,11 +35,11 @@
     ],
     "show": "yes",
     "id": 16,
-    "startTime": "2026-11-13T17:30:00+06:00",
-    "endTime": "2026-11-13T22:30:00+06:00",
+    "startTime": "2026-11-22T15:30:00+06:00",
+    "endTime": "2026-11-23T01:30:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "Cricket|Abu-Dhabi T10",
+    "matchType": "Cricket|Rising Asia Cup",
     "drm": {
       "scheme": "clearkey",
       "license": "1a5df53609ebc9857898c490f4724918:77f62980d582ec541280796acf8b2d19"

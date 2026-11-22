@@ -38,6 +38,36 @@
     "logoUrl": "https://static.wikia.nocookie.net/logopedia/images/0/0b/BeIN_Xtra.PNG/revision/latest/scale-to-width-down/1000?cb=20201108180437",
     "fallbackLogo": "▶️"
   },
+
+
+  {
+    "name": "PREMIERE 🇧🇷",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/gru-nitro/live/clients/dash/enc/nelfyucw9a/out/v1/6ffb2c365ad14f88b154591beb43d1f6/cenc.mpd|drmScheme=clearkey&drmLicense=56b79c1782b30e6b6fc973b0e8fd4104:fa38aaa865a57eda7c77444697ba8ed3",
+    "logoUrl": "https://i.ibb.co.com/F0jTVwQ/premierebr.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Premier Sports 1 🇮🇪",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/gru-nitro/live/clients/dash/enc/m6sqanvm2m/out/v1/f6beb46c6e9a4132ad739f3ca27df6aa/cenc.mpd|drmScheme=clearkey&drmLicense=1444f4235529f183f0a5a486befe9cdb:e5e3fec67a1bb3472a2089c8a0a2557f",
+    "logoUrl": "https://i.ibb.co.com/nLNtj7C/premiersports1.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Premier Sports 2 🇮🇪",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/bcj3iscpd6/out/v1/fcd137b391214f7cb99dd4d7be90ca87/cenc.mpd|drmScheme=clearkey&drmLicense=1a5df53609ebc9857898c490f4724918:77f62980d582ec541280796acf8b2d19",
+    "logoUrl": "https://i.ibb.co.com/bJRhvCM/premiersports2.png",
+    "fallbackLogo": "▶️"
+  },
+    
   {
     "name": "FOX SPORTS 1 HD",
     "category": "Sports",

@@ -6,22 +6,34 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://www.rtmpcdn.com/live/0eecd1f1-a93a-441f-a0b3-a10fb3e0a0ae.m3u8",
+    "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/wnogcwzjio/out/v1/0b50a750ac204322913af280029aa602/cenc.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "TV QUALITY+",
-        "url": "https://www.rtmpcdn.com/live/0eecd1f1-a93a-441f-a0b3-a10fb3e0a0ae.m3u8",
+        "name": "WILLOW FHD",
+        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/wnogcwzjio/out/v1/0b50a750ac204322913af280029aa602/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "437b26c171c8c2b7d3da296992ec0498:76e472aecda315ee5649fabf54b6a905"
+        },
         "show": "yes"
       },
       {
-        "name": "STREAM TV + HD",
-        "url": "https://live2.jorvakstreamcache.com/live/channel1.m3u8?",
+        "name": "STREAM TV+ HD",
+        "url": "https://d1ifzl5cnhi7bu.cloudfront.net/out/v1/45ba30e075ad455a8767d3f33e67ea3d/index.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "0ae4f162eec3e6f2b580a5bf0f4a64d4:03483335db81cba5bbcf51b6d31196d9"
+        },
         "show": "yes"
       },
       {
-        "name": "LOW QUALITY (USE VPN)",
-        "url": "http://193.47.62.41/hls/BBBBAA.m3u8",
+        "name": "WILLOW ALT",
+        "url": "https://abfjk4haaaaaaaamkitc5445rybm6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/wnogcwzjio/out/v1/0b50a750ac204322913af280029aa602/cenc.mpd",
+        "drm": {
+          "scheme": "clearkey",
+          "license": "437b26c171c8c2b7d3da296992ec0498:76e472aecda315ee5649fabf54b6a905"
+        },
         "show": "yes"
       }
     ],
@@ -34,6 +46,10 @@
     "matchType": "Cricket |Rising Asia Cup",
     "timeUpdateStatus": "NOT FOUND",
     "timeUpdateMessage": "No exact team-pair match found in API.",
-    "timeCheckedAt": "2026-11-22T20:30:38+06:00"
+    "timeCheckedAt": "2026-11-22T20:30:38+06:00",
+    "drm": {
+      "scheme": "clearkey",
+      "license": "437b26c171c8c2b7d3da296992ec0498:76e472aecda315ee5649fabf54b6a905"
+    }
   }
 }

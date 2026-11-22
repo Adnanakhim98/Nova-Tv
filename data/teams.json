@@ -345,6 +345,48 @@
         "Leeds"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Leeds.svg"
+    },
+    {
+      "name": "1LT",
+      "aliases": [
+        "1LT"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/1LT.webp"
+    },
+    {
+      "name": "Brescia Lions",
+      "aliases": [
+        "Brescia Lions"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Brescia%20Lions.png"
+    },
+    {
+      "name": "Milan Icons",
+      "aliases": [
+        "Milan Icons"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Milan%20Icons.png"
+    },
+    {
+      "name": "Napoli Knights",
+      "aliases": [
+        "Napoli Knights"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Napoli%20Knights.png"
+    },
+    {
+      "name": "Rome Gladiators",
+      "aliases": [
+        "Rome Gladiators"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Rome%20Gladiators.png"
+    },
+    {
+      "name": "Venice Livewires",
+      "aliases": [
+        "Venice Livewires"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Venice%20Livewires.png"
     }
   ]
 }

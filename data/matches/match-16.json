@@ -6,30 +6,16 @@
     "logoUrl": "",
     "fallbackLogo": "🏆",
     "tone": "purple",
-    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/bcj3iscpd6/out/v1/fcd137b391214f7cb99dd4d7be90ca87/cenc.mpd",
+    "url": "https://d1ifzl5cnhi7bu.cloudfront.net/out/v1/45ba30e075ad455a8767d3f33e67ea3d/index.mpd",
     "section": "liveSports",
     "streams": [
       {
-        "name": "PREMIERE2 SPORTS FHD",
-        "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/bcj3iscpd6/out/v1/fcd137b391214f7cb99dd4d7be90ca87/cenc.mpd",
+        "name": "STREAM TV+ HD",
+        "url": "https://d1ifzl5cnhi7bu.cloudfront.net/out/v1/45ba30e075ad455a8767d3f33e67ea3d/index.mpd",
         "drm": {
           "scheme": "clearkey",
-          "license": "1a5df53609ebc9857898c490f4724918:77f62980d582ec541280796acf8b2d19"
+          "license": "0ae4f162eec3e6f2b580a5bf0f4a64d4:03483335db81cba5bbcf51b6d31196d9"
         },
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW FHD",
-        "url": "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/q6p7ehxwmc/out/v1/64ff7b94fefb4ec4b838bc86e9b32bda/cenc.mpd",
-        "drm": {
-          "scheme": "clearkey",
-          "license": "1e9def1e0c216818e8edc06ce10d25c9:4743d779da68303948a6e7e18fc77056"
-        },
-        "show": "yes"
-      },
-      {
-        "name": "WILLOW ALT",
-        "url": "https://live.msnetworks.net/a-sports/master.m3u8",
         "show": "yes"
       }
     ],
@@ -42,7 +28,7 @@
     "matchType": "Cricket|Rising Asia Cup",
     "drm": {
       "scheme": "clearkey",
-      "license": "1a5df53609ebc9857898c490f4724918:77f62980d582ec541280796acf8b2d19"
+      "license": "0ae4f162eec3e6f2b580a5bf0f4a64d4:03483335db81cba5bbcf51b6d31196d9"
     },
     "timeUpdateStatus": "API_ERROR",
     "timeUpdateMessage": "HTTP 429: Too Many Requests",

@@ -66,6 +66,26 @@
     "logoUrl": "",
     "fallbackLogo": "▶️"
   },
+
+  
+  {
+    "name": "Action Sports 1",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://ottlive.dishhome.com.np/protected/vVnVkZ4Bnu3lGwDQJxH-/dash/manifest.mpd|drmScheme=clearkey&drmLicense=2bb7f4489e5f421eb0de90035cffb2bc:96b09b69c638dac184f42910e0095933",
+    "logoUrl": "https://img1.wsimg.com/isteam/ip/d08bca69-c528-4050-938f-bd511aa0a61f/blob-0004.png/:/cr=t:0%25,l:22.59%25,w:54.82%25,h:54.82%25",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "Action Sports 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://ottlive.dishhome.com.np/protected/BlnekZ4Bnu3lGwDQwBL2/dash/manifest.mpd|drmScheme=clearkey&drmLicense=e6136af0960e4fb8b535dd6b1dd307c8:7e73113b6fbcc167612a0b2e58715bd8",
+    "logoUrl": "https://img1.wsimg.com/isteam/ip/d08bca69-c528-4050-938f-bd511aa0a61f/blob-0004.png/:/cr=t:0%25,l:22.59%25,w:54.82%25,h:54.82%",
+    "fallbackLogo": "▶️"
+  },
   {
     "name": "FANCODE 1",
     "category": "Sports",

@@ -1,30 +1,21 @@
 {
-  "updatedAt": "2026-11-22T12:47:10+06:00",
+  "updatedAt": "2026-11-22T20:35:53+06:00",
   "provider": "TheSportsDB",
   "counts": {
     "scanned": 31,
     "matched": 0,
-    "notFound": 11,
+    "notFound": 31,
     "ambiguous": 0,
-    "apiErrors": 20
+    "apiErrors": 0
   },
   "matches": [
-    {
-      "file": "data/willow.json",
-      "object": "match",
-      "team1": "Paris Saint-Germain",
-      "team2": "Olympique Lyonnais",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:46:59+06:00",
-      "status": "NOT FOUND"
-    },
     {
       "file": "data/live-sports.json",
       "object": "liveSports[0]",
       "team1": "Bangladesh W",
       "team2": "Australia W",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:46:59+06:00",
+      "checkedAt": "2026-11-22T20:30:19+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -33,7 +24,7 @@
       "team1": "Australia",
       "team2": "South africa",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:00+06:00",
+      "checkedAt": "2026-11-22T20:30:21+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -42,7 +33,7 @@
       "team1": "Pakistan",
       "team2": "Srilanka",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:00+06:00",
+      "checkedAt": "2026-11-22T20:30:24+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -51,7 +42,7 @@
       "team1": "India",
       "team2": "West indies",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:01+06:00",
+      "checkedAt": "2026-11-22T20:30:26+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -60,16 +51,70 @@
       "team1": "Man City",
       "team2": "Liverpool.",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:01+06:00",
+      "checkedAt": "2026-11-22T20:30:29+06:00",
       "status": "NOT FOUND"
     },
     {
-      "file": "data/matches/match-18.json",
+      "file": "data/willow.json",
       "object": "match",
-      "team1": "Pakistan",
-      "team2": "India",
+      "team1": "Paris Saint-Germain",
+      "team2": "Olympique Lyonnais",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:02+06:00",
+      "checkedAt": "2026-11-22T20:30:31+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-13.json",
+      "object": "match",
+      "team1": "FC Barcelona",
+      "team2": "Villarreal",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:30:33+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-21.json",
+      "object": "match",
+      "team1": "Colombia",
+      "team2": "Chile",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:30:36+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-23.json",
+      "object": "match",
+      "team1": "Pakistan A",
+      "team2": "India A",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:30:38+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-8.json",
+      "object": "match",
+      "team1": "BG Pathum United (THA)",
+      "team2": "Tai Po FC (HKG)",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:30:41+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-20.json",
+      "object": "match",
+      "team1": "Wales",
+      "team2": "Norway",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:32:53+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-7.json",
+      "object": "match",
+      "team1": "Australia",
+      "team2": "England",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:32:55+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -78,34 +123,88 @@
       "team1": "Saudi Arabia",
       "team2": "Uruguay",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:02+06:00",
+      "checkedAt": "2026-11-22T20:32:58+06:00",
       "status": "NOT FOUND"
     },
     {
-      "file": "data/matches/match-17.json",
+      "file": "data/matches/match-24.json",
       "object": "match",
-      "team1": "ABU DHABI T20 LEAGUE",
-      "team2": "ABU DHABI T20 LEAGUE",
+      "team1": "Serbia",
+      "team2": "Germany",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:03+06:00",
+      "checkedAt": "2026-11-22T20:33:00+06:00",
       "status": "NOT FOUND"
     },
     {
-      "file": "data/matches/match-9.json",
+      "file": "data/matches/match-16.json",
       "object": "match",
-      "team1": "Sydney Thunders",
-      "team2": "Perth Scorcher",
+      "team1": "Pakistan A",
+      "team2": "INDIA A",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:03+06:00",
+      "checkedAt": "2026-11-22T20:33:03+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-19.json",
+      "object": "match",
+      "team1": "Japan",
+      "team2": "Paraguay",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:33:05+06:00",
       "status": "NOT FOUND"
     },
     {
       "file": "data/matches/match-12.json",
       "object": "match",
-      "team1": "BG Pathum United (THA)",
-      "team2": "Tai Po FC (HKG)",
+      "team1": "Napoli Knights",
+      "team2": "Venice Livewires",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:04+06:00",
+      "checkedAt": "2026-11-22T20:33:07+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-10.json",
+      "object": "match",
+      "team1": "Yas Lions",
+      "team2": "UAE Bulls",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:33:10+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-4.json",
+      "object": "match",
+      "team1": "Brisbane Heat",
+      "team2": "Adelaide Strikers",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:33:12+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-11.json",
+      "object": "match",
+      "team1": "Fulham",
+      "team2": "Manchester City",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:33:15+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-2.json",
+      "object": "match",
+      "team1": "New Zealand",
+      "team2": "India",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:33:17+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-15.json",
+      "object": "match",
+      "team1": "Kenya",
+      "team2": "South Africa",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:35:30+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -114,29 +213,26 @@
       "team1": "Costa Rica",
       "team2": "Argentina",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:04+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:32+06:00",
+      "status": "NOT FOUND"
     },
     {
-      "file": "data/matches/match-7.json",
+      "file": "data/matches/match-9.json",
       "object": "match",
-      "team1": "Australia",
-      "team2": "England",
+      "team1": "Sydney Thunders",
+      "team2": "Perth Scorcher",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:04+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:34+06:00",
+      "status": "NOT FOUND"
     },
     {
-      "file": "data/matches/match-3.json",
+      "file": "data/matches/match-17.json",
       "object": "match",
-      "team1": "Pakistan",
-      "team2": "Sri Lanka",
+      "team1": "ABU DHABI T20 LEAGUE",
+      "team2": "ABU DHABI T20 LEAGUE",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:04+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:37+06:00",
+      "status": "NOT FOUND"
     },
     {
       "file": "data/matches/match-5.json",
@@ -144,49 +240,8 @@
       "team1": "South Africa",
       "team2": "Bangladesh",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:05+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-23.json",
-      "object": "match",
-      "team1": "Pakistan A",
-      "team2": "India A",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:05+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-20.json",
-      "object": "match",
-      "team1": "Wales",
-      "team2": "Norway",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:05+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-4.json",
-      "object": "match",
-      "team1": "Brisbane Heat",
-      "team2": "Adelaide Strikers",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:06+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-6.json",
-      "object": "match",
-      "team1": "Bangladesh A",
-      "team2": "Afghanistan A",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:06+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:39+06:00",
+      "status": "NOT FOUND"
     },
     {
       "file": "data/matches/match-22.json",
@@ -194,9 +249,17 @@
       "team1": "MI Emirates",
       "team2": "Vipers",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:06+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:42+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-3.json",
+      "object": "match",
+      "team1": "Pakistan",
+      "team2": "Sri Lanka",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:35:44+06:00",
+      "status": "NOT FOUND"
     },
     {
       "file": "data/matches/match-14.json",
@@ -204,109 +267,26 @@
       "team1": "BG Pathum United (THA)",
       "team2": "Tai Po FC (HKG)",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:06+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:46+06:00",
+      "status": "NOT FOUND"
     },
     {
-      "file": "data/matches/match-2.json",
+      "file": "data/matches/match-6.json",
       "object": "match",
-      "team1": "New Zealand",
+      "team1": "Bangladesh A",
+      "team2": "Afghanistan A",
+      "tournament": "",
+      "checkedAt": "2026-11-22T20:35:49+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-18.json",
+      "object": "match",
+      "team1": "Pakistan",
       "team2": "India",
       "tournament": "",
-      "checkedAt": "2026-11-22T12:47:07+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-10.json",
-      "object": "match",
-      "team1": "Yas Lions",
-      "team2": "UAE Bulls",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:07+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-8.json",
-      "object": "match",
-      "team1": "BG Pathum United (THA)",
-      "team2": "Tai Po FC (HKG)",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:07+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-16.json",
-      "object": "match",
-      "team1": "T10 LEAGUE",
-      "team2": "T10 LEAGUE",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:08+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-21.json",
-      "object": "match",
-      "team1": "Colombia",
-      "team2": "Chile",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:08+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-15.json",
-      "object": "match",
-      "team1": "Kenya",
-      "team2": "South Africa",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:08+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-11.json",
-      "object": "match",
-      "team1": "Fulham",
-      "team2": "Manchester City",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:09+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-24.json",
-      "object": "match",
-      "team1": "Serbia",
-      "team2": "Germany",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:09+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-19.json",
-      "object": "match",
-      "team1": "Japan",
-      "team2": "Paraguay",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:09+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
-    },
-    {
-      "file": "data/matches/match-13.json",
-      "object": "match",
-      "team1": "BG Pathum United (THA)",
-      "team2": "Tai Po FC (HKG)",
-      "tournament": "",
-      "checkedAt": "2026-11-22T12:47:09+06:00",
-      "status": "API_ERROR",
-      "message": "HTTP 429: Too Many Requests"
+      "checkedAt": "2026-11-22T20:35:51+06:00",
+      "status": "NOT FOUND"
     }
   ]
 }

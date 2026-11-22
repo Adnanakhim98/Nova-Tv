@@ -40,8 +40,8 @@
       "scheme": "clearkey",
       "license": "51c0ef23b17297e5c01cd7f36dd0a6ce:8823f713ba6fdb9bbe0a2ad82d309a4b"
     },
-    "timeUpdateStatus": "API_ERROR",
-    "timeUpdateMessage": "HTTP 429: Too Many Requests",
-    "timeCheckedAt": "2026-11-22T12:47:04+06:00"
+    "timeUpdateStatus": "NOT FOUND",
+    "timeUpdateMessage": "No exact team-pair match found in API.",
+    "timeCheckedAt": "2026-11-22T20:35:32+06:00"
   }
 }

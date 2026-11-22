@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPORTYNOVA 1.0 — Channel Status</title>
+<style>
+:root{color-scheme:dark;--bg:#070b14;--panel:#111a2a;--line:#26364d;--muted:#9aa9bd;--cyan:#28d7f2;--green:#22c994;--yellow:#ffc45c;--red:#ff6685}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#142943 0,#070b14 48%);font-family:Inter,system-ui,Arial;color:#edf5ff;padding:22px}
+main{max-width:1100px;margin:auto}.brand{font-size:clamp(25px,5vw,38px);font-weight:900;letter-spacing:.4px}.brand span{color:#ff4168}.sub{color:var(--muted);margin:7px 0 20px}
+button,select,input{background:#0b1422;border:1px solid #344963;color:#eaf5ff;border-radius:12px;padding:12px;font-size:15px}
+button{cursor:pointer;background:#10283b;border-color:#286078;font-weight:700}.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+.card{background:linear-gradient(145deg,#142033,#0e1726);border:1px solid var(--line);border-radius:18px;padding:17px}.label{color:var(--muted);font-size:13px}.num{font-size:32px;font-weight:800;margin-top:6px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;background:#111b2b;border:1px solid var(--line);padding:12px;border-radius:17px;margin:18px 0}
+.filters input{flex:1;min-width:180px}.filters select{min-width:150px}
+.meta{color:var(--muted);font-size:13px;margin:12px 2px}
+.list{display:grid;gap:11px}.item{background:linear-gradient(145deg,#131e30,#0d1625);border:1px solid var(--line);border-radius:17px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px}
+.name{font-weight:750;font-size:17px}.details{color:var(--muted);font-size:13px;margin-top:6px;overflow-wrap:anywhere}
+.pill{align-self:start;border-radius:30px;padding:7px 11px;font-size:12px;font-weight:800;white-space:nowrap;border:1px solid}
+.RUNNING{color:var(--green);background:#103329;border-color:#246a54}.DEACTIVATED{color:var(--red);background:#351723;border-color:#713047}.UNKNOWN{color:var(--yellow);background:#342914;border-color:#725725}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:15px}
+@media(max-width:650px){body{padding:16px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.item{grid-template-columns:1fr}.pill{justify-self:start}}
+</style></head>
+<body><main>
+<div class="brand">SPORTY<span>NOVA</span> <small style="font-size:15px;color:#aab8ca">1.0</small></div>
+<div class="sub">CHANNEL STATUS DASHBOARD · HLS M3U8 & DASH MPD</div>
+<div class="top"><button id="refresh">↻ Refresh Status</button><span id="updated" class="meta">Loading status…</span></div>
+<section class="cards">
+ <div class="card"><div class="label">TOTAL CHANNELS</div><div class="num" id="total">—</div></div>
+ <div class="card"><div class="label">RUNNING</div><div class="num" style="color:var(--green)" id="running">—</div></div>
+ <div class="card"><div class="label">DEACTIVATED</div><div class="num" style="color:var(--red)" id="deactivated">—</div></div>
+ <div class="card"><div class="label">UNKNOWN</div><div class="num" style="color:var(--yellow)" id="unknown">—</div></div>
+</section>
+<div class="filters"><input id="search" placeholder="Search channel / category…"><select id="status"><option value="">All Status</option><option>RUNNING</option><option>DEACTIVATED</option><option>UNKNOWN</option></select><select id="type"><option value="">All Formats</option><option>M3U8</option><option>MPD</option><option>OTHER</option></select></div>
+<div class="meta" id="summary">—</div><div class="list" id="list"><div class="empty">Loading channel records…</div></div>
+</main>
+<script>
+const DATA_URL = new URL('./status/channel-status.json', location.href).href;
+let records=[];
+const $=id=>document.getElementById(id);
+function draw(){
+ const q=$('search').value.toLowerCase(), st=$('status').value, ty=$('type').value;
+ const filtered=records.filter(x=>(!q||`${x.name} ${x.category} ${x.source_file}`.toLowerCase().includes(q))&&(!st||x.status===st)&&(!ty||x.format===ty));
+ $('list').innerHTML=filtered.length?filtered.map(x=>`<article class="item"><div><div class="name">${esc(x.name)}</div><div class="details">${esc(x.category||'Uncategorized')} · ${esc(x.format||'OTHER')} · ${esc(x.source_file||'')}</div><div class="details">Checked: ${esc(x.checked_at||'—')} · HTTP: ${esc(String(x.http_status??'—'))}</div><div class="details">${esc(x.message||'')}</div></div><span class="pill ${x.status}">${x.status}</span></article>`).join(''):'<div class="empty">No channels match your filter.</div>';
+ $('summary').textContent=`Showing ${filtered.length} of ${records.length} channels`;
+}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function load(){
+ $('refresh').disabled=true;$('refresh').textContent='Checking…';
+ try{
+  const r=await fetch(DATA_URL+'?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)throw new Error('Status file HTTP '+r.status);
+  const data=await r.json();records=data.channels||[];
+  const counts={RUNNING:0,DEACTIVATED:0,UNKNOWN:0};records.forEach(x=>counts[x.status]=(counts[x.status]||0)+1);
+  $('total').textContent=records.length;$('running').textContent=counts.RUNNING;$('deactivated').textContent=counts.DEACTIVATED;$('unknown').textContent=counts.UNKNOWN;
+  $('updated').textContent='Last update: '+(data.updated_at||'Not available');draw();
+ }catch(e){$('list').innerHTML='<div class="empty">Could not load status JSON: '+esc(e.message)+'</div>';$('updated').textContent='Status data unavailable';}
+ finally{$('refresh').disabled=false;$('refresh').textContent='↻ Refresh Status';}
+}
+$('refresh').addEventListener('click',load);['search','status','type'].forEach(id=>$(id).addEventListener('input',draw));
+load();setInterval(load,60000);
+</script></body></html>

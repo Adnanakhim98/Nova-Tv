@@ -1,244 +1,333 @@
 #!/usr/bin/env python3
-"""Update startTime/endTime in SPORTYNOVA match-*.json files from TheSportsDB."""
-import json, os, re, urllib.parse, urllib.request
-from datetime import datetime, timedelta
+# SPORTYNOVA Auto Match Time Updater
+# Searches TheSportsDB for manually listed matches and updates startTime/endTime.
+# API failures are recorded as API_ERROR, never mislabeled as NOT FOUND.
+
+import json
+import os
+import re
+import sys
+import time
+import urllib.parse
+import urllib.request
+import urllib.error
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
-OWNER = os.getenv("GITHUB_REPOSITORY", "Adnanakhim98/Nova-Tv").split("/")[0]
-REPO = os.getenv("GITHUB_REPOSITORY", "Adnanakhim98/Nova-Tv").split("/")[1]
-BRANCH = os.getenv("MATCH_BRANCH", "main")
-API_KEY = os.getenv("THESPORTSDB_API_KEY", "123")
-TZ = ZoneInfo("Asia/Dhaka")
-DURATIONS = {
-    "football": 120, "soccer": 120, "basketball": 150,
-    "tennis": 180, "volleyball": 120, "badminton": 90,
-    "rugby": 120, "hockey": 180, "ice hockey": 180,
-    "baseball": 210, "cricket": 240, "t20": 240,
-    "odi": 600, "one day": 600, "test": 4320, "test cricket": 4320,
-    "default": 180,
+ROOT = Path(__file__).resolve().parent
+API_KEY = os.getenv("THESPORTSDB_API_KEY") or "123"
+API_BASE = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}"
+LOCAL_TZ = ZoneInfo("Asia/Dhaka")
+STATUS_FILE = ROOT / "api-match-status.json"
+
+MATCH_FILE_RE = re.compile(
+    r"(^|/)(match-\d+\.json|live-sports\.json|sports-matches\.json|willow\.json)$",
+    re.IGNORECASE,
+)
+
+DURATION_DEFAULTS = {
+    "football": 120,
+    "soccer": 120,
+    "basketball": 150,
+    "cricket": 240,
+    "t20": 240,
+    "odi": 600,
+    "one day": 600,
+    "test": 4320,
+    "tennis": 180,
+    "rugby": 120,
+    "hockey": 120,
+    "volleyball": 120,
 }
-MATCH_FILE_RE = re.compile(r"(?:^|/)(?:match[-_ ]?\d+|live[-_]?sports|sports[-_]?matches|willow)\.json$", re.I)
 
-def request_json(url):
-    req = urllib.request.Request(url, headers={
-        "User-Agent": "SPORTYNOVA-AutoMatch/1.0",
-        "Accept": "application/vnd.github+json"
-    })
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode("utf-8"))
 
-def api_json(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "SPORTYNOVA-AutoMatch/1.0"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode("utf-8"))
+def norm(value):
+    return re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
 
-def norm(s):
-    return re.sub(r"[^a-z0-9]+", "", str(s or "").lower())
 
-def find_match_objects(obj, path=""):
-    found = []
-    def walk(value):
-        if isinstance(value, dict):
-            # Match objects are the named objects that hold a stream or match metadata.
-            has_name = any(value.get(k) for k in ("name", "title", "matchName", "match_name"))
-            has_stream = any(value.get(k) for k in ("url", "streams", "servers", "streamUrl", "stream_url"))
-            has_meta = any(k in value for k in ("startTime", "endTime", "matchType", "match_type", "tournament", "league", "section"))
-            if has_name and (has_stream or has_meta):
-                found.append(value)
-            for v in value.values():
-                walk(v)
-        elif isinstance(value, list):
-            for v in value:
-                walk(v)
-    walk(obj)
-    # deduplicate identical object references
-    seen, unique = set(), []
-    for item in found:
-        if id(item) not in seen:
-            seen.add(id(item)); unique.append(item)
-    return unique
+def team_names(obj):
+    home = obj.get("team1") or obj.get("homeTeam") or obj.get("home")
+    away = obj.get("team2") or obj.get("awayTeam") or obj.get("away")
+    if isinstance(home, dict):
+        home = home.get("name") or home.get("teamName")
+    if isinstance(away, dict):
+        away = away.get("name") or away.get("teamName")
+    if home and away:
+        return str(home).strip(), str(away).strip()
 
-def split_teams(match):
-    a = match.get("team1") or match.get("homeTeam") or match.get("home_team")
-    b = match.get("team2") or match.get("awayTeam") or match.get("away_team")
-    if a and b:
-        return str(a).strip(), str(b).strip()
-    title = str(match.get("name") or match.get("title") or "")
-    parts = re.split(r"\s+(?:vs?\.?|versus|v)\s+", title, flags=re.I)
-    if len(parts) == 2:
-        return parts[0].strip(), parts[1].strip()
+    name = obj.get("name") or obj.get("matchName") or obj.get("title")
+    if name:
+        parts = re.split(r"\s+(?:vs?\.?|v|versus)\s+", str(name), flags=re.I)
+        if len(parts) == 2:
+            return parts[0].strip(), parts[1].strip()
     return None, None
 
-def select_event(events, match):
-    a, b = split_teams(match)
-    if not a or not b:
-        return None, "NOT FOUND", "দুই দলের নাম পাওয়া যায়নি"
-    wanted = {norm(a), norm(b)}
-    tournament = norm(match.get("tournament") or match.get("league") or match.get("competition") or "")
-    ranked = []
-    for event in events or []:
-        home, away = norm(event.get("strHomeTeam")), norm(event.get("strAwayTeam"))
-        event_teams = {home, away} - {""}
-        score = 0
-        if wanted == event_teams: score = 100
-        elif wanted.issubset(event_teams): score = 95
-        else:
-            title = norm(event.get("strEvent"))
-            if all(x in title for x in wanted): score = 80
-        if not score: continue
-        league = norm(event.get("strLeague"))
-        if tournament:
-            if tournament == league or tournament in league or league in tournament:
-                score += 35
-            else:
-                score -= 25
-        ranked.append((score, event))
-    ranked.sort(key=lambda x: x[0], reverse=True)
-    if not ranked: return None, "NOT FOUND", "ফিক্সচার পাওয়া যায়নি"
-    # More than one credible candidate means the event cannot be safely identified.
-    credible = [x for x in ranked if x[0] >= 80]
-    if len(credible) > 1:
-        return None, "AMBIGUOUS", "একাধিক ম্যাচ মিলে গেছে; JSON-এ সঠিক tournament লিখুন"
-    if ranked[0][0] < 80:
-        return None, "NOT FOUND", "ম্যাচের নাম যথেষ্ট নিশ্চিতভাবে মেলেনি"
-    if tournament and ranked[0][0] < 100:
-        return None, "AMBIGUOUS", "Tournament নিশ্চিতভাবে মেলেনি; ভুল ম্যাচ এড়াতে আপডেট বন্ধ"
-    return ranked[0][1], "API MATCHED", None
 
-def get_start(event):
+def get_match_objects(data):
+    found = []
+
+    def walk(value, path=""):
+        if isinstance(value, dict):
+            a, b = team_names(value)
+            if a and b:
+                found.append((value, path or "$"))
+            for key, child in value.items():
+                walk(child, f"{path}.{key}" if path else key)
+        elif isinstance(value, list):
+            for i, child in enumerate(value):
+                walk(child, f"{path}[{i}]")
+
+    walk(data)
+    return found
+
+
+def api_search(event_name):
+    query = urllib.parse.urlencode({"e": event_name})
+    url = f"{API_BASE}/searchevents.php?{query}"
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "SPORTYNOVA-AutoMatch/1.0"}
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=25) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        return payload.get("event") or [], None
+    except urllib.error.HTTPError as exc:
+        return [], f"HTTP {exc.code}: {exc.reason}"
+    except Exception as exc:
+        return [], str(exc)
+
+
+def event_teams(event):
+    return (
+        str(event.get("strHomeTeam") or "").strip(),
+        str(event.get("strAwayTeam") or "").strip(),
+    )
+
+
+def pair_matches(wanted_a, wanted_b, event):
+    home, away = event_teams(event)
+    wa, wb = norm(wanted_a), norm(wanted_b)
+    eh, ea = norm(home), norm(away)
+    return bool(eh and ea and ((wa == eh and wb == ea) or (wa == ea and wb == eh)))
+
+
+def event_start(event):
+    # Prefer the provider's UTC timestamp when available.
     stamp = event.get("strTimestamp")
     if stamp:
         try:
-            dt = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
-            if dt.tzinfo is None: dt = dt.replace(tzinfo=TZ)
-            return dt.astimezone(TZ)
-        except ValueError:
+            parsed = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            return parsed.astimezone(LOCAL_TZ)
+        except Exception:
             pass
-    date, clock = event.get("dateEvent"), event.get("strTime")
-    if not date or not clock or clock in ("00:00", "00:00:00"):
+
+    date_text = event.get("dateEvent")
+    time_text = event.get("strTime")
+    if not date_text:
         return None
     try:
-        return datetime.fromisoformat(f"{date}T{clock}").replace(tzinfo=TZ)
-    except ValueError:
+        if time_text:
+            time_text = str(time_text).strip()
+            # Common provider time format is HH:MM:SS.
+            parsed = datetime.strptime(
+                f"{date_text} {time_text[:8]}", "%Y-%m-%d %H:%M:%S"
+            )
+        else:
+            parsed = datetime.strptime(str(date_text), "%Y-%m-%d")
+        # Provider local event time may not be Dhaka time; this fallback is approximate.
+        return parsed.replace(tzinfo=LOCAL_TZ)
+    except Exception:
         return None
 
-def duration_for(match):
-    explicit = match.get("expectedDurationMinutes")
+
+def duration_for(obj, sport, event):
+    explicit = obj.get("expectedDurationMinutes")
     if explicit:
-        try: return max(1, int(explicit))
-        except (TypeError, ValueError): pass
-    raw = " ".join(str(match.get(k) or "") for k in ("sport", "matchType", "match_type", "category")).lower()
-    if "test" in raw: return DURATIONS["test"]
-    if "odi" in raw or "one day" in raw: return DURATIONS["odi"]
-    for key, value in DURATIONS.items():
-        if key != "default" and key in raw: return value
-    return DURATIONS["default"]
+        try:
+            return max(1, int(explicit))
+        except Exception:
+            pass
+    text = " ".join([
+        str(sport or ""),
+        str(obj.get("tournament") or ""),
+        str(event.get("strLeague") or ""),
+    ]).lower()
+    for key, minutes in DURATION_DEFAULTS.items():
+        if key in text:
+            return minutes
+    return 180
 
-def update_object(match):
-    a, b = split_teams(match)
-    if not a or not b:
-        match["apiMatchStatus"] = "NOT FOUND"
-        match["timeUpdateStatus"] = "team names missing"
-        return False, "NOT FOUND", "team names missing", None
-    query = urllib.parse.urlencode({"e": f"{a} vs {b}"})
-    url = f"https://www.thesportsdb.com/api/v1/json/{API_KEY}/searchevents.php?{query}"
-    try:
-        payload = api_json(url)
-    except Exception as exc:
-        match["apiMatchStatus"] = "NOT FOUND"
-        match["timeUpdateStatus"] = f"API error: {exc}"
-        return False, "NOT FOUND", match["timeUpdateStatus"], None
-    event, api_status, error = select_event(payload.get("event"), match)
-    if error:
-        match["apiMatchStatus"] = api_status
-        match["timeUpdateStatus"] = error
-        return False, api_status, error, None
-    start = get_start(event)
-    if not start:
-        match["apiMatchStatus"] = "API MATCHED"
-        match["timeUpdateStatus"] = "ফিক্সচার পাওয়া গেছে, কিন্তু নির্দিষ্ট শুরুর সময় এখনো প্রকাশিত হয়নি"
-        match["matchedEvent"] = event.get("strEvent", "")
-        return False, "API MATCHED", match["timeUpdateStatus"], event
-    end = start + timedelta(minutes=duration_for(match))
-    match["team1"], match["team2"] = a, b
-    match["startTime"] = start.isoformat(timespec="seconds")
-    match["endTime"] = end.isoformat(timespec="seconds")
-    match["status"] = "auto"
-    match["apiMatchStatus"] = "API MATCHED"
-    match["timeUpdateStatus"] = "updated"
-    match["matchedEvent"] = event.get("strEvent", "")
-    match["matchedTournament"] = event.get("strLeague", "")
-    match["providerEventId"] = event.get("idEvent", "")
-    match["timeSource"] = "TheSportsDB"
-    match["endTimeEstimated"] = True
-    return True, "API MATCHED", f"{event.get('strEvent')} => {match['startTime']} / {match['endTime']}", event
+
+def iso_local(value):
+    return value.isoformat(timespec="minutes")
+
+
+def load_json(path):
+    with path.open("r", encoding="utf-8-sig") as handle:
+        return json.load(handle)
+
+
+def save_json(path, data):
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(data, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+
 
 def main():
-    tree_url = f"https://api.github.com/repos/{OWNER}/{REPO}/git/trees/{BRANCH}?recursive=1"
-    tree = request_json(tree_url)
-    paths = [x["path"] for x in tree.get("tree", [])
-             if x.get("type") == "blob" and x["path"].lower().endswith(".json")
-             and MATCH_FILE_RE.search(x["path"])]
-    print(f"Found {len(paths)} possible match JSON files")
-    updated = 0
-    report = []
-    checked_at = datetime.now(TZ).isoformat(timespec="seconds")
-    for path in paths:
-        local = path
-        if not os.path.exists(local):
-            raw = f"https://raw.githubusercontent.com/{OWNER}/{REPO}/{BRANCH}/" + urllib.parse.quote(path, safe="/")
-            try:
-                data = api_json(raw)
-            except Exception as exc:
-                print(f"SKIP {path}: read failed: {exc}")
-                continue
-        else:
-            with open(local, encoding="utf-8") as f: data = json.load(f)
+    summary = []
+    scanned = 0
+    matched = 0
+    not_found = 0
+    ambiguous = 0
+    api_errors = 0
+
+    json_files = [
+        p for p in ROOT.rglob("*.json")
+        if p.name.lower() != STATUS_FILE.name.lower()
+        and MATCH_FILE_RE.search(p.relative_to(ROOT).as_posix())
+        and ".git" not in p.parts
+    ]
+
+    for path in json_files:
+        try:
+            data = load_json(path)
+        except Exception as exc:
+            print(f"[SKIP] {path}: invalid JSON: {exc}")
+            continue
+
         changed = False
-        for match in find_match_objects(data, path):
-            section = str(match.get("section") or "").lower()
-            category = str(match.get("category") or "").lower()
-            name = str(match.get("name") or match.get("title") or "")
-            if not (section in ("livesports", "live sports") or "sports" in category
-                    or re.search(r"\s(?:vs?\.?|versus|v)\s", name, re.I)):
+        for obj, object_path in get_match_objects(data):
+            scanned += 1
+            a, b = team_names(obj)
+            tournament = str(obj.get("tournament") or obj.get("league") or "").strip()
+            sport = str(obj.get("sport") or obj.get("category") or "").strip()
+            search_term = f"{a} {b}"
+            events, error = api_search(search_term)
+
+            record = {
+                "file": path.relative_to(ROOT).as_posix(),
+                "object": object_path,
+                "team1": a,
+                "team2": b,
+                "tournament": tournament,
+                "checkedAt": datetime.now(LOCAL_TZ).isoformat(timespec="seconds"),
+            }
+
+            if error:
+                api_errors += 1
+                record.update({"status": "API_ERROR", "message": error})
+                obj["timeUpdateStatus"] = "API_ERROR"
+                obj["timeUpdateMessage"] = error
+                obj["timeCheckedAt"] = record["checkedAt"]
+                changed = True
+                summary.append(record)
+                print(f"[API_ERROR] {a} vs {b}: {error}")
+                time.sleep(0.25)
                 continue
-            a, b = split_teams(match)
-            ok, api_status, message, event = update_object(match)
-            report.append({
-                "name": name or (f"{a} vs {b}" if a and b else "Unnamed match"),
-                "team1": a or "", "team2": b or "",
-                "tournament": match.get("tournament") or match.get("league") or match.get("competition") or "",
-                "sport": match.get("sport") or match.get("category") or "",
-                "file": path,
-                "status": api_status,
-                "message": message,
-                "matchedEvent": (event or {}).get("strEvent", "") if event else match.get("matchedEvent", ""),
-                "matchedTournament": (event or {}).get("strLeague", "") if event else match.get("matchedTournament", ""),
-                "startTime": match.get("startTime", ""),
-                "endTime": match.get("endTime", ""),
-                "lastChecked": checked_at
-            })
-            print(api_status + " " + path + ": " + message)
-            changed = changed or ok
+
+            candidates = [e for e in events if pair_matches(a, b, e)]
+
+            # If a tournament was supplied, require a reasonably close league-name match.
+            if tournament and candidates:
+                wanted = norm(tournament)
+                filtered = [
+                    e for e in candidates
+                    if wanted in norm(e.get("strLeague") or "")
+                    or norm(e.get("strLeague") or "") in wanted
+                ]
+                if filtered:
+                    candidates = filtered
+
+            if len(candidates) == 0:
+                not_found += 1
+                record["status"] = "NOT FOUND"
+                obj["timeUpdateStatus"] = "NOT FOUND"
+                obj["timeUpdateMessage"] = "No exact team-pair match found in API."
+                obj["timeCheckedAt"] = record["checkedAt"]
+                changed = True
+                print(f"[NOT FOUND] {a} vs {b}")
+            elif len(candidates) > 1:
+                ambiguous += 1
+                record["status"] = "AMBIGUOUS"
+                record["candidates"] = [
+                    {
+                        "event": e.get("strEvent"),
+                        "league": e.get("strLeague"),
+                        "date": e.get("dateEvent"),
+                        "eventId": e.get("idEvent"),
+                    }
+                    for e in candidates[:10]
+                ]
+                obj["timeUpdateStatus"] = "AMBIGUOUS"
+                obj["timeUpdateMessage"] = f"{len(candidates)} possible API matches."
+                obj["timeCheckedAt"] = record["checkedAt"]
+                changed = True
+                print(f"[AMBIGUOUS] {a} vs {b}: {len(candidates)} candidates")
+            else:
+                event = candidates[0]
+                start = event_start(event)
+                if not start:
+                    api_errors += 1
+                    record.update({
+                        "status": "API_ERROR",
+                        "message": "Event matched, but API did not provide a usable date/time.",
+                    })
+                    obj["timeUpdateStatus"] = "API_ERROR"
+                    obj["timeUpdateMessage"] = record["message"]
+                    obj["timeCheckedAt"] = record["checkedAt"]
+                    changed = True
+                else:
+                    duration = duration_for(obj, sport, event)
+                    end = start + timedelta(minutes=duration)
+                    matched += 1
+                    record.update({
+                        "status": "API MATCHED",
+                        "event": event.get("strEvent"),
+                        "league": event.get("strLeague"),
+                        "eventId": event.get("idEvent"),
+                        "startTime": iso_local(start),
+                        "endTime": iso_local(end),
+                        "endTimeEstimated": True,
+                    })
+                    obj["startTime"] = iso_local(start)
+                    obj["endTime"] = iso_local(end)
+                    obj["status"] = "auto"
+                    obj["timeUpdateStatus"] = "API MATCHED"
+                    obj["timeUpdateMessage"] = "Matched by exact team pair."
+                    obj["matchedEvent"] = event.get("strEvent")
+                    obj["matchedTournament"] = event.get("strLeague")
+                    obj["providerEventId"] = event.get("idEvent")
+                    obj["timeSource"] = "TheSportsDB"
+                    obj["endTimeEstimated"] = True
+                    obj["timeCheckedAt"] = record["checkedAt"]
+                    changed = True
+                    print(f"[API MATCHED] {a} vs {b}: {iso_local(start)}")
+            summary.append(record)
+            time.sleep(0.25)
+
         if changed:
-            os.makedirs(os.path.dirname(local) or ".", exist_ok=True)
-            with open(local, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-                f.write("\n")
-            updated += 1
-    summary = {
-        "generatedAt": checked_at,
-        "repository": f"{OWNER}/{REPO}",
-        "total": len(report),
-        "matched": sum(1 for x in report if x["status"] == "API MATCHED"),
-        "notFound": sum(1 for x in report if x["status"] == "NOT FOUND"),
-        "ambiguous": sum(1 for x in report if x["status"] == "AMBIGUOUS"),
-        "matches": report
+            save_json(path, data)
+
+    output = {
+        "updatedAt": datetime.now(LOCAL_TZ).isoformat(timespec="seconds"),
+        "provider": "TheSportsDB",
+        "counts": {
+            "scanned": scanned,
+            "matched": matched,
+            "notFound": not_found,
+            "ambiguous": ambiguous,
+            "apiErrors": api_errors,
+        },
+        "matches": summary,
     }
-    with open("api-match-status.json", "w", encoding="utf-8") as f:
-        json.dump(summary, f, ensure_ascii=False, indent=2)
-        f.write("\n")
-    print(f"Updated {updated} JSON file(s). Status report: {len(report)} matches.")
+    save_json(STATUS_FILE, output)
+    print("\nSPORTYNOVA API Match Check complete")
+    print(json.dumps(output["counts"], ensure_ascii=False, indent=2))
+
 
 if __name__ == "__main__":
     main()

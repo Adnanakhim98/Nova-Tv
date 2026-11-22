@@ -56,6 +56,53 @@
     "logoUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7kD5UQB8B6g6p3APlG_hJ_GJhe-AE1RSL8Va8lB00Ig&s=10",
     "fallbackLogo": "▶️"
   },
+    
+  {
+    "name": "D SPORTS",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/z5oyxzsxdk/out/v1/7695a0f64a0e424b973d5b09a2a3eb91/cenc.mpd|drmScheme=clearkey&drmLicense=f836853d8eac19446ed9535f5fc568b1:b3bc5ef00602b29abac7e482d3d9fbf3",
+    "logoUrl": "",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "FANCODE 1",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd|drmScheme=clearkey&drmLicense=82dfca238e8c4b430a3269db71965db9:a00b28caf4ac628e77a553d440c0ddca",
+    "logoUrl": "https://i.ibb.co/jvS7zkgW/images.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "FANCODE 2",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd|drmScheme=clearkey&drmLicense=1994b1df7dfd2e8a8d7b9bf3fb900285:22a1444b3da18e139191665b3d652835",
+    "logoUrl": "https://i.ibb.co/jvS7zkgW/images.png",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DD Sports HD",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://ottlive.dishhome.com.np/protected/jATOzZkB0RDJ74Ryniuo/dash/manifest.mpd|drmScheme=clearkey&drmLicense=4TroVBdBRGiELPjeRBgirw:l41taWyLCXvIbnuSueQ8lg,i14yPDyKS3eokoU4SXUu/g:FNxavC77i+NZ1mWRoynkKQ",
+    "logoUrl": "https://assets.dishhomego.com.np/f_webp,q_85,w_250/dhome/posters/44c5d57c-c3bd-4ea6-a367-52c4388e5287.jpg",
+    "fallbackLogo": "▶️"
+  },
+  {
+    "name": "DD Sports",
+    "category": "Sports",
+    "logo": "▶️",
+    "tone": "blue",
+    "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b17adfe543354fdd8d189b110617cddd/index.m3u8",
+    "logoUrl": "https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/imageContent-941-j5mhk5fc-v1/imageContent-941-j5mhk5fc-m1.png",
+    "fallbackLogo": "▶️"
+  },
+    
 
   {
     "name": "SLOVAKIA: Nova Sport 1",

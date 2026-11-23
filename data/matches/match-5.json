@@ -12,7 +12,6 @@
       {
         "name": "Fancode",
         "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/avqlywnuzx/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd|drmScheme=clearkey&drmLicense=1994b1df7dfd2e8a8d7b9bf3fb900285 pm:22a1444b3da18e139191665b3d652835",
-        
         "show": "yes"
       },
       {
@@ -48,6 +47,6 @@
     },
     "timeUpdateStatus": "NOT FOUND",
     "timeUpdateMessage": "No exact team-pair match found in API.",
-    "timeCheckedAt": "2026-11-23T07:22:15+06:00"
+    "timeCheckedAt": "2026-11-23T15:28:51+06:00"
   }
 }

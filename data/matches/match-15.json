@@ -10,7 +10,7 @@
     "section": "liveSports",
     "streams": [
       {
-        "name": "beIN SPORTS FHD",
+        "name": "Action FHD",
         "url": "https://ottlive.dishhome.com.np/protected/vVnVkZ4Bnu3lGwDQJxH-/dash/manifest.mpd|drmScheme=clearkey&drmLicense=2bb7f4489e5f421eb0de90035cffb2bc:96b09b69c638dac184f42910e0095933",
         
         "show": "yes"
@@ -18,10 +18,10 @@
       {
         "name": "beIN4 ARABIC FHD",
         "url": "https://baila-lentoo.pages.dev/beinxmq/bein-sports-4.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
-    "show": "no",
+    "show": "yes",
     "id": 15,
     "startTime": "2026-11-23T16:00:00+06:00",
     "endTime": "2026-11-24T00:50:00+06:00",

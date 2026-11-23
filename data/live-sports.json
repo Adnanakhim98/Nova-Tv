@@ -52,7 +52,7 @@
       "matchType": "ODI",
       "timeUpdateStatus": "NOT FOUND",
       "timeUpdateMessage": "No exact team-pair match found in API.",
-      "timeCheckedAt": "2026-11-23T15:23:30+06:00"
+      "timeCheckedAt": "2026-11-24T03:35:48+06:00"
     },
     {
       "name": "Australia Vs South africa",
@@ -106,7 +106,7 @@
       "matchType": "TEST",
       "timeUpdateStatus": "NOT FOUND",
       "timeUpdateMessage": "No exact team-pair match found in API.",
-      "timeCheckedAt": "2026-11-23T15:23:32+06:00"
+      "timeCheckedAt": "2026-11-24T03:35:51+06:00"
     },
     {
       "name": "Pakistan Vs Srilanka",
@@ -160,7 +160,7 @@
       "matchType": "ODI",
       "timeUpdateStatus": "NOT FOUND",
       "timeUpdateMessage": "No exact team-pair match found in API.",
-      "timeCheckedAt": "2026-11-23T15:23:35+06:00"
+      "timeCheckedAt": "2026-11-24T03:35:53+06:00"
     },
     {
       "name": "India Vs West indies",
@@ -214,7 +214,7 @@
       "matchType": "T20",
       "timeUpdateStatus": "NOT FOUND",
       "timeUpdateMessage": "No exact team-pair match found in API.",
-      "timeCheckedAt": "2026-11-23T15:23:37+06:00"
+      "timeCheckedAt": "2026-11-24T03:35:56+06:00"
     },
     {
       "name": "Man City Vs Liverpool.",
@@ -268,7 +268,7 @@
       "matchType": "FOOTBALL",
       "timeUpdateStatus": "NOT FOUND",
       "timeUpdateMessage": "No exact team-pair match found in API.",
-      "timeCheckedAt": "2026-11-23T15:23:40+06:00"
+      "timeCheckedAt": "2026-11-24T03:35:58+06:00"
     },
     {
       "name": "New Sports 2",

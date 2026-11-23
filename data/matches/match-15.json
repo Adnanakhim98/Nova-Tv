@@ -12,7 +12,6 @@
       {
         "name": "Action FHD",
         "url": "https://ottlive.dishhome.com.np/protected/vVnVkZ4Bnu3lGwDQJxH-/dash/manifest.mpd|drmScheme=clearkey&drmLicense=2bb7f4489e5f421eb0de90035cffb2bc:96b09b69c638dac184f42910e0095933",
-        
         "show": "yes"
       },
       {
@@ -34,6 +33,6 @@
     },
     "timeUpdateStatus": "NOT FOUND",
     "timeUpdateMessage": "No exact team-pair match found in API.",
-    "timeCheckedAt": "2026-11-23T15:28:41+06:00"
+    "timeCheckedAt": "2026-11-24T03:38:59+06:00"
   }
 }

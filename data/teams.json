@@ -394,6 +394,13 @@
         "Villarreal"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Villarreal.svg"
+    },
+    {
+      "name": "Hong Kong",
+      "aliases": [
+        "Hong Kong"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Hong%20Kong.svg"
     }
   ]
 }

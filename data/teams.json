@@ -407,9 +407,17 @@
       "aliases": [
         "SriLanka A",
         "Srilanka",
-        "Sri Lanka Women"
+        "Sri Lanka Women",
+        "Sr iLanka"
       ],
       "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/Sr%20iLanka.png"
+    },
+    {
+      "name": "South Africa",
+      "aliases": [
+        "South Africa"
+      ],
+      "logo": "https://raw.githubusercontent.com/Adnanakhim98/Nova-Tv/main/logos/South%20Africa.svg"
     }
   ]
 }

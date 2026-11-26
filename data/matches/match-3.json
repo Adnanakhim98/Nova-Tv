@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Pakistan Vs Sri Lanka",
+    "name": "India A Vs Sri Lanka A",
     "category": "Live Sports",
     "logo": "⚽",
     "logoUrl": "https://d34080pnh6e62j.cloudfront.net/images/channels/ChannelFeaturedAppthumb/1793610675540x302.jpg",
@@ -16,31 +16,31 @@
           "scheme": "clearkey",
           "license": "d129d1272d5a71f72a74839d021c46a6:b357d476f2f374c66dff8fa650df717b"
         },
+        "show": "no"
+      },
+      {
+        "name": "Action 1 HD",
+        "url": "https://ottlive.dishhome.com.np/protected/vVnVkZ4Bnu3lGwDQJxH-/dash/manifest.mpd|drmScheme=clearkey&drmLicense=2bb7f4489e5f421eb0de90035cffb2bc:96b09b69c638dac184f42910e0095933",
         "show": "yes"
       },
       {
-        "name": "T SPORTS HD",
-        "url": "https://tencent-cdn.tapmad.com/v1/01a14a9fb90c15fc60e91e1786b061/01a14a9feb881ea540a81c2b41b75e/main.m3u8?",
-        "show": "yes"
-      },
-      {
-        "name": "HD QUALITY",
-        "url": "https://live.msnetworks.net/ptv-sports/master.m3u8",
+        "name": "Action 2",
+        "url": "https://ottlive.dishhome.com.np/protected/BlnekZ4Bnu3lGwDQwBL2/dash/manifest.mpd|drmScheme=clearkey&drmLicense=e6136af0960e4fb8b535dd6b1dd307c8:7e73113b6fbcc167612a0b2e58715bd8",
         "show": "yes"
       },
       {
         "name": "LOW QUALITY (USE VPN)",
         "url": "http://193.47.62.41/hls/RREGEGE.m3u8",
-        "show": "yes"
+        "show": "no"
       }
     ],
     "show": "yes",
     "id": 3,
-    "startTime": "2026-11-19T10:30:00+06:00",
-    "endTime": "2026-11-19T19:15:00+06:00",
+    "startTime": "2026-11-26T10:30:00+06:00",
+    "endTime": "2026-11-27T01:15:00+06:00",
     "enabled": true,
     "status": "auto",
-    "matchType": "CRICKETS| Test",
+    "matchType": "CRICKETS| Rising Asia Cup",
     "drm": {
       "scheme": "clearkey",
       "license": "d129d1272d5a71f72a74839d021c46a6:b357d476f2f374c66dff8fa650df717b"

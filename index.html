@@ -1144,6 +1144,12 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
  border:0!important;background:#000!important;z-index:4!important;
 }
+/* Non-link YouTube label and our own orientation toggle above the embedded player. */
+.youtube-embed-toolbar{position:absolute;left:0;right:0;top:0;z-index:12;display:flex;align-items:center;gap:10px;padding:8px 10px;background:linear-gradient(180deg,rgba(0,0,0,.82),transparent);pointer-events:none}
+.youtube-embed-label{font-size:12px;font-weight:900;letter-spacing:.4px;color:#fff;text-shadow:0 1px 5px #000;pointer-events:none}
+.youtube-embed-toolbar .youtube-orient-btn{margin-left:auto;pointer-events:auto;width:38px;height:36px;border:1px solid #ffffff55;border-radius:10px;background:#07111ddd;color:#fff;font-size:21px;cursor:pointer}
+.playercard:fullscreen .youtube-embed-toolbar,.playercard:-webkit-full-screen .youtube-embed-toolbar{padding:14px 16px}
+.playercard:fullscreen .youtube-embed-toolbar .youtube-orient-btn,.playercard:-webkit-full-screen .youtube-embed-toolbar .youtube-orient-btn{width:44px;height:42px}
 #playerScreen.youtube-embed-mode #video,
 #playerScreen.youtube-embed-mode #centerPlayPause,
 #playerScreen.youtube-embed-mode #novaControls,
@@ -2002,6 +2008,16 @@ async function playStream(rawUrl,name="Live TV",category="LIVE TV",drm=null,fall
    player.addEventListener("variantchanged",()=>{if(requestId===playRequestId)setupShakaQualities()});
    await player.load(url);
    if(requestId!==playRequestId)return;
+   // Live Sports should begin at the current live edge, never at the event's VOD start.
+   try{
+     if(player.isLive && player.isLive()){
+       const liveRange=player.seekRange();
+       if(liveRange && Number.isFinite(liveRange.end) && liveRange.end>0){
+         const liveTarget=Math.max(Number(liveRange.start)||0,liveRange.end-1.5);
+         video.currentTime=liveTarget;
+       }
+     }
+   }catch(liveEdgeError){console.warn("Could not force live-edge start:",liveEdgeError)}
    // Prefer a low/medium rendition up to 640p (e.g. 480p/540p/640p);
    // if unavailable, start with the lowest available video rendition instead.
    const variants=player.getVariantTracks().filter(t=>t.height && t.type!=="audio");
@@ -2080,7 +2096,7 @@ async function playYouTubeMatch(ch){
   else if(/youtube\.com\/watch/i.test(u.href)){const id=u.searchParams.get("v");if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
   else if(/youtu\.be\//i.test(u.href)){const id=u.pathname.split("/").filter(Boolean)[0];if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
   const eu=new URL(embed);
-  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");
+  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");
   embed=eu.href;
  }catch(error){}
  frame.className="youtube-live-frame";
@@ -2090,7 +2106,12 @@ async function playYouTubeMatch(ch){
  frame.allowFullscreen=true;
  frame.referrerPolicy="strict-origin-when-cross-origin";
  screen.classList.add("youtube-embed-mode");
- screen.appendChild(frame);
+ const toolbar=document.createElement("div");toolbar.className="youtube-embed-toolbar";
+ const label=document.createElement("span");label.className="youtube-embed-label";label.textContent="YouTube";
+ const orient=document.createElement("button");orient.type="button";orient.className="youtube-orient-btn";orient.textContent="⛶";orient.setAttribute("aria-label","Landscape / portrait toggle");orient.title="Landscape / Portrait";
+ orient.addEventListener("click",togglePlayerOrientation);
+ toolbar.append(label,orient);
+ screen.append(frame,toolbar);
  $("video").style.display="none";
  $("empty").style.display="none";
  currentServerChannel=ch;
@@ -2470,6 +2491,12 @@ $("pipBtn").addEventListener("click",async()=>{
 // Device-aware fullscreen: rotate only phones; keep desktop/tablet layout native.
 const isPhoneDevice = () => /Android|iPhone|iPod|Mobile/i.test(navigator.userAgent) &&
   !/Windows NT|Macintosh|X11/i.test(navigator.userAgent);
+
+async function togglePlayerOrientation(){
+ const active=!!(document.fullscreenElement||document.webkitFullscreenElement)||playerCard.classList.contains("mobile-rotated")||playerCard.classList.contains("desktop-fallback-fullscreen");
+ if(active){exitPlayerFullscreen();return;}
+ await enterPlayerFullscreen();
+}
 
 async function enterPlayerFullscreen(){
  const mobile=isPhoneDevice();

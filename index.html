@@ -1781,6 +1781,14 @@ async function stopEngines(){
   const playerScreen=$("playerScreen");
   if(window.__novaYTLiveTimer){clearInterval(window.__novaYTLiveTimer);window.__novaYTLiveTimer=null;}
   if(window.__novaYTUiTimer){clearInterval(window.__novaYTUiTimer);window.__novaYTUiTimer=null;}
+  if(window.__novaYTControlsHideTimer){clearTimeout(window.__novaYTControlsHideTimer);window.__novaYTControlsHideTimer=null;}
+  if(window.__novaYTControlsShowHandler&&playerScreen){
+   playerScreen.removeEventListener('pointermove',window.__novaYTControlsShowHandler);
+   playerScreen.removeEventListener('pointerdown',window.__novaYTControlsShowHandler);
+   playerScreen.removeEventListener('touchstart',window.__novaYTControlsShowHandler);
+   playerScreen.removeEventListener('click',window.__novaYTControlsShowHandler);
+   window.__novaYTControlsShowHandler=null;
+  }
   if(window.__novaYTPlayer){
    try{window.__novaYTPlayer.destroy?.();}catch(e){}
    window.__novaYTPlayer=null;
@@ -2162,6 +2170,26 @@ async function playYouTubeMatch(ch){
  const seek=document.createElement("input");seek.type="range";seek.min="0";seek.max="1000";seek.value="1000";seek.step="1";seek.setAttribute("aria-label","ভিডিও seek");
  const orient=document.createElement("button");orient.type="button";orient.className="youtube-orient-btn";orient.textContent="⛶";orient.setAttribute("aria-label","Fullscreen / portrait toggle");orient.title="Fullscreen";
  orient.addEventListener("click",togglePlayerOrientation);
+ // Hide the YouTube-only control bar after 4 seconds without interaction.
+ const showYTControls=()=>{
+  toolbar.classList.remove("is-auto-hidden");
+  if(window.__novaYTControlsHideTimer)clearTimeout(window.__novaYTControlsHideTimer);
+  window.__novaYTControlsHideTimer=setTimeout(()=>{
+   if(toolbar.isConnected)toolbar.classList.add("is-auto-hidden");
+   window.__novaYTControlsHideTimer=null;
+  },4000);
+ };
+ if(window.__novaYTControlsShowHandler){
+  screen.removeEventListener('pointermove',window.__novaYTControlsShowHandler);
+  screen.removeEventListener('pointerdown',window.__novaYTControlsShowHandler);
+  screen.removeEventListener('touchstart',window.__novaYTControlsShowHandler);
+  screen.removeEventListener('click',window.__novaYTControlsShowHandler);
+ }
+ window.__novaYTControlsShowHandler=showYTControls;
+ screen.addEventListener('pointermove',showYTControls,{passive:true});
+ screen.addEventListener('pointerdown',showYTControls,{passive:true});
+ screen.addEventListener('touchstart',showYTControls,{passive:true});
+ screen.addEventListener('click',showYTControls);
  const ytCall=(fn)=>{const p=window.__novaYTPlayer;if(p&&typeof p[fn]==="function")return p;return null;};
  play.addEventListener("click",()=>{const p=ytCall("getPlayerState");if(!p)return;try{if(p.getPlayerState()===1){p.pauseVideo();play.textContent="▶";}else{p.playVideo();play.textContent="Ⅱ";}}catch(e){}});
  back.addEventListener("click",()=>{const p=ytCall("seekTo");if(p)try{p.seekTo(Math.max(0,p.getCurrentTime()-10),true);}catch(e){}});
@@ -2170,6 +2198,7 @@ async function playYouTubeMatch(ch){
  seek.addEventListener("input",()=>{const p=ytCall("seekTo");if(p)try{const d=p.getDuration();if(d>0)p.seekTo(d*(Number(seek.value)/1000),true);}catch(e){}});
  toolbar.append(label,back,play,forward,live,seek,time,orient);
  screen.append(frame,toolbar);
+ showYTControls();
  // YouTube iframe stays non-clickable. All playback controls are provided by SportyNova.
  loadNovaYouTubeAPI().then(YT=>{
   if(!screen.isConnected||!screen.contains(frame))return;

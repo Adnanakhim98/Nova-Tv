@@ -75,7 +75,7 @@
     "show": "yes",
     "id": 2,
     "startTime": "2026-11-27T06:00:00+06:00",
-    "endTime": "2026-11-20T16:15:00+06:00",
+    "endTime": "2026-11-27T16:15:00+06:00",
     "enabled": true,
     "status": "auto",
     "matchType": "CRICKETS| TEST",

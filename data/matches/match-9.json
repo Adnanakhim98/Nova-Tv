@@ -9,14 +9,11 @@
     "url": "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/b3b3fkmrbl/out/v1/1084d5c9a97a4c5b9f9554c88f486646/cenc.mpd",
     "section": "liveSports",
     "streams": [
-      
       {
-      
         "name": "TAPMAD HD",
         "url": "https://tencent-cdn.tapmad.com/v1/01a145abfb3a1ea540a81c2b41b751/01a145ae0ac115fc600b1e3e9683da/main.m3u8",
         "show": "yes"
       }
-      
     ],
     "show": "yes",
     "id": 9,
@@ -31,6 +28,6 @@
     },
     "timeUpdateStatus": "NOT FOUND",
     "timeUpdateMessage": "No exact team-pair match found in API.",
-    "timeCheckedAt": "2026-11-27T09:00:42+06:00"
+    "timeCheckedAt": "2026-11-27T18:10:01+06:00"
   }
 }

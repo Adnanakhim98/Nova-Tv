@@ -1144,6 +1144,10 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
  border:0!important;background:#000!important;z-index:4!important;
 }
+/* Block YouTube's title and bottom branding/action links without covering the video timeline. */
+.youtube-click-shield{position:absolute;z-index:10;pointer-events:auto;background:transparent}
+.youtube-click-shield.top{left:0;top:0;width:78%;height:17%}
+.youtube-click-shield.bottom{left:0;bottom:0;width:100%;height:13%}
 /* Non-link YouTube label and our own orientation toggle above the embedded player. */
 .youtube-embed-toolbar{position:absolute;left:0;right:0;top:0;z-index:12;display:flex;align-items:center;gap:10px;padding:8px 10px;background:linear-gradient(180deg,rgba(0,0,0,.82),transparent);pointer-events:none}
 .youtube-embed-label{font-size:12px;font-weight:900;letter-spacing:.4px;color:#fff;text-shadow:0 1px 5px #000;pointer-events:none}
@@ -2077,9 +2081,36 @@ function isYouTubeMatch(ch){
  const url=String(ch?.url||ch?.streamUrl||"");
  return kind==="youtube" || /(?:youtube\.com\/(?:embed\/|live\/|watch\?v=)|youtu\.be\/)/i.test(url);
 }
+let __novaYouTubeApiPromise=null;
+function loadNovaYouTubeAPI(){
+ if(window.YT&&window.YT.Player)return Promise.resolve(window.YT);
+ if(!__novaYouTubeApiPromise){
+  __novaYouTubeApiPromise=new Promise((resolve,reject)=>{
+   const existing=document.querySelector('script[data-nova-youtube-api]');
+   const previous=window.onYouTubeIframeAPIReady;
+   window.onYouTubeIframeAPIReady=function(){try{if(typeof previous==='function')previous();}catch(e){} resolve(window.YT);};
+   if(!existing){const script=document.createElement('script');script.src='https://www.youtube.com/iframe_api';script.async=true;script.dataset.novaYoutubeApi='1';script.onerror=reject;document.head.appendChild(script);}
+   else if(window.YT&&window.YT.Player)resolve(window.YT);
+   setTimeout(()=>reject(new Error('YouTube API load timeout')),12000);
+  });
+ }
+ return __novaYouTubeApiPromise;
+}
+function seekNovaYouTubeToLive(player){
+ try{
+  const duration=Number(player.getDuration&&player.getDuration());
+  if(Number.isFinite(duration)&&duration>0){
+   const current=Number(player.getCurrentTime&&player.getCurrentTime());
+   if(!Number.isFinite(current)||duration-current>8)player.seekTo(Math.max(0,duration-2),true);
+  }
+ }catch(e){console.warn('YouTube live-edge seek failed',e);}
+}
 async function playYouTubeMatch(ch){
  activeChannelItem=ch;
  window.__sportsAutoSwitchCount=0;
+ if(window.__novaYTLiveTimer){clearInterval(window.__novaYTLiveTimer);window.__novaYTLiveTimer=null;}
+ try{if(window.__novaYTPlayer&&window.__novaYTPlayer.destroy)window.__novaYTPlayer.destroy();}catch(e){}
+ window.__novaYTPlayer=null;
  playRequestId++;
  await stopEngines();
  setPlayerMode(true);
@@ -2096,22 +2127,38 @@ async function playYouTubeMatch(ch){
   else if(/youtube\.com\/watch/i.test(u.href)){const id=u.searchParams.get("v");if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
   else if(/youtu\.be\//i.test(u.href)){const id=u.pathname.split("/").filter(Boolean)[0];if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
   const eu=new URL(embed);
-  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");
+  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");eu.searchParams.set("enablejsapi","1");eu.searchParams.set("origin",location.origin);
   embed=eu.href;
  }catch(error){}
  frame.className="youtube-live-frame";
+ frame.id="novaYouTubeLiveFrame";
  frame.title=String(ch.name||"YouTube Live");
  frame.src=embed;
  frame.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
  frame.allowFullscreen=true;
  frame.referrerPolicy="strict-origin-when-cross-origin";
  screen.classList.add("youtube-embed-mode");
+ const topShield=document.createElement("div");topShield.className="youtube-click-shield top";topShield.setAttribute("aria-hidden","true");
+ const bottomShield=document.createElement("div");bottomShield.className="youtube-click-shield bottom";bottomShield.setAttribute("aria-hidden","true");
  const toolbar=document.createElement("div");toolbar.className="youtube-embed-toolbar";
  const label=document.createElement("span");label.className="youtube-embed-label";label.textContent="YouTube";
  const orient=document.createElement("button");orient.type="button";orient.className="youtube-orient-btn";orient.textContent="⛶";orient.setAttribute("aria-label","Landscape / portrait toggle");orient.title="Landscape / Portrait";
  orient.addEventListener("click",togglePlayerOrientation);
  toolbar.append(label,orient);
- screen.append(frame,toolbar);
+ screen.append(frame,topShield,bottomShield,toolbar);
+ // Use the official iframe API to jump DVR playback to the live edge.
+ loadNovaYouTubeAPI().then(YT=>{
+  if(!screen.isConnected||!screen.contains(frame))return;
+  window.__novaYTPlayer=new YT.Player(frame,{events:{onReady:event=>{
+   seekNovaYouTubeToLive(event.target);
+   if(window.__novaYTLiveTimer)clearInterval(window.__novaYTLiveTimer);
+   let attempts=0;
+   window.__novaYTLiveTimer=setInterval(()=>{
+    if(!screen.isConnected||!screen.contains(frame)||attempts++>25){clearInterval(window.__novaYTLiveTimer);window.__novaYTLiveTimer=null;return;}
+    seekNovaYouTubeToLive(event.target);
+   },1000);
+  },onStateChange:event=>{if(event.data===1)seekNovaYouTubeToLive(event.target);}}});
+ }).catch(error=>console.warn('YouTube IFrame API unavailable; embedded playback will continue:',error));
  $("video").style.display="none";
  $("empty").style.display="none";
  currentServerChannel=ch;

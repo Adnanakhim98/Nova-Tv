@@ -18,6 +18,9 @@
     "team1": "Cricket XI",
     "team2": "Cricket A",
     "team1Logo": "https://example.com/team1.png",
-    "team2Logo": "https://example.com/team2.png"
+    "team2Logo": "https://example.com/team2.png",
+    "timeUpdateStatus": "NOT FOUND",
+    "timeUpdateMessage": "No exact team-pair match found in API.",
+    "timeCheckedAt": "2026-11-28T09:22:01+06:00"
   }
 }

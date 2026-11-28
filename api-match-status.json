@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-11-28T03:18:39+06:00",
+  "updatedAt": "2026-11-28T09:24:58+06:00",
   "provider": "TheSportsDB",
   "counts": {
-    "scanned": 30,
+    "scanned": 31,
     "matched": 0,
-    "notFound": 30,
+    "notFound": 31,
     "ambiguous": 0,
     "apiErrors": 0
   },
@@ -15,7 +15,7 @@
       "team1": "Paris Saint-Germain",
       "team2": "Olympique Lyonnais",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:08+06:00",
+      "checkedAt": "2026-11-28T09:19:25+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -24,7 +24,7 @@
       "team1": "Bangladesh W",
       "team2": "Australia W",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:11+06:00",
+      "checkedAt": "2026-11-28T09:19:27+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -33,7 +33,7 @@
       "team1": "Australia",
       "team2": "South africa",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:13+06:00",
+      "checkedAt": "2026-11-28T09:19:30+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -42,7 +42,7 @@
       "team1": "Pakistan",
       "team2": "Srilanka",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:15+06:00",
+      "checkedAt": "2026-11-28T09:19:32+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -51,7 +51,7 @@
       "team1": "India",
       "team2": "West indies",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:18+06:00",
+      "checkedAt": "2026-11-28T09:19:34+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -60,7 +60,7 @@
       "team1": "Man City",
       "team2": "Liverpool.",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:20+06:00",
+      "checkedAt": "2026-11-28T09:19:37+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -69,7 +69,7 @@
       "team1": "Pakistan",
       "team2": "India",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:22+06:00",
+      "checkedAt": "2026-11-28T09:19:39+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -78,7 +78,7 @@
       "team1": "Saudi Arabia",
       "team2": "Uruguay",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:25+06:00",
+      "checkedAt": "2026-11-28T09:19:41+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -87,7 +87,7 @@
       "team1": "ABU DHABI T20 LEAGUE",
       "team2": "ABU DHABI T20 LEAGUE",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:27+06:00",
+      "checkedAt": "2026-11-28T09:19:44+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -96,7 +96,7 @@
       "team1": "Bangladesh Police Fc",
       "team2": "Abahani",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:13:29+06:00",
+      "checkedAt": "2026-11-28T09:19:46+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -105,7 +105,16 @@
       "team1": "Napoli Knights",
       "team2": "Venice Livewires",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:42+06:00",
+      "checkedAt": "2026-11-28T09:21:59+06:00",
+      "status": "NOT FOUND"
+    },
+    {
+      "file": "data/matches/match-25.json",
+      "object": "match",
+      "team1": "Cricket XI",
+      "team2": "Cricket A",
+      "tournament": "",
+      "checkedAt": "2026-11-28T09:22:01+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -114,7 +123,7 @@
       "team1": "Australia",
       "team2": "England",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:44+06:00",
+      "checkedAt": "2026-11-28T09:22:03+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -123,7 +132,7 @@
       "team1": "Bangladesh A",
       "team2": "Pakistan A",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:47+06:00",
+      "checkedAt": "2026-11-28T09:22:06+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -132,7 +141,7 @@
       "team1": "Bangladesh",
       "team2": "South Africa",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:49+06:00",
+      "checkedAt": "2026-11-28T09:22:08+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -141,7 +150,7 @@
       "team1": "Pakistan A",
       "team2": "India A",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:51+06:00",
+      "checkedAt": "2026-11-28T09:22:10+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -150,7 +159,7 @@
       "team1": "Wales",
       "team2": "Norway",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:54+06:00",
+      "checkedAt": "2026-11-28T09:22:13+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -159,7 +168,7 @@
       "team1": "Brisbane Heat",
       "team2": "Adelaide Strikers",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:56+06:00",
+      "checkedAt": "2026-11-28T09:22:15+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -168,7 +177,7 @@
       "team1": "Bangladesh A",
       "team2": "Afghanistan A",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:15:58+06:00",
+      "checkedAt": "2026-11-28T09:22:17+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -177,7 +186,7 @@
       "team1": "MI Emirates",
       "team2": "Vipers",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:16:01+06:00",
+      "checkedAt": "2026-11-28T09:22:20+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -186,7 +195,7 @@
       "team1": "BG Pathum United (THA)",
       "team2": "Tai Po FC (HKG)",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:16:03+06:00",
+      "checkedAt": "2026-11-28T09:22:22+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -195,7 +204,7 @@
       "team1": "New Zealand",
       "team2": "India",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:16:05+06:00",
+      "checkedAt": "2026-11-28T09:24:35+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -204,7 +213,7 @@
       "team1": "Yas Lions",
       "team2": "UAE Bulls",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:16:08+06:00",
+      "checkedAt": "2026-11-28T09:24:37+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -213,7 +222,7 @@
       "team1": "BG Pathum United (THA)",
       "team2": "Tai Po FC (HKG)",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:20+06:00",
+      "checkedAt": "2026-11-28T09:24:39+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -222,7 +231,7 @@
       "team1": "Afghanistan A",
       "team2": "Hong Kong",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:23+06:00",
+      "checkedAt": "2026-11-28T09:24:42+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -231,7 +240,7 @@
       "team1": "Colombia",
       "team2": "Chile",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:25+06:00",
+      "checkedAt": "2026-11-28T09:24:44+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -240,7 +249,7 @@
       "team1": "Bangladesh A",
       "team2": "Sri lanka A",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:27+06:00",
+      "checkedAt": "2026-11-28T09:24:46+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -249,7 +258,7 @@
       "team1": "Fulham",
       "team2": "Manchester City",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:30+06:00",
+      "checkedAt": "2026-11-28T09:24:49+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -258,7 +267,7 @@
       "team1": "Serbia",
       "team2": "Germany",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:32+06:00",
+      "checkedAt": "2026-11-28T09:24:51+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -267,7 +276,7 @@
       "team1": "Japan",
       "team2": "Paraguay",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:34+06:00",
+      "checkedAt": "2026-11-28T09:24:53+06:00",
       "status": "NOT FOUND"
     },
     {
@@ -276,7 +285,7 @@
       "team1": "FC Barcelona",
       "team2": "Villarreal",
       "tournament": "",
-      "checkedAt": "2026-11-28T03:18:37+06:00",
+      "checkedAt": "2026-11-28T09:24:56+06:00",
       "status": "NOT FOUND"
     }
   ]

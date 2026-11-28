@@ -14,7 +14,11 @@
     "enabled": true,
     "status": "live",
     "matchType": "Cricket",
-    "type": "youtube"
+    "type": "youtube","team1": "Cricket XI",
+"team2": "Cricket A",
+"team1Logo": "https://example.com/team1.png",
+"team2Logo": "https://example.com/team2.png"
+  
   }
   }
-}
+

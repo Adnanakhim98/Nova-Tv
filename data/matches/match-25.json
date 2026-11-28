@@ -1,6 +1,6 @@
 {
   "match": {
-    "name": "Cricket XI Vs Cricket A",
+    "name": "Victory Suoer Heros Hajigonj Vs Team Galaxy",
     "category": "Live Sports",
     "logo": "▶",
     "logoUrl": "",
@@ -13,7 +13,7 @@
     "id": 25,
     "enabled": true,
     "status": "live",
-    "matchType": "Cricket",
+    "matchType": "Cricket | Tape Ball BPL",
     "type": "youtube",
     "team1": "Cricket XI",
     "team2": "Cricket A",

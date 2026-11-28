@@ -1142,7 +1142,7 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 /* YouTube-only player surface: iframe is non-interactive; custom controls use the IFrame API. */
 #playerScreen.youtube-embed-mode > iframe.youtube-live-frame{
  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
- border:0!important;background:#000!important;z-index:4!important;pointer-events:auto!important;
+ border:0!important;background:#000!important;z-index:4!important;pointer-events:none!important;
 }
 .youtube-embed-toolbar{
  position:absolute;left:0;right:0;bottom:0;z-index:12;
@@ -1522,12 +1522,9 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
   if(type.textContent==="FOOTBALL")type.classList.add("is-football");
   badgeRow.append(status,type);
 
-  // Show the full match title on the Live Sports card.
+  // Keep the card focused on the two team names/logos; do not repeat the match title.
   b.classList.add("match-card");
-  const matchTitle=document.createElement("div");
-  matchTitle.className="match-card-title";
-  matchTitle.textContent=String(ch.name||ch.title||ch.matchName||ch.match_name||"").trim();
-  b.append(startLabel,logoBox,matchTitle,badgeRow);
+  b.append(startLabel,logoBox,badgeRow);
 
   // Icon-only direct share control. It stays separate from the card's play action.
   const shareControl=document.createElement("span");
@@ -2165,7 +2162,7 @@ async function playYouTubeMatch(ch){
    if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);
   }
   const eu=new URL(embed);
-  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");eu.searchParams.set("controls","1");eu.searchParams.set("disablekb","0");eu.searchParams.set("fs","1");eu.searchParams.set("mute","1");eu.searchParams.set("enablejsapi","1");eu.searchParams.set("origin",location.origin);
+  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");eu.searchParams.set("controls","0");eu.searchParams.set("disablekb","1");eu.searchParams.set("fs","0");eu.searchParams.set("mute","1");eu.searchParams.set("enablejsapi","1");eu.searchParams.set("origin",location.origin);
   embed=eu.href;
  }catch(error){}
  frame.className="youtube-live-frame";
@@ -2215,7 +2212,7 @@ async function playYouTubeMatch(ch){
  toolbar.append(label,back,play,forward,live,seek,time,orient);
  screen.append(frame,toolbar);
  showYTControls();
- // YouTube iframe stays non-clickable. All playback controls are provided by SportyNova.
+ // Keep the YouTube iframe non-interactive so clicks on video text/logo cannot navigate away. SportyNova overlay controls use the IFrame API.
  loadNovaYouTubeAPI().then(YT=>{
   if(!screen.isConnected||!screen.contains(frame))return;
   window.__novaYTPlayer=new YT.Player(frame,{events:{onReady:event=>{

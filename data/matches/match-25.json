@@ -14,11 +14,7 @@
     "enabled": true,
     "status": "live",
     "matchType": "Cricket",
-    "type": "youtube",
-        "team1": "Saudi Arabia",
-    "team2": "Uruguay",
-    "team1Logo": "https://flagcdn.com/w80/sa.png",
-    "team2Logo": "https://flagcdn.com/w80/uy.png"
+    "type": "youtube"
   }
   }
 }

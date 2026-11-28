@@ -1438,16 +1438,25 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
  const name=document.createElement("div");name.className="chname";name.textContent=String(ch.name||"Unnamed channel");
  if(isLiveEvent){
-  // Country/club names are resolved automatically for known country teams; unknown teams get initials.
-  const teams=isYouTubeMatch(ch)?["YouTube Live"]:splitMatchTeams(ch.name||"");
-  logoBox.classList.add("team-logos");logoBox.textContent="";
-  if(isYouTubeMatch(ch)){
-   const yt=document.createElement("span");yt.className="team-logo-fallback";yt.style.cssText="width:58px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ff1744,#b90024);font-size:19px";yt.textContent="▶";logoBox.appendChild(yt);
-  }
-  teams.forEach((team,index)=>{
-   if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
-   const wrap=document.createElement("div");wrap.className="team-logo";
-   const teamEntry=findTeamLogo(team);
+  // Keep YouTube entries in the exact same match-card layout as team-vs-team matches.
+  const youtubeMatch=isYouTubeMatch(ch);
+  const teams=youtubeMatch?[]:splitMatchTeams(ch.name||"");
+  logoBox.classList.add("team-logos");
+  if(youtubeMatch){
+   logoBox.classList.add("youtube-match-logo");
+   const yt=document.createElement("span");
+   yt.className="youtube-match-play";
+   yt.setAttribute("aria-hidden","true");
+   yt.textContent="▶";
+   const label=document.createElement("span");
+   label.className="youtube-match-label";
+   label.textContent="YouTube Live";
+   logoBox.append(yt,label);
+  }else{
+   teams.forEach((team,index)=>{
+    if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
+    const wrap=document.createElement("div");wrap.className="team-logo";
+    const teamEntry=findTeamLogo(team);
     const code=teamFlagCode(team);
     // Prefer the exact logo registered in data/teams.json; use country flag only if no logo exists.
     const logoUrl=teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
@@ -1459,7 +1468,8 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
       const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f);
     }
     const label=document.createElement("small");label.textContent=team;wrap.appendChild(label);logoBox.appendChild(wrap);
-  });
+   });
+  }
  }else{
   // Show only the logo explicitly supplied in the JSON. Never inject a default/fallback logo.
   const logoValue=String(ch.logoUrl||ch.logo||"").trim();
@@ -2108,10 +2118,16 @@ function setInlineServers(ch){
   group.appendChild(b);
  });
 }
+function getYouTubeSourceUrl(ch){
+ const candidates=[
+  ch?.url,ch?.streamUrl,ch?.videoUrl,ch?.youtubeUrl,
+  ...(Array.isArray(ch?.streams)?ch.streams.map(s=>s?.url||s?.src):[])
+ ];
+ return candidates.map(v=>String(v||"").trim()).find(v=>/^(https?:)?\/\//i.test(v)&&/(youtube\.com|youtu\.be)/i.test(v))||"";
+}
 function isYouTubeMatch(ch){
- const kind=String(ch?.type||ch?.playerType||"").toLowerCase();
- const url=String(ch?.url||ch?.streamUrl||"");
- return kind==="youtube" || /(?:youtube\.com\/(?:embed\/|live\/|watch\?v=)|youtu\.be\/)/i.test(url);
+ const kind=String(ch?.type||ch?.playerType||ch?.provider||"").toLowerCase();
+ return kind==="youtube" || !!getYouTubeSourceUrl(ch);
 }
 let __novaYouTubeApiPromise=null;
 function loadNovaYouTubeAPI(){
@@ -2151,13 +2167,19 @@ async function playYouTubeMatch(ch){
  hideQualitySelector();
  const screen=$("playerScreen");
  const frame=document.createElement("iframe");
- const raw=String(ch.url||"").trim();
+ const raw=getYouTubeSourceUrl(ch)||String(ch.url||ch.streamUrl||"").trim();
  let embed=raw;
  try{
   const u=new URL(raw,location.href);
-  if(/youtube\.com\/live\//i.test(u.href)){const id=u.pathname.split("/").filter(Boolean).pop();embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
-  else if(/youtube\.com\/watch/i.test(u.href)){const id=u.searchParams.get("v");if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
-  else if(/youtu\.be\//i.test(u.href)){const id=u.pathname.split("/").filter(Boolean)[0];if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);}
+  let id="";
+  const host=u.hostname.replace(/^www\./i,"").toLowerCase();
+  if(host==="youtube.com"||host==="m.youtube.com"||host==="youtube-nocookie.com"){
+   if(/\/(?:live|embed|shorts|v)\//i.test(u.pathname))id=u.pathname.split("/").filter(Boolean).pop();
+   else if(/\/watch$/i.test(u.pathname))id=u.searchParams.get("v")||"";
+  }else if(host==="youtu.be"){
+   id=u.pathname.split("/").filter(Boolean)[0]||"";
+  }
+  if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);
   const eu=new URL(embed);
   eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");eu.searchParams.set("controls","0");eu.searchParams.set("disablekb","1");eu.searchParams.set("fs","0");eu.searchParams.set("mute","1");eu.searchParams.set("enablejsapi","1");eu.searchParams.set("origin",location.origin);
   embed=eu.href;
@@ -2231,8 +2253,10 @@ async function playYouTubeMatch(ch){
      play.textContent=event.target.getPlayerState()===1?"Ⅱ":"▶";
     }catch(e){}
    },500);
-  },onStateChange:event=>{if(event.data===1)seekNovaYouTubeToLive(event.target);}}});
- }).catch(error=>console.warn('YouTube IFrame API unavailable:',error));
+  },onStateChange:event=>{if(event.data===1)seekNovaYouTubeToLive(event.target);},
+   onError:event=>{console.warn("YouTube playback error:",event.data);showStatus(ch.name||"YouTube Live","YouTube ভিডিও চালানো যাচ্ছে না · ভিডিওটি পাবলিক/এম্বেড অনুমোদিত কি না পরীক্ষা করুন");}
+  }});
+ }).catch(error=>{console.warn('YouTube IFrame API unavailable:',error);showStatus(ch.name||"YouTube Live","YouTube Player লোড হয়নি · ইন্টারনেট সংযোগ পরীক্ষা করুন");});
  $("video").style.display="none";
  $("empty").style.display="none";
  currentServerChannel=ch;
@@ -3338,6 +3362,31 @@ document.addEventListener("touchend", e => {
 }
 @keyframes matchLiveBlink{0%,100%{opacity:1}50%{opacity:.25}}
 @media(prefers-reduced-motion:reduce){#liveSportsChannels .match-card .match-live-top-badge{animation:none!important}}
+</style>
+
+
+<style id="sportynova-youtube-match-card-parity">
+/* YouTube Live cards use the same height, spacing and visual hierarchy as every match card. */
+#liveSportsChannels .match-card .youtube-match-logo{
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:5px!important;min-height:62px!important;
+  height:68px!important;margin:0 0 7px!important;
+}
+#liveSportsChannels .match-card .youtube-match-play{
+  display:grid!important;place-items:center!important;width:54px!important;height:40px!important;
+  border-radius:11px!important;background:linear-gradient(145deg,#ff3157,#b90028)!important;
+  border:1px solid rgba(255,255,255,.35)!important;color:#fff!important;
+  font-size:21px!important;line-height:1!important;
+  box-shadow:0 5px 14px rgba(255,35,75,.2)!important;
+}
+#liveSportsChannels .match-card .youtube-match-label{
+  display:block!important;color:#dce9f8!important;font-size:9px!important;
+  font-weight:700!important;line-height:1.1!important;text-align:center!important;
+}
+@media(max-width:420px){
+ #liveSportsChannels .match-card .youtube-match-logo{height:62px!important;min-height:58px!important}
+ #liveSportsChannels .match-card .youtube-match-play{width:48px!important;height:36px!important;font-size:19px!important}
+}
 </style>
 </body>
 

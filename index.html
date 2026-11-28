@@ -1297,6 +1297,19 @@ window.ensureSportyMpegts=function(){
 </script>
 <script>
 const $=id=>document.getElementById(id), video=$("video");
+const IS_SEPARATE_PLAYER=document.body.classList.contains("separate-player");
+function openSeparatePlayer(url,name,category="LIVE TV",drm=null,fallbackUrl="",youtube=false){
+ if(IS_SEPARATE_PLAYER)return false;
+ const p=new URLSearchParams();
+ if(url)p.set("url",url);
+ p.set("name",name||"Live TV");
+ p.set("category",category||"LIVE TV");
+ if(drm)p.set("drm",JSON.stringify(drm));
+ if(fallbackUrl)p.set("fallback",fallbackUrl);
+ if(youtube)p.set("youtube","1");
+ location.href="./player.html?"+p.toString();
+ return true;
+}
 let channels=[],liveSports=[],activeHls=null,activeShaka=null,activeShakaUI=null,activeMpegts=null,activeKey=null,playRequestId=0,qualityMode="",configLoadInProgress=false,selectedMatchFilter="ALL",adaptiveQualityTimer=null;
 video.preload="auto";
 video.autoplay=true;
@@ -2250,7 +2263,10 @@ async function playYouTubeMatch(ch){
  setLiveBadge(true);
 }
 function playChannelDefault(ch){
- if(isYouTubeMatch(ch)){playYouTubeMatch(ch);return;}
+ if(isYouTubeMatch(ch)){
+  if(!IS_SEPARATE_PLAYER){openSeparatePlayer(ch.url||ch.streamUrl||"",ch.name||"YouTube Live",ch.category||"LIVE SPORTS",null,"",true);return;}
+  playYouTubeMatch(ch);return;
+ }
  activeChannelItem=ch;
  window.__sportsAutoSwitchCount=0;
  $("empty").style.display="none";
@@ -2260,6 +2276,7 @@ function playChannelDefault(ch){
  const url=String(first.url||ch.url||"").trim();
  const fallback=currentChannelStreams.filter(stream=>stream.url&&stream.url!==url).map(stream=>stream.url).join("||");
  if(!url){showStatus(ch.name||"Live TV","এই ম্যাচে চালু করার মতো কোনো stream URL নেই");return;}
+ if(!IS_SEPARATE_PLAYER){openSeparatePlayer(url,ch.name||"Live TV",(ch.category||"LIVE TV")+" · "+(first.name||"Server 1"),first.drm||ch.drm||null,fallback);return;}
  showStatus(ch.name||"Live TV",(first.name||"Server 1")+" · Connecting…");
  playStream(url,ch.name||"Live TV",(ch.category||"LIVE TV")+" · "+(first.name||"Server 1"),first.drm||ch.drm||null,fallback);
 }
@@ -2587,6 +2604,7 @@ const livezoneFitModes=["fill","cover","zoom"];
 $("prevChannelBtn").addEventListener("click",()=>stepChannel(-1));
 $("nextChannelBtn").addEventListener("click",()=>stepChannel(1));
 $("menuChannelBtn").addEventListener("click",()=>{
+ if(IS_SEPARATE_PLAYER){location.href="./index.html";return;}
  const list=document.querySelector(".channelarea");
  if(list)list.scrollIntoView({behavior:"smooth",block:"start"});
 });
@@ -2765,14 +2783,30 @@ video.addEventListener("pause",()=>{if(controlsHideTimer)clearTimeout(controlsHi
  screenEl.addEventListener("touchcancel",endGesture,{passive:true});
 })();
 
-// Direct player URL support. The requested stream is used when no ?url= parameter exists.
-const DEFAULT_STREAM="https://wiselp.wiseplayout.com/9X_Tashan/master.m3u8";
+// Separate player page: receive the selected channel from index.html.
 const pageParams=new URLSearchParams(location.search);
-const requestedStream=pageParams.get("url");
+const requestedStream=pageParams.get("url")||"";
 const requestedName=pageParams.get("name")||"SPORTYNOVA Live";
-if(requestedStream)playStream(requestedStream,requestedName,"DIRECT PLAYER");
-else playStream(DEFAULT_STREAM,"9X Tashan","DEFAULT STREAM");
-loadConfig();
+const requestedCategory=pageParams.get("category")||"DIRECT PLAYER";
+const requestedFallback=pageParams.get("fallback")||"";
+let requestedDrm=null;
+try{requestedDrm=pageParams.get("drm")?JSON.parse(pageParams.get("drm")):null;}catch(e){requestedDrm=null;}
+const configReady=loadConfig();
+if(requestedStream){
+ playStream(requestedStream,requestedName,requestedCategory,requestedDrm,requestedFallback);
+ // Restore the channel's server list and previous/next navigation after its JSON loads.
+ configReady.then(()=>{
+  const wanted=String(requestedName).trim().toLowerCase();
+  const ch=[...channels,...liveSports].find(item=>String(item.name||"").trim().toLowerCase()===wanted);
+  if(ch){activeChannelItem=ch;setInlineServers(ch);}
+ });
+}
+else if(pageParams.get("youtube")==="1")configReady.then(()=>{
+ const wanted=String(requestedName).trim().toLowerCase();
+ const ch=[...channels,...liveSports].find(item=>String(item.name||"").trim().toLowerCase()===wanted);
+ if(ch){activeChannelItem=ch;playYouTubeMatch(ch);}else showStatus(requestedName,"YouTube channel was not found in the channel list.");
+});
+else if(IS_SEPARATE_PLAYER){$("empty").style.display="flex";showStatus("SPORTYNOVA LIVE TV","চ্যানেল তালিকা থেকে একটি চ্যানেল নির্বাচন করুন");}
 // Re-scan GitHub JSON periodically so newly added/edited match files appear without
 // requiring an HTML edit; render status/sort between full data refreshes.
 setInterval(()=>render(channels),30000);
@@ -3981,3 +4015,11 @@ document.addEventListener("touchend", e => {
   word-break:normal!important;
 }
 </style>
+
+<style id="sportynova-separated-player-home">
+/* The player is now hosted by player.html; keep its DOM for shared scripts only. */
+body:not(.separate-player) .playercard{display:none!important}
+body:not(.separate-player) .playersticky{padding-bottom:0!important}
+</style>
+</body>
+</html>

@@ -1,12 +1,12 @@
 {
   "match": {
-    "name": "Tv xi vs St Xi",
+    "name": "Cricket XI Vs Cricket A",
     "category": "Live Sports",
     "logo": "▶",
     "logoUrl": "",
     "fallbackLogo": "",
     "tone": "",
-    "url": "https://www.youtube.com/embed//KdmbHPwcOv4?autoplay=1&playsinline=1&rel=0",
+    "url": "https://www.youtube.com/embed/KdmbHPwcOv4?autoplay=1&playsinline=1&rel=0",
     "section": "liveSports",
     "streams": [],
     "show": "Yes",
@@ -14,11 +14,10 @@
     "enabled": true,
     "status": "live",
     "matchType": "Cricket",
-    "type": "youtube","team1": "Cricket XI",
-"team2": "Cricket A",
-"team1Logo": "https://example.com/team1.png",
-"team2Logo": "https://example.com/team2.png"
-  
+    "type": "youtube",
+    "team1": "Cricket XI",
+    "team2": "Cricket A",
+    "team1Logo": "https://example.com/team1.png",
+    "team2Logo": "https://example.com/team2.png"
   }
-  }
-
+}

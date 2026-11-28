@@ -1181,6 +1181,16 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 @media(max-width:420px){.channelrow.sportsrow .channel .chlogo{height:62px!important;min-height:58px!important}.channelrow.sportsrow .channel .chlogo img{max-height:60px!important;max-width:100%!important}}
 </style>
 
+
+<style id="sportynova-youtube-iframe-compat">
+/* Let the native YouTube controls receive taps; no custom overlay covers the video. */
+#playerScreen.youtube-embed-mode > iframe.youtube-live-frame{
+  pointer-events:auto!important;
+  z-index:8!important;
+  background:#000!important;
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1438,38 +1448,35 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
  const name=document.createElement("div");name.className="chname";name.textContent=String(ch.name||"Unnamed channel");
  if(isLiveEvent){
-  // Keep YouTube entries in the exact same match-card layout as team-vs-team matches.
-  const youtubeMatch=isYouTubeMatch(ch);
-  const teams=youtubeMatch?[]:splitMatchTeams(ch.name||"");
-  logoBox.classList.add("team-logos");
-  if(youtubeMatch){
-   logoBox.classList.add("youtube-match-logo");
-   const yt=document.createElement("span");
-   yt.className="youtube-match-play";
-   yt.setAttribute("aria-hidden","true");
-   yt.textContent="▶";
-   const label=document.createElement("span");
-   label.className="youtube-match-label";
-   label.textContent="YouTube Live";
-   logoBox.append(yt,label);
-  }else{
-   teams.forEach((team,index)=>{
-    if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
-    const wrap=document.createElement("div");wrap.className="team-logo";
-    const teamEntry=findTeamLogo(team);
-    const code=teamFlagCode(team);
-    // Prefer the exact logo registered in data/teams.json; use country flag only if no logo exists.
-    const logoUrl=teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:"");
-    if(logoUrl){
-      const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
-      img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};
-      wrap.appendChild(img);
-    }else{
-      const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f);
-    }
-    const label=document.createElement("small");label.textContent=team;wrap.appendChild(label);logoBox.appendChild(wrap);
-   });
-  }
+  // Country/club names are resolved automatically for known country teams; unknown teams get initials.
+  // YouTube matches use the same two-team layout as every other sports match.
+  // Optional JSON fields: team1/team2 and team1Logo/team2Logo.
+  const parsedTeams=splitMatchTeams(ch.name||ch.title||"");
+  const teams=[
+   String(ch.team1||ch.team1Name||ch.homeTeam||ch.home_team||ch.teamA||parsedTeams[0]||"Team 1").trim(),
+   String(ch.team2||ch.team2Name||ch.awayTeam||ch.away_team||ch.teamB||parsedTeams[1]||"Team 2").trim()
+  ];
+  const explicitLogos=[
+   String(ch.team1Logo||ch.team1LogoUrl||ch.homeTeamLogo||ch.homeLogo||ch.home_logo||"").trim(),
+   String(ch.team2Logo||ch.team2LogoUrl||ch.awayTeamLogo||ch.awayLogo||ch.away_logo||"").trim()
+  ];
+  logoBox.classList.add("team-logos");logoBox.textContent="";
+  teams.forEach((team,index)=>{
+   if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
+   const wrap=document.createElement("div");wrap.className="team-logo";
+   const teamEntry=findTeamLogo(team);
+   const code=teamFlagCode(team);
+   // JSON-provided logo wins; then teams.json; then country flag.
+   const logoUrl=explicitLogos[index]||(teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:""));
+   if(logoUrl){
+    const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
+    img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};
+    wrap.appendChild(img);
+   }else{
+    const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);wrap.appendChild(f);
+   }
+   const label=document.createElement("small");label.textContent=team;wrap.appendChild(label);logoBox.appendChild(wrap);
+  });
  }else{
   // Show only the logo explicitly supplied in the JSON. Never inject a default/fallback logo.
   const logoValue=String(ch.logoUrl||ch.logo||"").trim();
@@ -2118,16 +2125,10 @@ function setInlineServers(ch){
   group.appendChild(b);
  });
 }
-function getYouTubeSourceUrl(ch){
- const candidates=[
-  ch?.url,ch?.streamUrl,ch?.videoUrl,ch?.youtubeUrl,
-  ...(Array.isArray(ch?.streams)?ch.streams.map(s=>s?.url||s?.src):[])
- ];
- return candidates.map(v=>String(v||"").trim()).find(v=>/^(https?:)?\/\//i.test(v)&&/(youtube\.com|youtu\.be)/i.test(v))||"";
-}
 function isYouTubeMatch(ch){
- const kind=String(ch?.type||ch?.playerType||ch?.provider||"").toLowerCase();
- return kind==="youtube" || !!getYouTubeSourceUrl(ch);
+ const kind=String(ch?.type||ch?.playerType||ch?.videoType||"").toLowerCase();
+ const urls=[ch?.url,ch?.streamUrl,ch?.videoUrl,ch?.youtubeUrl,...(Array.isArray(ch?.streams)?ch.streams.map(x=>x?.url||x?.src):[])].filter(Boolean).map(String);
+ return kind==="youtube" || kind==="youtube-live" || urls.some(url=>/(?:youtube\.com\/(?:embed\/|live\/|watch\?v=|shorts\/)|youtu\.be\/)/i.test(url));
 }
 let __novaYouTubeApiPromise=null;
 function loadNovaYouTubeAPI(){
@@ -2156,9 +2157,6 @@ function seekNovaYouTubeToLive(player){
 async function playYouTubeMatch(ch){
  activeChannelItem=ch;
  window.__sportsAutoSwitchCount=0;
- if(window.__novaYTLiveTimer){clearInterval(window.__novaYTLiveTimer);window.__novaYTLiveTimer=null;}
- try{if(window.__novaYTPlayer&&window.__novaYTPlayer.destroy)window.__novaYTPlayer.destroy();}catch(e){}
- window.__novaYTPlayer=null;
  playRequestId++;
  await stopEngines();
  setPlayerMode(true);
@@ -2167,102 +2165,50 @@ async function playYouTubeMatch(ch){
  hideQualitySelector();
  const screen=$("playerScreen");
  const frame=document.createElement("iframe");
- const raw=getYouTubeSourceUrl(ch)||String(ch.url||ch.streamUrl||"").trim();
- let embed=raw;
+ const streamList=Array.isArray(ch.streams)?ch.streams:[];
+ const raw=String(ch.url||ch.streamUrl||ch.videoUrl||ch.youtubeUrl||streamList.find(x=>/(youtube\.com|youtu\.be)/i.test(String(x?.url||x?.src||"")))?.url||"").trim();
+ let videoId=String(ch.videoId||ch.youtubeId||"").trim();
+ let embed="";
  try{
   const u=new URL(raw,location.href);
-  let id="";
-  const host=u.hostname.replace(/^www\./i,"").toLowerCase();
-  if(host==="youtube.com"||host==="m.youtube.com"||host==="youtube-nocookie.com"){
-   if(/\/(?:live|embed|shorts|v)\//i.test(u.pathname))id=u.pathname.split("/").filter(Boolean).pop();
-   else if(/\/watch$/i.test(u.pathname))id=u.searchParams.get("v")||"";
-  }else if(host==="youtu.be"){
-   id=u.pathname.split("/").filter(Boolean)[0]||"";
+  if(!videoId){
+   if(/youtu\.be$/i.test(u.hostname))videoId=u.pathname.split("/").filter(Boolean)[0]||"";
+   else if(u.pathname==="/watch")videoId=u.searchParams.get("v")||"";
+   else if(/\/(?:embed|live|shorts)\//i.test(u.pathname))videoId=u.pathname.split("/").filter(Boolean).pop()||"";
   }
-  if(id)embed="https://www.youtube.com/embed/"+encodeURIComponent(id);
+  if(videoId)embed="https://www.youtube.com/embed/"+encodeURIComponent(videoId);
+  else if(/youtube\.com\/embed\//i.test(raw))embed=raw;
+  else if(/youtube\.com\/live\//i.test(raw)||/youtu\.be\//i.test(raw)||/youtube\.com\/watch/i.test(raw)){
+   throw new Error("YouTube ভিডিও আইডি পাওয়া যায়নি");
+  }else embed=raw;
   const eu=new URL(embed);
-  eu.searchParams.set("autoplay","1");eu.searchParams.set("playsinline","1");eu.searchParams.set("rel","0");eu.searchParams.set("modestbranding","1");eu.searchParams.set("iv_load_policy","3");eu.searchParams.set("controls","0");eu.searchParams.set("disablekb","1");eu.searchParams.set("fs","0");eu.searchParams.set("mute","1");eu.searchParams.set("enablejsapi","1");eu.searchParams.set("origin",location.origin);
+  eu.searchParams.set("autoplay","1");
+  eu.searchParams.set("playsinline","1");
+  eu.searchParams.set("controls","1");
+  eu.searchParams.set("rel","0");
+  eu.searchParams.set("mute","1");
+  eu.searchParams.set("enablejsapi","0");
   embed=eu.href;
- }catch(error){}
+ }catch(error){
+  showStatus(ch.name||"Live Match","সঠিক YouTube ভিডিও/লাইভ লিংক পাওয়া যায়নি");
+  return;
+ }
  frame.className="youtube-live-frame";
  frame.id="novaYouTubeLiveFrame";
- frame.title=String(ch.name||"YouTube Live");
+ frame.title=String(ch.name||"Live Match");
  frame.src=embed;
- frame.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+ frame.allow="autoplay; encrypted-media; picture-in-picture; fullscreen; accelerometer; gyroscope; clipboard-write; web-share";
  frame.allowFullscreen=true;
  frame.referrerPolicy="strict-origin-when-cross-origin";
+ frame.loading="eager";
  screen.classList.add("youtube-embed-mode");
- const toolbar=document.createElement("div");toolbar.className="youtube-embed-toolbar";
- const label=document.createElement("span");label.className="youtube-embed-label";label.textContent="SPORTYNOVA LIVE";
- const back=document.createElement("button");back.type="button";back.textContent="−10";back.title="পেছনে ১০ সেকেন্ড";
- const play=document.createElement("button");play.type="button";play.textContent="Ⅱ";play.title="Play / Pause";
- const forward=document.createElement("button");forward.type="button";forward.textContent="+10";forward.title="সামনে ১০ সেকেন্ড";
- const live=document.createElement("button");live.type="button";live.className="youtube-live-btn";live.textContent="● LIVE";live.title="বর্তমান লাইভে যান";
- const time=document.createElement("span");time.className="youtube-embed-time";time.textContent="LIVE";
- const seek=document.createElement("input");seek.type="range";seek.min="0";seek.max="1000";seek.value="1000";seek.step="1";seek.setAttribute("aria-label","ভিডিও seek");
- const orient=document.createElement("button");orient.type="button";orient.className="youtube-orient-btn";orient.textContent="⛶";orient.setAttribute("aria-label","Fullscreen / portrait toggle");orient.title="Fullscreen";
- orient.addEventListener("click",togglePlayerOrientation);
- // Hide the YouTube-only control bar after 4 seconds without interaction.
- const showYTControls=()=>{
-  toolbar.classList.remove("is-auto-hidden");
-  if(window.__novaYTControlsHideTimer)clearTimeout(window.__novaYTControlsHideTimer);
-  window.__novaYTControlsHideTimer=setTimeout(()=>{
-   if(toolbar.isConnected)toolbar.classList.add("is-auto-hidden");
-   window.__novaYTControlsHideTimer=null;
-  },4000);
- };
- if(window.__novaYTControlsShowHandler){
-  screen.removeEventListener('pointermove',window.__novaYTControlsShowHandler);
-  screen.removeEventListener('pointerdown',window.__novaYTControlsShowHandler);
-  screen.removeEventListener('touchstart',window.__novaYTControlsShowHandler);
-  screen.removeEventListener('click',window.__novaYTControlsShowHandler);
- }
- window.__novaYTControlsShowHandler=showYTControls;
- screen.addEventListener('pointermove',showYTControls,{passive:true});
- screen.addEventListener('pointerdown',showYTControls,{passive:true});
- screen.addEventListener('touchstart',showYTControls,{passive:true});
- screen.addEventListener('click',showYTControls);
- const ytCall=(fn)=>{const p=window.__novaYTPlayer;if(p&&typeof p[fn]==="function")return p;return null;};
- play.addEventListener("click",()=>{const p=ytCall("getPlayerState");if(!p)return;try{if(p.getPlayerState()===1){p.pauseVideo();play.textContent="▶";}else{p.playVideo();play.textContent="Ⅱ";}}catch(e){}});
- back.addEventListener("click",()=>{const p=ytCall("seekTo");if(p)try{p.seekTo(Math.max(0,p.getCurrentTime()-10),true);}catch(e){}});
- forward.addEventListener("click",()=>{const p=ytCall("seekTo");if(p)try{p.seekTo(Math.min(p.getDuration()-1,p.getCurrentTime()+10),true);}catch(e){}});
- live.addEventListener("click",()=>{const p=ytCall("seekTo");if(p)try{const d=p.getDuration();if(d>0)p.seekTo(Math.max(0,d-1),true);p.playVideo();}catch(e){}});
- seek.addEventListener("input",()=>{const p=ytCall("seekTo");if(p)try{const d=p.getDuration();if(d>0)p.seekTo(d*(Number(seek.value)/1000),true);}catch(e){}});
- toolbar.append(label,back,play,forward,live,seek,time,orient);
- screen.append(frame,toolbar);
- showYTControls();
- // YouTube iframe stays non-clickable. All playback controls are provided by SportyNova.
- loadNovaYouTubeAPI().then(YT=>{
-  if(!screen.isConnected||!screen.contains(frame))return;
-  window.__novaYTPlayer=new YT.Player(frame,{events:{onReady:event=>{
-   try{event.target.mute();event.target.playVideo();setTimeout(()=>{try{event.target.unMute();event.target.setVolume(100);}catch(e){}},1200);}catch(e){}
-   seekNovaYouTubeToLive(event.target);
-   if(window.__novaYTLiveTimer)clearInterval(window.__novaYTLiveTimer);
-   let attempts=0;
-   window.__novaYTLiveTimer=setInterval(()=>{
-    if(!screen.isConnected||!screen.contains(frame)||attempts++>=8){clearInterval(window.__novaYTLiveTimer);window.__novaYTLiveTimer=null;return;}
-    seekNovaYouTubeToLive(event.target);
-   },1500);
-   if(window.__novaYTUiTimer)clearInterval(window.__novaYTUiTimer);
-   window.__novaYTUiTimer=setInterval(()=>{
-    if(!screen.isConnected||!screen.contains(frame)){clearInterval(window.__novaYTUiTimer);window.__novaYTUiTimer=null;return;}
-    try{
-     const d=event.target.getDuration(),c=event.target.getCurrentTime();
-     if(d>0&&!seek.matches(":active"))seek.value=String(Math.max(0,Math.min(1000,Math.round(c/d*1000))));
-     time.textContent=d>0?`${Math.floor(c/60)}:${String(Math.floor(c%60)).padStart(2,"0")}`:"LIVE";
-     play.textContent=event.target.getPlayerState()===1?"Ⅱ":"▶";
-    }catch(e){}
-   },500);
-  },onStateChange:event=>{if(event.data===1)seekNovaYouTubeToLive(event.target);},
-   onError:event=>{console.warn("YouTube playback error:",event.data);showStatus(ch.name||"YouTube Live","YouTube ভিডিও চালানো যাচ্ছে না · ভিডিওটি পাবলিক/এম্বেড অনুমোদিত কি না পরীক্ষা করুন");}
-  }});
- }).catch(error=>{console.warn('YouTube IFrame API unavailable:',error);showStatus(ch.name||"YouTube Live","YouTube Player লোড হয়নি · ইন্টারনেট সংযোগ পরীক্ষা করুন");});
+ screen.appendChild(frame);
  $("video").style.display="none";
  $("empty").style.display="none";
  currentServerChannel=ch;
  currentChannelStreams=[];
  $("inlineServerGroup").replaceChildren();
- showStatus(ch.name||"YouTube Live","YouTube Live Player · Embed");
+ showStatus(ch.name||"Live Match","Online Video · Playing");
  setLiveBadge(true);
 }
 function playChannelDefault(ch){
@@ -3362,31 +3308,6 @@ document.addEventListener("touchend", e => {
 }
 @keyframes matchLiveBlink{0%,100%{opacity:1}50%{opacity:.25}}
 @media(prefers-reduced-motion:reduce){#liveSportsChannels .match-card .match-live-top-badge{animation:none!important}}
-</style>
-
-
-<style id="sportynova-youtube-match-card-parity">
-/* YouTube Live cards use the same height, spacing and visual hierarchy as every match card. */
-#liveSportsChannels .match-card .youtube-match-logo{
-  display:flex!important;flex-direction:column!important;align-items:center!important;
-  justify-content:center!important;gap:5px!important;min-height:62px!important;
-  height:68px!important;margin:0 0 7px!important;
-}
-#liveSportsChannels .match-card .youtube-match-play{
-  display:grid!important;place-items:center!important;width:54px!important;height:40px!important;
-  border-radius:11px!important;background:linear-gradient(145deg,#ff3157,#b90028)!important;
-  border:1px solid rgba(255,255,255,.35)!important;color:#fff!important;
-  font-size:21px!important;line-height:1!important;
-  box-shadow:0 5px 14px rgba(255,35,75,.2)!important;
-}
-#liveSportsChannels .match-card .youtube-match-label{
-  display:block!important;color:#dce9f8!important;font-size:9px!important;
-  font-weight:700!important;line-height:1.1!important;text-align:center!important;
-}
-@media(max-width:420px){
- #liveSportsChannels .match-card .youtube-match-logo{height:62px!important;min-height:58px!important}
- #liveSportsChannels .match-card .youtube-match-play{width:48px!important;height:36px!important;font-size:19px!important}
-}
 </style>
 </body>
 

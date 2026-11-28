@@ -1438,25 +1438,26 @@ function makeChannelCard(ch,root,categoryLabel,isLiveEvent=false){
  const logoBox=document.createElement("div");logoBox.className="chlogo "+String(ch.tone||"blue").replace(/[^a-z0-9_-]/gi,"");
  const name=document.createElement("div");name.className="chname";name.textContent=String(ch.name||"Unnamed channel");
  if(isLiveEvent){
-  // Keep the existing YouTube player and controls unchanged; only render its match card as two teams.
-  // Optional JSON fields: team1/team2 and team1Logo/team2Logo.
-  const parsedTeams=splitMatchTeams(ch.name||ch.title||"");
-  const teams=[
-   String(ch.team1||ch.team1Name||ch.homeTeam||ch.home_team||ch.teamA||parsedTeams[0]||"Team 1").trim(),
-   String(ch.team2||ch.team2Name||ch.awayTeam||ch.away_team||ch.teamB||parsedTeams[1]||"Team 2").trim()
-  ];
-  const explicitLogos=[
-   String(ch.team1Logo||ch.team1LogoUrl||ch.homeTeamLogo||ch.homeLogo||ch.home_logo||"").trim(),
-   String(ch.team2Logo||ch.team2LogoUrl||ch.awayTeamLogo||ch.awayLogo||ch.away_logo||"").trim()
-  ];
+  // Minimal card-only change: preserve the existing match-card renderer and YouTube player.
+  // YouTube matches now use the same two-team layout as every other match.
+  const youtubeMatch=isYouTubeMatch(ch);
+  const parsedTeams=splitMatchTeams(ch.name||ch.title||ch.matchName||ch.match_name||"");
+  const teams=youtubeMatch?[
+   String(ch.team1||ch.team1Name||ch.team1_name||ch.homeTeam||ch.home_team||ch.teamA||ch.team_a||parsedTeams[0]||"Team 1").trim(),
+   String(ch.team2||ch.team2Name||ch.team2_name||ch.awayTeam||ch.away_team||ch.teamB||ch.team_b||parsedTeams[1]||"Team 2").trim()
+  ]:splitMatchTeams(ch.name||"");
+  const youtubeLogos=youtubeMatch?[
+   String(ch.team1Logo||ch.team1LogoUrl||ch.team1_logo||ch.team1_logo_url||ch.homeTeamLogo||ch.home_team_logo||ch.homeLogo||ch.home_logo||"").trim(),
+   String(ch.team2Logo||ch.team2LogoUrl||ch.team2_logo||ch.team2_logo_url||ch.awayTeamLogo||ch.away_team_logo||ch.awayLogo||ch.away_logo||"").trim()
+  ]:["",""];
   logoBox.classList.add("team-logos");logoBox.textContent="";
   teams.forEach((team,index)=>{
    if(index===1){const vs=document.createElement("span");vs.className="team-vs";vs.textContent="VS";logoBox.appendChild(vs)}
    const wrap=document.createElement("div");wrap.className="team-logo";
    const teamEntry=findTeamLogo(team);
    const code=teamFlagCode(team);
-   // Explicit logo from JSON first; then teams.json; then country flag as fallback.
-   const logoUrl=explicitLogos[index]||(teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:""));
+   // For YouTube matches, prefer the per-team logo configured in this match JSON.
+   const logoUrl=(youtubeMatch&&youtubeLogos[index])||(teamEntry&&teamEntry.logo?teamEntry.logo:(code?`https://flagcdn.com/w80/${code}.png`:""));
    if(logoUrl){
     const img=document.createElement("img");img.src=logoUrl;img.alt=team+" logo";img.loading="lazy";img.referrerPolicy="no-referrer";
     img.onerror=()=>{const f=document.createElement("span");f.className="team-logo-fallback";f.textContent=teamInitials(team);img.replaceWith(f)};

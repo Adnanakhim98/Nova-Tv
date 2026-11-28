@@ -1170,6 +1170,12 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(29,204,231,.13),transpare
 #playerScreen.youtube-embed-mode #channelTitleOverlay,
 #playerScreen.youtube-embed-mode #sportsServerRow,
 #playerScreen.youtube-embed-mode #empty{display:none!important}
+/* Mask YouTube title/header and bottom branding/action overlays inside its iframe. */
+#playerScreen.youtube-embed-mode .youtube-ui-mask{position:absolute;left:0;right:0;z-index:6;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.98),rgba(0,0,0,.88))}
+#playerScreen.youtube-embed-mode .youtube-ui-mask.top{top:0;height:clamp(58px,13%,82px)}
+#playerScreen.youtube-embed-mode .youtube-ui-mask.bottom{bottom:0;height:clamp(62px,15%,92px);background:linear-gradient(0deg,rgba(0,0,0,.99),rgba(0,0,0,.90))}
+.playercard:fullscreen #playerScreen.youtube-embed-mode .youtube-ui-mask.top,.playercard:-webkit-full-screen #playerScreen.youtube-embed-mode .youtube-ui-mask.top{height:clamp(64px,12%,105px)}
+.playercard:fullscreen #playerScreen.youtube-embed-mode .youtube-ui-mask.bottom,.playercard:-webkit-full-screen #playerScreen.youtube-embed-mode .youtube-ui-mask.bottom{height:clamp(70px,14%,115px)}
 </style>
 
 <style id="sportynova-explicit-logo-only-v1">
@@ -2173,6 +2179,8 @@ async function playYouTubeMatch(ch){
  frame.allowFullscreen=true;
  frame.referrerPolicy="strict-origin-when-cross-origin";
  screen.classList.add("youtube-embed-mode");
+ const topMask=document.createElement("div");topMask.className="youtube-ui-mask top";topMask.setAttribute("aria-hidden","true");
+ const bottomMask=document.createElement("div");bottomMask.className="youtube-ui-mask bottom";bottomMask.setAttribute("aria-hidden","true");
  const toolbar=document.createElement("div");toolbar.className="youtube-embed-toolbar";
  const label=document.createElement("span");label.className="youtube-embed-label";label.textContent="SPORTYNOVA LIVE";
  const back=document.createElement("button");back.type="button";back.textContent="−10";back.title="পেছনে ১০ সেকেন্ড";
@@ -2210,7 +2218,7 @@ async function playYouTubeMatch(ch){
  live.addEventListener("click",()=>{const p=ytCall("seekTo");if(p)try{const d=p.getDuration();if(d>0)p.seekTo(Math.max(0,d-1),true);p.playVideo();}catch(e){}});
  seek.addEventListener("input",()=>{const p=ytCall("seekTo");if(p)try{const d=p.getDuration();if(d>0)p.seekTo(d*(Number(seek.value)/1000),true);}catch(e){}});
  toolbar.append(label,back,play,forward,live,seek,time,orient);
- screen.append(frame,toolbar);
+ screen.append(frame,topMask,bottomMask,toolbar);
  showYTControls();
  // Keep the YouTube iframe non-interactive so clicks on video text/logo cannot navigate away. SportyNova overlay controls use the IFrame API.
  loadNovaYouTubeAPI().then(YT=>{
